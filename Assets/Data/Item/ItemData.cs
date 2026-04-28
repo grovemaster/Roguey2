@@ -1,0 +1,90 @@
+using System.Collections.Generic;
+using JRogue.Ability;
+using JRogue.Item.Effect;
+using JRogue.Stats;
+using UnityEngine;
+
+namespace JRogue.Item
+{
+    public enum ItemCategory { Weapon, Armor, Consumable, Utility }
+    public enum EquipmentSlot
+    {
+        MainHand,
+        OffHand,
+        Head,
+        Torso,
+        Legs,
+        Feet,
+        Accessory_MainHand,
+        Accessory_OffHand,
+        Accessory_Head // Neclace, Amulet, Earring, etc.
+    }
+
+    [CreateAssetMenu(fileName = "New Item", menuName = "JRogue/ItemData")]
+    public class ItemData : ScriptableObject
+    {
+        [Header("Identity")]
+        public string itemName;
+        public EquipmentSlot slotType; // Head, Body, Ring, etc.
+        public float weight;
+        public Sprite icon;
+
+        [Header("Combat Modules")]
+        // Support for multi-damage (e.g. 5 Blunt + 2 Fire)
+        public List<DamageEntry> damageModules = new List<DamageEntry>();
+
+        [Header("Stats & Passives")]
+        public List<StatModifierEffect> statModifiers;
+        public List<PassiveEffect> passiveEffects; // Run OnEquip/OnUnequip
+        [Header("Activated Ability")]
+        public List<AbilityAction> activeAbilities;  // Run OnActivate
+
+        void Awake()
+        {
+            damageModules ??= new List<DamageEntry>();
+            statModifiers ??= new List<StatModifierEffect>();
+            passiveEffects ??= new List<PassiveEffect>();
+            activeAbilities ??= new List<AbilityAction>();
+        }
+
+        public void OnEquip(GameObject target)
+        {
+            var stats = target.GetComponent<JRogue.Stats.CharacterStats>();
+            if (stats == null) return;
+
+            // Apply Stats (using 'this' as the source)
+            foreach (var mod in statModifiers)
+            {
+                var stat = stats.GetStatByType(mod.targetStat);
+                stat?.AddModifier(mod.modifierAmount, this);
+                // var stat = stats.GetStatByType(mod.attribute);
+                // stat?.AddModifier(mod.value, this);
+            }
+
+            // Apply Passives
+            foreach (var p in passiveEffects) p.OnApply(target);
+        }
+
+        public void OnUnequip(GameObject target)
+        {
+            var stats = target.GetComponent<JRogue.Stats.CharacterStats>();
+            if (stats == null) return;
+
+            foreach (var mod in statModifiers)
+            {
+                var stat = stats.GetStatByType(mod.targetStat);
+                // var stat = stats.GetStatByType(mod.attribute);
+                stat?.RemoveModifiersFromSource(this);
+            }
+
+            foreach (var p in passiveEffects) p.OnRemove(target);
+        }
+    }
+
+    [System.Serializable]
+    public struct DamageEntry
+    {
+        public DamageType type;
+        public int value;
+    }
+}

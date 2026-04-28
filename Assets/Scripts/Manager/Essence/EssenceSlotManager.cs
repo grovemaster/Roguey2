@@ -1,0 +1,159 @@
+using UnityEngine;
+using System.Collections.Generic;
+using JRogue.Item.Essence;
+using JRogue.Ability;
+
+namespace JRogue.Manager.Essence
+{
+    public class EssenceSlotManager : MonoBehaviour
+    {
+        [Header("Configuration")]
+        public int totalSlots = 3;
+
+        // This array holds the actual ScriptableObjects currently equipped
+        [SerializeField] private EssenceData[] equippedEssences;
+
+        private void Awake()
+        {
+            // Don't do this: equippedEssences = new List<EssenceData>(); 
+
+            // Instead, do this:
+            foreach (var essence in equippedEssences)
+            {
+                if (essence != null)
+                {
+                    essence.Apply(gameObject); // Re-apply stats/passives on load
+                }
+            }
+        }
+
+        public bool EquipEssence(EssenceData newEssence, int slotIndex)
+        {
+            if (slotIndex < 0 || slotIndex >= totalSlots || slotIndex >= equippedEssences.Length) return false;
+
+            // 1. Remove bonuses from the old essence if one exists in this slot
+            if (equippedEssences[slotIndex] != null)
+            {
+                equippedEssences[slotIndex].Remove(gameObject);
+            }
+
+            // 2. Place the new essence and apply its bonuses
+            equippedEssences[slotIndex] = newEssence;
+
+            if (newEssence != null)
+            {
+                newEssence.Apply(gameObject);
+                Debug.Log($"{gameObject.name} equipped {newEssence.essenceName}!");
+            }
+
+            return true;
+        }
+
+        public void UnequipEssence(int slotIndex)
+        {
+            EquipEssence(null, slotIndex);
+        }
+
+        public EssenceData GetEssenceInSlot(int slotIndex)
+        {
+            if (slotIndex < 0 || slotIndex >= totalSlots || slotIndex >= equippedEssences.Length) return null;
+            return equippedEssences[slotIndex];
+        }
+
+        // Inside EssenceSlotManager.cs
+        public AbilityAction GetAbility(int slotIndex, int subIndex)
+        {
+            // Ensure the slot exists and has an essence
+            if (slotIndex >= 0 && slotIndex < equippedEssences.Length)
+            {
+                var essence = equippedEssences[slotIndex];
+                if (essence != null && subIndex < essence.activeAbilities.Count)
+                {
+                    return essence.activeAbilities[subIndex];
+                }
+            }
+            return null;
+        }
+
+        public void TriggerEssenceAbility(int slotIndex, int abilityIndex)
+        {
+            EssenceData essence = GetEssenceInSlot(slotIndex);
+            if (essence == null || abilityIndex >= essence.activeAbilities.Count) return;
+
+            AbilityAction ability = essence.activeAbilities[abilityIndex];
+            var stats = GetComponent<JRogue.Stats.CharacterStats>();
+
+            if (stats.currentSoulPower >= ability.soulPowerCost)
+            {
+                if (ability.Execute(gameObject))
+                {
+                    stats.currentSoulPower -= ability.soulPowerCost;
+                    Debug.Log($"Executed {ability.abilityName} from {essence.essenceName}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Call this whenever a major state change occurs (e.g., HP changes, new turn starts).
+        /// This updates conditional passives like "Heroic Spirit."
+        /// </summary>
+        public void RefreshConditionalPassives()
+        {
+            foreach (var essence in equippedEssences)
+            {
+                if (essence == null) continue;
+
+                foreach (var passive in essence.complexPassives)
+                {
+                    passive.Refresh(gameObject);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Attempts to execute an ability from a specific essence slot.
+        /// </summary>
+        public bool TryExecuteAbility(int slotIndex, int abilityIndex)
+        {
+            EssenceData essence = GetEssenceInSlot(slotIndex);
+            if (essence == null || abilityIndex >= essence.activeAbilities.Count) return false;
+
+            AbilityAction ability = essence.activeAbilities[abilityIndex];
+            var stats = GetComponent<JRogue.Stats.CharacterStats>();
+
+            // 1. Check Resources
+            if (stats.currentSoulPower < ability.soulPowerCost)
+            {
+                Debug.Log("Not enough Soul Power!");
+                return false;
+            }
+
+            // 2. Check Conditions (like "Must have a status effect")
+            if (!ability.CanExecute(gameObject))
+            {
+                Debug.Log($"{ability.abilityName} conditions not met!");
+                return false;
+            }
+
+            // 3. Execute logic
+            if (ability.Execute(gameObject))
+            {
+                stats.currentSoulPower -= ability.soulPowerCost;
+                return true; // Successfully consumed a turn
+            }
+
+            return false;
+        }
+
+        private void OnDestroy()
+        {
+            // If the actor is destroyed (e.g., they die), 
+            // we should cleanly remove all essence modifiers 
+            // to prevent any static reference leaks.
+            for (int i = 0; i < totalSlots; i++)
+            {
+                UnequipEssence(i);
+            }
+        }
+    }
+}

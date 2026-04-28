@@ -1,0 +1,20 @@
+{
+    "name": "JRogue.Tests",
+    "rootNamespace": "JRogue.Tests",
+    "references": [
+        "UnityEngine.TestRunner",
+        "GUID:4a992522e63146e92a6f9807b59c02ed",
+        "GUID:982e546c528458a2bafdcad049ab2e4d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

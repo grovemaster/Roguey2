@@ -1,0 +1,17 @@
+{
+    "name": "JRogue.Controls",
+    "rootNamespace": "JRogue",
+    "references": [
+        "GUID:982e546c528458a2bafdcad049ab2e4d",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

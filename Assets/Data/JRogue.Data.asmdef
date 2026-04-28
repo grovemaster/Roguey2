@@ -1,0 +1,20 @@
+{
+    "name": "JRogue.Data",
+    "rootNamespace": "JRogue",
+    "references": [
+        "GUID:982e546c528458a2bafdcad049ab2e4d",
+        "GUID:8709d6f4b16c94994b4d6f2cc6b59fb1",
+        "GUID:6cac0436325bb5b03adf90417097e1a2",
+        "GUID:0fe48154afbcb4067b41be2fe929d401",
+        "GUID:d2d49d89dc61269b0bb327b9db7c8519"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

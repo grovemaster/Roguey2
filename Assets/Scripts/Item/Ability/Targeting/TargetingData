@@ -1,0 +1,12 @@
+namespace JRogue.Abilities.Targeting
+{
+    public enum TargetingType { Self, SingleTile, AreaOfEffect, Line }
+
+    [System.Serializable]
+    public class TargetingData
+    {
+        public TargetingType type;
+        public int range;
+        public int radius; // For Fireball splash
+    }
+}
