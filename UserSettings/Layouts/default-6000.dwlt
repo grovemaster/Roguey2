@@ -8,23 +8,98 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 12004, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEditor.dll::UnityEditor.ContainerWindow
+  m_PixelRect:
+    serializedVersion: 2
+    x: 3862
+    y: 287
+    width: 816
+    height: 844
+  m_ShowMode: 0
+  m_Title: Test Runner
+  m_RootView: {fileID: 4}
+  m_MinSize: {x: 50, y: 76}
+  m_MaxSize: {x: 4000, y: 4026}
+  m_Maximized: 0
+--- !u!114 &2
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12004, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: 1921
+    x: 1918
     y: 305
     width: 1858
-    height: 1168
+    height: 1169
   m_ShowMode: 4
-  m_Title: Project
-  m_RootView: {fileID: 2}
+  m_Title: Console
+  m_RootView: {fileID: 5}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
   m_Maximized: 0
---- !u!114 &2
+--- !u!114 &3
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: TestRunnerWindow
+  m_EditorClassIdentifier: UnityEditor.dll::UnityEditor.DockArea
+  m_Children: []
+  m_Position:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 816
+    height: 844
+  m_MinSize: {x: 50, y: 76}
+  m_MaxSize: {x: 4000, y: 4026}
+  m_ActualView: {fileID: 15}
+  m_Panes:
+  - {fileID: 15}
+  m_Selected: 0
+  m_LastSelected: 0
+--- !u!114 &4
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 12010, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEditor.dll::UnityEditor.SplitView
+  m_Children:
+  - {fileID: 3}
+  m_Position:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 816
+    height: 844
+  m_MinSize: {x: 50, y: 76}
+  m_MaxSize: {x: 4000, y: 4026}
+  vertical: 0
+  controlID: 224
+  draggingID: 0
+--- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -37,22 +112,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Children:
-  - {fileID: 3}
-  - {fileID: 5}
-  - {fileID: 4}
+  - {fileID: 6}
+  - {fileID: 8}
+  - {fileID: 7}
   m_Position:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1858
-    height: 1168
+    height: 1169
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
   m_UseTopView: 1
   m_TopViewHeight: 36
   m_UseBottomView: 1
   m_BottomViewHeight: 20
---- !u!114 &3
+--- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -73,8 +148,8 @@ MonoBehaviour:
     height: 36
   m_MinSize: {x: 50, y: 50}
   m_MaxSize: {x: 4000, y: 4000}
-  m_ActualView: {fileID: 12}
---- !u!114 &4
+  m_ActualView: {fileID: 16}
+--- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -90,12 +165,12 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
     x: 0
-    y: 1148
+    y: 1149
     width: 1858
     height: 20
   m_MinSize: {x: 0, y: 0}
   m_MaxSize: {x: 0, y: 0}
---- !u!114 &5
+--- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,20 +183,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Children:
-  - {fileID: 6}
-  - {fileID: 11}
+  - {fileID: 9}
+  - {fileID: 14}
   m_Position:
     serializedVersion: 2
     x: 0
     y: 36
     width: 1858
-    height: 1112
+    height: 1113
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
   controlID: 18
   draggingID: 0
---- !u!114 &6
+--- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,20 +209,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Children:
-  - {fileID: 7}
   - {fileID: 10}
+  - {fileID: 13}
   m_Position:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1426
-    height: 1112
+    height: 1113
   m_MinSize: {x: 200, y: 112}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
   controlID: 19
   draggingID: 0
---- !u!114 &7
+--- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -160,20 +235,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Children:
-  - {fileID: 8}
-  - {fileID: 9}
+  - {fileID: 11}
+  - {fileID: 12}
   m_Position:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1426
-    height: 662
+    height: 663
   m_MinSize: {x: 200, y: 56}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
   controlID: 20
   draggingID: 0
---- !u!114 &8
+--- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -191,15 +266,15 @@ MonoBehaviour:
     x: 0
     y: 0
     width: 345
-    height: 662
+    height: 663
   m_MinSize: {x: 201, y: 226}
   m_MaxSize: {x: 4001, y: 4026}
-  m_ActualView: {fileID: 14}
+  m_ActualView: {fileID: 18}
   m_Panes:
-  - {fileID: 14}
+  - {fileID: 18}
   m_Selected: 0
   m_LastSelected: 0
---- !u!114 &9
+--- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -217,16 +292,16 @@ MonoBehaviour:
     x: 345
     y: 0
     width: 1081
-    height: 662
+    height: 663
   m_MinSize: {x: 202, y: 226}
   m_MaxSize: {x: 4002, y: 4026}
-  m_ActualView: {fileID: 15}
+  m_ActualView: {fileID: 19}
   m_Panes:
-  - {fileID: 15}
-  - {fileID: 13}
+  - {fileID: 19}
+  - {fileID: 17}
   m_Selected: 0
   m_LastSelected: 1
---- !u!114 &10
+--- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -236,24 +311,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ProjectBrowser
+  m_Name: ConsoleWindow
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
     serializedVersion: 2
     x: 0
-    y: 662
+    y: 663
     width: 1426
     height: 450
-  m_MinSize: {x: 231, y: 276}
-  m_MaxSize: {x: 10001, y: 10026}
-  m_ActualView: {fileID: 16}
+  m_MinSize: {x: 101, y: 126}
+  m_MaxSize: {x: 4001, y: 4026}
+  m_ActualView: {fileID: 21}
   m_Panes:
-  - {fileID: 16}
-  - {fileID: 17}
-  m_Selected: 0
-  m_LastSelected: 1
---- !u!114 &11
+  - {fileID: 20}
+  - {fileID: 21}
+  m_Selected: 1
+  m_LastSelected: 0
+--- !u!114 &14
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -271,15 +346,4300 @@ MonoBehaviour:
     x: 1426
     y: 0
     width: 432
-    height: 1112
+    height: 1113
   m_MinSize: {x: 276, y: 76}
   m_MaxSize: {x: 4001, y: 4026}
-  m_ActualView: {fileID: 18}
+  m_ActualView: {fileID: 22}
   m_Panes:
-  - {fileID: 18}
+  - {fileID: 22}
   m_Selected: 0
   m_LastSelected: 0
---- !u!114 &12
+--- !u!114 &15
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 13401, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEditor.TestRunner.dll::UnityEditor.TestTools.TestRunner.TestRunnerWindow
+  m_MinSize: {x: 50, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
+  m_TitleContent:
+    m_Text: Test Runner
+    m_Image: {fileID: 0}
+    m_Tooltip: Test framework for running Edit mode and Play mode tests in Unity.
+      Part of the com.unity.test-framework package.
+    m_TextWithWhitespace: "Test Runner\u200B"
+  m_Pos:
+    serializedVersion: 2
+    x: 0
+    y: 26
+    width: 816
+    height: 818
+  m_SerializedDataModeController:
+    m_DataMode: 0
+    m_PreferredDataMode: 0
+    m_SupportedDataModes: 
+    isAutomatic: 1
+  m_ViewDataDictionary: {fileID: 0}
+  m_OverlayCanvas:
+    m_LastAppliedPresetName: Default
+    m_SaveData: []
+    m_ContainerData: []
+    m_DynamicPanelContainerData: []
+    m_OverlaysVisible: 1
+    m_DynamicPanelBehavior: 0
+  m_Spl:
+    ID: 306
+    splitterInitialOffset: 0
+    currentActiveSplitter: -1
+    realSizes:
+    - 545
+    - 182
+    relativeSizes:
+    - 0.75
+    - 0.25
+    minSizes:
+    - 32
+    - 32
+    maxSizes:
+    - 0
+    - 0
+    lastTotalSize: 727
+    splitSize: 6
+    xOffset: 0
+    m_Version: 1
+    oldRealSizes: 
+    oldMinSizes: 
+    oldMaxSizes: 
+    oldSplitSize: 0
+  m_TestTypeToolbarIndex: 2
+  m_TestListGUIs:
+  - m_Window: {fileID: 15}
+    runProgress:
+      RunGuid: 8e626678-b1b8-483f-b5cc-8e92fcac9a28
+      ExecutionSettings:
+        m_TargetPlatform: 24
+        m_HasTargetPlatform: 1
+        filter:
+          testMode: 0
+          testNames: []
+          groupNames: []
+          categoryNames: []
+          assemblyNames: []
+        filters:
+        - testMode: 2
+          testNames:
+          - JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(2)
+          groupNames: []
+          categoryNames: []
+          assemblyNames: []
+        runSynchronously: 0
+        playerHeartbeatTimeout: 600
+        orderedTestNames: []
+        ignoreTests: []
+        featureFlags:
+          fileCleanUpCheck: 0
+          requiresSplashScreen: 0
+          strictDomainReload: 0
+          disableNestedEnumeratorBugfix: 0
+        randomOrderSeed: 0
+      HasFinished: 1
+      Progress: 0.105
+      CurrentStepName: Unlock Reload Assemblies
+      CurrentStageName: 
+    m_NewResultList:
+    - id: 1000
+      uniqueId: '[Roguey2][suite]'
+      name: Roguey2
+      fullName: Roguey2
+      resultStatus: 0
+      duration: 0
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 
+      parentUniqueId: 
+    m_ResultText: 
+    m_ResultStacktrace: 
+    m_TestListState:
+      scrollPos: {x: 0, y: 0}
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: ff5ca98affffff7f
+      m_RenameOverlay:
+        m_UserAcceptedRename: 0
+        m_Name: 
+        m_OriginalName: 
+        m_EditFieldRect:
+          serializedVersion: 2
+          x: 0
+          y: 0
+          width: 0
+          height: 0
+        m_UserData: 0
+        m_IsWaitingForDelay: 0
+        m_IsRenaming: 0
+        m_OriginalEventType: 11
+        m_IsRenamingFilename: 0
+        m_TrimLeadingAndTrailingWhitespace: 0
+        m_ClientGUIView: {fileID: 0}
+      m_SearchString: 
+    m_TestRunnerUIFilter:
+      PassedHidden: 0
+      FailedHidden: 0
+      NotRunHidden: 0
+      m_SearchString: 
+      selectedCategories: []
+      availableCategories:
+      - Uncategorized
+    m_SelectedOption: 0
+  - m_Window: {fileID: 0}
+    runProgress:
+      RunGuid: 8e626678-b1b8-483f-b5cc-8e92fcac9a28
+      ExecutionSettings:
+        m_TargetPlatform: 24
+        m_HasTargetPlatform: 1
+        filter:
+          testMode: 0
+          testNames: []
+          groupNames: []
+          categoryNames: []
+          assemblyNames: []
+        filters:
+        - testMode: 2
+          testNames:
+          - JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(2)
+          groupNames: []
+          categoryNames: []
+          assemblyNames: []
+        runSynchronously: 0
+        playerHeartbeatTimeout: 600
+        orderedTestNames: []
+        ignoreTests: []
+        featureFlags:
+          fileCleanUpCheck: 0
+          requiresSplashScreen: 0
+          strictDomainReload: 0
+          disableNestedEnumeratorBugfix: 0
+        randomOrderSeed: 0
+      HasFinished: 1
+      Progress: 0.105
+      CurrentStepName: Unlock Reload Assemblies
+      CurrentStageName: 
+    m_NewResultList: []
+    m_ResultText: 
+    m_ResultStacktrace: 
+    m_TestListState:
+      scrollPos: {x: 0, y: 0}
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: 
+      m_RenameOverlay:
+        m_UserAcceptedRename: 0
+        m_Name: 
+        m_OriginalName: 
+        m_EditFieldRect:
+          serializedVersion: 2
+          x: 0
+          y: 0
+          width: 0
+          height: 0
+        m_UserData: 0
+        m_IsWaitingForDelay: 0
+        m_IsRenaming: 0
+        m_OriginalEventType: 11
+        m_IsRenamingFilename: 0
+        m_TrimLeadingAndTrailingWhitespace: 0
+        m_ClientGUIView: {fileID: 0}
+      m_SearchString: 
+    m_TestRunnerUIFilter:
+      PassedHidden: 0
+      FailedHidden: 0
+      NotRunHidden: 0
+      m_SearchString: 
+      selectedCategories: []
+      availableCategories: []
+    m_SelectedOption: 0
+  - m_Window: {fileID: 15}
+    runProgress:
+      RunGuid: 8e626678-b1b8-483f-b5cc-8e92fcac9a28
+      ExecutionSettings:
+        m_TargetPlatform: 24
+        m_HasTargetPlatform: 1
+        filter:
+          testMode: 0
+          testNames: []
+          groupNames: []
+          categoryNames: []
+          assemblyNames: []
+        filters:
+        - testMode: 2
+          testNames:
+          - JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(2)
+          groupNames: []
+          categoryNames: []
+          assemblyNames: []
+        runSynchronously: 0
+        playerHeartbeatTimeout: 600
+        orderedTestNames: []
+        ignoreTests: []
+        featureFlags:
+          fileCleanUpCheck: 0
+          requiresSplashScreen: 0
+          strictDomainReload: 0
+          disableNestedEnumeratorBugfix: 0
+        randomOrderSeed: 0
+      HasFinished: 1
+      Progress: 0.105
+      CurrentStepName: Unlock Reload Assemblies
+      CurrentStageName: 
+    m_NewResultList:
+    - id: 1000
+      uniqueId: '[Roguey2][suite]'
+      name: Roguey2
+      fullName: Roguey2
+      resultStatus: 2
+      duration: 0.4574421
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 
+      parentUniqueId: 
+    - id: 1094
+      uniqueId: '[JRogue.Tests.dll][suite]'
+      name: JRogue.Tests.dll
+      fullName: /home/jonathan/UnityProjects/Roguey2/Library/ScriptAssemblies/JRogue.Tests.dll
+      resultStatus: 2
+      duration: 0.4574421
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1106
+      parentUniqueId: '[Roguey2][suite]'
+    - id: 1095
+      uniqueId: 'JRogue.Tests.dll/[JRogue][suite]'
+      name: JRogue
+      fullName: JRogue
+      resultStatus: 2
+      duration: 0.4574421
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1094
+      parentUniqueId: '[JRogue.Tests.dll][suite]'
+    - id: 1096
+      uniqueId: 'JRogue.Tests.dll/JRogue/[Tests][suite]'
+      name: Tests
+      fullName: JRogue.Tests
+      resultStatus: 2
+      duration: 0.4574421
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1095
+      parentUniqueId: 'JRogue.Tests.dll/[JRogue][suite]'
+    - id: 1097
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/[UnitTests][suite]'
+      name: UnitTests
+      fullName: JRogue.Tests.UnitTests
+      resultStatus: 2
+      duration: 0.4574421
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1096
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/[Tests][suite]'
+    - id: 1101
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/[JRogue.Tests][JRogue.Tests.UnitTests.Input][suite]'
+      name: Input
+      fullName: JRogue.Tests.UnitTests.Input
+      resultStatus: 2
+      duration: 0.2714719
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1097
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/[UnitTests][suite]'
+    - id: 1077
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest][suite]'
+      name: InputHandlerTest
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest
+      resultStatus: 2
+      duration: 0.2714719
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1101
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/[JRogue.Tests][JRogue.Tests.UnitTests.Input][suite]'
+    - id: 1102
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_LeaderStationary_HistoryUnchangedFollowersStillRush]'
+      name: FormationSequence_LeaderStationary_HistoryUnchangedFollowersStillRush
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_LeaderStationary_HistoryUnchangedFollowersStillRush
+      resultStatus: 1
+      duration: 0.0875552
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [RECORD-SKIP]
+        Leader stationary at (0, 0, 0). History preserved.
+
+        [RUSH] Starting
+        Rush. Party: 3, History: 3
+
+        [RUSH-PLAN] InputPartyActor_1 accepted
+        target (0, -1, 0)
+
+        [RUSH-PLAN] InputPartyActor_2 accepted target
+        (0, -2, 0)
+
+        [RUSH-LAND] InputPartyActor_1 moving (0, -2, 0) -> (0,
+        -1, 0)
+
+        InputPartyActor_1 moved from (0, -2, 0) to (0, -1, 0)
+
+        [TurnManager]
+        InputPartyActor_1 has acted. Total acted: 1
+
+        [RUSH-LAND] InputPartyActor_2
+        moving (0, -4, 0) -> (0, -2, 0)
+
+        InputPartyActor_2 moved from (0,
+        -4, 0) to (0, -2, 0)
+
+        [TurnManager] InputPartyActor_2 has acted.
+        Total acted: 2
+
+        [TurnManager] InputPartyActor_0 has acted. Total
+        acted: 3
+
+        --- New Player Turn ---
+
+        [RUSH-COMPLETE] Grid synchronized.
+        Ending player turn.
+
+        --- New Player Turn ---
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1086
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest][suite]'
+    - id: 1092
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush][suite]'
+      name: FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush
+      resultStatus: 2
+      duration: 0.1163406
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1077
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest][suite]'
+    - id: 1096
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(2)]'
+      name: FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(2)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(2)
+      resultStatus: 2
+      duration: 0.0870493
+      messages: "  InputPartyActor_0 should be marked as acted.\n  Expected: False\n 
+        But was:  True\n"
+      output: "\nIgnoreFailingMessages:true\nNullReferenceException: Object reference
+        not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n[PARTY-SNAP]
+        History realigned to current party formation. Count: 2\nInputPartyActor_0
+        moved from (0, 0, 0) to (1, 0, 0)\n[RECORD-START] Leader stepped onto: (1,
+        0, 0). Current History Count: 2\n[RECORD-SHIFT] Index 0 -> 1. Carrying Pos:
+        (0, 0, 0)\n[FINAL SHIFT] [0]:(1, 0, 0) [1]:(0, 0, 0) \n[RUSH] Starting Rush.
+        Party: 2, History: 2\n[RUSH-PLAN] InputPartyActor_1 accepted target (0, 0,
+        0)\n[RUSH-LAND] InputPartyActor_1 moving (0, -1, 0) -> (0, 0, 0)\nInputPartyActor_1
+        moved from (0, -1, 0) to (0, 0, 0)\n[TurnManager] InputPartyActor_1 has acted.
+        Total acted: 1\n[TurnManager] InputPartyActor_0 has acted. Total acted: 2\n---
+        New Player Turn ---\n[RUSH-COMPLETE] Grid synchronized. Ending player turn.\n---
+        New Player Turn ---\n"
+      stacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.AssertAllMembersMarkedActed
+        (System.Collections.Generic.IEnumerable`1[T] members, JRogue.Manager.Turn.TurnManager
+        turnManager) [0x00013] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:369
+
+        at
+        JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush
+        (System.Int32 partySize) [0x00158] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:155
+
+'
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1101
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush][suite]'
+    - id: 1097
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(3)]'
+      name: FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(3)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(3)
+      resultStatus: 2
+      duration: 0.0057775
+      messages: 'System.NullReferenceException : Object reference not set to an instance
+        of an object'
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 3
+
+'
+      stacktrace: "  at JRogue.Actors.BaseActor.TryMove (UnityEngine.Vector3Int direction)
+        [0x0000e] in /home/jonathan/UnityProjects/Roguey2/Assets/Scripts/Controller/BaseActor.cs:88
+        \n  at JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush
+        (System.Int32 partySize) [0x0003e] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:141
+        \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n 
+        at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags
+        invokeAttr, System.Reflection.Binder binder, System.Object[] parameters,
+        System.Globalization.CultureInfo culture) [0x0006a] in <1bdc97936f564eb98deb7626cd2dd805>:0 "
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1101
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush][suite]'
+    - id: 1098
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(4)]'
+      name: FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(4)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(4)
+      resultStatus: 2
+      duration: 0.0054361
+      messages: 'System.NullReferenceException : Object reference not set to an instance
+        of an object'
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 4
+
+'
+      stacktrace: "  at JRogue.Actors.BaseActor.TryMove (UnityEngine.Vector3Int direction)
+        [0x0000e] in /home/jonathan/UnityProjects/Roguey2/Assets/Scripts/Controller/BaseActor.cs:88
+        \n  at JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush
+        (System.Int32 partySize) [0x0003e] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:141
+        \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n 
+        at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags
+        invokeAttr, System.Reflection.Binder binder, System.Object[] parameters,
+        System.Globalization.CultureInfo culture) [0x0006a] in <1bdc97936f564eb98deb7626cd2dd805>:0 "
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1101
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush][suite]'
+    - id: 1099
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(5)]'
+      name: FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(5)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(5)
+      resultStatus: 2
+      duration: 0.0090695
+      messages: 'System.NullReferenceException : Object reference not set to an instance
+        of an object'
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 5
+
+'
+      stacktrace: "  at JRogue.Actors.BaseActor.TryMove (UnityEngine.Vector3Int direction)
+        [0x0000e] in /home/jonathan/UnityProjects/Roguey2/Assets/Scripts/Controller/BaseActor.cs:88
+        \n  at JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush
+        (System.Int32 partySize) [0x0003e] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:141
+        \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n 
+        at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags
+        invokeAttr, System.Reflection.Binder binder, System.Object[] parameters,
+        System.Globalization.CultureInfo culture) [0x0006a] in <1bdc97936f564eb98deb7626cd2dd805>:0 "
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1101
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush][suite]'
+    - id: 1100
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(6)]'
+      name: FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(6)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(6)
+      resultStatus: 2
+      duration: 0.0090082
+      messages: 'System.NullReferenceException : Object reference not set to an instance
+        of an object'
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 6
+
+'
+      stacktrace: "  at JRogue.Actors.BaseActor.TryMove (UnityEngine.Vector3Int direction)
+        [0x0000e] in /home/jonathan/UnityProjects/Roguey2/Assets/Scripts/Controller/BaseActor.cs:88
+        \n  at JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush
+        (System.Int32 partySize) [0x0003e] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:141
+        \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n 
+        at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags
+        invokeAttr, System.Reflection.Binder binder, System.Object[] parameters,
+        System.Globalization.CultureInfo culture) [0x0006a] in <1bdc97936f564eb98deb7626cd2dd805>:0 "
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1101
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush][suite]'
+    - id: 1094
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_HistoryTooShort_MissingSlotsStayInPlace]'
+      name: ProcessFollowerRush_HistoryTooShort_MissingSlotsStayInPlace
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_HistoryTooShort_MissingSlotsStayInPlace
+      resultStatus: 2
+      duration: 0.0088038
+      messages: "  Expected: (0, 0, 0)\n  But was:  (-1, 0, 0)\n"
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [RUSH]
+        Starting Rush. Party: 4, History: 2
+
+        [RUSH-PLAN] InputPartyActor_2
+        accepted target (0, -2, 0)
+
+        [RUSH-PLAN] InputPartyActor_3 accepted
+        target (0, -3, 0)
+
+        [RUSH-LAND] InputPartyActor_1 moving (0, -1, 0)
+        -> (-1, 0, 0)
+
+        InputPartyActor_1 moved from (0, -1, 0) to (-1, 0,
+        0)
+
+        [TurnManager] InputPartyActor_1 has acted. Total acted: 1
+
+        [TurnManager]
+        InputPartyActor_2 has acted. Total acted: 2
+
+        [TurnManager] InputPartyActor_3
+        has acted. Total acted: 3
+
+        [TurnManager] InputPartyActor_0 has acted.
+        Total acted: 4
+
+        --- New Player Turn ---
+
+        [RUSH-COMPLETE]
+        Grid synchronized. Ending player turn.
+
+        --- New Player Turn ---
+
+'
+      stacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_HistoryTooShort_MissingSlotsStayInPlace
+        () [0x000d1] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:96
+
+'
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1086
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest][suite]'
+    - id: 1084
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots][suite]'
+      name: ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots
+      resultStatus: 2
+      duration: 0.0517528
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1077
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest][suite]'
+    - id: 1087
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(1)]'
+      name: ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(1)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(1)
+      resultStatus: 2
+      duration: 0.0070466
+      messages: "  InputPartyActor_0 should be marked as acted.\n  Expected: False\n 
+        But was:  True\n"
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [RUSH]
+        Starting Rush. Party: 1, History: 1
+
+        [TurnManager] InputPartyActor_0
+        has acted. Total acted: 1
+
+        --- New Player Turn ---
+
+        [RUSH-COMPLETE]
+        Grid synchronized. Ending player turn.
+
+        --- New Player Turn ---
+
+'
+      stacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.AssertAllMembersMarkedActed
+        (System.Collections.Generic.IEnumerable`1[T] members, JRogue.Manager.Turn.TurnManager
+        turnManager) [0x00013] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:361
+
+        at
+        JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots
+        (System.Int32 partySize) [0x00104] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:72
+
+'
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1093
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots][suite]'
+    - id: 1088
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(2)]'
+      name: ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(2)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(2)
+      resultStatus: 2
+      duration: 0.0049901
+      messages: "  Expected: (0, 0, 0)\n  But was:  (-1, 0, 0)\n"
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [RUSH]
+        Starting Rush. Party: 2, History: 2
+
+        [RUSH-LAND] InputPartyActor_1
+        moving (0, -1, 0) -> (-1, 0, 0)
+
+        InputPartyActor_1 moved from (0,
+        -1, 0) to (-1, 0, 0)
+
+        [TurnManager] InputPartyActor_1 has acted.
+        Total acted: 1
+
+        [TurnManager] InputPartyActor_0 has acted. Total
+        acted: 2
+
+        --- New Player Turn ---
+
+        [RUSH-COMPLETE] Grid synchronized.
+        Ending player turn.
+
+        --- New Player Turn ---
+
+'
+      stacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots
+        (System.Int32 partySize) [0x00086] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:68
+
+'
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1093
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots][suite]'
+    - id: 1089
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(3)]'
+      name: ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(3)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(3)
+      resultStatus: 2
+      duration: 0.008222
+      messages: "  Expected: (0, 0, 0)\n  But was:  (-1, 0, 0)\n"
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [RUSH]
+        Starting Rush. Party: 3, History: 3
+
+        [RUSH-PLAN] InputPartyActor_2
+        accepted target (0, -1, 0)
+
+        [RUSH-LAND] InputPartyActor_1 moving
+        (0, -1, 0) -> (-1, 0, 0)
+
+        InputPartyActor_1 moved from (0, -1, 0)
+        to (-1, 0, 0)
+
+        [TurnManager] InputPartyActor_1 has acted. Total acted:
+        1
+
+        [RUSH-LAND] InputPartyActor_2 moving (0, -2, 0) -> (0, -1, 0)
+
+        InputPartyActor_2
+        moved from (0, -2, 0) to (0, -1, 0)
+
+        [TurnManager] InputPartyActor_2
+        has acted. Total acted: 2
+
+        [TurnManager] InputPartyActor_0 has acted.
+        Total acted: 3
+
+        --- New Player Turn ---
+
+        [RUSH-COMPLETE]
+        Grid synchronized. Ending player turn.
+
+        --- New Player Turn ---
+
+'
+      stacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots
+        (System.Int32 partySize) [0x00086] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:68
+
+'
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1093
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots][suite]'
+    - id: 1090
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(4)]'
+      name: ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(4)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(4)
+      resultStatus: 2
+      duration: 0.0079052
+      messages: "  Expected: (0, 0, 0)\n  But was:  (-1, 0, 0)\n"
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [RUSH]
+        Starting Rush. Party: 4, History: 4
+
+        [RUSH-PLAN] InputPartyActor_2
+        accepted target (0, -1, 0)
+
+        [RUSH-PLAN] InputPartyActor_3 accepted
+        target (0, -2, 0)
+
+        [RUSH-LAND] InputPartyActor_1 moving (0, -1, 0)
+        -> (-1, 0, 0)
+
+        InputPartyActor_1 moved from (0, -1, 0) to (-1, 0,
+        0)
+
+        [TurnManager] InputPartyActor_1 has acted. Total acted: 1
+
+        [RUSH-LAND]
+        InputPartyActor_2 moving (0, -2, 0) -> (0, -1, 0)
+
+        InputPartyActor_2
+        moved from (0, -2, 0) to (0, -1, 0)
+
+        [TurnManager] InputPartyActor_2
+        has acted. Total acted: 2
+
+        [RUSH-LAND] InputPartyActor_3 moving (0,
+        -3, 0) -> (0, -2, 0)
+
+        InputPartyActor_3 moved from (0, -3, 0) to
+        (0, -2, 0)
+
+        [TurnManager] InputPartyActor_3 has acted. Total acted:
+        3
+
+        [TurnManager] InputPartyActor_0 has acted. Total acted: 4
+
+        ---
+        New Player Turn ---
+
+        [RUSH-COMPLETE] Grid synchronized. Ending player
+        turn.
+
+        --- New Player Turn ---
+
+'
+      stacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots
+        (System.Int32 partySize) [0x00086] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:68
+
+'
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1093
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots][suite]'
+    - id: 1091
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(5)]'
+      name: ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(5)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(5)
+      resultStatus: 2
+      duration: 0.0115219
+      messages: "  Expected: (0, 0, 0)\n  But was:  (-1, 0, 0)\n"
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [RUSH]
+        Starting Rush. Party: 5, History: 5
+
+        [RUSH-PLAN] InputPartyActor_2
+        accepted target (0, -1, 0)
+
+        [RUSH-PLAN] InputPartyActor_3 accepted
+        target (0, -2, 0)
+
+        [RUSH-PLAN] InputPartyActor_4 accepted target
+        (0, -3, 0)
+
+        [RUSH-LAND] InputPartyActor_1 moving (0, -1, 0) -> (-1,
+        0, 0)
+
+        InputPartyActor_1 moved from (0, -1, 0) to (-1, 0, 0)
+
+        [TurnManager]
+        InputPartyActor_1 has acted. Total acted: 1
+
+        [RUSH-LAND] InputPartyActor_2
+        moving (0, -2, 0) -> (0, -1, 0)
+
+        InputPartyActor_2 moved from (0,
+        -2, 0) to (0, -1, 0)
+
+        [TurnManager] InputPartyActor_2 has acted.
+        Total acted: 2
+
+        [RUSH-LAND] InputPartyActor_3 moving (0, -3, 0) ->
+        (0, -2, 0)
+
+        InputPartyActor_3 moved from (0, -3, 0) to (0, -2, 0)
+
+        [TurnManager]
+        InputPartyActor_3 has acted. Total acted: 3
+
+        [RUSH-LAND] InputPartyActor_4
+        moving (0, -4, 0) -> (0, -3, 0)
+
+        InputPartyActor_4 moved from (0,
+        -4, 0) to (0, -3, 0)
+
+        [TurnManager] InputPartyActor_4 has acted.
+        Total acted: 4
+
+        [TurnManager] InputPartyActor_0 has acted. Total
+        acted: 5
+
+        --- New Player Turn ---
+
+        [RUSH-COMPLETE] Grid synchronized.
+        Ending player turn.
+
+        --- New Player Turn ---
+
+'
+      stacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots
+        (System.Int32 partySize) [0x00086] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:68
+
+'
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1093
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots][suite]'
+    - id: 1092
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(6)]'
+      name: ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(6)
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots(6)
+      resultStatus: 2
+      duration: 0.012067
+      messages: "  Expected: (0, 0, 0)\n  But was:  (-1, 0, 0)\n"
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [RUSH]
+        Starting Rush. Party: 6, History: 6
+
+        [RUSH-PLAN] InputPartyActor_2
+        accepted target (0, -1, 0)
+
+        [RUSH-PLAN] InputPartyActor_3 accepted
+        target (0, -2, 0)
+
+        [RUSH-PLAN] InputPartyActor_4 accepted target
+        (0, -3, 0)
+
+        [RUSH-PLAN] InputPartyActor_5 accepted target (0, -4,
+        0)
+
+        [RUSH-LAND] InputPartyActor_1 moving (0, -1, 0) -> (-1, 0, 0)
+
+        InputPartyActor_1
+        moved from (0, -1, 0) to (-1, 0, 0)
+
+        [TurnManager] InputPartyActor_1
+        has acted. Total acted: 1
+
+        [RUSH-LAND] InputPartyActor_2 moving (0,
+        -2, 0) -> (0, -1, 0)
+
+        InputPartyActor_2 moved from (0, -2, 0) to
+        (0, -1, 0)
+
+        [TurnManager] InputPartyActor_2 has acted. Total acted:
+        2
+
+        [RUSH-LAND] InputPartyActor_3 moving (0, -3, 0) -> (0, -2, 0)
+
+        InputPartyActor_3
+        moved from (0, -3, 0) to (0, -2, 0)
+
+        [TurnManager] InputPartyActor_3
+        has acted. Total acted: 3
+
+        [RUSH-LAND] InputPartyActor_4 moving (0,
+        -4, 0) -> (0, -3, 0)
+
+        InputPartyActor_4 moved from (0, -4, 0) to
+        (0, -3, 0)
+
+        [TurnManager] InputPartyActor_4 has acted. Total acted:
+        4
+
+        [RUSH-LAND] InputPartyActor_5 moving (0, -5, 0) -> (0, -4, 0)
+
+        InputPartyActor_5
+        moved from (0, -5, 0) to (0, -4, 0)
+
+        [TurnManager] InputPartyActor_5
+        has acted. Total acted: 5
+
+        [TurnManager] InputPartyActor_0 has acted.
+        Total acted: 6
+
+        --- New Player Turn ---
+
+        [RUSH-COMPLETE]
+        Grid synchronized. Ending player turn.
+
+        --- New Player Turn ---
+
+'
+      stacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots
+        (System.Int32 partySize) [0x00086] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:68
+
+'
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1093
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_PartySizesOneToSix_FollowersMoveToHistorySlots][suite]'
+    - id: 1095
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/InputHandlerTest/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_TargetFarAway_FollowerMovesMaxTwoTilesTowardTarget]'
+      name: ProcessFollowerRush_TargetFarAway_FollowerMovesMaxTwoTilesTowardTarget
+      fullName: JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_TargetFarAway_FollowerMovesMaxTwoTilesTowardTarget
+      resultStatus: 2
+      duration: 0.0070195
+      messages: "  InputPartyActor_0 should be marked as acted.\n  Expected: False\n 
+        But was:  True\n"
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [RUSH]
+        Starting Rush. Party: 2, History: 2
+
+        [RUSH-PLAN] InputPartyActor_1
+        accepted target (0, -3, 0)
+
+        [RUSH-LAND] InputPartyActor_1 moving
+        (0, -5, 0) -> (0, -3, 0)
+
+        InputPartyActor_1 moved from (0, -5, 0)
+        to (0, -3, 0)
+
+        [TurnManager] InputPartyActor_1 has acted. Total acted:
+        1
+
+        [TurnManager] InputPartyActor_0 has acted. Total acted: 2
+
+        ---
+        New Player Turn ---
+
+        [RUSH-COMPLETE] Grid synchronized. Ending player
+        turn.
+
+        --- New Player Turn ---
+
+'
+      stacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.AssertAllMembersMarkedActed
+        (System.Collections.Generic.IEnumerable`1[T] members, JRogue.Manager.Turn.TurnManager
+        turnManager) [0x00013] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:361
+
+        at
+        JRogue.Tests.UnitTests.Input.InputHandlerTest.ProcessFollowerRush_TargetFarAway_FollowerMovesMaxTwoTilesTowardTarget
+        () [0x000b7] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:121
+
+'
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1086
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Input/[JRogue.Tests][JRogue.Tests.UnitTests.Input.InputHandlerTest][suite]'
+    - id: 1098
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/[Manager][suite]'
+      name: Manager
+      fullName: JRogue.Tests.UnitTests.Manager
+      resultStatus: 1
+      duration: 0.1859702
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1097
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/[UnitTests][suite]'
+    - id: 1100
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid][suite]'
+      name: Grid
+      fullName: JRogue.Tests.UnitTests.Manager.Grid
+      resultStatus: 1
+      duration: 0.0062235002
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1098
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/[Manager][suite]'
+    - id: 1054
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+      name: GridManagerTests
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests
+      resultStatus: 1
+      duration: 0.0062235002
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1100
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid][suite]'
+    - id: 1076
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetActorAt_MultipleActors_ReturnCorrectActor]'
+      name: GetActorAt_MultipleActors_ReturnCorrectActor
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetActorAt_MultipleActors_ReturnCorrectActor
+      resultStatus: 1
+      duration: 0.0016874
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1074
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetActorAt_RegisteredPosition_ReturnsCorrectActor]'
+      name: GetActorAt_RegisteredPosition_ReturnsCorrectActor
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetActorAt_RegisteredPosition_ReturnsCorrectActor
+      resultStatus: 1
+      duration: 0.0001991
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1075
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetActorAt_UnregisteredPosition_ReturnsNull]'
+      name: GetActorAt_UnregisteredPosition_ReturnsNull
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetActorAt_UnregisteredPosition_ReturnsNull
+      resultStatus: 1
+      duration: 0.0001377
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1084
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetAllActors_AfterUnregistration_ExcludesRemovedActor]'
+      name: GetAllActors_AfterUnregistration_ExcludesRemovedActor
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetAllActors_AfterUnregistration_ExcludesRemovedActor
+      resultStatus: 1
+      duration: 0.0008424
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1083
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetAllActors_MultipleActors_ReturnsAll]'
+      name: GetAllActors_MultipleActors_ReturnsAll
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetAllActors_MultipleActors_ReturnsAll
+      resultStatus: 1
+      duration: 0.0002053
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1081
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetAllActors_NoActors_ReturnsEmpty]'
+      name: GetAllActors_NoActors_ReturnsEmpty
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetAllActors_NoActors_ReturnsEmpty
+      resultStatus: 1
+      duration: 0.0001061
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1082
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetAllActors_SingleActor_ReturnsThatActor]'
+      name: GetAllActors_SingleActor_ReturnsThatActor
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.GetAllActors_SingleActor_ReturnsThatActor
+      resultStatus: 1
+      duration: 0.0001297
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1073
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.IsOccupied_AfterUnregistration_ReturnsFalse]'
+      name: IsOccupied_AfterUnregistration_ReturnsFalse
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.IsOccupied_AfterUnregistration_ReturnsFalse
+      resultStatus: 1
+      duration: 0.0001366
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1072
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.IsOccupied_EmptyPosition_ReturnsFalse]'
+      name: IsOccupied_EmptyPosition_ReturnsFalse
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.IsOccupied_EmptyPosition_ReturnsFalse
+      resultStatus: 1
+      duration: 0.0000895
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1071
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.IsOccupied_OccupiedPosition_ReturnsTrue]'
+      name: IsOccupied_OccupiedPosition_ReturnsTrue
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.IsOccupied_OccupiedPosition_ReturnsTrue
+      resultStatus: 1
+      duration: 0.0001677
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1065
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.RegisterActor_MultipleActorsAtDifferentPositions_AllRegistered]'
+      name: RegisterActor_MultipleActorsAtDifferentPositions_AllRegistered
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.RegisterActor_MultipleActorsAtDifferentPositions_AllRegistered
+      resultStatus: 1
+      duration: 0.0001297
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1066
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.RegisterActor_RegistrationConflict_FailsToRegister]'
+      name: RegisterActor_RegistrationConflict_FailsToRegister
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.RegisterActor_RegistrationConflict_FailsToRegister
+      resultStatus: 1
+      duration: 0.0011011
+      messages: 
+      output: '[GRID-CONFLICT] Actor2_869424098 failed to register at (1, 1, 0).
+        Occupied by Actor1_1643977932.
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1067
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.RegisterActor_SameActorReRegister_Allowed]'
+      name: RegisterActor_SameActorReRegister_Allowed
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.RegisterActor_SameActorReRegister_Allowed
+      resultStatus: 1
+      duration: 0.0001275
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1064
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.RegisterActor_SingleActor_SuccessfullyRegisters]'
+      name: RegisterActor_SingleActor_SuccessfullyRegisters
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.RegisterActor_SingleActor_SuccessfullyRegisters
+      resultStatus: 1
+      duration: 0.0000958
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1085
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.ScenarioComplexGridManagement_RegisterMoveUnregister]'
+      name: ScenarioComplexGridManagement_RegisterMoveUnregister
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.ScenarioComplexGridManagement_RegisterMoveUnregister
+      resultStatus: 1
+      duration: 0.0002676
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1070
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UnregisterActor_MultipleUnregistrations_AllClearedCorrectly]'
+      name: UnregisterActor_MultipleUnregistrations_AllClearedCorrectly
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UnregisterActor_MultipleUnregistrations_AllClearedCorrectly
+      resultStatus: 1
+      duration: 0.0001606
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1068
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UnregisterActor_RegisteredActor_SuccessfullyUnregisters]'
+      name: UnregisterActor_RegisteredActor_SuccessfullyUnregisters
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UnregisterActor_RegisteredActor_SuccessfullyUnregisters
+      resultStatus: 1
+      duration: 0.0001024
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1069
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UnregisterActor_UnregisteredPosition_NothingHappens]'
+      name: UnregisterActor_UnregisteredPosition_NothingHappens
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UnregisterActor_UnregisteredPosition_NothingHappens
+      resultStatus: 1
+      duration: 0.0000831
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1079
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UpdateActorPosition_DifferentActorAtOldPosition_OnlyCorrectActorRemoved]'
+      name: UpdateActorPosition_DifferentActorAtOldPosition_OnlyCorrectActorRemoved
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UpdateActorPosition_DifferentActorAtOldPosition_OnlyCorrectActorRemoved
+      resultStatus: 1
+      duration: 0.0001089
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1080
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UpdateActorPosition_MultipleSequentialMoves_AllMovesTracked]'
+      name: UpdateActorPosition_MultipleSequentialMoves_AllMovesTracked
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UpdateActorPosition_MultipleSequentialMoves_AllMovesTracked
+      resultStatus: 1
+      duration: 0.0001243
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1077
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UpdateActorPosition_ValidMove_ActorMovedToNewPosition]'
+      name: UpdateActorPosition_ValidMove_ActorMovedToNewPosition
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UpdateActorPosition_ValidMove_ActorMovedToNewPosition
+      resultStatus: 1
+      duration: 0.0001063
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1078
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/GridManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UpdateActorPosition_WrongOldPosition_ActorAlsoRegisteredAtNewPosition]'
+      name: UpdateActorPosition_WrongOldPosition_ActorAlsoRegisteredAtNewPosition
+      fullName: JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests.UpdateActorPosition_WrongOldPosition_ActorAlsoRegisteredAtNewPosition
+      resultStatus: 1
+      duration: 0.0001147
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1063
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Grid/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Grid.GridManagerTests][suite]'
+    - id: 1099
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party][suite]'
+      name: Party
+      fullName: JRogue.Tests.UnitTests.Manager.Party
+      resultStatus: 1
+      duration: 0.1797467
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1098
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/[Manager][suite]'
+    - id: 1001
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+      name: PartyManagerTests
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests
+      resultStatus: 1
+      duration: 0.1797467
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1099
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party][suite]'
+    - id: 1038
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember][suite]'
+      name: CycleActiveMember_OneToSixMembers_CyclesToExpectedMember
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember
+      resultStatus: 1
+      duration: 0.0245663
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1001
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1041
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/CycleActiveMember_OneToSixMembers_CyclesToExpectedMember/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(1)]'
+      name: CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(1)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(1)
+      resultStatus: 1
+      duration: 0.0032996
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_0
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1047
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember][suite]'
+    - id: 1042
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/CycleActiveMember_OneToSixMembers_CyclesToExpectedMember/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(2)]'
+      name: CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(2)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(2)
+      resultStatus: 1
+      duration: 0.0020666
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_1
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1047
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember][suite]'
+    - id: 1043
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/CycleActiveMember_OneToSixMembers_CyclesToExpectedMember/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(3)]'
+      name: CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(3)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(3)
+      resultStatus: 1
+      duration: 0.0028139
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_1
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1047
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember][suite]'
+    - id: 1044
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/CycleActiveMember_OneToSixMembers_CyclesToExpectedMember/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(4)]'
+      name: CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(4)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(4)
+      resultStatus: 1
+      duration: 0.0053748
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_1
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1047
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember][suite]'
+    - id: 1045
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/CycleActiveMember_OneToSixMembers_CyclesToExpectedMember/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(5)]'
+      name: CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(5)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(5)
+      resultStatus: 1
+      duration: 0.0045088
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_1
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1047
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember][suite]'
+    - id: 1046
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/CycleActiveMember_OneToSixMembers_CyclesToExpectedMember/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(6)]'
+      name: CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(6)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember(6)
+      resultStatus: 1
+      duration: 0.0065026
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_1
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1047
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.CycleActiveMember_OneToSixMembers_CyclesToExpectedMember][suite]'
+    - id: 1031
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates][suite]'
+      name: GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates
+      resultStatus: 1
+      duration: 0.0228019
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1001
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1034
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(1)]'
+      name: GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(1)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(1)
+      resultStatus: 1
+      duration: 0.0013175
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_0
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1040
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates][suite]'
+    - id: 1035
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(2)]'
+      name: GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(2)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(2)
+      resultStatus: 1
+      duration: 0.0020083
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_1
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1040
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates][suite]'
+    - id: 1036
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(3)]'
+      name: GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(3)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(3)
+      resultStatus: 1
+      duration: 0.0041165
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_2
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1040
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates][suite]'
+    - id: 1037
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(4)]'
+      name: GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(4)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(4)
+      resultStatus: 1
+      duration: 0.0042223
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_3
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1040
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates][suite]'
+    - id: 1038
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(5)]'
+      name: GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(5)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(5)
+      resultStatus: 1
+      duration: 0.0058488
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_4
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1040
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates][suite]'
+    - id: 1039
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(6)]'
+      name: GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(6)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates(6)
+      resultStatus: 1
+      duration: 0.0052885
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_5
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1040
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.GetActiveMember_OneToSixMembers_ReturnsLeaderAndSwapUpdates][suite]'
+    - id: 1062
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.PublicMethods_EmptyParty_SafeBehavior]'
+      name: PublicMethods_EmptyParty_SafeBehavior
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.PublicMethods_EmptyParty_SafeBehavior
+      resultStatus: 1
+      duration: 0.0013193
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1010
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1033
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_LargeGap_LogsSanityFail]'
+      name: RecordNewLeaderPosition_LargeGap_LogsSanityFail
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_LargeGap_LogsSanityFail
+      resultStatus: 1
+      duration: 0.0069271
+      messages: 
+      output: "\nIgnoreFailingMessages:true\nNullReferenceException: Object reference
+        not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n[RECORD-START]
+        Leader stepped onto: (1, 0, 0). Current History Count: 4\n[RECORD-SHIFT]
+        Index 0 -> 1. Carrying Pos: (0, 0, 0)\n[SANITY-FAIL] Index 2 is receiving
+        (100, 100, 0), which is too far from (0, 0, 0)!\n[RECORD-SHIFT] Index 1 ->
+        2. Carrying Pos: (100, 100, 0)\n[SANITY-FAIL] Index 3 is receiving (200,
+        200, 0), which is too far from (100, 100, 0)!\n[RECORD-SHIFT] Index 2 ->
+        3. Carrying Pos: (200, 200, 0)\n[FINAL SHIFT] [0]:(1, 0, 0) [1]:(0, 0, 0)
+        [2]:(100, 100, 0) [3]:(200, 200, 0) \n"
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1010
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1022
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory][suite]'
+      name: RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory
+      resultStatus: 1
+      duration: 0.0232378
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1001
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1025
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(1)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(1)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(1)
+      resultStatus: 1
+      duration: 0.0014799
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 1
+
+        [RECORD-SKIP]
+        Leader stationary at (0, 0, 0). History preserved.
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1031
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory][suite]'
+    - id: 1026
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(2)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(2)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(2)
+      resultStatus: 1
+      duration: 0.0021895
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 2
+
+        [RECORD-SKIP]
+        Leader stationary at (0, 0, 0). History preserved.
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1031
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory][suite]'
+    - id: 1027
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(3)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(3)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(3)
+      resultStatus: 1
+      duration: 0.0042973
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 3
+
+        [RECORD-SKIP]
+        Leader stationary at (0, 0, 0). History preserved.
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1031
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory][suite]'
+    - id: 1028
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(4)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(4)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(4)
+      resultStatus: 1
+      duration: 0.003804
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 4
+
+        [RECORD-SKIP]
+        Leader stationary at (0, 0, 0). History preserved.
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1031
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory][suite]'
+    - id: 1029
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(5)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(5)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(5)
+      resultStatus: 1
+      duration: 0.0047113
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 5
+
+        [RECORD-SKIP]
+        Leader stationary at (0, 0, 0). History preserved.
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1031
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory][suite]'
+    - id: 1030
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(6)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(6)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory(6)
+      resultStatus: 1
+      duration: 0.0067558
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 6
+
+        [RECORD-SKIP]
+        Leader stationary at (0, 0, 0). History preserved.
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1031
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_SameLeaderPosition_DoesNotMutateHistory][suite]'
+    - id: 1015
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward][suite]'
+      name: RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward
+      resultStatus: 1
+      duration: 0.0279387
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1001
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1018
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(1)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(1)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(1)
+      resultStatus: 1
+      duration: 0.00178
+      messages: 
+      output: "\nIgnoreFailingMessages:true\nNullReferenceException: Object reference
+        not set to an instance of an object\n\nIgnoreFailingMessages:false\n[PARTY-SNAP]
+        History realigned to current party formation. Count: 1\n[RECORD-START] Leader
+        stepped onto: (-100, 1, 0). Current History Count: 1\n[FINAL SHIFT] [0]:(-100,
+        1, 0) \n"
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1024
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward][suite]'
+    - id: 1019
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(2)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(2)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(2)
+      resultStatus: 1
+      duration: 0.0036988
+      messages: 
+      output: "\nIgnoreFailingMessages:true\nNullReferenceException: Object reference
+        not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n[PARTY-SNAP]
+        History realigned to current party formation. Count: 2\n[RECORD-START] Leader
+        stepped onto: (-100, 2, 0). Current History Count: 2\n[RECORD-SHIFT] Index
+        0 -> 1. Carrying Pos: (0, 0, 0)\n[FINAL SHIFT] [0]:(-100, 2, 0) [1]:(0, 0,
+        0) \n"
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1024
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward][suite]'
+    - id: 1020
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(3)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(3)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(3)
+      resultStatus: 1
+      duration: 0.0035141
+      messages: 
+      output: "\nIgnoreFailingMessages:true\nNullReferenceException: Object reference
+        not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n[PARTY-SNAP]
+        History realigned to current party formation. Count: 3\n[RECORD-START] Leader
+        stepped onto: (-100, 3, 0). Current History Count: 3\n[RECORD-SHIFT] Index
+        0 -> 1. Carrying Pos: (0, 0, 0)\n[RECORD-SHIFT] Index 1 -> 2. Carrying Pos:
+        (1, 0, 0)\n[FINAL SHIFT] [0]:(-100, 3, 0) [1]:(0, 0, 0) [2]:(1, 0, 0) \n"
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1024
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward][suite]'
+    - id: 1021
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(4)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(4)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(4)
+      resultStatus: 1
+      duration: 0.0045
+      messages: 
+      output: "\nIgnoreFailingMessages:true\nNullReferenceException: Object reference
+        not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n[PARTY-SNAP]
+        History realigned to current party formation. Count: 4\n[RECORD-START] Leader
+        stepped onto: (-100, 4, 0). Current History Count: 4\n[RECORD-SHIFT] Index
+        0 -> 1. Carrying Pos: (0, 0, 0)\n[RECORD-SHIFT] Index 1 -> 2. Carrying Pos:
+        (1, 0, 0)\n[RECORD-SHIFT] Index 2 -> 3. Carrying Pos: (2, 0, 0)\n[FINAL SHIFT]
+        [0]:(-100, 4, 0) [1]:(0, 0, 0) [2]:(1, 0, 0) [3]:(2, 0, 0) \n"
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1024
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward][suite]'
+    - id: 1022
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(5)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(5)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(5)
+      resultStatus: 1
+      duration: 0.0067902
+      messages: 
+      output: "\nIgnoreFailingMessages:true\nNullReferenceException: Object reference
+        not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n[PARTY-SNAP]
+        History realigned to current party formation. Count: 5\n[RECORD-START] Leader
+        stepped onto: (-100, 5, 0). Current History Count: 5\n[RECORD-SHIFT] Index
+        0 -> 1. Carrying Pos: (0, 0, 0)\n[RECORD-SHIFT] Index 1 -> 2. Carrying Pos:
+        (1, 0, 0)\n[RECORD-SHIFT] Index 2 -> 3. Carrying Pos: (2, 0, 0)\n[RECORD-SHIFT]
+        Index 3 -> 4. Carrying Pos: (3, 0, 0)\n[FINAL SHIFT] [0]:(-100, 5, 0) [1]:(0,
+        0, 0) [2]:(1, 0, 0) [3]:(2, 0, 0) [4]:(3, 0, 0) \n"
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1024
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward][suite]'
+    - id: 1023
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(6)]'
+      name: RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(6)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward(6)
+      resultStatus: 1
+      duration: 0.0076556
+      messages: 
+      output: "\nIgnoreFailingMessages:true\nNullReferenceException: Object reference
+        not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n[PARTY-SNAP]
+        History realigned to current party formation. Count: 6\n[RECORD-START] Leader
+        stepped onto: (-100, 6, 0). Current History Count: 6\n[RECORD-SHIFT] Index
+        0 -> 1. Carrying Pos: (0, 0, 0)\n[RECORD-SHIFT] Index 1 -> 2. Carrying Pos:
+        (1, 0, 0)\n[RECORD-SHIFT] Index 2 -> 3. Carrying Pos: (2, 0, 0)\n[RECORD-SHIFT]
+        Index 3 -> 4. Carrying Pos: (3, 0, 0)\n[RECORD-SHIFT] Index 4 -> 5. Carrying
+        Pos: (4, 0, 0)\n[FINAL SHIFT] [0]:(-100, 6, 0) [1]:(0, 0, 0) [2]:(1, 0, 0)
+        [3]:(2, 0, 0) [4]:(3, 0, 0) [5]:(4, 0, 0) \n"
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1024
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_OneToSixMembers_ShiftsHistoryForward][suite]'
+    - id: 1032
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_ShortHistory_UsesFallbackAndKeepsCount]'
+      name: RecordNewLeaderPosition_ShortHistory_UsesFallbackAndKeepsCount
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.RecordNewLeaderPosition_ShortHistory_UsesFallbackAndKeepsCount
+      resultStatus: 1
+      duration: 0.00448
+      messages: 
+      output: "\nIgnoreFailingMessages:true\nNullReferenceException: Object reference
+        not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+        Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n[RECORD-START]
+        Leader stepped onto: (50, 50, 0). Current History Count: 1\n[RECORD-SHIFT]
+        Index 0 -> 1. Carrying Pos: (0, 0, 0)\n[RECORD-OOB] Index 1 missing history.
+        Fallback to Member Pos: (1, 0, 0)\n[RECORD-OOB] Index 2 missing history.
+        Fallback to Member Pos: (2, 0, 0)\n[FINAL SHIFT] [0]:(50, 50, 0) [1]:(0,
+        0, 0) [2]:(1, 0, 0) [3]:(2, 0, 0) \n"
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1010
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1008
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers][suite]'
+      name: SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers
+      resultStatus: 1
+      duration: 0.0240615
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1001
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1011
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(1)]'
+      name: SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(1)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(1)
+      resultStatus: 1
+      duration: 0.0013831
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 1
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1017
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers][suite]'
+    - id: 1012
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(2)]'
+      name: SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(2)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(2)
+      resultStatus: 1
+      duration: 0.0020497
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 2
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1017
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers][suite]'
+    - id: 1013
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(3)]'
+      name: SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(3)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(3)
+      resultStatus: 1
+      duration: 0.004078
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 3
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1017
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers][suite]'
+    - id: 1014
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(4)]'
+      name: SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(4)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(4)
+      resultStatus: 1
+      duration: 0.0036719
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 4
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1017
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers][suite]'
+    - id: 1015
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(5)]'
+      name: SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(5)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(5)
+      resultStatus: 1
+      duration: 0.0075343
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 5
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1017
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers][suite]'
+    - id: 1016
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(6)]'
+      name: SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(6)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers(6)
+      resultStatus: 1
+      duration: 0.0053445
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 6
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1017
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SnapHistoryToCurrentPositions_OneToSixMembers_HistoryMatchesMembers][suite]'
+    - id: 1045
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices][suite]'
+      name: SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices
+      resultStatus: 1
+      duration: 0.022011999
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1001
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1048
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(1)]'
+      name: SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(1)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(1)
+      resultStatus: 1
+      duration: 0.0014725
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_0
+
+        Active Party Member: PartyActor_0
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1054
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices][suite]'
+    - id: 1049
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(2)]'
+      name: SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(2)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(2)
+      resultStatus: 1
+      duration: 0.0022244
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_0
+
+        Active Party Member: PartyActor_1
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1054
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices][suite]'
+    - id: 1050
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(3)]'
+      name: SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(3)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(3)
+      resultStatus: 1
+      duration: 0.0030031
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_0
+
+        Active Party Member: PartyActor_2
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1054
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices][suite]'
+    - id: 1051
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(4)]'
+      name: SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(4)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(4)
+      resultStatus: 1
+      duration: 0.0038291
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_0
+
+        Active Party Member: PartyActor_3
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1054
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices][suite]'
+    - id: 1052
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(5)]'
+      name: SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(5)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(5)
+      resultStatus: 1
+      duration: 0.0047493
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_0
+
+        Active Party Member: PartyActor_4
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1054
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices][suite]'
+    - id: 1053
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(6)]'
+      name: SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(6)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices(6)
+      resultStatus: 1
+      duration: 0.0067336
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        Active
+        Party Member: PartyActor_0
+
+        Active Party Member: PartyActor_5
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1054
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.SwapActiveMember_OneToSixMembers_ClampsOutOfRangeIndices][suite]'
+    - id: 1052
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior][suite]'
+      name: UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior
+      resultStatus: 1
+      duration: 0.0224021
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1001
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests][suite]'
+    - id: 1055
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(1)]'
+      name: UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(1)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(1)
+      resultStatus: 1
+      duration: 0.0014775
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 1
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1061
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior][suite]'
+    - id: 1056
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(2)]'
+      name: UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(2)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(2)
+      resultStatus: 1
+      duration: 0.0020165
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 2
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1061
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior][suite]'
+    - id: 1057
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(3)]'
+      name: UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(3)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(3)
+      resultStatus: 1
+      duration: 0.0028327
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 3
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1061
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior][suite]'
+    - id: 1058
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(4)]'
+      name: UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(4)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(4)
+      resultStatus: 1
+      duration: 0.0051113
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 4
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1061
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior][suite]'
+    - id: 1059
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(5)]'
+      name: UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(5)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(5)
+      resultStatus: 1
+      duration: 0.0044596
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 5
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1061
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior][suite]'
+    - id: 1060
+      uniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(6)]'
+      name: UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(6)
+      fullName: JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior(6)
+      resultStatus: 1
+      duration: 0.0065045
+      messages: 
+      output: '
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+
+        IgnoreFailingMessages:true
+
+        NullReferenceException:
+        Object reference not set to an instance of an object
+
+
+        IgnoreFailingMessages:false
+
+        [PARTY-SNAP]
+        History realigned to current party formation. Count: 6
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1061
+      parentUniqueId: 'JRogue.Tests.dll/JRogue/Tests/UnitTests/Manager/Party/PartyManagerTests/[JRogue.Tests][JRogue.Tests.UnitTests.Manager.Party.PartyManagerTests.UpdatePositionHistory_OneToSixMembers_InsertAndTrimBehavior][suite]'
+    m_ResultText: "FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush(2)
+      (0.087s)\n---\n  InputPartyActor_0 should be marked as acted.\n  Expected:
+      False\n  But was:  True\n\n---\nat JRogue.Tests.UnitTests.Input.InputHandlerTest.AssertAllMembersMarkedActed
+      (System.Collections.Generic.IEnumerable`1[T] members, JRogue.Manager.Turn.TurnManager
+      turnManager) [0x00013] in <color=#40a0ff><a href=\"/home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs\"
+      line=\"369\">Assets/Tests/UnitTests/Input/InputHandlerTest.cs:369</a></color>\nat
+      JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush
+      (System.Int32 partySize) [0x00158] in <color=#40a0ff><a href=\"/home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs\"
+      line=\"155\">Assets/Tests/UnitTests/Input/InputHandlerTest.cs:155</a></color>\n\n---\n\nIgnoreFailingMessages:true\nNullReferenceException:
+      Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n\nIgnoreFailingMessages:true\nNullReferenceException:
+      Object reference not set to an instance of an object\n\nIgnoreFailingMessages:false\n[PARTY-SNAP]
+      History realigned to current party formation. Count: 2\nInputPartyActor_0 moved
+      from (0, 0, 0) to (1, 0, 0)\n[RECORD-START] Leader stepped onto: (1, 0, 0).
+      Current History Count: 2\n[RECORD-SHIFT] Index 0 -> 1. Carrying Pos: (0, 0,
+      0)\n[FINAL SHIFT] [0]:(1, 0, 0) [1]:(0, 0, 0) \n[RUSH] Starting Rush. Party:
+      2, History: 2\n[RUSH-PLAN] InputPartyActor_1 accepted target (0, 0, 0)\n[RUSH-LAND]
+      InputPartyActor_1 moving (0, -1, 0) -> (0, 0, 0)\nInputPartyActor_1 moved from
+      (0, -1, 0) to (0, 0, 0)\n[TurnManager] InputPartyActor_1 has acted. Total acted:
+      1\n[TurnManager] InputPartyActor_0 has acted. Total acted: 2\n--- New Player
+      Turn ---\n[RUSH-COMPLETE] Grid synchronized. Ending player turn.\n--- New Player
+      Turn ---"
+    m_ResultStacktrace: 'at JRogue.Tests.UnitTests.Input.InputHandlerTest.AssertAllMembersMarkedActed
+      (System.Collections.Generic.IEnumerable`1[T] members, JRogue.Manager.Turn.TurnManager
+      turnManager) [0x00013] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:369
+
+      at
+      JRogue.Tests.UnitTests.Input.InputHandlerTest.FormationSequence_OneLeaderStep_HistoryShiftsAndFollowersRush
+      (System.Int32 partySize) [0x00158] in /home/jonathan/UnityProjects/Roguey2/Assets/Tests/UnitTests/Input/InputHandlerTest.cs:155
+
+'
+    m_TestListState:
+      scrollPos: {x: 0, y: 0}
+      m_SelectedIDs: 78e3f34e
+      m_LastClickedID: 1324606328
+      m_ExpandedIDs: ff5ca98ab8c090f634fb3df79897cd4eceefeb55873a805f94e80069f1ac5b6affffff7f
+      m_RenameOverlay:
+        m_UserAcceptedRename: 0
+        m_Name: 
+        m_OriginalName: 
+        m_EditFieldRect:
+          serializedVersion: 2
+          x: 0
+          y: 0
+          width: 0
+          height: 0
+        m_UserData: 0
+        m_IsWaitingForDelay: 0
+        m_IsRenaming: 0
+        m_OriginalEventType: 11
+        m_IsRenamingFilename: 0
+        m_TrimLeadingAndTrailingWhitespace: 0
+        m_ClientGUIView: {fileID: 0}
+      m_SearchString: 
+    m_TestRunnerUIFilter:
+      PassedHidden: 0
+      FailedHidden: 0
+      NotRunHidden: 0
+      m_SearchString: 
+      selectedCategories: []
+      availableCategories:
+      - Uncategorized
+    m_SelectedOption: 0
+--- !u!114 &16
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -545,7 +4905,7 @@ MonoBehaviour:
     m_DynamicPanelContainerData: []
     m_OverlaysVisible: 1
     m_DynamicPanelBehavior: 0
---- !u!114 &13
+--- !u!114 &17
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -566,10 +4926,10 @@ MonoBehaviour:
     m_TextWithWhitespace: "Game\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 2266
-    y: 368
+    x: 2263
+    y: 369
     width: 1079
-    height: 636
+    height: 637
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -589,7 +4949,7 @@ MonoBehaviour:
   m_ShowGizmos: 0
   m_TargetDisplay: 0
   m_ClearColor: {r: 0, g: 0, b: 0, a: 0}
-  m_TargetSize: {x: 1079, y: 615}
+  m_TargetSize: {x: 1079, y: 616}
   m_TextureFilterMode: 0
   m_TextureHideFlags: 61
   m_RenderIMGUI: 1
@@ -606,8 +4966,8 @@ MonoBehaviour:
     vZoomLockedByDefault: 0
     m_HBaseRangeMin: -539.5
     m_HBaseRangeMax: 539.5
-    m_VBaseRangeMin: -307.5
-    m_VBaseRangeMax: 307.5
+    m_VBaseRangeMin: -308
+    m_VBaseRangeMax: 308
     m_HAllowExceedBaseRangeMin: 1
     m_HAllowExceedBaseRangeMax: 1
     m_VAllowExceedBaseRangeMin: 1
@@ -626,9 +4986,9 @@ MonoBehaviour:
       x: 0
       y: 21
       width: 1079
-      height: 615
+      height: 616
     m_Scale: {x: 1, y: 1}
-    m_Translation: {x: 539.5, y: 307.5}
+    m_Translation: {x: 539.5, y: 308}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
@@ -636,19 +4996,19 @@ MonoBehaviour:
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
       x: -539.5
-      y: -307.5
+      y: -308
       width: 1079
-      height: 615
+      height: 616
     m_MinimalGUI: 1
   m_defaultScale: 1
-  m_LastWindowPixelSize: {x: 1079, y: 636}
+  m_LastWindowPixelSize: {x: 1079, y: 637}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
   m_XRRenderMode: 0
   m_RenderTexture: {fileID: 0}
   m_showToolbar: 1
---- !u!114 &14
+--- !u!114 &18
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -672,7 +5032,7 @@ MonoBehaviour:
     x: 0
     y: 24
     width: 344
-    height: 636
+    height: 637
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -693,8 +5053,31 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
+      - m_Data: -18474
+      - m_Data: -16816
+      - m_Data: -16498
+      - m_Data: -16382
+      - m_Data: -16368
+      - m_Data: -15314
+      - m_Data: -14888
+      - m_Data: -13230
+      - m_Data: -12912
+      - m_Data: -12796
+      - m_Data: -12782
+      - m_Data: -11582
+      - m_Data: -10832
+      - m_Data: -9174
+      - m_Data: -8856
+      - m_Data: -8740
+      - m_Data: -8726
+      - m_Data: -7526
+      - m_Data: -6762
+      - m_Data: -5104
+      - m_Data: -4786
+      - m_Data: -4670
+      - m_Data: -4656
+      - m_Data: -3462
       - m_Data: -1344
-      - m_Data: 51454
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -712,7 +5095,7 @@ MonoBehaviour:
         m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_TrimLeadingAndTrailingWhitespace: 0
-        m_ClientGUIView: {fileID: 8}
+        m_ClientGUIView: {fileID: 11}
       m_SearchString: 
     m_ExpandedScenes: []
     m_CurrenRootEntityId:
@@ -721,7 +5104,7 @@ MonoBehaviour:
       m_IsLocked: 0
     m_CurrentSortingName: TransformSorting
   m_WindowGUID: 4c969a2b90040154d917609493e03593
---- !u!114 &15
+--- !u!114 &19
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -745,7 +5128,7 @@ MonoBehaviour:
     x: 346
     y: 24
     width: 1079
-    height: 636
+    height: 637
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1220,7 +5603,7 @@ MonoBehaviour:
   m_Position:
     m_Target: {x: 0, y: 0, z: 0}
     speed: 2
-    m_Value: {x: -3.7975981, y: -1.1139328, z: -9}
+    m_Value: {x: 0, y: 0, z: 0}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1273,7 +5656,7 @@ MonoBehaviour:
   m_Size:
     m_Target: 10
     speed: 2
-    m_Value: 5.320885
+    m_Value: 10
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1294,7 +5677,7 @@ MonoBehaviour:
   m_LastSceneViewRotation: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
   m_LastSceneViewOrtho: 0
   m_Viewpoint:
-    m_SceneView: {fileID: 15}
+    m_SceneView: {fileID: 19}
     m_CameraOverscanSettings:
       m_Opacity: 50
       m_Scale: 1
@@ -1307,7 +5690,7 @@ MonoBehaviour:
     name: Contributors / Receivers
     section: Lighting
   m_ViewIsLockedToObject: 0
---- !u!114 &16
+--- !u!114 &20
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1328,8 +5711,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Project\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 0
-    y: 686
+    x: 1918
+    y: 1032
     width: 1425
     height: 424
   m_SerializedDataModeController:
@@ -1356,7 +5739,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Manager/Grid
+    - Assets/Scripts/UI/Inventory
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1366,40 +5749,40 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/Manager/Grid
+  - Assets/Scripts/UI/Inventory
   m_LastFoldersGridSize: -1
   m_LastProjectPath: /home/jonathan/UnityProjects/Roguey2
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 360}
+    scrollPos: {x: 0, y: 671}
     m_SelectedIDs:
-    - m_Data: 51886
+    - m_Data: 52718
     m_LastClickedID:
-      m_Data: 51886
+      m_Data: 52718
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 51760
-    - m_Data: 51762
-    - m_Data: 51764
-    - m_Data: 51766
-    - m_Data: 51768
-    - m_Data: 51770
-    - m_Data: 51772
-    - m_Data: 51774
-    - m_Data: 51776
-    - m_Data: 51778
-    - m_Data: 51780
-    - m_Data: 51782
-    - m_Data: 51784
-    - m_Data: 51786
-    - m_Data: 51788
-    - m_Data: 51790
-    - m_Data: 51792
-    - m_Data: 51794
-    - m_Data: 51796
-    - m_Data: 51798
+    - m_Data: 52534
+    - m_Data: 52536
+    - m_Data: 52538
+    - m_Data: 52540
+    - m_Data: 52542
+    - m_Data: 52544
+    - m_Data: 52546
+    - m_Data: 52548
+    - m_Data: 52550
+    - m_Data: 52552
+    - m_Data: 52554
+    - m_Data: 52556
+    - m_Data: 52558
+    - m_Data: 52560
+    - m_Data: 52562
+    - m_Data: 52564
+    - m_Data: 52566
+    - m_Data: 52568
+    - m_Data: 52570
+    - m_Data: 52572
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1417,7 +5800,7 @@ MonoBehaviour:
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_TrimLeadingAndTrailingWhitespace: 0
-      m_ClientGUIView: {fileID: 10}
+      m_ClientGUIView: {fileID: 13}
     m_SearchString: 
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
@@ -1433,26 +5816,26 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 51760
-    - m_Data: 51762
-    - m_Data: 51764
-    - m_Data: 51766
-    - m_Data: 51768
-    - m_Data: 51770
-    - m_Data: 51772
-    - m_Data: 51774
-    - m_Data: 51776
-    - m_Data: 51778
-    - m_Data: 51780
-    - m_Data: 51782
-    - m_Data: 51784
-    - m_Data: 51786
-    - m_Data: 51788
-    - m_Data: 51790
-    - m_Data: 51792
-    - m_Data: 51794
-    - m_Data: 51796
-    - m_Data: 51798
+    - m_Data: 52534
+    - m_Data: 52536
+    - m_Data: 52538
+    - m_Data: 52540
+    - m_Data: 52542
+    - m_Data: 52544
+    - m_Data: 52546
+    - m_Data: 52548
+    - m_Data: 52550
+    - m_Data: 52552
+    - m_Data: 52554
+    - m_Data: 52556
+    - m_Data: 52558
+    - m_Data: 52560
+    - m_Data: 52562
+    - m_Data: 52564
+    - m_Data: 52566
+    - m_Data: 52568
+    - m_Data: 52570
+    - m_Data: 52572
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1480,11 +5863,10 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs:
-    - m_Data: 46134
+    m_SelectedInstanceIDs: []
     m_LastClickedEntityId:
-      m_Data: 46134
-    m_HadKeyboardFocusLastEvent: 1
+      m_Data: 0
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs:
     - m_Data: 52882
     - m_Data: 50910
@@ -1507,7 +5889,7 @@ MonoBehaviour:
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_TrimLeadingAndTrailingWhitespace: 0
-      m_ClientGUIView: {fileID: 10}
+      m_ClientGUIView: {fileID: 13}
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
       m_EntityId:
@@ -1520,7 +5902,7 @@ MonoBehaviour:
     m_GridSize: 64
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 207
---- !u!114 &17
+--- !u!114 &21
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1541,8 +5923,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Console\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1921
-    y: 1031
+    x: 0
+    y: 687
     width: 1425
     height: 424
   m_SerializedDataModeController:
@@ -1558,7 +5940,7 @@ MonoBehaviour:
     m_DynamicPanelContainerData: []
     m_OverlaysVisible: 1
     m_DynamicPanelBehavior: 0
---- !u!114 &18
+--- !u!114 &22
 MonoBehaviour:
   m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1582,7 +5964,7 @@ MonoBehaviour:
     x: 1427
     y: 24
     width: 431
-    height: 1086
+    height: 1087
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0

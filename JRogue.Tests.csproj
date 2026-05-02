@@ -50,7 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/MockMonoBehavior/TestQuietEssenceSlotManager.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Manager/Party/PartyManagerTest.cs" />
     <Compile Include="Assets/Tests/Mocks/MockBattleTarget.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Input/InputHandlerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Tests/Tests.asmdef" />
@@ -1130,6 +1133,10 @@
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>/home/jonathan/Unity/Hub/Editor/6000.4.0f1/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/mscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="TNRD.NSubstitute">
+      <HintPath>Library/ScriptAssemblies/TNRD.NSubstitute.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TestRunner">

@@ -91,88 +91,6 @@ namespace JRogue.Manager.Party
             PrintHistoryReport("FINAL SHIFT");
         }
 
-        // public void RecordNewLeaderPosition(Vector3Int newPos)
-        // {
-        //     // --- THE FIX: GATEKEEPER ---
-        //     // If the history exists and the newPos is identical to the current leader pos,
-        //     // we do NOT shift. This prevents clustering during stationary actions (Attacking/Casting).
-        //     if (positionHistory.Count > 0 && positionHistory[0] == newPos)
-        //     {
-        //         Debug.Log($"[RECORD-SKIP] Leader is still at {newPos}. History preserved to prevent clustering.");
-        //         return;
-        //     }
-
-        //     Debug.Log($"[RECORD-START] Leader moved to: {newPos}. Current History Count: {positionHistory.Count}");
-
-        //     List<Vector3Int> nextHistory = new List<Vector3Int>();
-
-        //     // New leader position becomes index 0
-        //     nextHistory.Add(newPos);
-
-        //     // Shift previous positions down the line
-        //     for (int i = 0; i < partyMembers.Count - 1; i++)
-        //     {
-        //         if (i < positionHistory.Count)
-        //         {
-        //             Vector3Int oldPos = positionHistory[i];
-
-        //             // Your existing Sanity Check logic
-        //             if (i > 0 && Vector3Int.Distance(oldPos, nextHistory[i]) > 1.5f)
-        //             {
-        //                 // Note: We don't return here because we want to see the report, 
-        //                 // but we log the error as you designed.
-        //                 Debug.LogError($"[SANITY-FAIL] Index {i + 1} is receiving {oldPos}, which is too far from {nextHistory[i]}!");
-        //             }
-
-        //             Debug.Log($"[RECORD-SHIFT] Index {i} -> {i + 1}. Carrying Pos: {oldPos}");
-        //             nextHistory.Add(oldPos);
-        //         }
-        //         else
-        //         {
-        //             // Fallback for initializing party members who don't have history yet
-        //             Vector3Int fallback = partyMembers[i].GridPosition;
-        //             Debug.LogWarning($"[RECORD-OOB] Index {i} missing history. Fallback to Member Pos: {fallback}");
-        //             nextHistory.Add(fallback);
-        //         }
-        //     }
-
-        //     positionHistory = nextHistory;
-        //     PrintHistoryReport("FINAL SHIFT");
-        // }
-
-        // public void RecordNewLeaderPosition(Vector3Int newPos)
-        // {
-        //     Debug.Log($"[RECORD-START] Leader stepped onto: {newPos}. Current History Count: {positionHistory.Count}");
-        //     List<Vector3Int> nextHistory = new List<Vector3Int>();
-
-        //     nextHistory.Add(newPos);
-
-        //     for (int i = 0; i < partyMembers.Count - 1; i++)
-        //     {
-        //         if (i < positionHistory.Count)
-        //         {
-        //             Vector3Int oldPos = positionHistory[i];
-        //             // Check for massive teleportation jumps
-        //             if (i > 0 && Vector3Int.Distance(oldPos, nextHistory[i]) > 1.5f)
-        //             {
-        //                 Debug.LogError($"[SANITY-FAIL] Index {i + 1} is receiving {oldPos}, which is too far from {nextHistory[i]}!");
-        //             }
-
-        //             Debug.Log($"[RECORD-SHIFT] Index {i} -> {i + 1}. Carrying Pos: {oldPos}");
-        //             nextHistory.Add(oldPos);
-        //         }
-        //         else
-        //         {
-        //             Vector3Int fallback = partyMembers[i].GridPosition;
-        //             Debug.LogWarning($"[RECORD-OOB] Index {i} missing history. Fallback to Member Pos: {fallback}");
-        //             nextHistory.Add(fallback);
-        //         }
-        //     }
-
-        //     positionHistory = nextHistory;
-        //     PrintHistoryReport("FINAL SHIFT");
-        // }
-
         private void PrintHistoryReport(string label)
         {
             string report = "";
@@ -189,14 +107,6 @@ namespace JRogue.Manager.Party
             int nextIndex = (activeIndex + 1) % partyMembers.Count;
             SwapActiveMember(nextIndex);
         }
-
-        // Call this to swap who you are controlling (e.g., Milestone 16)
-        // public void SwapActiveMember(int index)
-        // {
-        //     //activeIndex = index % partyMembers.Count;
-        //     // Camera.main.GetComponent<CameraFollow>().SetTarget(GetActiveMember().transform);
-        //     activeIndex = Mathf.Clamp(index, 0, partyMembers.Count - 1);
-        // }
 
         public void SwapActiveMember(int index)
         {
@@ -256,24 +166,5 @@ namespace JRogue.Manager.Party
                 positionHistory.RemoveAt(positionHistory.Count - 1);
             }
         }
-
-        // --- Milestone 17: Breadcrumb Logic ---
-
-        // public void RecordBreadcrumb(Vector3Int pos)
-        // {
-        //     breadcrumbTrail.Enqueue(pos);
-        //     if (breadcrumbTrail.Count > MAX_BREADCRUMBS)
-        //     {
-        //         breadcrumbTrail.Dequeue();
-        //     }
-        // }
-
-        // public Vector3Int? GetNextBreadcrumb()
-        // {
-        //     if (breadcrumbTrail.Count > 0) return breadcrumbTrail.Peek();
-        //     return null;
-        // }
-
-        // public void ClearBreadcrumbs() => breadcrumbTrail.Clear();
     }
 }
