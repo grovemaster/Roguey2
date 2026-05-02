@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using JRogue.Actors;
-using JRogue.Manager.Essence;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
@@ -12,6 +12,7 @@ using JRogue.Tests.UnitTests.MockMonoBehavior;
 using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using UnityEngine.Tilemaps;
 
 namespace JRogue.Tests.UnitTests.Input
@@ -189,6 +190,175 @@ namespace JRogue.Tests.UnitTests.Input
             Assert.AreEqual(new Vector3Int(0, -2, 0), members[2].GridPosition);
         }
 
+        /// <summary>
+        /// Mirrors <see cref="JRogue.Input.InputHandler"/> rush planning while the spatial hash only holds the leader
+        /// (followers unregistered until land). Validates scenarios with stale breadcrumbs and partial convergence across turns.
+        /// </summary>
+        [Test]
+        public void FormationSequence_StaleHistoryRecordLogsSanity_PartialRush_MinimalSmoke()
+        {
+            TestFixtureContext context = CreateFixture(3);
+            List<BaseActor> members = context.PartyManager.partyMembers;
+            PartyManager partyManager = context.PartyManager;
+
+            members[0].SetGridPosition(new Vector3Int(-5, 0, 0));
+            members[1].SetGridPosition(new Vector3Int(1, -1, 0));
+            members[2].SetGridPosition(new Vector3Int(1, -2, 0));
+            partyManager.positionHistory = new List<Vector3Int>
+            {
+                new Vector3Int(-4, 0, 0),
+                new Vector3Int(0, 0, 0),
+                new Vector3Int(1, -1, 0)
+            };
+            RegisterCurrentPartyOnGrid(members);
+
+            LogAssert.Expect(LogType.Error, new Regex(@"\[SANITY-FAIL\].*"));
+
+            Vector3Int leaderExpected = members[0].GridPosition;
+            partyManager.RecordNewLeaderPosition(members[0].GridPosition);
+            InvokeProcessFollowerRush(context.InputHandler);
+
+            Assert.AreEqual(3, partyManager.positionHistory.Count);
+            Assert.AreEqual(leaderExpected, members[0].GridPosition, "Leader should not be displaced by the rush sweep.");
+            AssertAllPositionsUnique(members.Select(m => m.GridPosition).ToList());
+            AssertRushLeavesFreshPlayerTurn(members, context.TurnManager);
+        }
+
+        [Test]
+        public void FormationSequence_WideLagAfterLeaderSeparatedFromColumn_MinimalSmoke()
+        {
+            TestFixtureContext context = CreateFixture(3);
+            List<BaseActor> members = context.PartyManager.partyMembers;
+            PartyManager partyManager = context.PartyManager;
+
+            members[0].SetGridPosition(new Vector3Int(-10, 0, 0));
+            members[1].SetGridPosition(new Vector3Int(0, -4, 0));
+            members[2].SetGridPosition(new Vector3Int(2, -3, 0));
+            RegisterCurrentPartyOnGrid(members);
+            partyManager.SnapHistoryToCurrentPositions();
+
+            Vector3Int leaderBeforeHist0 = partyManager.positionHistory[0];
+            Vector3Int moveAxis = Vector3Int.left;
+            Assert.IsTrue(members[0].TryMove(moveAxis), "Leader advance should succeed on blank floor.");
+
+            Vector3Int leaderExpected = members[0].GridPosition;
+            Assert.AreEqual(leaderBeforeHist0 + moveAxis, leaderExpected);
+
+            LogAssert.Expect(LogType.Error, new Regex(@"\[SANITY-FAIL\].*"));
+            partyManager.RecordNewLeaderPosition(members[0].GridPosition);
+            InvokeProcessFollowerRush(context.InputHandler);
+
+            Assert.AreEqual(3, partyManager.positionHistory.Count);
+            Assert.AreEqual(leaderExpected, members[0].GridPosition);
+            Assert.IsTrue(
+                members[1].GridPosition != leaderExpected && members[2].GridPosition != leaderExpected,
+                "Followers should not teleport onto the leader tile in one rush.");
+            AssertAllPositionsUnique(members.Select(m => m.GridPosition).ToList());
+            AssertRushLeavesFreshPlayerTurn(members, context.TurnManager);
+        }
+
+        /// <summary>
+        /// Duplicates <see cref="JRogue.Input.InputHandler.ProcessFollowerRush"/> follower planning versus leader lock and walkable tiles;
+        /// asserts simulated landing equals actual and each follower closes &lt;= 2 tiles (Euclidean) toward its breadcrumb.
+        /// </summary>
+        [Test]
+        public void ProcessFollowerRush_Explicit_VerticalColumn_RemainingTowardHistoricSlotsMatched()
+        {
+            TestFixtureContext context = CreateFixture(3);
+            List<BaseActor> members = context.PartyManager.partyMembers;
+            PartyManager partyManager = context.PartyManager;
+
+            members[0].SetGridPosition(new Vector3Int(0, -1, 0));
+            members[1].SetGridPosition(new Vector3Int(0, -8, 0));
+            members[2].SetGridPosition(new Vector3Int(0, -13, 0));
+            RegisterCurrentPartyOnGrid(members);
+            partyManager.SnapHistoryToCurrentPositions();
+
+            Assert.IsTrue(members[0].TryMove(Vector3Int.down));
+            Vector3Int leaderGrid = members[0].GridPosition;
+
+            var followerStarts = new Dictionary<BaseActor, Vector3Int>();
+            for (int i = 1; i < members.Count; i++)
+                followerStarts[members[i]] = members[i].GridPosition;
+
+            LogAssert.Expect(LogType.Error, new Regex(@"\[SANITY-FAIL\].*"));
+            partyManager.RecordNewLeaderPosition(members[0].GridPosition);
+            List<Vector3Int> historyAfterRecord = partyManager.positionHistory;
+
+            Dictionary<BaseActor, Vector3Int> predicted =
+                SimulateFollowerRushPlans(members, historyAfterRecord, leaderGrid);
+
+            InvokeProcessFollowerRush(context.InputHandler);
+
+            for (int i = 1; i < members.Count; i++)
+            {
+                BaseActor follower = members[i];
+                Vector3Int historicalTarget =
+                    i < historyAfterRecord.Count ? historyAfterRecord[i] : follower.GridPosition;
+
+                Assert.AreEqual(
+                    predicted[follower],
+                    follower.GridPosition,
+                    $"Follower {follower.name} should match deterministic rush planner.");
+
+                float beforeDist = Vector3Int.Distance(followerStarts[follower], historicalTarget);
+                float afterDist = Vector3Int.Distance(follower.GridPosition, historicalTarget);
+                Assert.LessOrEqual(afterDist, beforeDist);
+                Assert.LessOrEqual(beforeDist - afterDist, 2.001f,
+                    "Burst toward breadcrumb capped at roughly two Euclidean tiles.");
+            }
+
+            AssertAllPositionsUnique(members.Select(m => m.GridPosition).ToList());
+            AssertRushLeavesFreshPlayerTurn(members, context.TurnManager);
+        }
+
+        [Test]
+        public void ProcessFollowerRush_Explicit_WestAlignedRow_ReducesTowardHistoricWithinBurstCap()
+        {
+            TestFixtureContext context = CreateFixture(3);
+            List<BaseActor> members = context.PartyManager.partyMembers;
+            PartyManager partyManager = context.PartyManager;
+
+            members[0].SetGridPosition(new Vector3Int(-22, 0, 0));
+            members[1].SetGridPosition(new Vector3Int(-40, 0, 0));
+            members[2].SetGridPosition(new Vector3Int(-55, 0, 0));
+            RegisterCurrentPartyOnGrid(members);
+            partyManager.SnapHistoryToCurrentPositions();
+
+            Assert.IsTrue(members[0].TryMove(Vector3Int.right));
+            Vector3Int leaderGrid = members[0].GridPosition;
+
+            var followerStarts = new Dictionary<BaseActor, Vector3Int>();
+            for (int i = 1; i < members.Count; i++)
+                followerStarts[members[i]] = members[i].GridPosition;
+
+            LogAssert.Expect(LogType.Error, new Regex(@"\[SANITY-FAIL\].*"));
+            partyManager.RecordNewLeaderPosition(members[0].GridPosition);
+            List<Vector3Int> historyAfterRecord = partyManager.positionHistory;
+
+            Dictionary<BaseActor, Vector3Int> predicted =
+                SimulateFollowerRushPlans(members, historyAfterRecord, leaderGrid);
+
+            InvokeProcessFollowerRush(context.InputHandler);
+
+            for (int i = 1; i < members.Count; i++)
+            {
+                BaseActor follower = members[i];
+                Vector3Int historicalTarget =
+                    i < historyAfterRecord.Count ? historyAfterRecord[i] : follower.GridPosition;
+
+                Assert.AreEqual(predicted[follower], follower.GridPosition);
+
+                float beforeDist = Vector3Int.Distance(followerStarts[follower], historicalTarget);
+                float afterDist = Vector3Int.Distance(follower.GridPosition, historicalTarget);
+                Assert.LessOrEqual(afterDist, beforeDist);
+                Assert.LessOrEqual(beforeDist - afterDist, 2.001f);
+            }
+
+            AssertAllPositionsUnique(members.Select(m => m.GridPosition).ToList());
+            AssertRushLeavesFreshPlayerTurn(members, context.TurnManager);
+        }
+
         private TestFixtureContext CreateFixture(int partySize)
         {
             CreateManagersAndMap();
@@ -211,7 +381,7 @@ namespace JRogue.Tests.UnitTests.Input
 
             GameObject gridRoot = new GameObject("GridRoot_Test");
             _createdObjects.Add(gridRoot);
-            Grid grid = gridRoot.AddComponent<Grid>();
+            gridRoot.AddComponent<Grid>();
 
             GameObject floorObject = new GameObject("FloorTilemap_Test");
             _createdObjects.Add(floorObject);
@@ -225,7 +395,8 @@ namespace JRogue.Tests.UnitTests.Input
             Tilemap wallMap = wallObject.AddComponent<Tilemap>();
             wallObject.AddComponent<TilemapRenderer>();
 
-            PopulateWalkableFloor(floorMap, radius: 20);
+            // Wider than default play areas so west-aligned explicit tests can place leaders near x = -22 and step into walkable tiles.
+            PopulateWalkableFloor(floorMap, radius: 60);
 
             SetPrivateField(mapManager, "floorMap", floorMap);
             SetPrivateField(mapManager, "wallMap", wallMap);
@@ -240,7 +411,6 @@ namespace JRogue.Tests.UnitTests.Input
             turnManager.currentState = GameState.PLAYER_TURN;
 
             Assert.IsNotNull(mapManager);
-            Assert.IsNotNull(grid);
             Assert.IsNotNull(GridManager.Instance);
             Assert.IsNotNull(TurnManager.Instance);
         }
@@ -298,6 +468,81 @@ namespace JRogue.Tests.UnitTests.Input
             {
                 GridManager.Instance.RegisterActor(member.GridPosition, member);
             }
+        }
+
+        /// <summary>
+        /// Mirrors <see cref="JRogue.Input.InputHandler.ProcessFollowerRush"/> planning phase: after the lift
+        /// only <paramref name="leaderGrid"/> occupies the grid (followers may not jump onto it).
+        /// </summary>
+        private static Dictionary<BaseActor, Vector3Int> SimulateFollowerRushPlans(
+            IReadOnlyList<BaseActor> party,
+            IReadOnlyList<Vector3Int> history,
+            Vector3Int leaderGrid,
+            int maxRushDistance = 2)
+        {
+            var plannedMoves = new Dictionary<BaseActor, Vector3Int>();
+
+            bool TileValid(Vector3Int tile)
+            {
+                if (!MapManager.Instance.IsWalkable(tile))
+                    return false;
+                if (tile == leaderGrid)
+                    return false;
+                return !plannedMoves.ContainsValue(tile);
+            }
+
+            for (int i = 1; i < party.Count; i++)
+            {
+                BaseActor follower = party[i];
+                Vector3Int historicalTarget = i < history.Count ? history[i] : follower.GridPosition;
+
+                Vector3Int finalTarget = follower.GridPosition;
+                float dist = Vector3Int.Distance(follower.GridPosition, historicalTarget);
+                if (dist <= maxRushDistance)
+                    finalTarget = historicalTarget;
+                else
+                {
+                    Vector3 direction = ((Vector3)(historicalTarget - follower.GridPosition)).normalized;
+                    finalTarget = Vector3Int.RoundToInt((Vector3)follower.GridPosition + direction * maxRushDistance);
+                }
+
+                if (TileValid(finalTarget))
+                {
+                    plannedMoves.Add(follower, finalTarget);
+                    continue;
+                }
+
+                Vector3Int bestSmartTile = follower.GridPosition;
+                float bestDistToBreadcrumb = float.MaxValue;
+                bool foundSpot = false;
+
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        if (x == 0 && y == 0)
+                            continue;
+                        Vector3Int neighbor = finalTarget + new Vector3Int(x, y, 0);
+                        if (Vector3Int.Distance(follower.GridPosition, neighbor) > maxRushDistance + 0.5f)
+                            continue;
+
+                        if (TileValid(neighbor))
+                        {
+                            float d = Vector3Int.Distance(neighbor, historicalTarget);
+                            if (d < bestDistToBreadcrumb)
+                            {
+                                bestDistToBreadcrumb = d;
+                                bestSmartTile = neighbor;
+                                foundSpot = true;
+                            }
+                        }
+                    }
+                }
+
+                plannedMoves.Add(follower, foundSpot ? bestSmartTile : follower.GridPosition);
+            }
+
+            return plannedMoves;
         }
 
         private void InvokeProcessFollowerRush(JRogue.Input.InputHandler inputHandler)
