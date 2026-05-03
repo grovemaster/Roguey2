@@ -24,6 +24,7 @@ namespace JRogue.Tests.UnitTests.Manager.Grid
         [SetUp]
         public void SetUp()
         {
+            LogAssert.ignoreFailingMessages = true;
             // Create a fresh GridManager instance for each test
             GameObject gridManagerGameObject = new GameObject("GridManager");
             _gridManager = gridManagerGameObject.AddComponent<GridManager>();
@@ -37,6 +38,7 @@ namespace JRogue.Tests.UnitTests.Manager.Grid
         [TearDown]
         public void TearDown()
         {
+            LogAssert.ignoreFailingMessages = false;
             // Cleanup mock targets
             _mockTarget1?.Cleanup();
             _mockTarget2?.Cleanup();

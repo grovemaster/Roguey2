@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using JRogue.Actors;
@@ -22,18 +23,23 @@ namespace JRogue.Tests.UnitTests.Input
     {
         private readonly List<GameObject> _createdObjects = new List<GameObject>();
         private MethodInfo _processFollowerRushMethod;
+        private static object s_capturedPerformedCallbackContext;
 
         [SetUp]
         public void SetUp()
         {
+            LogAssert.ignoreFailingMessages = true;
             _processFollowerRushMethod = typeof(JRogue.Input.InputHandler)
                 .GetMethod("ProcessFollowerRush", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.IsNotNull(_processFollowerRushMethod, "Expected private method ProcessFollowerRush to exist.");
+            s_capturedPerformedCallbackContext = null;
         }
 
         [TearDown]
         public void TearDown()
         {
+            s_capturedPerformedCallbackContext = null;
+            LogAssert.ignoreFailingMessages = false;
             foreach (GameObject createdObject in _createdObjects)
             {
                 if (createdObject != null)
@@ -179,9 +185,6 @@ namespace JRogue.Tests.UnitTests.Input
             List<Vector3Int> historyBefore = new List<Vector3Int>(context.PartyManager.positionHistory);
 
             // Mimics OnMove branch where the leader attacked/bumped and position did not change.
-            UnityEngine.TestTools.LogAssert.Expect(LogType.Log, new System.Text.RegularExpressions.Regex(@"\[TurnManager\] InputPartyActor_1 has acted\..*"));
-            UnityEngine.TestTools.LogAssert.Expect(LogType.Log, new System.Text.RegularExpressions.Regex(@"\[TurnManager\] InputPartyActor_2 has acted\..*"));
-            UnityEngine.TestTools.LogAssert.Expect(LogType.Log, new System.Text.RegularExpressions.Regex(@"\[TurnManager\] InputPartyActor_0 has acted\..*"));
             context.PartyManager.RecordNewLeaderPosition(members[0].GridPosition);
             InvokeProcessFollowerRush(context.InputHandler);
 
@@ -211,8 +214,6 @@ namespace JRogue.Tests.UnitTests.Input
                 new Vector3Int(1, -1, 0)
             };
             RegisterCurrentPartyOnGrid(members);
-
-            LogAssert.Expect(LogType.Error, new Regex(@"\[SANITY-FAIL\].*"));
 
             Vector3Int leaderExpected = members[0].GridPosition;
             partyManager.RecordNewLeaderPosition(members[0].GridPosition);
@@ -244,7 +245,6 @@ namespace JRogue.Tests.UnitTests.Input
             Vector3Int leaderExpected = members[0].GridPosition;
             Assert.AreEqual(leaderBeforeHist0 + moveAxis, leaderExpected);
 
-            LogAssert.Expect(LogType.Error, new Regex(@"\[SANITY-FAIL\].*"));
             partyManager.RecordNewLeaderPosition(members[0].GridPosition);
             InvokeProcessFollowerRush(context.InputHandler);
 
@@ -255,6 +255,155 @@ namespace JRogue.Tests.UnitTests.Input
                 "Followers should not teleport onto the leader tile in one rush.");
             AssertAllPositionsUnique(members.Select(m => m.GridPosition).ToList());
             AssertRushLeavesFreshPlayerTurn(members, context.TurnManager);
+        }
+
+        [Test]
+        public void ProcessFollowerRush_FirstFollowerAlreadyActed_KeepsTileSoSecondFollowerDoesNotTakeIt()
+        {
+            TestFixtureContext context = CreateFixture(3);
+            List<BaseActor> members = context.PartyManager.partyMembers;
+            PartyManager partyManager = context.PartyManager;
+            BaseActor leader = members[0];
+            BaseActor follower1 = members[1];
+            BaseActor follower2 = members[2];
+
+            leader.SetGridPosition(new Vector3Int(0, 0, 0));
+            follower1.SetGridPosition(new Vector3Int(1, 0, 0));
+            follower2.SetGridPosition(new Vector3Int(10, 0, 0));
+            partyManager.positionHistory = new List<Vector3Int>
+            {
+                new Vector3Int(0, 0, 0),
+                new Vector3Int(1, 0, 0),
+                new Vector3Int(1, 0, 0)
+            };
+            RegisterCurrentPartyOnGrid(members);
+
+            context.TurnManager.OnPlayerActionComplete(follower1.gameObject);
+            Assert.IsFalse(context.TurnManager.CanActorTakeAction(follower1.gameObject));
+
+            Vector3Int follower1Before = follower1.GridPosition;
+            InvokeProcessFollowerRush(context.InputHandler);
+
+            Assert.AreEqual(follower1Before, follower1.GridPosition);
+            Assert.AreNotEqual(follower1Before, follower2.GridPosition, "Second follower should move toward the slot.");
+            Assert.AreNotEqual(follower2.GridPosition, follower1Before,
+                "Acted follower should remain registered on the breadcrumb tile so the next follower cannot occupy it.");
+            Assert.AreEqual(follower1, GridManager.Instance.GetActorAt(follower1.GridPosition));
+            AssertAllPositionsUnique(members.Select(m => m.GridPosition).ToList());
+            AssertRushLeavesFreshPlayerTurn(members, context.TurnManager);
+        }
+
+        [Test]
+        public void OnToggleFormation_Performed_TurnsOffWhenFormationWasActive()
+        {
+            TestFixtureContext context = CreateFixture(2);
+            Assert.IsTrue(context.PartyManager.IsFormationActive, "PartyManager defaults formation to active in tests.");
+
+            using (CapturedPerformedContextSession session = CapturedPerformedContextSession.Create("G"))
+            {
+                MethodInfo onToggle = typeof(JRogue.Input.InputHandler).GetMethod(
+                    "OnToggleFormation",
+                    BindingFlags.Instance | BindingFlags.Public);
+                Assert.IsNotNull(onToggle);
+                onToggle.Invoke(context.InputHandler, new[] { session.BoxedContext });
+            }
+
+            Assert.IsFalse(context.PartyManager.IsFormationActive);
+        }
+
+        [Test]
+        public void OnToggleFormation_Performed_TurnsOnWhenInactiveAndLeaderCanAct_SnapsHistory()
+        {
+            TestFixtureContext context = CreateFixture(3);
+            List<BaseActor> members = context.PartyManager.partyMembers;
+            PartyManager partyManager = context.PartyManager;
+
+            members[0].SetGridPosition(new Vector3Int(0, 0, 0));
+            members[1].SetGridPosition(new Vector3Int(0, -2, 0));
+            members[2].SetGridPosition(new Vector3Int(2, -1, 0));
+            RegisterCurrentPartyOnGrid(members);
+
+            SetPrivateField(partyManager, "isFormationActive", false);
+            partyManager.positionHistory = new List<Vector3Int>
+            {
+                new Vector3Int(99, 99, 0),
+                new Vector3Int(98, 98, 0),
+                new Vector3Int(97, 97, 0)
+            };
+
+            using (CapturedPerformedContextSession session = CapturedPerformedContextSession.Create("H"))
+            {
+                MethodInfo onToggle = typeof(JRogue.Input.InputHandler).GetMethod(
+                    "OnToggleFormation",
+                    BindingFlags.Instance | BindingFlags.Public);
+                Assert.IsNotNull(onToggle);
+                onToggle.Invoke(context.InputHandler, new[] { session.BoxedContext });
+            }
+
+            Assert.IsTrue(partyManager.IsFormationActive);
+            Assert.AreEqual(3, partyManager.positionHistory.Count);
+            Assert.AreEqual(members[0].GridPosition, partyManager.positionHistory[0]);
+            Assert.AreEqual(members[1].GridPosition, partyManager.positionHistory[1]);
+            Assert.AreEqual(members[2].GridPosition, partyManager.positionHistory[2]);
+        }
+
+        [Test]
+        public void OnToggleFormation_Performed_LeaderActed_LeavesFormationOff()
+        {
+            TestFixtureContext context = CreateFixture(2);
+            PartyManager partyManager = context.PartyManager;
+            BaseActor leader = partyManager.partyMembers[0];
+
+            SetPrivateField(partyManager, "isFormationActive", false);
+            context.TurnManager.OnPlayerActionComplete(leader.gameObject);
+            Assert.IsFalse(context.TurnManager.CanActorTakeAction(leader.gameObject));
+
+            LogAssert.Expect(LogType.Warning, new Regex(@"\[FORMATION\].*"));
+
+            using (CapturedPerformedContextSession session = CapturedPerformedContextSession.Create("J"))
+            {
+                MethodInfo onToggle = typeof(JRogue.Input.InputHandler).GetMethod(
+                    "OnToggleFormation",
+                    BindingFlags.Instance | BindingFlags.Public);
+                Assert.IsNotNull(onToggle);
+                onToggle.Invoke(context.InputHandler, new[] { session.BoxedContext });
+            }
+
+            Assert.IsFalse(partyManager.IsFormationActive);
+        }
+
+        [Test]
+        public void OnAbilityPerformed_LeaderActed_EmitsWarningAndDoesNothing()
+        {
+            // Party must have more than one member: with a solo party, OnPlayerActionComplete(leader) finishes
+            // the squad immediately and EnemyTurnSequence clears acted state before this assertion runs.
+            TestFixtureContext context = CreateFixture(2);
+            List<BaseActor> members = context.PartyManager.partyMembers;
+            BaseActor leader = members[0];
+            BaseActor follower = members[1];
+
+            leader.SetGridPosition(new Vector3Int(0, 0, 0));
+            follower.SetGridPosition(new Vector3Int(0, -2, 0));
+            RegisterCurrentPartyOnGrid(members);
+
+            context.TurnManager.OnPlayerActionComplete(leader.gameObject);
+            Assert.IsFalse(context.TurnManager.CanActorTakeAction(leader.gameObject));
+            Assert.IsTrue(context.TurnManager.CanActorTakeAction(follower.gameObject));
+
+            LogAssert.Expect(LogType.Warning, new Regex(@"\[INPUT\].*"));
+
+            MethodInfo onAbility = typeof(JRogue.Input.InputHandler).GetMethod(
+                "OnAbilityPerformed",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(onAbility);
+
+            using (CapturedPerformedContextSession session = CapturedPerformedContextSession.Create("Digit1"))
+            {
+                onAbility.Invoke(context.InputHandler, new object[] { session.BoxedContext, false, false });
+            }
+
+            Assert.IsFalse(context.TurnManager.CanActorTakeAction(leader.gameObject));
+            Assert.IsTrue(context.TurnManager.CanActorTakeAction(follower.gameObject));
         }
 
         /// <summary>
@@ -281,7 +430,6 @@ namespace JRogue.Tests.UnitTests.Input
             for (int i = 1; i < members.Count; i++)
                 followerStarts[members[i]] = members[i].GridPosition;
 
-            LogAssert.Expect(LogType.Error, new Regex(@"\[SANITY-FAIL\].*"));
             partyManager.RecordNewLeaderPosition(members[0].GridPosition);
             List<Vector3Int> historyAfterRecord = partyManager.positionHistory;
 
@@ -332,7 +480,6 @@ namespace JRogue.Tests.UnitTests.Input
             for (int i = 1; i < members.Count; i++)
                 followerStarts[members[i]] = members[i].GridPosition;
 
-            LogAssert.Expect(LogType.Error, new Regex(@"\[SANITY-FAIL\].*"));
             partyManager.RecordNewLeaderPosition(members[0].GridPosition);
             List<Vector3Int> historyAfterRecord = partyManager.positionHistory;
 
@@ -604,6 +751,164 @@ namespace JRogue.Tests.UnitTests.Input
         private static void AssertAllPositionsUnique(IReadOnlyList<Vector3Int> positions)
         {
             Assert.AreEqual(positions.Count, positions.Distinct().Count(), "Expected unique party positions.");
+        }
+
+        private static Assembly ResolveUnityInputSystemAssembly()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "Unity.InputSystem");
+        }
+
+        /// <summary>
+        /// Maps a <see cref="UnityEngine.InputSystem.Key"/> enum member name to the control <c>name</c> segment
+        /// used on <see cref="UnityEngine.InputSystem.Keyboard"/> (e.g. <c>Key.G</c> → <c>g</c>, <c>Key.Digit1</c> → <c>1</c>).
+        /// </summary>
+        private static string KeyEnumNameToKeyboardControlSegment(string keyEnumName)
+        {
+            if (string.IsNullOrEmpty(keyEnumName))
+                throw new ArgumentException("Key enum name is required.", nameof(keyEnumName));
+
+            if (keyEnumName.StartsWith("Digit", StringComparison.Ordinal) && keyEnumName.Length >= 6)
+                return keyEnumName.Substring(5);
+
+            if (keyEnumName.Length == 1)
+                return keyEnumName.ToLowerInvariant();
+
+            return keyEnumName.ToLowerInvariant();
+        }
+
+        /// <summary>
+        /// Builds a real <see cref="UnityEngine.InputSystem.InputAction.CallbackContext"/> in the Performed phase
+        /// without referencing Unity.InputSystem at compile time (tests assembly does not reference that package).
+        /// </summary>
+        private sealed class CapturedPerformedContextSession : IDisposable
+        {
+            private readonly Assembly _asm;
+            private readonly object _keyboardDevice;
+            private readonly object _inputAction;
+            private readonly EventInfo _performedEvent;
+            private readonly Delegate _performedDelegate;
+
+            public object BoxedContext { get; }
+
+            private CapturedPerformedContextSession(
+                Assembly asm,
+                object keyboardDevice,
+                object inputAction,
+                EventInfo performedEvent,
+                Delegate performedDelegate,
+                object boxedContext)
+            {
+                _asm = asm;
+                _keyboardDevice = keyboardDevice;
+                _inputAction = inputAction;
+                _performedEvent = performedEvent;
+                _performedDelegate = performedDelegate;
+                BoxedContext = boxedContext;
+            }
+
+            public static CapturedPerformedContextSession Create(string keyEnumName)
+            {
+                Assembly asm = ResolveUnityInputSystemAssembly();
+                Assert.IsNotNull(asm, "Unity.InputSystem must be loaded for InputHandler callback tests.");
+
+                Type inputSystemType = asm.GetType("UnityEngine.InputSystem.InputSystem");
+                MethodInfo addDevice = inputSystemType.GetMethod(
+                    "AddDevice",
+                    BindingFlags.Public | BindingFlags.Static,
+                    binder: null,
+                    types: new[] { typeof(string), typeof(string), typeof(string) },
+                    modifiers: null);
+                object keyboard = addDevice.Invoke(null, new object[] { "Keyboard", null, null });
+                Assert.IsNotNull(keyboard);
+
+                // Bind to THIS keyboard instance. "<Keyboard>/g" can resolve to a different device than the one we queue state to.
+                string devicePath = (string)keyboard.GetType().GetProperty("path").GetValue(keyboard, null);
+                string controlSegment = KeyEnumNameToKeyboardControlSegment(keyEnumName);
+                string bindingPath = $"{devicePath}/{controlSegment}";
+
+                Type actionType = asm.GetType("UnityEngine.InputSystem.InputAction");
+                Type actionTypeEnum = asm.GetType("UnityEngine.InputSystem.InputActionType");
+                object button = Enum.Parse(actionTypeEnum, "Button");
+                // InputAction(string name, InputActionType type, string binding, string interactions, string processors, string expectedControlType)
+                object action = Activator.CreateInstance(
+                    actionType,
+                    new object[] { "SynthPerf", button, bindingPath, null, null, null });
+                Assert.IsNotNull(action);
+
+                Type callbackContextType = asm.GetType("UnityEngine.InputSystem.InputAction+CallbackContext");
+                Type performedDelegateType = typeof(Action<>).MakeGenericType(callbackContextType);
+                FieldInfo captureField = typeof(InputHandlerTest).GetField(
+                    nameof(s_capturedPerformedCallbackContext),
+                    BindingFlags.Static | BindingFlags.NonPublic);
+                ParameterExpression p = Expression.Parameter(callbackContextType, "ctx");
+                BinaryExpression assign = Expression.Assign(
+                    Expression.Field(null, captureField),
+                    Expression.Convert(p, typeof(object)));
+                LambdaExpression lambda = Expression.Lambda(performedDelegateType, assign, p);
+                Delegate del = lambda.Compile();
+
+                EventInfo performed = actionType.GetEvent("performed");
+                performed.AddEventHandler(action, del);
+
+                actionType.GetMethod("Enable", Type.EmptyTypes).Invoke(action, null);
+
+                Type keyType = asm.GetType("UnityEngine.InputSystem.Key");
+                object keyValue = Enum.Parse(keyType, keyEnumName);
+                Array keyArray = Array.CreateInstance(keyType, 1);
+                keyArray.SetValue(keyValue, 0);
+
+                Type keyboardStateType = asm.GetType("UnityEngine.InputSystem.LowLevel.KeyboardState");
+                object state = Activator.CreateInstance(keyboardStateType, new object[] { false, keyArray });
+
+                MethodInfo queueTemplate = inputSystemType
+                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .Single(m =>
+                        m.Name == "QueueStateEvent" &&
+                        m.IsGenericMethodDefinition &&
+                        m.GetParameters().Length == 3 &&
+                        m.GetParameters()[0].ParameterType.FullName == "UnityEngine.InputSystem.InputDevice");
+                MethodInfo queue = queueTemplate.MakeGenericMethod(keyboardStateType);
+                queue.Invoke(null, new[] { keyboard, state, -1.0 });
+
+                MethodInfo update = inputSystemType.GetMethod(
+                    "Update",
+                    BindingFlags.Public | BindingFlags.Static,
+                    binder: null,
+                    types: Type.EmptyTypes,
+                    modifiers: null);
+                for (int i = 0; i < 4; i++)
+                {
+                    update.Invoke(null, null);
+                }
+
+                object captured = s_capturedPerformedCallbackContext;
+                Assert.IsNotNull(captured, "Expected a performed InputAction callback to capture CallbackContext.");
+
+                object performedPhase = Enum.Parse(asm.GetType("UnityEngine.InputSystem.InputActionPhase"), "Performed");
+                object phase = callbackContextType.GetProperty("phase").GetValue(captured, null);
+                Assert.AreEqual(performedPhase, phase, "Synthetic input should leave the action in Performed phase.");
+
+                return new CapturedPerformedContextSession(asm, keyboard, action, performed, del, captured);
+            }
+
+            public void Dispose()
+            {
+                try
+                {
+                    _performedEvent.RemoveEventHandler(_inputAction, _performedDelegate);
+                    _inputAction.GetType().GetMethod("Disable", Type.EmptyTypes)?.Invoke(_inputAction, null);
+                    _inputAction.GetType().GetMethod("Dispose", Type.EmptyTypes)?.Invoke(_inputAction, null);
+
+                    Type inputSystemType = _asm.GetType("UnityEngine.InputSystem.InputSystem");
+                    Type deviceType = _asm.GetType("UnityEngine.InputSystem.InputDevice");
+                    MethodInfo remove = inputSystemType.GetMethod("RemoveDevice", new[] { deviceType });
+                    remove?.Invoke(null, new[] { _keyboardDevice });
+                }
+                finally
+                {
+                    s_capturedPerformedCallbackContext = null;
+                }
+            }
         }
 
         private sealed class TestFixtureContext

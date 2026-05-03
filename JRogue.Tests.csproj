@@ -49,7 +49,8 @@
     <Analyzer Include="/home/jonathan/Unity/Hub/Editor/6000.4.0f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTests.cs" />
+    <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/MockMonoBehavior/TestQuietEssenceSlotManager.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Party/PartyManagerTest.cs" />
     <Compile Include="Assets/Tests/Mocks/MockBattleTarget.cs" />

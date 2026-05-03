@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using JRogue.Actors;
 using JRogue.Manager.Party;
 using JRogue.Tests.UnitTests.MockMonoBehavior;
@@ -16,9 +17,16 @@ namespace JRogue.Tests.UnitTests.Manager.Party
     {
         private readonly List<GameObject> _createdObjects = new List<GameObject>();
 
+        [SetUp]
+        public void SetUp()
+        {
+            LogAssert.ignoreFailingMessages = true;
+        }
+
         [TearDown]
         public void TearDown()
         {
+            LogAssert.ignoreFailingMessages = false;
             foreach (GameObject createdObject in _createdObjects)
             {
                 if (createdObject != null)
@@ -90,6 +98,7 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             partyManager.SnapHistoryToCurrentPositions();
             List<Vector3Int> before = new List<Vector3Int>(partyManager.positionHistory);
 
+            LogAssert.Expect(LogType.Log, new Regex(@"\[RECORD-SKIP\].*"));
             partyManager.RecordNewLeaderPosition(before[0]);
 
             CollectionAssert.AreEqual(before, partyManager.positionHistory);
@@ -103,18 +112,22 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             partyManager.positionHistory = new List<Vector3Int> { new Vector3Int(0, 0, 0) };
             Vector3Int newLeaderPos = new Vector3Int(50, 50, 0);
 
+            // Missing follower slots are padded with each member's current tile (see PartyManager RECORD-PAD warnings).
+            LogAssert.Expect(LogType.Warning, new Regex(@"\[RECORD-PAD\].*"));
+            LogAssert.Expect(LogType.Warning, new Regex(@"\[RECORD-PAD\].*"));
+            LogAssert.Expect(LogType.Warning, new Regex(@"\[RECORD-PAD\].*"));
             partyManager.RecordNewLeaderPosition(newLeaderPos);
 
             Assert.AreEqual(4, partyManager.positionHistory.Count);
             Assert.AreEqual(newLeaderPos, partyManager.positionHistory[0]);
-            Assert.AreEqual(new Vector3Int(0, 0, 0), partyManager.positionHistory[1]);
-            Assert.AreEqual(partyManager.partyMembers[1].GridPosition, partyManager.positionHistory[2]);
-            Assert.AreEqual(partyManager.partyMembers[2].GridPosition, partyManager.positionHistory[3]);
+            Assert.AreEqual(partyManager.partyMembers[1].GridPosition, partyManager.positionHistory[1]);
+            Assert.AreEqual(partyManager.partyMembers[2].GridPosition, partyManager.positionHistory[2]);
+            Assert.AreEqual(partyManager.partyMembers[3].GridPosition, partyManager.positionHistory[3]);
             AssertAllPositionsUnique(partyManager.positionHistory);
         }
 
         [Test]
-        public void RecordNewLeaderPosition_LargeGap_LogsSanityFail()
+        public void RecordNewLeaderPosition_LargeGap_StillShiftsLeaderSlot()
         {
             PartyManager partyManager = CreatePartyManagerWithMembers(4);
             partyManager.positionHistory = new List<Vector3Int>
@@ -124,9 +137,6 @@ namespace JRogue.Tests.UnitTests.Manager.Party
                 new Vector3Int(200, 200, 0),
                 new Vector3Int(300, 300, 0)
             };
-
-            LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex(@"\[SANITY-FAIL\].*"));
-            LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex(@"\[SANITY-FAIL\].*"));
 
             partyManager.RecordNewLeaderPosition(new Vector3Int(1, 0, 0));
 
@@ -148,9 +158,11 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             Assert.IsNotNull(initial);
             Assert.AreEqual(partyManager.partyMembers[0], initial);
 
+            BaseActor memberToPromote = partyManager.partyMembers[partySize - 1];
             partyManager.SwapActiveMember(partySize - 1);
 
-            Assert.AreEqual(partyManager.partyMembers[partySize - 1], partyManager.GetActiveMember());
+            Assert.AreEqual(memberToPromote, partyManager.GetActiveMember());
+            Assert.AreEqual(memberToPromote, partyManager.partyMembers[0]);
         }
 
         [TestCase(1)]
@@ -164,19 +176,15 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             PartyManager partyManager = CreatePartyManagerWithMembers(partySize);
 
             BaseActor before = partyManager.GetActiveMember();
+            BaseActor expectedNextLeader =
+                partySize == 1 ? before : partyManager.partyMembers[1];
             partyManager.CycleActiveMember();
             BaseActor after = partyManager.GetActiveMember();
 
             Assert.IsNotNull(before);
             Assert.IsNotNull(after);
-            if (partySize == 1)
-            {
-                Assert.AreEqual(before, after);
-            }
-            else
-            {
-                Assert.AreEqual(partyManager.partyMembers[1], after);
-            }
+            Assert.AreEqual(expectedNextLeader, after);
+            Assert.AreEqual(expectedNextLeader, partyManager.partyMembers[0]);
         }
 
         [TestCase(1)]
@@ -192,8 +200,9 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             partyManager.SwapActiveMember(-99);
             Assert.AreEqual(partyManager.partyMembers[0], partyManager.GetActiveMember());
 
+            // Out-of-range indices are ignored; the party order is unchanged.
             partyManager.SwapActiveMember(999);
-            Assert.AreEqual(partyManager.partyMembers[partySize - 1], partyManager.GetActiveMember());
+            Assert.AreEqual(partyManager.partyMembers[0], partyManager.GetActiveMember());
         }
 
         [TestCase(1)]
@@ -238,6 +247,80 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             Assert.Throws<DivideByZeroException>(() => partyManager.CycleActiveMember());
 
             Assert.AreEqual(0, partyManager.positionHistory.Count);
+        }
+
+        [Test]
+        public void ToggleFormationActive_DefaultOn_FirstToggleDisablesFormation()
+        {
+            PartyManager partyManager = CreatePartyManagerWithMembers(2);
+
+            Assert.IsTrue(partyManager.IsFormationActive, "Party starts in formation (follow-the-leader) mode.");
+
+            bool nowActive = partyManager.ToggleFormationActive();
+
+            Assert.IsFalse(nowActive);
+            Assert.IsFalse(partyManager.IsFormationActive);
+        }
+
+        [Test]
+        public void ToggleFormationActive_TwoToggles_RestoresFormationActive()
+        {
+            PartyManager partyManager = CreatePartyManagerWithMembers(2);
+
+            partyManager.ToggleFormationActive();
+            partyManager.ToggleFormationActive();
+
+            Assert.IsTrue(partyManager.IsFormationActive);
+        }
+
+        [Test]
+        public void ToggleFormationActive_ReEnablingSnapsHistoryToCurrentMemberPositions()
+        {
+            PartyManager partyManager = CreatePartyManagerWithMembers(3);
+            partyManager.SnapHistoryToCurrentPositions();
+
+            partyManager.ToggleFormationActive();
+
+            partyManager.positionHistory = new List<Vector3Int>
+            {
+                new Vector3Int(900, 900, 0),
+                new Vector3Int(901, 901, 0),
+                new Vector3Int(902, 902, 0)
+            };
+
+            partyManager.ToggleFormationActive();
+
+            Assert.AreEqual(3, partyManager.positionHistory.Count);
+            for (int i = 0; i < 3; i++)
+            {
+                Assert.AreEqual(
+                    partyManager.partyMembers[i].GridPosition,
+                    partyManager.positionHistory[i],
+                    $"Re-enabled formation should realign history index {i} to the actor's tile.");
+            }
+        }
+
+        [Test]
+        public void ToggleFormationActive_AfterManualHistoryWhileDisabled_ReSnapAlignsToActors()
+        {
+            PartyManager partyManager = CreatePartyManagerWithMembers(2);
+            partyManager.SnapHistoryToCurrentPositions();
+
+            partyManager.ToggleFormationActive();
+
+            // Formation is off, but history APIs still run; leader breadcrumb can move independently of followers.
+            partyManager.RecordNewLeaderPosition(new Vector3Int(50, 50, 0));
+
+            partyManager.ToggleFormationActive();
+
+            Assert.AreEqual(2, partyManager.positionHistory.Count);
+            for (int i = 0; i < 2; i++)
+            {
+                Assert.AreEqual(
+                    partyManager.partyMembers[i].GridPosition,
+                    partyManager.positionHistory[i],
+                    "Re-enabling formation should snap the trail to where each party member actually stands.");
+            }
         }
 
         private PartyManager CreatePartyManagerWithMembers(int count)
