@@ -172,6 +172,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ToggleFormation"",
+                    ""type"": ""Button"",
+                    ""id"": ""620ee475-5028-4abc-ac43-a06403e2cd5d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1098,6 +1107,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""SelectPartyMember"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3ce41ab1-4232-4a84-a608-3472faa92e4a"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleFormation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1115,6 +1135,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_Wait = m_Player.FindAction("Wait", throwIfNotFound: true);
         m_Player_CyclePartyMembers = m_Player.FindAction("CyclePartyMembers", throwIfNotFound: true);
         m_Player_SelectPartyMember = m_Player.FindAction("SelectPartyMember", throwIfNotFound: true);
+        m_Player_ToggleFormation = m_Player.FindAction("ToggleFormation", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -1204,6 +1225,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Wait;
     private readonly InputAction m_Player_CyclePartyMembers;
     private readonly InputAction m_Player_SelectPartyMember;
+    private readonly InputAction m_Player_ToggleFormation;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1251,6 +1273,10 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/SelectPartyMember".
         /// </summary>
         public InputAction @SelectPartyMember => m_Wrapper.m_Player_SelectPartyMember;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ToggleFormation".
+        /// </summary>
+        public InputAction @ToggleFormation => m_Wrapper.m_Player_ToggleFormation;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1304,6 +1330,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @SelectPartyMember.started += instance.OnSelectPartyMember;
             @SelectPartyMember.performed += instance.OnSelectPartyMember;
             @SelectPartyMember.canceled += instance.OnSelectPartyMember;
+            @ToggleFormation.started += instance.OnToggleFormation;
+            @ToggleFormation.performed += instance.OnToggleFormation;
+            @ToggleFormation.canceled += instance.OnToggleFormation;
         }
 
         /// <summary>
@@ -1342,6 +1371,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @SelectPartyMember.started -= instance.OnSelectPartyMember;
             @SelectPartyMember.performed -= instance.OnSelectPartyMember;
             @SelectPartyMember.canceled -= instance.OnSelectPartyMember;
+            @ToggleFormation.started -= instance.OnToggleFormation;
+            @ToggleFormation.performed -= instance.OnToggleFormation;
+            @ToggleFormation.canceled -= instance.OnToggleFormation;
         }
 
         /// <summary>
@@ -1445,5 +1477,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSelectPartyMember(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleFormation" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleFormation(InputAction.CallbackContext context);
     }
 }

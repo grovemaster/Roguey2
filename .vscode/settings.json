@@ -68,5 +68,9 @@
         "*.slnx": "*.csproj"
     },
     "dotnet.defaultSolution": "Roguey2.slnx",
-    "dotnet.enableWorkspaceBasedDevelopment": false
+    "dotnet.enableWorkspaceBasedDevelopment": false,
+    "[csharp]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "nromanov.dotrush"
+    }
 }

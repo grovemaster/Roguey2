@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 7471007482051096710}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -125,7 +125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b654065d5bc2655ccbd55612fb2300e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentManager
-  equippedWeapon: {fileID: 0}
 --- !u!114 &503074541225380116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,37 +171,26 @@ MonoBehaviour:
   renown: 0
   sight:
     baseValue: 8
-    modifiers: 
   hearing:
     baseValue: 10
-    modifiers: 
   smell:
     baseValue: 5
-    modifiers: 
   Strength:
     baseValue: 10
-    modifiers: 
   Dexterity:
     baseValue: 10
-    modifiers: 
   Agility:
     baseValue: 10
-    modifiers: 
   Constitution:
     baseValue: 10
-    modifiers: 
   Intelligence:
     baseValue: 10
-    modifiers: 
   Wisdom:
     baseValue: 10
-    modifiers: 
   Charisma:
     baseValue: 10
-    modifiers: 
   Luck:
     baseValue: 10
-    modifiers: 
   currentHP: 0
   currentSoulPower: 0
 --- !u!61 &14020384444482333

@@ -33,23 +33,53 @@ namespace JRogue.Ability.Teleport
         //     return false;
         // }
 
+        // public override bool Execute(GameObject user, Vector3Int targetTile)
+        // {
+        //     IBattleTarget target = user.GetComponent<IBattleTarget>();
+
+        //     if (target != null)
+        //     {
+        //         target.ApplyPositionChange(targetTile);
+
+        //         // ADDED: Realign history so the next 'Rush' knows where the leader is
+        //         if (user.TryGetComponent<BaseActor>(out var actor))
+        //         {
+        //             if (PartyManager.Instance.GetActiveMember() == actor)
+        //             {
+        //                 PartyManager.Instance.SnapHistoryToCurrentPositions();
+        //                 Debug.Log("[TELEPORT] Leader teleported. History snapped to new location.");
+        //             }
+        //         }
+        //         return true;
+        //     }
+        //     return false;
+        // }
+
         public override bool Execute(GameObject user, Vector3Int targetTile)
         {
             IBattleTarget target = user.GetComponent<IBattleTarget>();
 
             if (target != null)
             {
+                // 1. Move the actor physically and update the GridManager
                 target.ApplyPositionChange(targetTile);
 
-                // ADDED: Realign history so the next 'Rush' knows where the leader is
+                // 2. Identify the actor to check party status[cite: 5]
                 if (user.TryGetComponent<BaseActor>(out var actor))
                 {
-                    if (PartyManager.Instance.GetActiveMember() == actor)
+                    // Only snap if the actor is the leader and formation is active[cite: 2, 5]
+                    if (PartyManager.Instance.GetActiveMember() == actor && PartyManager.Instance.IsFormationActive)
                     {
+                        // Snap ensures history[0] is the new teleport tile and others are current positions
                         PartyManager.Instance.SnapHistoryToCurrentPositions();
-                        Debug.Log("[TELEPORT] Leader teleported. History snapped to new location.");
+                        Debug.Log($"[TELEPORT] {actor.name} (Leader) teleported. History snapped to {targetTile}.");
                     }
+
+                    // 3. IMPORTANT: Inform the TurnManager that this actor's action is spent
+                    // This prevents a 'Rush' from moving the caster again in the same turn.
+                    JRogue.Manager.Turn.TurnManager.Instance.OnPlayerActionComplete(user);
                 }
+
                 return true;
             }
             return false;

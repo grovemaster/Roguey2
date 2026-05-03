@@ -86,6 +86,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ToggleFormation",
+                    "type": "Button",
+                    "id": "620ee475-5028-4abc-ac43-a06403e2cd5d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1010,6 +1019,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SelectPartyMember",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3ce41ab1-4232-4a84-a608-3472faa92e4a",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleFormation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

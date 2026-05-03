@@ -15,8 +15,9 @@ namespace JRogue.Manager.Party
         private int activeIndex = 0;
 
         [Header("Formation Settings")]
+        [SerializeField]
         // Requirement: Toggle between Follow-the-leader and Manual control
-        public bool isFormationActive = true;
+        private bool isFormationActive = true;
 
         // This will store the leader's path for followers to "Rush" into
         // private Queue<Vector3Int> breadcrumbTrail = new Queue<Vector3Int>();
@@ -26,6 +27,25 @@ namespace JRogue.Manager.Party
         [Header("Formation History")]
         public List<Vector3Int> positionHistory = new List<Vector3Int>();
         // private const int MAX_BREADCRUMBS = 10;
+
+        public bool IsFormationActive
+        {
+            get => isFormationActive;
+        }
+
+        // public bool ToggleFormationActive() =>
+        //     isFormationActive = !isFormationActive;
+
+        // Modified: Now automatically snaps history when toggled on
+        public bool ToggleFormationActive()
+        {
+            isFormationActive = !isFormationActive;
+            if (isFormationActive)
+            {
+                SnapHistoryToCurrentPositions();
+            }
+            return isFormationActive;
+        }
 
         void Awake()
         {
@@ -45,51 +65,97 @@ namespace JRogue.Manager.Party
                 positionHistory.Add(actPos);
                 Debug.Log($"[START-INIT] Slot [{i}] ({partyMembers[i].name}) set to {actPos}");
             }
+
+            SnapHistoryToCurrentPositions();
         }
 
         public void RecordNewLeaderPosition(Vector3Int newPos)
         {
-            // --- THE GATEKEEPER ---
-            // If the leader is still at the same spot, do nothing and return.
-            // This prevents index 0 and 1 from becoming the same coordinate, which causes clustering.
+            // 1. STATIONARY CHECK
             if (positionHistory.Count > 0 && positionHistory[0] == newPos)
             {
-                // Keeping a log here so you know WHY the shift didn't happen
+                // Helpful to know if the logic is skipping because the leader bumped into a wall
                 Debug.Log($"[RECORD-SKIP] Leader stationary at {newPos}. History preserved.");
                 return;
             }
 
-            Debug.Log($"[RECORD-START] Leader stepped onto: {newPos}. Current History Count: {positionHistory.Count}");
-            List<Vector3Int> nextHistory = new List<Vector3Int>();
+            Debug.Log($"[RECORD-START] Leader moving to {newPos}. Shifting history for {partyMembers.Count} members.");
 
-            nextHistory.Add(newPos);
+            // The leader's OLD position (history[0]) is what the first follower (index 1) will target.
+            Vector3Int carryPos = positionHistory[0];
 
-            for (int i = 0; i < partyMembers.Count - 1; i++)
+            // Update the leader's current slot
+            Debug.Log($"[RECORD-LEADER] Index [0] updated: {positionHistory[0]} -> {newPos}");
+            positionHistory[0] = newPos;
+
+            // 2. SHIFT LOOP
+            for (int i = 1; i < partyMembers.Count; i++)
             {
                 if (i < positionHistory.Count)
                 {
-                    Vector3Int oldPos = positionHistory[i];
+                    Vector3Int oldHistoryPos = positionHistory[i];
 
-                    // Your original massive teleportation jump check
-                    if (i > 0 && Vector3Int.Distance(oldPos, nextHistory[i]) > 1.5f)
-                    {
-                        Debug.LogError($"[SANITY-FAIL] Index {i + 1} is receiving {oldPos}, which is too far from {nextHistory[i]}!");
-                    }
+                    // Log the hand-off: CarryPos is the tile vacated by the person in front
+                    Debug.Log($"[RECORD-SHIFT] Index [{i}] ({partyMembers[i].name}) receiving breadcrumb {carryPos}. (Old was {oldHistoryPos})");
 
-                    Debug.Log($"[RECORD-SHIFT] Index {i} -> {i + 1}. Carrying Pos: {oldPos}");
-                    nextHistory.Add(oldPos);
+                    positionHistory[i] = carryPos;
+                    carryPos = oldHistoryPos;
                 }
                 else
                 {
-                    Vector3Int fallback = partyMembers[i].GridPosition;
-                    Debug.LogWarning($"[RECORD-OOB] Index {i} missing history. Fallback to Member Pos: {fallback}");
-                    nextHistory.Add(fallback);
+                    // This handles cases where the history list was shorter than the party list
+                    Vector3Int memberPos = partyMembers[i].GridPosition;
+                    Debug.LogWarning($"[RECORD-PAD] History index [{i}] was missing. Padding with member's current pos: {memberPos}");
+                    positionHistory.Add(memberPos);
                 }
             }
 
-            positionHistory = nextHistory;
-            PrintHistoryReport("FINAL SHIFT");
+            PrintHistoryReport("SHIFT-COMPLETE");
         }
+
+        // public void RecordNewLeaderPosition(Vector3Int newPos)
+        // {
+        //     // --- THE GATEKEEPER ---
+        //     // If the leader is still at the same spot, do nothing and return.
+        //     // This prevents index 0 and 1 from becoming the same coordinate, which causes clustering.
+        //     if (positionHistory.Count > 0 && positionHistory[0] == newPos)
+        //     {
+        //         // Keeping a log here so you know WHY the shift didn't happen
+        //         Debug.Log($"[RECORD-SKIP] Leader stationary at {newPos}. History preserved.");
+        //         return;
+        //     }
+
+        //     Debug.Log($"[RECORD-START] Leader stepped onto: {newPos}. Current History Count: {positionHistory.Count}");
+        //     List<Vector3Int> nextHistory = new List<Vector3Int>();
+
+        //     nextHistory.Add(newPos);
+
+        //     for (int i = 0; i < partyMembers.Count - 1; i++)
+        //     {
+        //         if (i < positionHistory.Count)
+        //         {
+        //             Vector3Int oldPos = positionHistory[i];
+
+        //             // Your original massive teleportation jump check
+        //             if (i > 0 && Vector3Int.Distance(oldPos, nextHistory[i]) > 1.5f)
+        //             {
+        //                 Debug.LogError($"[SANITY-FAIL] Index {i + 1} is receiving {oldPos}, which is too far from {nextHistory[i]}!");
+        //             }
+
+        //             Debug.Log($"[RECORD-SHIFT] Index {i} -> {i + 1}. Carrying Pos: {oldPos}");
+        //             nextHistory.Add(oldPos);
+        //         }
+        //         else
+        //         {
+        //             Vector3Int fallback = partyMembers[i].GridPosition;
+        //             Debug.LogWarning($"[RECORD-OOB] Index {i} missing history. Fallback to Member Pos: {fallback}");
+        //             nextHistory.Add(fallback);
+        //         }
+        //     }
+
+        //     positionHistory = nextHistory;
+        //     PrintHistoryReport("FINAL SHIFT");
+        // }
 
         private void PrintHistoryReport(string label)
         {
@@ -108,43 +174,73 @@ namespace JRogue.Manager.Party
             SwapActiveMember(nextIndex);
         }
 
+        /// <summary>
+        /// Logic to designate a character as leader and reorder the party list.
+        /// This ensures Index 0 is ALWAYS the person you are controlling.
+        /// </summary>
         public void SwapActiveMember(int index)
         {
-            if (partyMembers.Count == 0) return;
+            if (partyMembers.Count == 0 || index < 0 || index >= partyMembers.Count) return;
 
-            activeIndex = Mathf.Clamp(index, 0, partyMembers.Count - 1);
+            // 1. Identify the new leader
+            BaseActor newLeader = partyMembers[index];
 
-            // Re-enable your camera logic
-            // Camera.main.GetComponent<CameraFollow>()?.SetTarget(GetActiveMember().transform);
+            // 2. REORDER: Move selected member to index 0
+            // This is critical so that RecordNewLeaderPosition and Rush logic
+            // always see the controlled player as the start of the chain.
+            partyMembers.RemoveAt(index);
+            partyMembers.Insert(0, newLeader);
 
-            // 1. Get the newly selected character
-            BaseActor activeActor = GetActiveMember();
+            // Active index stays 0 because of the reordering
+            activeIndex = 0;
 
-            // 2. Find the camera and update its target
-            // We use FindAnyObjectByType for the setup phase, but you can 
-            // cache this reference in Start() for better performance later.
+            // 3. Update Camera
             CameraFollow cam = FindAnyObjectByType<JRogue.View.CameraFollow>();
-            if (cam != null && activeActor != null)
+            if (cam != null)
             {
-                cam.SetTarget(activeActor.transform);
+                cam.SetTarget(newLeader.transform);
             }
 
-            Debug.Log($"Active Party Member: {GetActiveMember().name}");
+            // 4. RESET HISTORY: When the leader changes, the old breadcrumbs 
+            // are invalid for the new line formation.
+            SnapHistoryToCurrentPositions();
+
+            Debug.Log($"[SWAP] Now controlling {newLeader.name}. Party list reordered and history snapped.");
         }
 
+        // public void SnapHistoryToCurrentPositions()
+        // {
+        //     positionHistory.Clear();
+
+        //     // The active member (new leader) always takes slot 0
+        //     BaseActor leader = GetActiveMember();
+        //     if (leader == null) return;
+
+        //     // Fill the history with the current physical locations of the party
+        //     // index 0 = Leader, index 1 = First Follower, etc.
+        //     for (int i = 0; i < partyMembers.Count; i++)
+        //     {
+        //         positionHistory.Add(partyMembers[i].GridPosition);
+        //     }
+
+        //     Debug.Log($"[PARTY-SNAP] History realigned to current party formation. Count: {positionHistory.Count}");
+        // }
+
+        // <summary>
+        /// Hard-aligns the breadcrumb trail to the current physical grid positions.
+        /// Use this when swapping leaders or enabling formation mid-turn.
+        /// </summary>
         public void SnapHistoryToCurrentPositions()
         {
             positionHistory.Clear();
-
-            // The active member (new leader) always takes slot 0
-            BaseActor leader = GetActiveMember();
-            if (leader == null) return;
 
             // Fill the history with the current physical locations of the party
             // index 0 = Leader, index 1 = First Follower, etc.
             for (int i = 0; i < partyMembers.Count; i++)
             {
-                positionHistory.Add(partyMembers[i].GridPosition);
+                Vector3Int pos = partyMembers[i].GridPosition;
+                positionHistory.Add(pos);
+                Debug.Log($"[PARTY-SNAP] Index [{i}] set to {pos}");
             }
 
             Debug.Log($"[PARTY-SNAP] History realigned to current party formation. Count: {positionHistory.Count}");

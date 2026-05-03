@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using JRogue.Ability;
 using JRogue.Actors;
 using JRogue.Core.Actor;
@@ -45,6 +46,9 @@ namespace JRogue.Input
             // controls.Player.SelectMember1.performed += _ => SwapTo(0);
             // controls.Player.SelectMember2.performed += _ => SwapTo(1);
             // controls.Player.SelectMember3.performed += _ => SwapTo(2);
+
+            // Formation Toggle
+            controls.Player.ToggleFormation.performed += OnToggleFormation;
         }
 
         private void OnEnable() => controls.Player.Enable();
@@ -53,8 +57,7 @@ namespace JRogue.Input
         public void OnMove(InputAction.CallbackContext context)
         {
             // --- RESTORED: Input system check ---
-            if (!context.performed) return;
-            if (TurnManager.Instance.currentState != GameState.PLAYER_TURN) return;
+            if (IsContextInvalid(context)) return;
 
             Vector2 input = context.ReadValue<Vector2>();
             Vector3Int direction = new Vector3Int(Mathf.RoundToInt(input.x), Mathf.RoundToInt(input.y), 0);
@@ -84,7 +87,7 @@ namespace JRogue.Input
                 // Requirement Check: Is this a bump against an enemy?
                 bool isEnemyBump = occupant != null && !isAllySwap;
 
-                if (PartyManager.Instance.isFormationActive)
+                if (PartyManager.Instance.IsFormationActive)
                 {
                     // We allow the action if it's a valid move OR an enemy bump
                     if (isEnemyBump || IsValidMove(targetTile, new Dictionary<BaseActor, Vector3Int>(), true))
@@ -128,75 +131,10 @@ namespace JRogue.Input
             }
         }
 
-        // public void OnMove(InputAction.CallbackContext context)
-        // {
-        //     if (!context.performed) return;
-        //     if (TurnManager.Instance.currentState != GameState.PLAYER_TURN) return;
-
-        //     Vector2 input = context.ReadValue<Vector2>();
-        //     Vector3Int direction = new Vector3Int(Mathf.RoundToInt(input.x), Mathf.RoundToInt(input.y), 0);
-
-        //     if (currentState == InputState.Targeting)
-        //     {
-        //         MoveReticle(direction);
-        //     }
-        //     else if (direction != Vector3Int.zero)
-        //     {
-        //         BaseActor activeMember = PartyManager.Instance.GetActiveMember();
-        //         if (activeMember == null) return;
-
-        //         if (!TurnManager.Instance.CanActorTakeAction(activeMember.gameObject)) return;
-
-        //         Vector3Int targetTile = activeMember.GridPosition + direction;
-        //         Vector3Int oldPosition = activeMember.GridPosition;
-
-        //         IBattleTarget occupant = GridManager.Instance.GetActorAt(targetTile);
-        //         bool isAllySwap = occupant is BaseActor ally && PartyManager.Instance.partyMembers.Contains(ally);
-
-        //         if (IsValidMove(targetTile, new Dictionary<BaseActor, Vector3Int>(), true))
-        //         {
-        //             if (PartyManager.Instance.isFormationActive)
-        //             {
-        //                 // Move the leader first
-        //                 if (activeMember.TryMove(direction))
-        //                 {
-        //                     PartyManager.Instance.RecordNewLeaderPosition(activeMember.GridPosition);
-
-        //                     // CRITICAL: We do NOT end the turn here anymore. 
-        //                     // We let ProcessFollowerRush handle the transition.
-        //                     ProcessFollowerRush();
-        //                 }
-        //             }
-        //             else
-        //             {
-        //                 // MANUAL MODE ATOMIC SWAP
-        //                 if (isAllySwap && occupant is BaseActor swappableAlly)
-        //                 {
-        //                     GridManager.Instance.UnregisterActor(activeMember.GridPosition);
-        //                     GridManager.Instance.UnregisterActor(swappableAlly.GridPosition);
-
-        //                     activeMember.ApplyPositionChange(targetTile);
-        //                     swappableAlly.ApplyPositionChange(oldPosition);
-
-        //                     Debug.Log($"[MANUAL-SWAP] {activeMember.name} moved to {targetTile}, pushed {swappableAlly.name} to {oldPosition}");
-        //                     TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);
-        //                 }
-        //                 else
-        //                 {
-        //                     if (activeMember.TryMove(direction))
-        //                     {
-        //                         TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
         public void OnWait(InputAction.CallbackContext context)
         {
             // Only trigger on the initial press and during the Player's turn
-            if (!context.performed || TurnManager.Instance.currentState != GameState.PLAYER_TURN) return;
+            if (IsContextInvalid(context)) return;
 
             BaseActor activeMember = PartyManager.Instance.GetActiveMember();
             if (activeMember == null) return;
@@ -217,7 +155,7 @@ namespace JRogue.Input
             {
                 Debug.Log("Party is skipping turns...");
                 // If they are in Auto mode, let them rush one step while waiting
-                if (PartyManager.Instance.isFormationActive)
+                if (PartyManager.Instance.IsFormationActive)
                 {
                     ProcessFollowerRush();
                 }
@@ -230,7 +168,7 @@ namespace JRogue.Input
                 Debug.Log($"{activeMember.name} is skipping turn...");
                 // If in Auto mode, others rush even if leader waits
                 // Even if only the leader waits, followers in "Auto" mode still move
-                if (PartyManager.Instance.isFormationActive)
+                if (PartyManager.Instance.IsFormationActive)
                 {
                     ProcessFollowerRush();
 
@@ -260,7 +198,7 @@ namespace JRogue.Input
                 pendingAbility = null;
                 ExitTargetingMode();
 
-                if (PartyManager.Instance.isFormationActive)
+                if (PartyManager.Instance.IsFormationActive)
                 {
                     // 1. Sync the history to the Leader's NEW teleported position
                     // This ensures the followers' "target slots" are updated to the teleport destination
@@ -303,31 +241,56 @@ namespace JRogue.Input
             }
         }
 
-        // public void ProcessFollowerRush()
-        // {
-        //     BaseActor leader = PartyManager.Instance.GetActiveMember();
-        //     var members = PartyManager.Instance.partyMembers;
+        public void OnToggleFormation(InputAction.CallbackContext context)
+        {
+            if (IsContextInvalid(context)) return;
 
-        //     for (int i = 0; i < members.Count; i++)
-        //     {
-        //         // Skip the leader
-        //         if (members[i] == leader) continue;
+            // Fetch the actor currently controlled by the player
+            BaseActor activeMember = PartyManager.Instance.GetActiveMember();
+            if (activeMember == null) return;
 
-        //         // 1. Calculate path to the leader or breadcrumb
-        //         // 2. Move the follower one step closer
-        //         Debug.Log($"{members[i].name} is rushing toward the formation.");
+            // Requirement: Check if the current character has already acted
+            bool hasActed = !TurnManager.Instance.CanActorTakeAction(activeMember.gameObject);
 
-        //         // Logic will eventually look like:
-        //         // Vector3Int nextStep = Pathfinding.GetNextStep(member.GridPosition, leader.GridPosition);
-        //         // member.ApplyPositionChange(nextStep);
-        //     }
-        // }
+            if (!PartyManager.Instance.IsFormationActive)
+            {
+                if (hasActed)
+                {
+                    Debug.LogWarning($"[FORMATION] Cannot enable: {activeMember.name} has already taken an action.");
+                    return;
+                }
+
+                // Enable Formation
+                PartyManager.Instance.ToggleFormationActive();
+
+                // Mid-turn activation: Snap history to current positions so 
+                // the breadcrumb trail starts exactly where everyone is standing.
+                PartyManager.Instance.SnapHistoryToCurrentPositions();
+                Debug.Log($"[FORMATION] Enabled. {activeMember.name} is now the leader.");
+            }
+            else
+            {
+                // Disable Formation
+                PartyManager.Instance.ToggleFormationActive();
+                Debug.Log("[FORMATION] Disabled. Party members will move individually.");
+            }
+        }
 
         private void OnAbilityPerformed(InputAction.CallbackContext context, bool isShift, bool isCtrl)
         {
             // Consistency Check: Match your OnMove turn check exactly
-            if (!context.performed) return;
-            if (TurnManager.Instance.currentState != GameState.PLAYER_TURN) return;
+            if (IsContextInvalid(context)) return;
+
+            BaseActor activeMember = PartyManager.Instance.GetActiveMember();
+            if (activeMember == null) return;
+
+            // --- ADDED TURN CHECK ---
+            // Prevent character from even opening the targeting reticle if turn is over
+            if (!TurnManager.Instance.CanActorTakeAction(activeMember.gameObject))
+            {
+                Debug.LogWarning($"[INPUT] {activeMember.name} has already acted and cannot use abilities.");
+                return;
+            }
 
             string keyName = context.control.name;
 
@@ -336,7 +299,7 @@ namespace JRogue.Input
                 int slotIndex = numberPressed - 1;
 
                 // Fetch the actor currently controlled by the player
-                BaseActor activeMember = PartyManager.Instance.GetActiveMember();
+                // BaseActor activeMember = PartyManager.Instance.GetActiveMember();
 
                 if (activeMember != null)
                 {
@@ -451,7 +414,7 @@ namespace JRogue.Input
             Debug.Log($"{actor.name} is waiting...");
 
             // In "Auto" mode, even if the leader waits, the followers still get to "Rush"
-            if (PartyManager.Instance.isFormationActive)
+            if (PartyManager.Instance.IsFormationActive)
             {
                 ProcessFollowerRush();
             }
@@ -518,8 +481,11 @@ namespace JRogue.Input
             int maxRushDistance = 2;
 
             // 1. TOTAL LIFT - Your original logic
+            // 1. SELECTIVE LIFT: Only unregister those who CAN still act
             foreach (var member in party)
             {
+                // We lift everyone to clear the path, even if they have acted, 
+                // as long as they are part of the formation squad.
                 GridManager.Instance.UnregisterActor(member.GridPosition);
             }
 
@@ -532,53 +498,66 @@ namespace JRogue.Input
             for (int i = 1; i < party.Count; i++)
             {
                 BaseActor follower = party[i];
-                Vector3Int historicalTarget = (i < history.Count) ? history[i] : follower.GridPosition;
 
-                Vector3Int finalTarget = follower.GridPosition;
-                float dist = Vector3Int.Distance(follower.GridPosition, historicalTarget);
-
-                // Your distance-based target selection
-                if (dist <= maxRushDistance)
-                    finalTarget = historicalTarget;
-                else
+                // If they already acted, they 'claim' their current tile
+                if (!TurnManager.Instance.CanActorTakeAction(follower.gameObject))
                 {
-                    Vector3 direction = ((Vector3)(historicalTarget - follower.GridPosition)).normalized;
-                    finalTarget = Vector3Int.RoundToInt((Vector3)follower.GridPosition + (direction * maxRushDistance));
-                }
-
-                if (IsValidMove(finalTarget, plannedMoves))
-                {
-                    plannedMoves.Add(follower, finalTarget);
-                    Debug.Log($"[RUSH-PLAN] {follower.name} accepted target {finalTarget}");
+                    plannedMoves.Add(follower, follower.GridPosition);
+                    // CRITICAL: Tell the GridManager this tile is taken NOW 
+                    // so the next follower in the loop doesn't pick it.
+                    GridManager.Instance.RegisterActor(follower.GridPosition, follower);
+                    continue;
                 }
                 else
                 {
-                    // Your Smart Step search logic
-                    Vector3Int bestSmartTile = follower.GridPosition;
-                    float bestDistToBreadcrumb = float.MaxValue;
-                    bool foundSpot = false;
+                    Vector3Int historicalTarget = (i < history.Count) ? history[i] : follower.GridPosition;
 
-                    for (int x = -1; x <= 1; x++)
+                    Vector3Int finalTarget = follower.GridPosition;
+                    float dist = Vector3Int.Distance(follower.GridPosition, historicalTarget);
+
+                    // Your distance-based target selection
+                    if (dist <= maxRushDistance)
+                        finalTarget = historicalTarget;
+                    else
                     {
-                        for (int y = -1; y <= 1; y++)
-                        {
-                            if (x == 0 && y == 0) continue;
-                            Vector3Int neighbor = finalTarget + new Vector3Int(x, y, 0);
-                            if (Vector3Int.Distance(follower.GridPosition, neighbor) > maxRushDistance + 0.5f) continue;
+                        Vector3 direction = ((Vector3)(historicalTarget - follower.GridPosition)).normalized;
+                        finalTarget = Vector3Int.RoundToInt((Vector3)follower.GridPosition + (direction * maxRushDistance));
+                    }
 
-                            if (IsValidMove(neighbor, plannedMoves))
+                    if (IsValidMove(finalTarget, plannedMoves))
+                    {
+                        plannedMoves.Add(follower, finalTarget);
+                        Debug.Log($"[RUSH-PLAN] {follower.name} accepted target {finalTarget}");
+                    }
+                    else
+                    {
+                        // Your Smart Step search logic
+                        Vector3Int bestSmartTile = follower.GridPosition;
+                        float bestDistToBreadcrumb = float.MaxValue;
+                        bool foundSpot = false;
+
+                        for (int x = -1; x <= 1; x++)
+                        {
+                            for (int y = -1; y <= 1; y++)
                             {
-                                float d = Vector3Int.Distance(neighbor, historicalTarget);
-                                if (d < bestDistToBreadcrumb)
+                                if (x == 0 && y == 0) continue;
+                                Vector3Int neighbor = finalTarget + new Vector3Int(x, y, 0);
+                                if (Vector3Int.Distance(follower.GridPosition, neighbor) > maxRushDistance + 0.5f) continue;
+
+                                if (IsValidMove(neighbor, plannedMoves))
                                 {
-                                    bestDistToBreadcrumb = d;
-                                    bestSmartTile = neighbor;
-                                    foundSpot = true;
+                                    float d = Vector3Int.Distance(neighbor, historicalTarget);
+                                    if (d < bestDistToBreadcrumb)
+                                    {
+                                        bestDistToBreadcrumb = d;
+                                        bestSmartTile = neighbor;
+                                        foundSpot = true;
+                                    }
                                 }
                             }
                         }
+                        plannedMoves.Add(follower, foundSpot ? bestSmartTile : follower.GridPosition);
                     }
-                    plannedMoves.Add(follower, foundSpot ? bestSmartTile : follower.GridPosition);
                 }
             }
 
@@ -766,5 +745,8 @@ namespace JRogue.Input
             if (input.y != 0) return new Vector3Int(0, input.y > 0 ? 1 : -1, 0);
             return Vector3Int.zero;
         }
+
+        private bool IsContextInvalid(InputAction.CallbackContext context) =>
+        (!context.performed) || (TurnManager.Instance.currentState != GameState.PLAYER_TURN);
     }
 }

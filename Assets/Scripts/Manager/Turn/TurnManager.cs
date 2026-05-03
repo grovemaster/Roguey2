@@ -36,6 +36,13 @@ namespace JRogue.Manager.Turn
                 return;
             }
 
+            // Prevent double-counting if an actor is manually moved then Rushed
+            if (charactersWhoActed.Contains(actor))
+            {
+                Debug.Log($"[TurnManager] {actor.name} has already acted this turn. Skipping.");
+                return;
+            }
+
             // DEBUG: Print who is acting and how many are in the list
             Debug.Log($"[TurnManager] {actor.name} has acted. Total acted: {charactersWhoActed.Count + 1}");
 

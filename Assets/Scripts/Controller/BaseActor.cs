@@ -1,11 +1,11 @@
-using UnityEngine;
-using JRogue.Stats;
-using JRogue.Manager.Map;
-using JRogue.Manager.Essence;
 using JRogue.Core.Actor;
+using JRogue.Manager.Essence;
 using JRogue.Manager.Grid;
+using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
+using JRogue.Stats;
+using UnityEngine;
 
 namespace JRogue.Actors
 {
@@ -82,6 +82,13 @@ namespace JRogue.Actors
 
         public bool TryMove(Vector3Int direction)
         {
+            // NEW: Source of Truth Check
+            if (gameObject.CompareTag("Player") && !TurnManager.Instance.CanActorTakeAction(this.gameObject))
+            {
+                Debug.Log($"{gameObject.name} has already moved this turn. Skipping move.");
+                return false;
+            }
+
             Vector3Int targetPos = gridPosition + direction;
 
             // 1. Check Map Collision
@@ -127,34 +134,67 @@ namespace JRogue.Actors
             return true;
         }
 
+        // public void ApplyPositionChange(Vector3Int newPosition)
+        // {
+        //     Vector3Int oldPosition = gridPosition;
+
+        //     // Interface Implementation: Perform the grid registration
+        //     // GridManager.RegisterActor will log a [GRID-CONFLICT] if this fails.
+        //     GridManager.Instance.RegisterActor(newPosition, this);
+
+        //     // CRITICAL: Double check that the registration actually worked 
+        //     // by asking the grid who is currently in that tile.
+        //     if (GridManager.Instance.GetActorAt(newPosition) != (IBattleTarget)this)
+        //     {
+        //         // If the GridManager rejected us, we STOP here.
+        //         // We do not update our gridPosition, and we do NOT call SyncPosition().
+        //         return;
+        //     }
+
+        //     // Success: Update internal state
+        //     gridPosition = newPosition;
+
+        //     // Only remove from the grid if WE are the ones at the old spot.
+        //     if (GridManager.Instance.GetActorAt(oldPosition) == (IBattleTarget)this)
+        //     {
+        //         GridManager.Instance.UnregisterActor(oldPosition);
+        //     }
+
+        //     // Move the physical transform
+        //     SyncPosition();
+        //     Debug.Log($"{gameObject.name} moved from {oldPosition} to {newPosition}");
+        // }
+
         public void ApplyPositionChange(Vector3Int newPosition)
         {
             Vector3Int oldPosition = gridPosition;
 
-            // Interface Implementation: Perform the grid registration
-            // GridManager.RegisterActor will log a [GRID-CONFLICT] if this fails.
-            GridManager.Instance.RegisterActor(newPosition, this);
+            // 1. Only act if the position is actually different
+            if (oldPosition == newPosition) return;
 
-            // CRITICAL: Double check that the registration actually worked 
-            // by asking the grid who is currently in that tile.
-            if (GridManager.Instance.GetActorAt(newPosition) != (IBattleTarget)this)
-            {
-                // If the GridManager rejected us, we STOP here.
-                // We do not update our gridPosition, and we do NOT call SyncPosition().
-                return;
-            }
-
-            // Success: Update internal state
-            gridPosition = newPosition;
-
-            // Only remove from the grid if WE are the ones at the old spot.
+            // 2. Unregister from the OLD position first[cite: 4, 6]
+            // Only unregister if WE are the ones currently listed there.
             if (GridManager.Instance.GetActorAt(oldPosition) == (IBattleTarget)this)
             {
                 GridManager.Instance.UnregisterActor(oldPosition);
             }
 
-            // Move the physical transform
+            // 3. Attempt to register the NEW position[cite: 4, 6]
+            GridManager.Instance.RegisterActor(newPosition, this);
+
+            // 4. Verification Check
+            if (GridManager.Instance.GetActorAt(newPosition) != (IBattleTarget)this)
+            {
+                // If registration failed (blocked), re-register at the OLD spot and abort
+                GridManager.Instance.RegisterActor(oldPosition, this);
+                Debug.LogWarning($"[MOVE-ABORTED] {name} could not claim {newPosition}. Reverting to {oldPosition}.");
+                return;
+            }
+
+            // 5. Success: Update state and visuals
+            gridPosition = newPosition;
             SyncPosition();
+
             Debug.Log($"{gameObject.name} moved from {oldPosition} to {newPosition}");
         }
 
