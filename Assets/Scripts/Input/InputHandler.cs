@@ -102,6 +102,8 @@ namespace JRogue.Input
                             else
                             {
                                 Debug.Log($"[FORMATION-BUMP] Leader attacked at {targetTile}. Position stayed {oldPosition}.");
+                                // If we attacked but didn't move, ensure followers still have a valid 'current' target
+                                PartyManager.Instance.SnapHistoryToCurrentPositions();
                             }
 
                             // CRITICAL: Trigger Rush so followers catch up during the attack
@@ -114,11 +116,29 @@ namespace JRogue.Input
                     // --- RESTORED: Manual Mode Atomic Swap ---
                     if (isAllySwap && swappableAlly != null && IsValidMove(targetTile, new Dictionary<BaseActor, Vector3Int>(), true))
                     {
+                        // GridManager.Instance.UnregisterActor(activeMember.GridPosition);
+                        // GridManager.Instance.UnregisterActor(swappableAlly.GridPosition);
+
+                        // activeMember.ApplyPositionChange(targetTile);
+                        // swappableAlly.ApplyPositionChange(oldPosition);
+
+                        // Debug.Log($"[MANUAL-SWAP] {activeMember.name} swapped with {swappableAlly.name}");
+                        // TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);
+
+                        // 1. Lift both completely from the grid first
                         GridManager.Instance.UnregisterActor(activeMember.GridPosition);
                         GridManager.Instance.UnregisterActor(swappableAlly.GridPosition);
 
-                        activeMember.ApplyPositionChange(targetTile);
-                        swappableAlly.ApplyPositionChange(oldPosition);
+                        // 2. Teleport them to their new grid coordinates
+                        activeMember.SetGridPosition(targetTile);
+                        swappableAlly.SetGridPosition(oldPosition);
+
+                        // 3. Re-register and sync visuals
+                        GridManager.Instance.RegisterActor(activeMember.GridPosition, activeMember);
+                        GridManager.Instance.RegisterActor(swappableAlly.GridPosition, swappableAlly);
+
+                        activeMember.SyncPosition(); // You may need to make SyncPosition public/internal
+                        swappableAlly.SyncPosition();
 
                         Debug.Log($"[MANUAL-SWAP] {activeMember.name} swapped with {swappableAlly.name}");
                         TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);

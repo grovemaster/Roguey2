@@ -234,7 +234,7 @@ namespace JRogue.Actors
             return null;
         }
 
-        protected void SyncPosition() =>
+        public void SyncPosition() =>
         transform.position = new Vector3(gridPosition.x + 0.5f, gridPosition.y + 0.5f, 0);
 
         // 'abstract' forces the Player and Enemy to define their own death logic
