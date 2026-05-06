@@ -8,6 +8,23 @@ namespace JRogue.Manager.Grid
     {
         public static GridManager Instance { get; private set; }
 
+        private static readonly Vector3Int[] EightNeighbors =
+        {
+            new Vector3Int(1, 0, 0),
+            new Vector3Int(-1, 0, 0),
+            new Vector3Int(0, 1, 0),
+            new Vector3Int(0, -1, 0),
+            new Vector3Int(1, 1, 0),
+            new Vector3Int(1, -1, 0),
+            new Vector3Int(-1, 1, 0),
+            new Vector3Int(-1, -1, 0),
+        };
+
+        /// <summary>
+        /// Eight-direction offsets (cardinals first, then diagonals) for pathfinding and grid queries.
+        /// </summary>
+        public static IReadOnlyList<Vector3Int> EightDirectionOffsets => EightNeighbors;
+
         // The Spatial Hash: Maps a coordinate to the actor standing there
         private Dictionary<Vector3Int, IBattleTarget> actorMap = new Dictionary<Vector3Int, IBattleTarget>();
 
@@ -59,5 +76,14 @@ namespace JRogue.Manager.Grid
 
         // Used for AOE like Fireball
         public IEnumerable<IBattleTarget> GetAllActors() => actorMap.Values;
+
+        /// <summary>
+        /// Yields the eight neighboring grid cells (including diagonals) around <paramref name="origin"/>.
+        /// </summary>
+        public IEnumerable<Vector3Int> EnumerateEightNeighborCells(Vector3Int origin)
+        {
+            for (int i = 0; i < EightNeighbors.Length; i++)
+                yield return origin + EightNeighbors[i];
+        }
     }
 }

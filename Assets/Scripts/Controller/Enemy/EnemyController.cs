@@ -1,6 +1,8 @@
 using JRogue.Actors;
 using JRogue.Controller.Player;
+using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
+using JRogue.Pathfinding;
 using JRogue.Stats;
 using UnityEngine;
 
@@ -25,39 +27,41 @@ namespace JRogue.Controller.Enemy
         public void TakeTurn()
         {
             Vector3Int playerPos = player.GetGridPosition();
-            Vector3Int direction = GetMoveDirection(playerPos);
 
-            // If adjacent to player, attack!
-            if (Vector3Int.Distance(gridPosition, playerPos) <= 1.1f)
+            // 8-way adjacency (Chebyshev): matches diagonal movement and melee range.
+            Vector3Int diff = playerPos - gridPosition;
+            int cheb = Mathf.Max(Mathf.Abs(diff.x), Mathf.Abs(diff.y));
+            if (cheb <= 1)
             {
                 AttackPlayer();
+                return;
             }
-            else
+
+            if (mapManager != null
+                && GridManager.Instance != null
+                && GridAStarPathfinder.TryGetFirstStepTowards(
+                    gridPosition,
+                    playerPos,
+                    gameObject,
+                    mapManager,
+                    GridManager.Instance,
+                    out Vector3Int firstStep))
             {
-                MoveTowards(direction);
+                Vector3Int step = firstStep - gridPosition;
+                TryMove(step);
+                return;
             }
+
+            Vector3Int direction = GetFallbackCardinalStep(playerPos);
+            TryMove(direction);
         }
 
-        private Vector3Int GetMoveDirection(Vector3Int target)
+        private Vector3Int GetFallbackCardinalStep(Vector3Int target)
         {
             Vector3Int diff = target - gridPosition;
-            // Simple "Cardinal Only" AI
             if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
                 return new Vector3Int(diff.x > 0 ? 1 : -1, 0, 0);
-            else
-                return new Vector3Int(0, diff.y > 0 ? 1 : -1, 0);
-        }
-
-        private void MoveTowards(Vector3Int direction)
-        {
-            TryMove(direction);
-            // Vector3Int target = gridPosition + dir;
-            // // The enemy also obeys the MapManager!
-            // if (FindAnyObjectByType<MapManager>().IsWalkable(target))
-            // {
-            //     gridPosition = target;
-            //     SyncPosition();
-            // }
+            return new Vector3Int(0, diff.y > 0 ? 1 : -1, 0);
         }
 
         private void AttackPlayer()

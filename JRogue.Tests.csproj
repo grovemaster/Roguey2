@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTest.cs" />
+    <Compile Include="Assets/Tests/Controller/BaseActorTest.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Pathfinding/GridAStarPathfinderTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/MockMonoBehavior/TestQuietEssenceSlotManager.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Party/PartyManagerTest.cs" />
     <Compile Include="Assets/Tests/Mocks/MockBattleTarget.cs" />
@@ -1156,6 +1158,7 @@
   <ItemGroup>
     <ProjectReference Include="JRogue.csproj" />
     <ProjectReference Include="JRogue.Core.csproj" />
+    <ProjectReference Include="JRogue.Stats.csproj" />
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <ItemGroup>

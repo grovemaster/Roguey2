@@ -5,7 +5,8 @@
         "TNRD.NSubstitute",
         "UnityEngine.TestRunner",
         "GUID:4a992522e63146e92a6f9807b59c02ed",
-        "GUID:982e546c528458a2bafdcad049ab2e4d"
+        "GUID:982e546c528458a2bafdcad049ab2e4d",
+        "GUID:8709d6f4b16c94994b4d6f2cc6b59fb1"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

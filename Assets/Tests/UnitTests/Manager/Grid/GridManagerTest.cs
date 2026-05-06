@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEngine;
@@ -413,6 +414,40 @@ namespace JRogue.Tests.UnitTests.Manager.Grid
             Assert.AreEqual(1, allActors.Count);
             Assert.Contains(_mockTarget2, allActors);
             Assert.IsFalse(allActors.Contains(_mockTarget1));
+        }
+
+        #endregion
+
+        #region Eight-direction neighbor helpers
+
+        [Test]
+        public void EightDirectionOffsets_HasEightUniqueUnitSteps()
+        {
+            Assert.AreEqual(8, GridManager.EightDirectionOffsets.Count);
+            var seen = new HashSet<Vector3Int>();
+            foreach (Vector3Int o in GridManager.EightDirectionOffsets)
+            {
+                Assert.IsTrue(seen.Add(o), $"Duplicate offset {o}");
+                Assert.AreEqual(1, Mathf.Max(Mathf.Abs(o.x), Mathf.Abs(o.y)));
+            }
+        }
+
+        [Test]
+        public void EnumerateEightNeighborCells_ReturnsEightChebyshevAdjacentCells()
+        {
+            Vector3Int origin = new Vector3Int(4, -2, 0);
+            List<Vector3Int> neighbors = _gridManager.EnumerateEightNeighborCells(origin).ToList();
+
+            Assert.AreEqual(8, neighbors.Count);
+            var distinct = new HashSet<Vector3Int>(neighbors);
+            Assert.AreEqual(8, distinct.Count);
+
+            foreach (Vector3Int n in neighbors)
+            {
+                int dx = Mathf.Abs(n.x - origin.x);
+                int dy = Mathf.Abs(n.y - origin.y);
+                Assert.AreEqual(1, Mathf.Max(dx, dy), $"Expected Chebyshev distance 1 from {origin} to {n}");
+            }
         }
 
         #endregion
