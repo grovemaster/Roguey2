@@ -53,6 +53,7 @@
     <Compile Include="Assets/Scripts/Item/ItemInterfaces.cs" />
     <Compile Include="Assets/Scripts/Controller/Player/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridManager.cs" />
+    <Compile Include="Assets/Scripts/Manager/Visibility/Algorithm/ShadowCaster.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />

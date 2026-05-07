@@ -585,6 +585,7 @@ MonoBehaviour:
   - {fileID: 1255627955}
   visibleColor: {r: 1, g: 1, b: 1, a: 1}
   fogColor: {r: 0.15, g: 0.15, b: 0.2, a: 1}
+  viewRange: 3
 --- !u!4 &745011028
 Transform:
   m_ObjectHideFlags: 0
