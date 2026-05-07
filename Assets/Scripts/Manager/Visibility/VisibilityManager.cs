@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JRogue.Actors;
+using JRogue.Controller.Enemy;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Visibility.Algorithm;
@@ -13,6 +14,8 @@ public class VisibilityManager : MonoBehaviour
     public List<Tilemap> tilemaps;
     public Color visibleColor = Color.white;
     public Color fogColor = new Color(0.15f, 0.15f, 0.2f, 1.0f); // Slightly blue-tinted dark grey
+    public Color enemySightDebugTint = new Color(1f, 0.35f, 0.35f, 1f);
+    [Range(0f, 1f)] public float enemySightDebugBlend = 0.3f;
 
     public int viewRange = 8;
 
@@ -116,6 +119,63 @@ public class VisibilityManager : MonoBehaviour
         {
             RefreshVision();
         }
+
+        // Debug overlay: tint tiles currently visible to enemies.
+        if (Keyboard.current != null && Keyboard.current.semicolonKey.wasPressedThisFrame)
+        {
+            DebugOverlayEnemySight();
+        }
+    }
+
+    private void DebugOverlayEnemySight()
+    {
+        EnemyController[] enemies = FindObjectsByType<EnemyController>();
+        if (enemies == null || enemies.Length == 0 || MapManager.Instance == null) return;
+
+        HashSet<Vector3Int> enemyVisibleTiles = new HashSet<Vector3Int>();
+
+        foreach (EnemyController enemy in enemies)
+        {
+            if (enemy == null) continue;
+
+            foreach (Tilemap tm in tilemaps)
+            {
+                if (tm == null) continue;
+
+                foreach (Vector3Int pos in tm.cellBounds.allPositionsWithin)
+                {
+                    if (!tm.HasTile(pos)) continue;
+
+                    Vector3Int cell = new Vector3Int(pos.x, pos.y, 0);
+                    bool seen = Roguey2.Sensing.ConeSightUtility.TrySenseTarget(
+                        enemy,
+                        cell,
+                        MapManager.Instance,
+                        enemy.VisionRange,
+                        enemy.PrimaryConeAngle,
+                        enemy.PeripheralRangeMultiplier,
+                        out _);
+
+                    if (seen)
+                    {
+                        enemyVisibleTiles.Add(cell);
+                    }
+                }
+            }
+        }
+
+        foreach (Vector3Int pos in enemyVisibleTiles)
+        {
+            foreach (Tilemap tm in tilemaps)
+            {
+                if (tm == null || !tm.HasTile(pos)) continue;
+
+                Color current = tm.GetColor(pos);
+                tm.SetColor(pos, Color.Lerp(current, enemySightDebugTint, enemySightDebugBlend));
+            }
+        }
+
+        Debug.Log($"[SIGHT-DEBUG] Enemy FOV overlay tinted {enemyVisibleTiles.Count} tiles.");
     }
 
     // Temporary Test Logic

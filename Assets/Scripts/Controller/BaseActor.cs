@@ -9,6 +9,18 @@ using UnityEngine;
 
 namespace JRogue.Actors
 {
+    public enum FacingDirection
+    {
+        North,
+        NorthEast,
+        East,
+        SouthEast,
+        South,
+        SouthWest,
+        West,
+        NorthWest
+    }
+
     // 'abstract' means this is a template for other classes
     // These attributes force Unity to add the components if they are missing
     [RequireComponent(typeof(CharacterStats))]
@@ -17,6 +29,7 @@ namespace JRogue.Actors
     {
         [Header("References")]
         public CharacterStats stats;
+        public FacingDirection currentFacing = FacingDirection.North;
 
         protected MapManager mapManager;
         protected EssenceSlotManager essenceManager;
@@ -82,6 +95,11 @@ namespace JRogue.Actors
 
         public bool TryMove(Vector3Int direction)
         {
+            if (direction != Vector3Int.zero)
+            {
+                UpdateFacingFromDirection(direction);
+            }
+
             // NEW: Source of Truth Check
             if (gameObject.CompareTag("Player") && !TurnManager.Instance.CanActorTakeAction(this.gameObject))
             {
@@ -243,5 +261,36 @@ namespace JRogue.Actors
         public Vector3Int GetGridPosition() => gridPosition;
 
         public void SetGridPosition(Vector3Int newPos) => gridPosition = newPos;
+
+        public Vector2 GetFacingVector()
+        {
+            switch (currentFacing)
+            {
+                case FacingDirection.North: return Vector2.up;
+                case FacingDirection.NorthEast: return new Vector2(1f, 1f).normalized;
+                case FacingDirection.East: return Vector2.right;
+                case FacingDirection.SouthEast: return new Vector2(1f, -1f).normalized;
+                case FacingDirection.South: return Vector2.down;
+                case FacingDirection.SouthWest: return new Vector2(-1f, -1f).normalized;
+                case FacingDirection.West: return Vector2.left;
+                case FacingDirection.NorthWest: return new Vector2(-1f, 1f).normalized;
+                default: return Vector2.up;
+            }
+        }
+
+        protected void UpdateFacingFromDirection(Vector3Int direction)
+        {
+            int dx = Mathf.Clamp(direction.x, -1, 1);
+            int dy = Mathf.Clamp(direction.y, -1, 1);
+
+            if (dx == 0 && dy > 0) currentFacing = FacingDirection.North;
+            else if (dx > 0 && dy > 0) currentFacing = FacingDirection.NorthEast;
+            else if (dx > 0 && dy == 0) currentFacing = FacingDirection.East;
+            else if (dx > 0 && dy < 0) currentFacing = FacingDirection.SouthEast;
+            else if (dx == 0 && dy < 0) currentFacing = FacingDirection.South;
+            else if (dx < 0 && dy < 0) currentFacing = FacingDirection.SouthWest;
+            else if (dx < 0 && dy == 0) currentFacing = FacingDirection.West;
+            else if (dx < 0 && dy > 0) currentFacing = FacingDirection.NorthWest;
+        }
     }
 }

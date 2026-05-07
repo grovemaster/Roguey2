@@ -585,6 +585,8 @@ MonoBehaviour:
   - {fileID: 1255627955}
   visibleColor: {r: 1, g: 1, b: 1, a: 1}
   fogColor: {r: 0.15, g: 0.15, b: 0.2, a: 1}
+  enemySightDebugTint: {r: 1, g: 0.35, b: 0.35, a: 1}
+  enemySightDebugBlend: 0.3
   viewRange: 3
 --- !u!4 &745011028
 Transform:
@@ -3148,6 +3150,10 @@ PrefabInstance:
     - target: {fileID: 4177042056790637932, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 5257779920492708037, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: visionRange
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
