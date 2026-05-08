@@ -2837,6 +2837,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2082113327}
   - component: {fileID: 2082113326}
+  - component: {fileID: 2082113331}
   - component: {fileID: 2082113329}
   - component: {fileID: 2082113330}
   m_Layer: 0
@@ -2858,6 +2859,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 747b952efb9687682b12ac20605156ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Input.InputHandler
+  reticleView: {fileID: 2082113331}
+--- !u!114 &2082113331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082113325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fafda7ffc1baff2219b1dbaa9aeb852d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JRogue.UI.Targeting.TargetingReticleView
   reticlePrefab: {fileID: 3284163743200037445, guid: 0f328edd3c96cb7eeae3fd394da07705, type: 3}
 --- !u!4 &2082113327
 Transform:

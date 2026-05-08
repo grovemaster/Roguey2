@@ -1,0 +1,220 @@
+using System.Collections.Generic;
+using JRogue.Actors;
+using JRogue.Input;
+using JRogue.Item.Essence;
+using JRogue.Manager.Essence;
+using JRogue.Manager.Party;
+using JRogue.Manager.Turn;
+using JRogue.Tests.Mocks;
+using JRogue.UI.Targeting;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+
+namespace JRogue.Tests.UnitTests.Input
+{
+    [TestFixture]
+    public sealed class PlayerCommandProcessorTest
+    {
+        private readonly List<GameObject> _createdObjects = new List<GameObject>();
+        private readonly List<Object> _scriptableCleanup = new List<Object>();
+
+        [SetUp]
+        public void SetUp()
+        {
+            LogAssert.ignoreFailingMessages = true;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            LogAssert.ignoreFailingMessages = false;
+            foreach (GameObject o in _createdObjects)
+            {
+                if (o != null)
+                    Object.DestroyImmediate(o);
+            }
+
+            _createdObjects.Clear();
+
+            foreach (Object asset in _scriptableCleanup)
+            {
+                if (asset != null)
+                    Object.DestroyImmediate(asset);
+            }
+
+            _scriptableCleanup.Clear();
+
+            PartyManager.Instance = null;
+            TurnManager.Instance = null;
+        }
+
+        [Test]
+        public void TryApply_MoveGrid_ZeroDirection_ReturnsFalse()
+        {
+            SetupTwoMemberParty(out _, out PlayerCommandProcessor processor);
+
+            Assert.IsFalse(processor.TryApply(PlayerCommand.MoveGrid(Vector3Int.zero)));
+        }
+
+        [Test]
+        public void TryApply_MoveGrid_WhenEnemyTurn_ReturnsFalse()
+        {
+            SetupTwoMemberParty(out PartyManager _, out PlayerCommandProcessor processor);
+            TurnManager.Instance.currentState = GameState.ENEMY_TURN;
+
+            Assert.IsFalse(processor.TryApply(PlayerCommand.MoveGrid(Vector3Int.right)));
+        }
+
+        [Test]
+        public void TryApply_SwapPartyMember_WhenEnemyTurn_SucceedsAndReordersLeader()
+        {
+            SetupTwoMemberParty(out PartyManager party, out PlayerCommandProcessor processor);
+            TurnManager.Instance.currentState = GameState.ENEMY_TURN;
+
+            BaseActor member0 = party.partyMembers[0];
+            BaseActor member1 = party.partyMembers[1];
+
+            Assert.IsTrue(processor.TryApply(PlayerCommand.SwapPartyMember(1)));
+
+            Assert.AreSame(member1, party.partyMembers[0]);
+            Assert.AreSame(member0, party.partyMembers[1]);
+        }
+
+        [Test]
+        public void TryApply_MoveGrid_ManualMode_CompletesLeaderTurn()
+        {
+            SetupTwoMemberParty(out PartyManager party, out PlayerCommandProcessor processor);
+            InputTestSceneBuilder.SetPrivateField(party, "isFormationActive", false);
+
+            BaseActor leader = party.partyMembers[0];
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
+
+            Assert.IsTrue(TurnManager.Instance.CanActorTakeAction(leader.gameObject));
+            Assert.IsTrue(processor.TryApply(PlayerCommand.MoveGrid(Vector3Int.right)));
+
+            Assert.IsFalse(
+                TurnManager.Instance.CanActorTakeAction(leader.gameObject),
+                "Manual move consumes the leader's turn via OnPlayerActionComplete.");
+            Assert.AreEqual(new Vector3Int(1, 0, 0), leader.GridPosition);
+        }
+
+        [Test]
+        public void TryApply_AbilitySlot_TargetableThenCancel_ExitsTargeting()
+        {
+            SetupSingleMemberPartyWithTargetAbility(out PartyManager party, out PlayerCommandProcessor processor);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
+            InputTestSceneBuilder.SetPrivateField(party, "isFormationActive", false);
+
+            Assert.IsTrue(processor.TryApply(PlayerCommand.AbilitySlot(0, false, false)));
+            Assert.AreEqual(InputState.Targeting, processor.CurrentState);
+
+            Assert.IsTrue(processor.TryApply(PlayerCommand.CancelTarget()));
+            Assert.AreEqual(InputState.Normal, processor.CurrentState);
+        }
+
+        [Test]
+        public void TryApply_AbilitySlot_TargetableThenConfirm_CompletesTurn()
+        {
+            SetupSingleMemberPartyWithTargetAbility(out PartyManager party, out PlayerCommandProcessor processor);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
+            InputTestSceneBuilder.SetPrivateField(party, "isFormationActive", false);
+
+            BaseActor leader = party.partyMembers[0];
+
+            Assert.IsTrue(processor.TryApply(PlayerCommand.AbilitySlot(0, false, false)));
+            Assert.IsTrue(processor.TryApply(PlayerCommand.ConfirmTarget()));
+
+            Assert.AreEqual(InputState.Normal, processor.CurrentState);
+            Assert.IsFalse(TurnManager.Instance.CanActorTakeAction(leader.gameObject));
+        }
+
+        [Test]
+        public void ConfirmTarget_NotInTargeting_ReturnsFalse()
+        {
+            SetupTwoMemberParty(out PartyManager _, out PlayerCommandProcessor processor);
+
+            Assert.IsFalse(processor.TryApply(PlayerCommand.ConfirmTarget()));
+        }
+
+        [Test]
+        public void ProcessFollowerRush_WithBreadcrumbs_MovesFollowersTowardHistoricSlots()
+        {
+            InputTestSceneBuilder.SetupMapAndManagers(_createdObjects);
+            PartyManager party = InputTestSceneBuilder.CreatePartyWithTestActors(3, _createdObjects);
+            PlayerCommandProcessor processor = NewProcessorWithReticle();
+
+            BaseActor leader = party.partyMembers[0];
+
+            leader.SetGridPosition(new Vector3Int(0, 0, 0));
+            party.partyMembers[1].SetGridPosition(new Vector3Int(0, -2, 0));
+            party.partyMembers[2].SetGridPosition(new Vector3Int(0, -4, 0));
+            party.positionHistory = new List<Vector3Int>
+            {
+                new Vector3Int(0, 0, 0),
+                new Vector3Int(0, -1, 0),
+                new Vector3Int(0, -2, 0)
+            };
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
+
+            party.RecordNewLeaderPosition(leader.GridPosition);
+            processor.ProcessFollowerRush();
+
+            Assert.AreEqual(new Vector3Int(0, -1, 0), party.partyMembers[1].GridPosition);
+            Assert.AreEqual(new Vector3Int(0, -2, 0), party.partyMembers[2].GridPosition);
+            Assert.AreEqual(GameState.PLAYER_TURN, TurnManager.Instance.currentState);
+
+            foreach (BaseActor member in party.partyMembers)
+            {
+                Assert.IsTrue(
+                    TurnManager.Instance.CanActorTakeAction(member.gameObject),
+                    $"{member.name} should regain actions after FormationRush completes the squad sweep.");
+            }
+        }
+
+        private PlayerCommandProcessor NewProcessorWithReticle()
+        {
+            GameObject reticleGo = new GameObject("Reticle_Test");
+            _createdObjects.Add(reticleGo);
+            TargetingReticleView view = reticleGo.AddComponent<TargetingReticleView>();
+
+            var processor = new PlayerCommandProcessor();
+            processor.SetReticleView(view);
+            return processor;
+        }
+
+        private void SetupTwoMemberParty(out PartyManager party, out PlayerCommandProcessor processor)
+        {
+            InputTestSceneBuilder.SetupMapAndManagers(_createdObjects);
+            party = InputTestSceneBuilder.CreatePartyWithTestActors(2, _createdObjects);
+            processor = NewProcessorWithReticle();
+        }
+
+        private void SetupSingleMemberPartyWithTargetAbility(out PartyManager party, out PlayerCommandProcessor processor)
+        {
+            InputTestSceneBuilder.SetupMapAndManagers(_createdObjects);
+            party = InputTestSceneBuilder.CreatePartyWithTestActors(1, _createdObjects);
+
+            BaseActor leader = party.partyMembers[0];
+
+            var ability = ScriptableObject.CreateInstance<DummyTargetAbility>();
+            ability.requiresTarget = true;
+            ability.soulPowerCost = 0;
+
+            var essence = ScriptableObject.CreateInstance<EssenceData>();
+            essence.statModifiers = new List<AttributeModifier>();
+            essence.resistanceModifiers = new List<DamageResistanceModifier>();
+            essence.complexPassives = new List<PassiveEffect>();
+            essence.activeAbilities = new List<JRogue.Ability.AbilityAction> { ability };
+
+            EssenceSlotManager mgr = leader.GetComponent<EssenceSlotManager>();
+            mgr.EquipEssence(essence, 0);
+            leader.stats.currentSoulPower = 999;
+
+            _scriptableCleanup.Add(ability);
+            _scriptableCleanup.Add(essence);
+
+            processor = NewProcessorWithReticle();
+        }
+    }
+}

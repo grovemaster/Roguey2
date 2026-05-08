@@ -8,14 +8,13 @@ using JRogue.Actors;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
+using JRogue.Input;
 using JRogue.Manager.Turn;
 using JRogue.Tests.UnitTests.MockMonoBehavior;
 using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using UnityEngine.Tilemaps;
-
 namespace JRogue.Tests.UnitTests.Input
 {
     [TestFixture]
@@ -65,8 +64,8 @@ namespace JRogue.Tests.UnitTests.Input
             BaseActor leader = context.PartyManager.partyMembers[0];
 
             leader.SetGridPosition(new Vector3Int(0, 0, 0));
-            context.PartyManager.positionHistory = BuildTrailHistory(context.PartyManager.partyMembers);
-            RegisterCurrentPartyOnGrid(context.PartyManager.partyMembers);
+            context.PartyManager.positionHistory = InputTestSceneBuilder.BuildTrailHistory(context.PartyManager.partyMembers);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(context.PartyManager.partyMembers);
 
             InvokeProcessFollowerRush(context.InputHandler);
 
@@ -98,7 +97,7 @@ namespace JRogue.Tests.UnitTests.Input
                 new Vector3Int(0, 0, 0),
                 new Vector3Int(0, -1, 0)
             };
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
 
             InvokeProcessFollowerRush(context.InputHandler);
 
@@ -123,7 +122,7 @@ namespace JRogue.Tests.UnitTests.Input
                 new Vector3Int(0, 0, 0),
                 new Vector3Int(0, 0, 0)
             };
-            RegisterCurrentPartyOnGrid(context.PartyManager.partyMembers);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(context.PartyManager.partyMembers);
 
             InvokeProcessFollowerRush(context.InputHandler);
 
@@ -142,7 +141,7 @@ namespace JRogue.Tests.UnitTests.Input
             List<BaseActor> members = context.PartyManager.partyMembers;
             BaseActor leader = members[0];
 
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
             context.PartyManager.SnapHistoryToCurrentPositions();
 
             Vector3Int originalLeaderPos = leader.GridPosition;
@@ -174,7 +173,7 @@ namespace JRogue.Tests.UnitTests.Input
             members[0].SetGridPosition(new Vector3Int(0, 0, 0));
             members[1].SetGridPosition(new Vector3Int(0, -2, 0));
             members[2].SetGridPosition(new Vector3Int(0, -4, 0));
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
 
             context.PartyManager.positionHistory = new List<Vector3Int>
             {
@@ -194,7 +193,7 @@ namespace JRogue.Tests.UnitTests.Input
         }
 
         /// <summary>
-        /// Mirrors <see cref="JRogue.Input.InputHandler"/> rush planning while the spatial hash only holds the leader
+        /// Mirrors formation rush planning (<see cref="JRogue.Input.PlayerCommandProcessor"/>) while the spatial hash only holds the leader
         /// (followers unregistered until land). Validates scenarios with stale breadcrumbs and partial convergence across turns.
         /// </summary>
         [Test]
@@ -213,7 +212,7 @@ namespace JRogue.Tests.UnitTests.Input
                 new Vector3Int(0, 0, 0),
                 new Vector3Int(1, -1, 0)
             };
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
 
             Vector3Int leaderExpected = members[0].GridPosition;
             partyManager.RecordNewLeaderPosition(members[0].GridPosition);
@@ -235,7 +234,7 @@ namespace JRogue.Tests.UnitTests.Input
             members[0].SetGridPosition(new Vector3Int(-10, 0, 0));
             members[1].SetGridPosition(new Vector3Int(0, -4, 0));
             members[2].SetGridPosition(new Vector3Int(2, -3, 0));
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
             partyManager.SnapHistoryToCurrentPositions();
 
             Vector3Int leaderBeforeHist0 = partyManager.positionHistory[0];
@@ -276,7 +275,7 @@ namespace JRogue.Tests.UnitTests.Input
                 new Vector3Int(1, 0, 0),
                 new Vector3Int(1, 0, 0)
             };
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
 
             context.TurnManager.OnPlayerActionComplete(follower1.gameObject);
             Assert.IsFalse(context.TurnManager.CanActorTakeAction(follower1.gameObject));
@@ -321,9 +320,9 @@ namespace JRogue.Tests.UnitTests.Input
             members[0].SetGridPosition(new Vector3Int(0, 0, 0));
             members[1].SetGridPosition(new Vector3Int(0, -2, 0));
             members[2].SetGridPosition(new Vector3Int(2, -1, 0));
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
 
-            SetPrivateField(partyManager, "isFormationActive", false);
+            InputTestSceneBuilder.SetPrivateField(partyManager, "isFormationActive", false);
             partyManager.positionHistory = new List<Vector3Int>
             {
                 new Vector3Int(99, 99, 0),
@@ -354,7 +353,7 @@ namespace JRogue.Tests.UnitTests.Input
             PartyManager partyManager = context.PartyManager;
             BaseActor leader = partyManager.partyMembers[0];
 
-            SetPrivateField(partyManager, "isFormationActive", false);
+            InputTestSceneBuilder.SetPrivateField(partyManager, "isFormationActive", false);
             context.TurnManager.OnPlayerActionComplete(leader.gameObject);
             Assert.IsFalse(context.TurnManager.CanActorTakeAction(leader.gameObject));
 
@@ -384,7 +383,7 @@ namespace JRogue.Tests.UnitTests.Input
 
             leader.SetGridPosition(new Vector3Int(0, 0, 0));
             follower.SetGridPosition(new Vector3Int(0, -2, 0));
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
 
             context.TurnManager.OnPlayerActionComplete(leader.gameObject);
             Assert.IsFalse(context.TurnManager.CanActorTakeAction(leader.gameObject));
@@ -407,7 +406,7 @@ namespace JRogue.Tests.UnitTests.Input
         }
 
         /// <summary>
-        /// Duplicates <see cref="JRogue.Input.InputHandler.ProcessFollowerRush"/> follower planning versus leader lock and walkable tiles;
+        /// Duplicates <see cref="JRogue.Input.PlayerCommandProcessor.ProcessFollowerRush"/> follower planning versus leader lock and walkable tiles;
         /// asserts simulated landing equals actual and each follower closes &lt;= 2 tiles (Euclidean) toward its breadcrumb.
         /// </summary>
         [Test]
@@ -420,7 +419,7 @@ namespace JRogue.Tests.UnitTests.Input
             members[0].SetGridPosition(new Vector3Int(0, -1, 0));
             members[1].SetGridPosition(new Vector3Int(0, -8, 0));
             members[2].SetGridPosition(new Vector3Int(0, -13, 0));
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
             partyManager.SnapHistoryToCurrentPositions();
 
             Assert.IsTrue(members[0].TryMove(Vector3Int.down));
@@ -470,7 +469,7 @@ namespace JRogue.Tests.UnitTests.Input
             members[0].SetGridPosition(new Vector3Int(-22, 0, 0));
             members[1].SetGridPosition(new Vector3Int(-40, 0, 0));
             members[2].SetGridPosition(new Vector3Int(-55, 0, 0));
-            RegisterCurrentPartyOnGrid(members);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(members);
             partyManager.SnapHistoryToCurrentPositions();
 
             Assert.IsTrue(members[0].TryMove(Vector3Int.right));
@@ -506,10 +505,33 @@ namespace JRogue.Tests.UnitTests.Input
             AssertRushLeavesFreshPlayerTurn(members, context.TurnManager);
         }
 
+        [Test]
+        public void TryApplyRecordedCommand_MoveGrid_WhenEnemyTurn_ReturnsFalse()
+        {
+            TestFixtureContext context = CreateFixture(2);
+            context.TurnManager.currentState = GameState.ENEMY_TURN;
+
+            Assert.IsFalse(context.InputHandler.TryApplyRecordedCommand(PlayerCommand.MoveGrid(Vector3Int.right)));
+        }
+
+        [Test]
+        public void TryApplyRecordedCommand_SwapPartyMember_WhenEnemyTurn_ReordersControlledActor()
+        {
+            TestFixtureContext context = CreateFixture(2);
+            context.TurnManager.currentState = GameState.ENEMY_TURN;
+
+            BaseActor first = context.PartyManager.partyMembers[0];
+            BaseActor second = context.PartyManager.partyMembers[1];
+
+            Assert.IsTrue(context.InputHandler.TryApplyRecordedCommand(PlayerCommand.SwapPartyMember(1)));
+            Assert.AreSame(second, context.PartyManager.partyMembers[0]);
+            Assert.AreSame(first, context.PartyManager.partyMembers[1]);
+        }
+
         private TestFixtureContext CreateFixture(int partySize)
         {
-            CreateManagersAndMap();
-            PartyManager partyManager = CreatePartyManagerWithMembers(partySize);
+            InputTestSceneBuilder.SetupMapAndManagers(_createdObjects);
+            PartyManager partyManager = InputTestSceneBuilder.CreatePartyWithTestActors(partySize, _createdObjects);
             JRogue.Input.InputHandler inputHandler = CreateInputHandler();
 
             return new TestFixtureContext
@@ -520,75 +542,6 @@ namespace JRogue.Tests.UnitTests.Input
             };
         }
 
-        private void CreateManagersAndMap()
-        {
-            GameObject mapManagerObject = new GameObject("MapManager_Test");
-            _createdObjects.Add(mapManagerObject);
-            MapManager mapManager = mapManagerObject.AddComponent<MapManager>();
-
-            GameObject gridRoot = new GameObject("GridRoot_Test");
-            _createdObjects.Add(gridRoot);
-            gridRoot.AddComponent<Grid>();
-
-            GameObject floorObject = new GameObject("FloorTilemap_Test");
-            _createdObjects.Add(floorObject);
-            floorObject.transform.SetParent(gridRoot.transform);
-            Tilemap floorMap = floorObject.AddComponent<Tilemap>();
-            floorObject.AddComponent<TilemapRenderer>();
-
-            GameObject wallObject = new GameObject("WallTilemap_Test");
-            _createdObjects.Add(wallObject);
-            wallObject.transform.SetParent(gridRoot.transform);
-            Tilemap wallMap = wallObject.AddComponent<Tilemap>();
-            wallObject.AddComponent<TilemapRenderer>();
-
-            // Wider than default play areas so west-aligned explicit tests can place leaders near x = -22 and step into walkable tiles.
-            PopulateWalkableFloor(floorMap, radius: 60);
-
-            SetPrivateField(mapManager, "floorMap", floorMap);
-            SetPrivateField(mapManager, "wallMap", wallMap);
-
-            GameObject gridManagerObject = new GameObject("GridManager_Test");
-            _createdObjects.Add(gridManagerObject);
-            gridManagerObject.AddComponent<GridManager>();
-
-            GameObject turnManagerObject = new GameObject("TurnManager_Test");
-            _createdObjects.Add(turnManagerObject);
-            TurnManager turnManager = turnManagerObject.AddComponent<TurnManager>();
-            turnManager.currentState = GameState.PLAYER_TURN;
-
-            Assert.IsNotNull(mapManager);
-            Assert.IsNotNull(GridManager.Instance);
-            Assert.IsNotNull(TurnManager.Instance);
-        }
-
-        private PartyManager CreatePartyManagerWithMembers(int count)
-        {
-            GameObject managerObject = new GameObject("PartyManager_Test");
-            _createdObjects.Add(managerObject);
-            PartyManager partyManager = managerObject.AddComponent<PartyManager>();
-            partyManager.partyMembers = new List<BaseActor>();
-            List<IActorSeed> actorSeeds = CreateActorSeeds(count);
-
-            for (int i = 0; i < count; i++)
-            {
-                GameObject actorObject = new GameObject($"InputPartyActor_{i}");
-                _createdObjects.Add(actorObject);
-
-                // Subclass satisfies BaseActor's RequireComponent(EssenceSlotManager); CharacterStats is added automatically with TestPartyActor.
-                actorObject.AddComponent<TestQuietEssenceSlotManager>();
-
-                TestPartyActor actor = actorObject.AddComponent<TestPartyActor>();
-
-                actor.SetGridPosition(actorSeeds[i].GridPosition);
-                InitializeActorRuntimeDependencies(actor);
-                partyManager.partyMembers.Add(actor);
-            }
-
-            Assert.AreEqual(count, partyManager.partyMembers.Count);
-            return partyManager;
-        }
-
         private JRogue.Input.InputHandler CreateInputHandler()
         {
             GameObject inputObject = new GameObject("InputHandler_Test");
@@ -597,28 +550,7 @@ namespace JRogue.Tests.UnitTests.Input
         }
 
         /// <summary>
-        /// One entry per party member. Follower slot <c>i</c> must not equal the leader tile — rush uses
-        /// <see cref="JRogue.Input.InputHandler"/> occupancy rules without ally stacking, so breadcrumbs use each actor's grid cell.
-        /// </summary>
-        private static List<Vector3Int> BuildTrailHistory(List<BaseActor> members)
-        {
-            var history = new List<Vector3Int>(members.Count);
-            for (int i = 0; i < members.Count; i++)
-                history.Add(members[i].GridPosition);
-
-            return history;
-        }
-
-        private static void RegisterCurrentPartyOnGrid(List<BaseActor> members)
-        {
-            foreach (BaseActor member in members)
-            {
-                GridManager.Instance.RegisterActor(member.GridPosition, member);
-            }
-        }
-
-        /// <summary>
-        /// Mirrors <see cref="JRogue.Input.InputHandler.ProcessFollowerRush"/> planning phase: after the lift
+        /// Mirrors follower rush planning (<see cref="JRogue.Input.PlayerCommandProcessor.ProcessFollowerRush"/>) after the lift
         /// only <paramref name="leaderGrid"/> occupies the grid (followers may not jump onto it).
         /// </summary>
         private static Dictionary<BaseActor, Vector3Int> SimulateFollowerRushPlans(
@@ -695,45 +627,6 @@ namespace JRogue.Tests.UnitTests.Input
         private void InvokeProcessFollowerRush(JRogue.Input.InputHandler inputHandler)
         {
             _processFollowerRushMethod.Invoke(inputHandler, null);
-        }
-
-        private static void PopulateWalkableFloor(Tilemap floorMap, int radius)
-        {
-            Tile tile = ScriptableObject.CreateInstance<Tile>();
-            for (int x = -radius; x <= radius; x++)
-            {
-                for (int y = -radius; y <= radius; y++)
-                {
-                    floorMap.SetTile(new Vector3Int(x, y, 0), tile);
-                }
-            }
-        }
-
-        private static void SetPrivateField(object target, string fieldName, object value)
-        {
-            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            Assert.IsNotNull(field, $"Expected private field '{fieldName}' to exist.");
-            field.SetValue(target, value);
-        }
-
-        private static List<IActorSeed> CreateActorSeeds(int count)
-        {
-            var seeds = new List<IActorSeed>(count);
-            for (int i = 0; i < count; i++)
-            {
-                IActorSeed seed = Substitute.For<IActorSeed>();
-                seed.GridPosition.Returns(new Vector3Int(0, -i, 0));
-                seeds.Add(seed);
-            }
-
-            return seeds;
-        }
-
-        private static void InitializeActorRuntimeDependencies(BaseActor actor)
-        {
-            FieldInfo mapManagerField = typeof(BaseActor).GetField("mapManager", BindingFlags.Instance | BindingFlags.NonPublic);
-            Assert.IsNotNull(mapManagerField, "Expected protected field 'mapManager' to exist on BaseActor.");
-            mapManagerField.SetValue(actor, MapManager.Instance);
         }
 
         private static void AssertRushLeavesFreshPlayerTurn(IEnumerable<BaseActor> members, TurnManager turnManager)
@@ -916,19 +809,6 @@ namespace JRogue.Tests.UnitTests.Input
             public JRogue.Input.InputHandler InputHandler { get; set; }
             public PartyManager PartyManager { get; set; }
             public TurnManager TurnManager { get; set; }
-        }
-
-        private class TestPartyActor : BaseActor
-        {
-            protected override void Die()
-            {
-                // Not needed for unit tests.
-            }
-        }
-
-        public interface IActorSeed
-        {
-            Vector3Int GridPosition { get; }
         }
     }
 }

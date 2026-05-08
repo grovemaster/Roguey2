@@ -87,6 +87,59 @@ namespace JRogue.Actors.Components
         public void SyncPosition() =>
             transform.position = new Vector3(gridPosition.x + 0.5f, gridPosition.y + 0.5f, 0);
 
+        /// <summary>
+        /// Atomically swap the grid positions of <paramref name="a"/> and
+        /// <paramref name="b"/> through the spatial hash, preserving the
+        /// register/verify/revert invariants that <see cref="ApplyPositionChange"/>
+        /// already enforces. Fires <see cref="Moved"/> on both actors.
+        ///
+        /// Use this for any "two actors trade tiles" operation (party swap,
+        /// future displacement effects, etc.) so listeners and registration
+        /// logic stay consistent with single-actor moves.
+        /// </summary>
+        public static bool TrySwap(GridMover a, GridMover b)
+        {
+            if (a == null || b == null || a == b) return false;
+
+            GridManager grid = GridManager.Instance;
+            if (grid == null) return false;
+
+            Vector3Int posA = a.gridPosition;
+            Vector3Int posB = b.gridPosition;
+            if (posA == posB) return false;
+
+            // 1. Lift both off the spatial hash so the swap doesn't transiently
+            //    fail RegisterActor's conflict check.
+            if (grid.GetActorAt(posA) == a.self) grid.UnregisterActor(posA);
+            if (grid.GetActorAt(posB) == b.self) grid.UnregisterActor(posB);
+
+            // 2. Place each at the other's old tile.
+            grid.RegisterActor(posB, a.self);
+            grid.RegisterActor(posA, b.self);
+
+            // 3. Verify both registrations took.
+            if (grid.GetActorAt(posB) != a.self || grid.GetActorAt(posA) != b.self)
+            {
+                grid.UnregisterActor(posA);
+                grid.UnregisterActor(posB);
+                grid.RegisterActor(posA, a.self);
+                grid.RegisterActor(posB, b.self);
+                Debug.LogWarning($"[SWAP-ABORTED] {a.name} <-> {b.name} swap rejected by GridManager.");
+                return false;
+            }
+
+            // 4. Update internal state, sync visuals, fire Moved on both.
+            a.gridPosition = posB;
+            b.gridPosition = posA;
+            a.SyncPosition();
+            b.SyncPosition();
+
+            Debug.Log($"[SWAP] {a.name} {posA} <-> {b.name} {posB}");
+            a.Moved?.Invoke(posA, posB);
+            b.Moved?.Invoke(posB, posA);
+            return true;
+        }
+
         private void EnsureGridManager()
         {
             if (gridManager == null) gridManager = GridManager.Instance;

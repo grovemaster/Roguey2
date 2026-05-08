@@ -129,9 +129,38 @@ namespace JRogue.Manager.Essence
         }
 
         /// <summary>
-        /// Attempts to execute an ability from a specific essence slot.
+        /// Returns true if the user has enough Soul Power for the ability in
+        /// this slot. Lets callers (e.g., the input handler) gate UX such as
+        /// "don't open the targeting reticle if the player can't afford it."
+        /// </summary>
+        public bool CanAfford(int slotIndex, int abilityIndex)
+        {
+            AbilityAction ability = GetAbility(slotIndex, abilityIndex);
+            if (ability == null) return false;
+
+            var stats = GetComponent<JRogue.Stats.CharacterStats>();
+            return stats != null && stats.currentSoulPower >= ability.soulPowerCost;
+        }
+
+        /// <summary>
+        /// Attempts to execute an untargeted ability from a specific essence slot.
+        /// On success, deducts Soul Power and returns true.
         /// </summary>
         public bool TryExecuteAbility(int slotIndex, int abilityIndex)
+        {
+            return TryExecuteInternal(slotIndex, abilityIndex, useTarget: false, targetTile: default);
+        }
+
+        /// <summary>
+        /// Attempts to execute a targeted ability from a specific essence slot.
+        /// On success, deducts Soul Power and returns true.
+        /// </summary>
+        public bool TryExecuteAbility(int slotIndex, int abilityIndex, Vector3Int targetTile)
+        {
+            return TryExecuteInternal(slotIndex, abilityIndex, useTarget: true, targetTile);
+        }
+
+        private bool TryExecuteInternal(int slotIndex, int abilityIndex, bool useTarget, Vector3Int targetTile)
         {
             EssenceData essence = GetEssenceInSlot(slotIndex);
             if (essence == null || abilityIndex >= essence.activeAbilities.Count) return false;
@@ -139,27 +168,30 @@ namespace JRogue.Manager.Essence
             AbilityAction ability = essence.activeAbilities[abilityIndex];
             var stats = GetComponent<JRogue.Stats.CharacterStats>();
 
-            // 1. Check Resources
-            if (stats.currentSoulPower < ability.soulPowerCost)
+            // 1. Resource check
+            if (stats == null || stats.currentSoulPower < ability.soulPowerCost)
             {
                 Debug.Log("Not enough Soul Power!");
                 return false;
             }
 
-            // 2. Check Conditions (like "Must have a status effect")
+            // 2. Condition check (e.g. "must have a status effect")
             if (!ability.CanExecute(gameObject))
             {
                 Debug.Log($"{ability.abilityName} conditions not met!");
                 return false;
             }
 
-            // 3. Execute logic
-            if (ability.Execute(gameObject))
+            // 3. Execute, then deduct on success
+            bool executed = useTarget
+                ? ability.Execute(gameObject, targetTile)
+                : ability.Execute(gameObject);
+
+            if (executed)
             {
                 stats.currentSoulPower -= ability.soulPowerCost;
-                return true; // Successfully consumed a turn
+                return true;
             }
-
             return false;
         }
 

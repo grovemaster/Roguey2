@@ -80,27 +80,32 @@ namespace JRogue.Manager.Equipment
             return total;
         }
 
-        // Logic for the InputHandler to find an active ability from gear
+        // Logic for the InputHandler to fire an active ability from gear.
+        // Items currently do not consume Soul Power (gear is governed by
+        // charges/cooldowns instead). If that changes, mirror the resource
+        // logic from EssenceSlotManager.TryExecuteAbility here.
         public bool TryExecuteItemAbility(int slotIndex, int abilityIndex)
         {
-            // 1. Map the slot index (Ctrl+1, Ctrl+2) to an EquipmentSlot
+            return TryExecuteItemInternal(slotIndex, abilityIndex, useTarget: false, targetTile: default);
+        }
+
+        public bool TryExecuteItemAbility(int slotIndex, int abilityIndex, Vector3Int targetTile)
+        {
+            return TryExecuteItemInternal(slotIndex, abilityIndex, useTarget: true, targetTile);
+        }
+
+        private bool TryExecuteItemInternal(int slotIndex, int abilityIndex, bool useTarget, Vector3Int targetTile)
+        {
             EquipmentSlot targetSlot = MapIndexToSlot(slotIndex);
+            if (!currentEquipment.TryGetValue(targetSlot, out ItemData item)) return false;
+            if (item.activeAbilities == null || abilityIndex >= item.activeAbilities.Count) return false;
 
-            // 2. See if we have an item in that slot
-            if (currentEquipment.TryGetValue(targetSlot, out ItemData item))
-            {
-                // 3. Check if the item has the requested ability index (e.g., Ctrl+Shift+1)
-                if (item.activeAbilities != null && abilityIndex < item.activeAbilities.Count)
-                {
-                    AbilityAction ability = item.activeAbilities[abilityIndex];
+            AbilityAction ability = item.activeAbilities[abilityIndex];
+            if (!ability.CanExecute(gameObject)) return false;
 
-                    if (ability.CanExecute(gameObject))
-                    {
-                        return ability.Execute(gameObject);
-                    }
-                }
-            }
-            return false;
+            return useTarget
+                ? ability.Execute(gameObject, targetTile)
+                : ability.Execute(gameObject);
         }
 
         public ItemData GetItemFromEquipmentSlot(EquipmentSlot equipmentSlot)
