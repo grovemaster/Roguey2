@@ -18,13 +18,13 @@ namespace JRogue.Ability.Fireball
             return true;
         }
 
-        public override bool Execute(GameObject user)
+        protected override bool ExecuteCore(GameObject user)
         {
             Debug.Log("Do not cast fireball with this method");
             return false; // Needs target!
         }
 
-        public override bool Execute(GameObject user, Vector3Int targetTile)
+        protected override bool ExecuteCore(GameObject user, Vector3Int targetTile)
         {
             Debug.Log($"Casting Fireball at {targetTile}!");
 

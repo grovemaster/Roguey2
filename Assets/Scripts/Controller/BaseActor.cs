@@ -4,6 +4,7 @@ using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
+using JRogue.Service.Sensing;
 using JRogue.Stats;
 using UnityEngine;
 
@@ -25,7 +26,7 @@ namespace JRogue.Actors
     // These attributes force Unity to add the components if they are missing
     [RequireComponent(typeof(CharacterStats))]
     [RequireComponent(typeof(EssenceSlotManager))]
-    public abstract class BaseActor : MonoBehaviour, IBattleTarget
+    public abstract class BaseActor : MonoBehaviour, IBattleTarget, INoiseProducer
     {
         [Header("References")]
         public CharacterStats stats;
@@ -214,6 +215,20 @@ namespace JRogue.Actors
             SyncPosition();
 
             Debug.Log($"{gameObject.name} moved from {oldPosition} to {newPosition}");
+        }
+
+        public virtual void ProduceNoise(int volume)
+        {
+            if (volume <= 0) return;
+            AcousticsService.Broadcast(this, volume);
+        }
+
+        /// <summary>
+        /// Invoked when this actor perceives noise from elsewhere. Default: no-op.
+        /// Override on types that should react (player, enemies, future allies with hearing).
+        /// </summary>
+        public virtual void OnHearNoise(BaseActor source, Vector3Int origin, int rawVolume, int effectiveVolume)
+        {
         }
 
         public Vector3Int GetSmartStepTowards(Vector3Int target)

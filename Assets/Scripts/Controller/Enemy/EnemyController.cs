@@ -10,6 +10,8 @@ namespace JRogue.Controller.Enemy
     {
         public int hp = 3;
         public int attackPower = 1;
+        [Header("Acoustics")]
+        [SerializeField, Min(0)] private int meleeNoiseVolume = 5;
         [Header("Sight")]
         [SerializeField, Min(1)] private int visionRange = 8;
         [SerializeField, Range(0f, 180f)] private float primaryConeAngle = 135f;
@@ -88,6 +90,12 @@ namespace JRogue.Controller.Enemy
         {
             Debug.Log("The Enemy hits you!");
             // Future: player.TakeDamage(attackPower);
+            ProduceNoise(meleeNoiseVolume);
+        }
+
+        public override void OnHearNoise(BaseActor source, Vector3Int origin, int rawVolume, int effectiveVolume)
+        {
+            Debug.Log($"[SENSE-HEARING] {name} heard noise of volume {rawVolume} from ({origin.x},{origin.y}). Effective Volume at Enemy: {effectiveVolume}.");
         }
 
         private bool DetectAndLogPlayerIfNew()

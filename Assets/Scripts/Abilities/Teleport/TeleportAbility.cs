@@ -10,7 +10,7 @@ namespace JRogue.Ability.Teleport
     {
         public override bool CanExecute(GameObject user) => true;
 
-        public override bool Execute(GameObject user) => false; // Requires target!
+        protected override bool ExecuteCore(GameObject user) => false; // Requires target!
 
         // This is the one Milestone 16 uses:
         // public override bool Execute(GameObject user, Vector3Int targetTile)
@@ -55,7 +55,7 @@ namespace JRogue.Ability.Teleport
         //     return false;
         // }
 
-        public override bool Execute(GameObject user, Vector3Int targetTile)
+        protected override bool ExecuteCore(GameObject user, Vector3Int targetTile)
         {
             IBattleTarget target = user.GetComponent<IBattleTarget>();
 

@@ -18,6 +18,9 @@ namespace JRogue.Controller.Player
         private EquipmentManager equipment;
         public int baseAttack = 1;
 
+        [Header("Acoustics")]
+        [SerializeField, Min(0)] private int meleeNoiseVolume = 5;
+
         protected override void Awake() // Run before Start
         {
             base.Awake();
@@ -66,6 +69,13 @@ namespace JRogue.Controller.Player
             enemy.TakeDamage(damage, DamageType.Slash);
 
             Debug.Log($"Player attacked {enemy.name} for {damage} damage!");
+
+            ProduceNoise(meleeNoiseVolume);
+        }
+
+        public override void OnHearNoise(BaseActor source, Vector3Int origin, int rawVolume, int effectiveVolume)
+        {
+            Debug.Log($"[SENSE-HEARING] {name} heard noise of volume {rawVolume} from ({origin.x},{origin.y}). Effective Volume at Player: {effectiveVolume}.");
         }
 
         // // Start is called once before the first execution of Update after the MonoBehaviour is created

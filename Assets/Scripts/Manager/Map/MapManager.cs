@@ -47,5 +47,10 @@ namespace JRogue.Manager.Map
             // Check: Must have a floor AND NOT have a wall
             return floorMap.HasTile(gridPos) && !wallMap.HasTile(gridPos);
         }
+
+        public bool IsWall(Vector3Int gridPos)
+        {
+            return wallMap != null && wallMap.HasTile(gridPos);
+        }
     }
 }

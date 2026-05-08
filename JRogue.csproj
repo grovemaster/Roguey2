@@ -50,7 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/Abilities/Passive/HeroicSpirit.cs" />
+    <Compile Include="Assets/Scripts/Service/Sensing/AcousticsService.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInterfaces.cs" />
+    <Compile Include="Assets/Scripts/Service/Sensing/HearingUtility.cs" />
     <Compile Include="Assets/Scripts/Controller/Player/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridManager.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/Algorithm/ShadowCaster.cs" />

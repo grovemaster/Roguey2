@@ -14,7 +14,7 @@ namespace JRogue.Ability.Heal
             return stats.currentHP < stats.MaxHP;
         }
 
-        public override bool Execute(GameObject user)
+        protected override bool ExecuteCore(GameObject user)
         {
             var stats = user.GetComponent<JRogue.Stats.CharacterStats>();
 
