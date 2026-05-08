@@ -111,6 +111,24 @@ namespace JRogue.Manager.Essence
         }
 
         /// <summary>
+        /// Fire <see cref="PassiveEffect.OnTurnStart"/> for every equipped passive.
+        /// Called by the TurnManager (player) and EnemyController (enemy) at the
+        /// boundary of each actor's turn.
+        /// </summary>
+        public void NotifyTurnStart()
+        {
+            foreach (var essence in equippedEssences)
+            {
+                if (essence == null) continue;
+
+                foreach (var passive in essence.complexPassives)
+                {
+                    if (passive != null) passive.OnTurnStart(gameObject);
+                }
+            }
+        }
+
+        /// <summary>
         /// Attempts to execute an ability from a specific essence slot.
         /// </summary>
         public bool TryExecuteAbility(int slotIndex, int abilityIndex)

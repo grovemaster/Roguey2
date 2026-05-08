@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Assets/Scripts/Core/Actor/INoiseProducer.cs" />
     <Compile Include="Assets/Scripts/Core/Actor/IBattleTarget.cs" />
+    <Compile Include="Assets/Scripts/Core/Actor/EssenceType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Scripts/Core/Actor/JRogue.Core.asmdef" />

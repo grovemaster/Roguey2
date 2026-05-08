@@ -38,6 +38,8 @@ namespace JRogue.Controller.Enemy
             if (player == null) player = FindAnyObjectByType<PlayerController>();
             if (player == null) return;
 
+            essenceManager?.NotifyTurnStart();
+
             bool detectedThisTurn = DetectAndLogPlayerIfNew();
 
             Vector3Int playerPos = player.GetGridPosition();

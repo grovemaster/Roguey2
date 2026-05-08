@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using JRogue.Controller.Enemy;
+using JRogue.Manager.Essence;
 using JRogue.Manager.Party;
 using UnityEngine;
 public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY }
@@ -88,6 +89,18 @@ namespace JRogue.Manager.Turn
 
             currentState = GameState.PLAYER_TURN;
             Debug.Log("--- New Player Turn ---");
+            NotifyPartyTurnStart();
+        }
+
+        private void NotifyPartyTurnStart()
+        {
+            if (PartyManager.Instance == null) return;
+            foreach (var member in PartyManager.Instance.partyMembers)
+            {
+                if (member == null) continue;
+                var slots = member.GetComponent<EssenceSlotManager>();
+                if (slots != null) slots.NotifyTurnStart();
+            }
         }
 
         private bool IsPartyDone()

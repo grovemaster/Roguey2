@@ -32,6 +32,11 @@ namespace JRogue.Actors
         public CharacterStats stats;
         public FacingDirection currentFacing = FacingDirection.North;
 
+        [Header("Identity")]
+        [SerializeField, Tooltip("Categorical 'kind' of this actor for detection filters (radar etc.). Set a single bit per actor.")]
+        private EssenceType essenceType = EssenceType.Life;
+        public EssenceType EssenceType => essenceType;
+
         protected MapManager mapManager;
         protected EssenceSlotManager essenceManager;
         protected Vector3Int gridPosition;

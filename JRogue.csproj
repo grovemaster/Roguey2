@@ -68,10 +68,13 @@
     <Compile Include="Assets/Scripts/Manager/Turn/TurnManager.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryManager.cs" />
+    <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
     <Compile Include="Assets/Scripts/Collector/InventoryCollector.cs" />
     <Compile Include="Assets/Scripts/Abilities/Heal/HealAbility.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/SenseSightService.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Passive/RadarPassive.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
+    <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
     <Compile Include="Assets/Scripts/Abilities/Fireball/FIreballAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentManager.cs" />
