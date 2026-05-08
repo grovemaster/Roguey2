@@ -1,3 +1,4 @@
+using JRogue.Actors.Components;
 using JRogue.Core.Actor;
 using JRogue.Manager.Essence;
 using JRogue.Manager.Grid;
@@ -22,10 +23,11 @@ namespace JRogue.Actors
         NorthWest
     }
 
-    // 'abstract' means this is a template for other classes
-    // These attributes force Unity to add the components if they are missing
+    // Forces Unity to add the components if they are missing
     [RequireComponent(typeof(CharacterStats))]
     [RequireComponent(typeof(EssenceSlotManager))]
+    [RequireComponent(typeof(HealthComponent))]
+    [RequireComponent(typeof(GridMover))]
     public abstract class BaseActor : MonoBehaviour, IBattleTarget, INoiseProducer
     {
         [Header("References")]
@@ -39,87 +41,91 @@ namespace JRogue.Actors
 
         protected MapManager mapManager;
         protected EssenceSlotManager essenceManager;
-        protected Vector3Int gridPosition;
+        protected HealthComponent health;
+        protected GridMover mover;
 
-        public Vector3Int GridPosition => gridPosition;
+        // Cached singleton refs. Populated lazily via EnsureManagers() because
+        // singleton .Instance may not be set yet during Awake order, and unit
+        // tests sometimes skip Start. Once non-null, no more lookups happen.
+        protected GridManager gridManager;
+        protected TurnManager turnManager;
+        protected PartyManager partyManager;
 
-        public GameObject Owner => this.gameObject; // Simple: the actor is its own owner
+        public Vector3Int GridPosition => mover != null ? mover.GridPosition : Vector3Int.FloorToInt(transform.position);
+
+        // The actor IS its own owner for IBattleTarget purposes
+        public GameObject Owner => this.gameObject;
 
         protected virtual void Awake()
         {
             stats = GetComponent<CharacterStats>();
             essenceManager = GetComponent<EssenceSlotManager>();
+            health = GetComponent<HealthComponent>();
+            mover = GetComponent<GridMover>();
+
+            // BaseActor is the only place that knows how this kind of actor dies,
+            // so it owns the Died subscription. Subclasses still implement Die().
+            health.Died += HandleDied;
         }
 
         protected virtual void Start()
         {
-            // Every actor needs to know about the map to move
-            mapManager = FindAnyObjectByType<MapManager>();
-            gridPosition = Vector3Int.FloorToInt(transform.position);
-            // Register with the Spatial Hash on start
-            GridManager.Instance?.RegisterActor(gridPosition, this);
-            SyncPosition();
+            mapManager = MapManager.Instance != null
+                ? MapManager.Instance
+                : FindAnyObjectByType<MapManager>();
+            EnsureManagers();
         }
 
-        private void OnDestroy()
+        protected void EnsureManagers()
         {
-            // Clean up the Spatial Hash when an actor is removed
-            GridManager.Instance?.UnregisterActor(gridPosition);
+            if (gridManager == null) gridManager = GridManager.Instance;
+            if (turnManager == null) turnManager = TurnManager.Instance;
+            if (partyManager == null) partyManager = PartyManager.Instance;
         }
+
+        protected virtual void OnDestroy()
+        {
+            if (health != null) health.Died -= HandleDied;
+        }
+
+        private void HandleDied() => Die();
 
         public void TakeDamage(int amount, GameObject source)
         {
-            // Defaulting to Blunt for generic calls, or you could add a default type to the interface
-            TakeDamage(amount, DamageType.Blunt);
+            // Defaulting to Blunt for generic IBattleTarget calls
+            health.TakeDamage(amount, DamageType.Blunt);
         }
 
-        // Shared Logic: Taking Damage
         public virtual void TakeDamage(int rawDamage, DamageType type)
         {
-            int resistanceValue = stats.GetResistance(type);
-            int damageAfterResistance = Mathf.Max(1, rawDamage - resistanceValue);
-
-            // Factor in AC for physical types
-            if (type == DamageType.Blunt || type == DamageType.Slash || type == DamageType.Pierce)
-            {
-                damageAfterResistance = Mathf.Max(1, damageAfterResistance - (stats.ArmorClass / 5));
-            }
-
-            stats.currentHP -= damageAfterResistance;
-
-            // Check if this HP change triggered any passive thresholds (like Heroic Spirit)
-            essenceManager.RefreshConditionalPassives();
-
-            Debug.Log($"{gameObject.name} took {damageAfterResistance} {type} damage. " +
-                      $"HP: {stats.currentHP}/{stats.MaxHP}");
-
-            if (stats.currentHP <= 0)
-            {
-                Die();
-            }
+            health.TakeDamage(rawDamage, type);
         }
 
         public bool TryMove(Vector3Int direction)
         {
+            EnsureManagers();
+
             if (direction != Vector3Int.zero)
             {
                 UpdateFacingFromDirection(direction);
             }
 
-            // NEW: Source of Truth Check
-            if (gameObject.CompareTag("Player") && !TurnManager.Instance.CanActorTakeAction(this.gameObject))
+            // Source-of-truth check: don't let the player act twice in one turn
+            if (gameObject.CompareTag("Player")
+                && turnManager != null
+                && !turnManager.CanActorTakeAction(this.gameObject))
             {
                 Debug.Log($"{gameObject.name} has already moved this turn. Skipping move.");
                 return false;
             }
 
-            Vector3Int targetPos = gridPosition + direction;
+            Vector3Int targetPos = GridPosition + direction;
 
             // 1. Check Map Collision
             if (!mapManager.IsWalkable(targetPos)) return false;
 
-            // 2. Check for Actors
-            IBattleTarget target = GridManager.Instance.GetActorAt(targetPos);
+            // 2. Check for Actors at the target cell
+            IBattleTarget target = gridManager != null ? gridManager.GetActorAt(targetPos) : null;
 
             if (target != null && target.Owner != this.gameObject)
             {
@@ -127,99 +133,34 @@ namespace JRogue.Actors
                 {
                     OnBump(targetActor);
 
-                    // SWAP CHECK: If the target is a party member
-                    if (PartyManager.Instance.partyMembers.Contains(targetActor))
+                    // Swap allowed when target is a party member; otherwise the
+                    // bump itself replaces the move (combat consumes the action).
+                    bool isPartyMember = partyManager != null
+                        && partyManager.partyMembers.Contains(targetActor);
+                    if (!isPartyMember)
                     {
-                        // Proceed to ApplyPositionChange for the swap
-                    }
-                    else
-                    {
-                        // RECONCILED: It's an enemy. The bump is the action.
-                        // We MUST notify the TurnManager that this actor is done 
-                        // before returning true, otherwise the turn never ends.
-                        if (TurnManager.Instance != null)
-                        {
-                            TurnManager.Instance.OnPlayerActionComplete(this.gameObject);
-                        }
+                        // Combat ended the turn — notify the TurnManager so
+                        // the player turn doesn't hang.
+                        turnManager?.OnPlayerActionComplete(this.gameObject);
                         return true;
                     }
                 }
             }
 
-            // 3. Validation: Check if we are actually allowed to land on the grid
-            IBattleTarget occupant = GridManager.Instance.GetActorAt(targetPos);
+            // 3. Defensive re-check: another actor may have appeared
+            IBattleTarget occupant = gridManager != null ? gridManager.GetActorAt(targetPos) : null;
             if (occupant != null && occupant.Owner != this.gameObject)
             {
                 return false;
             }
 
-            // 4. Perform actual move
-            ApplyPositionChange(targetPos);
-            return true;
+            // 4. Perform the actual move via GridMover
+            return mover.ApplyPositionChange(targetPos);
         }
-
-        // public void ApplyPositionChange(Vector3Int newPosition)
-        // {
-        //     Vector3Int oldPosition = gridPosition;
-
-        //     // Interface Implementation: Perform the grid registration
-        //     // GridManager.RegisterActor will log a [GRID-CONFLICT] if this fails.
-        //     GridManager.Instance.RegisterActor(newPosition, this);
-
-        //     // CRITICAL: Double check that the registration actually worked 
-        //     // by asking the grid who is currently in that tile.
-        //     if (GridManager.Instance.GetActorAt(newPosition) != (IBattleTarget)this)
-        //     {
-        //         // If the GridManager rejected us, we STOP here.
-        //         // We do not update our gridPosition, and we do NOT call SyncPosition().
-        //         return;
-        //     }
-
-        //     // Success: Update internal state
-        //     gridPosition = newPosition;
-
-        //     // Only remove from the grid if WE are the ones at the old spot.
-        //     if (GridManager.Instance.GetActorAt(oldPosition) == (IBattleTarget)this)
-        //     {
-        //         GridManager.Instance.UnregisterActor(oldPosition);
-        //     }
-
-        //     // Move the physical transform
-        //     SyncPosition();
-        //     Debug.Log($"{gameObject.name} moved from {oldPosition} to {newPosition}");
-        // }
 
         public void ApplyPositionChange(Vector3Int newPosition)
         {
-            Vector3Int oldPosition = gridPosition;
-
-            // 1. Only act if the position is actually different
-            if (oldPosition == newPosition) return;
-
-            // 2. Unregister from the OLD position first[cite: 4, 6]
-            // Only unregister if WE are the ones currently listed there.
-            if (GridManager.Instance.GetActorAt(oldPosition) == (IBattleTarget)this)
-            {
-                GridManager.Instance.UnregisterActor(oldPosition);
-            }
-
-            // 3. Attempt to register the NEW position[cite: 4, 6]
-            GridManager.Instance.RegisterActor(newPosition, this);
-
-            // 4. Verification Check
-            if (GridManager.Instance.GetActorAt(newPosition) != (IBattleTarget)this)
-            {
-                // If registration failed (blocked), re-register at the OLD spot and abort
-                GridManager.Instance.RegisterActor(oldPosition, this);
-                Debug.LogWarning($"[MOVE-ABORTED] {name} could not claim {newPosition}. Reverting to {oldPosition}.");
-                return;
-            }
-
-            // 5. Success: Update state and visuals
-            gridPosition = newPosition;
-            SyncPosition();
-
-            Debug.Log($"{gameObject.name} moved from {oldPosition} to {newPosition}");
+            mover.ApplyPositionChange(newPosition);
         }
 
         public virtual void ProduceNoise(int volume)
@@ -238,49 +179,33 @@ namespace JRogue.Actors
 
         public Vector3Int GetSmartStepTowards(Vector3Int target)
         {
-            Vector3Int diff = target - gridPosition;
+            Vector3Int diff = target - GridPosition;
             Vector3Int step = Vector3Int.zero;
 
-            // Simple Manhattan-style step selection
+            // Manhattan-style step selection: prefer the larger axis
             if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
                 step.x = (int)Mathf.Sign(diff.x);
             else if (diff.y != 0)
                 step.y = (int)Mathf.Sign(diff.y);
 
-            Vector3Int potentialPos = gridPosition + step;
-
-            // Validation: if the direct step is blocked, we'd ideally trigger pathfinding here.
-            // For now, return the intended step for InputHandler to validate.
-            return potentialPos;
+            return GridPosition + step;
         }
 
-        // Logic for what happens when walking into someone
+        // Logic for what happens when walking into someone. Subclasses override
+        // to add combat (PlayerController), reactions, etc.
         protected virtual void OnBump(BaseActor target)
         {
-            // Default behavior: Combat
-            // We will expand this for Milestones 12-14 (Essences/Skills)
             Debug.Log($"{gameObject.name} bumped into {target.gameObject.name} and initiates combat!");
         }
 
-        private BaseActor FindActorAt(Vector3Int pos)
-        {
-            // We check all Actors. In the future, Milestone 15 will optimize this list.
-            foreach (var actor in FindObjectsByType<BaseActor>())
-            {
-                if (actor.GetGridPosition() == pos) return actor;
-            }
-            return null;
-        }
+        public void SyncPosition() => mover.SyncPosition();
 
-        public void SyncPosition() =>
-        transform.position = new Vector3(gridPosition.x + 0.5f, gridPosition.y + 0.5f, 0);
-
-        // 'abstract' forces the Player and Enemy to define their own death logic
+        // Forces Player and Enemy to define their own death logic
         protected abstract void Die();
 
-        public Vector3Int GetGridPosition() => gridPosition;
+        public Vector3Int GetGridPosition() => GridPosition;
 
-        public void SetGridPosition(Vector3Int newPos) => gridPosition = newPos;
+        public void SetGridPosition(Vector3Int newPos) => mover.SetGridPosition(newPos);
 
         public Vector2 GetFacingVector()
         {

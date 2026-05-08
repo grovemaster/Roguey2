@@ -1,25 +1,24 @@
 using System.Collections.Generic;
-using System.Linq;
 using JRogue.Ability;
 using JRogue.Actors;
 using JRogue.Core.Actor;
-using JRogue.Item;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Essence;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
+using JRogue.Service.Formation;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace JRogue.Input
 {
     public enum InputState { Normal, Targeting }
+
     public class InputHandler : MonoBehaviour
     {
         private GameControls controls;
-        private EssenceSlotManager essenceManager;
 
         private InputState currentState = InputState.Normal;
         private Vector3Int reticlePosition;
@@ -29,250 +28,220 @@ namespace JRogue.Input
         [SerializeField] private GameObject reticlePrefab;
         private GameObject activeReticle;
 
+        // Cached singleton refs. Populated lazily via EnsureManagers() because
+        // singleton .Instance may not be set yet during Awake order. Once
+        // non-null, no further lookups happen.
+        private PartyManager partyManager;
+        private TurnManager turnManager;
+        private GridManager gridManager;
+        private MapManager mapManager;
+
         private void Awake()
         {
             controls = new GameControls();
-            essenceManager = GetComponent<EssenceSlotManager>();
 
-            // Link the three new action layers to one handler
             controls.Player.PrimaryAbilities.performed += ctx => OnAbilityPerformed(ctx, false, false);
             controls.Player.ShiftAbilities.performed += ctx => OnAbilityPerformed(ctx, true, false);
             controls.Player.CtrlAbilities.performed += ctx => OnAbilityPerformed(ctx, false, true);
             controls.Player.Confirm.performed += OnConfirm;
             controls.Player.Cancel.performed += OnCancel;
 
-            // Party Member Selection
-            controls.Player.SelectPartyMember.performed += ctx => SwapTo(ctx);
-            // controls.Player.SelectMember1.performed += _ => SwapTo(0);
-            // controls.Player.SelectMember2.performed += _ => SwapTo(1);
-            // controls.Player.SelectMember3.performed += _ => SwapTo(2);
-
-            // Formation Toggle
+            controls.Player.SelectPartyMember.performed += SwapTo;
             controls.Player.ToggleFormation.performed += OnToggleFormation;
         }
 
         private void OnEnable() => controls.Player.Enable();
         private void OnDisable() => controls.Player.Disable();
 
+        private void OnDestroy()
+        {
+            // Generated InputActionAsset wrappers implement IDisposable; release
+            // bindings explicitly to avoid leaks across domain reloads.
+            controls?.Dispose();
+        }
+
+        private void EnsureManagers()
+        {
+            if (partyManager == null) partyManager = PartyManager.Instance;
+            if (turnManager == null) turnManager = TurnManager.Instance;
+            if (gridManager == null) gridManager = GridManager.Instance;
+            if (mapManager == null) mapManager = MapManager.Instance;
+        }
+
         public void OnMove(InputAction.CallbackContext context)
         {
-            // --- RESTORED: Input system check ---
             if (IsContextInvalid(context)) return;
+            EnsureManagers();
 
             Vector2 input = context.ReadValue<Vector2>();
             Vector3Int direction = new Vector3Int(Mathf.RoundToInt(input.x), Mathf.RoundToInt(input.y), 0);
 
-            // --- RESTORED: Targeting Mode logic ---
             if (currentState == InputState.Targeting)
             {
                 MoveReticle(direction);
+                return;
             }
-            else if (direction != Vector3Int.zero)
+
+            if (direction == Vector3Int.zero) return;
+
+            BaseActor activeMember = partyManager.GetActiveMember();
+            if (activeMember == null) return;
+            if (!turnManager.CanActorTakeAction(activeMember.gameObject)) return;
+
+            Vector3Int targetTile = activeMember.GridPosition + direction;
+            Vector3Int oldPosition = activeMember.GridPosition;
+
+            IBattleTarget occupant = gridManager.GetActorAt(targetTile);
+
+            BaseActor swappableAlly = null;
+            bool isAllySwap = occupant is BaseActor actor && partyManager.partyMembers.Contains(actor);
+            if (isAllySwap) swappableAlly = (BaseActor)occupant;
+
+            bool isEnemyBump = occupant != null && !isAllySwap;
+
+            if (partyManager.IsFormationActive)
             {
-                BaseActor activeMember = PartyManager.Instance.GetActiveMember();
-                if (activeMember == null) return;
-
-                if (!TurnManager.Instance.CanActorTakeAction(activeMember.gameObject)) return;
-
-                Vector3Int targetTile = activeMember.GridPosition + direction;
-                Vector3Int oldPosition = activeMember.GridPosition;
-
-                IBattleTarget occupant = GridManager.Instance.GetActorAt(targetTile);
-
-                // --- FIXED: Proper declaration for the swappable ally ---
-                BaseActor swappableAlly = null;
-                bool isAllySwap = occupant is BaseActor actor && PartyManager.Instance.partyMembers.Contains(actor);
-                if (isAllySwap) swappableAlly = (BaseActor)occupant;
-
-                // Requirement Check: Is this a bump against an enemy?
-                bool isEnemyBump = occupant != null && !isAllySwap;
-
-                if (PartyManager.Instance.IsFormationActive)
+                // Allow the action if it's a valid move OR an enemy bump.
+                if (isEnemyBump
+                    || FormationRushService.IsValidMove(mapManager, gridManager, targetTile, new Dictionary<BaseActor, Vector3Int>(), allowAllies: true))
                 {
-                    // We allow the action if it's a valid move OR an enemy bump
-                    if (isEnemyBump || IsValidMove(targetTile, new Dictionary<BaseActor, Vector3Int>(), true))
+                    if (activeMember.TryMove(direction))
                     {
-                        if (activeMember.TryMove(direction))
+                        // Only record breadcrumbs when the position actually changed
+                        // (prevents clustering when the leader bumped without moving).
+                        if (activeMember.GridPosition != oldPosition)
                         {
-                            // Only record breadcrumbs if the position actually changed (prevents clustering)
-                            if (activeMember.GridPosition != oldPosition)
-                            {
-                                PartyManager.Instance.RecordNewLeaderPosition(activeMember.GridPosition);
-                            }
-                            else
-                            {
-                                Debug.Log($"[FORMATION-BUMP] Leader attacked at {targetTile}. Position stayed {oldPosition}.");
-                                // If we attacked but didn't move, ensure followers still have a valid 'current' target
-                                PartyManager.Instance.SnapHistoryToCurrentPositions();
-                            }
-
-                            // CRITICAL: Trigger Rush so followers catch up during the attack
-                            ProcessFollowerRush();
+                            partyManager.RecordNewLeaderPosition(activeMember.GridPosition);
                         }
+                        else
+                        {
+                            Debug.Log($"[FORMATION-BUMP] Leader attacked at {targetTile}. Position stayed {oldPosition}.");
+                            // After an attack-without-move, followers still need a valid 'current' target.
+                            partyManager.SnapHistoryToCurrentPositions();
+                        }
+
+                        // Trigger Rush so followers catch up after the leader's action.
+                        ProcessFollowerRush();
                     }
                 }
-                else
-                {
-                    // --- RESTORED: Manual Mode Atomic Swap ---
-                    if (isAllySwap && swappableAlly != null && IsValidMove(targetTile, new Dictionary<BaseActor, Vector3Int>(), true))
-                    {
-                        // GridManager.Instance.UnregisterActor(activeMember.GridPosition);
-                        // GridManager.Instance.UnregisterActor(swappableAlly.GridPosition);
+                return;
+            }
 
-                        // activeMember.ApplyPositionChange(targetTile);
-                        // swappableAlly.ApplyPositionChange(oldPosition);
+            // Manual mode: handle atomic swap with an ally, or a normal move.
+            if (isAllySwap
+                && swappableAlly != null
+                && FormationRushService.IsValidMove(mapManager, gridManager, targetTile, new Dictionary<BaseActor, Vector3Int>(), allowAllies: true))
+            {
+                // 1. Lift both completely from the grid first
+                gridManager.UnregisterActor(activeMember.GridPosition);
+                gridManager.UnregisterActor(swappableAlly.GridPosition);
 
-                        // Debug.Log($"[MANUAL-SWAP] {activeMember.name} swapped with {swappableAlly.name}");
-                        // TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);
+                // 2. Teleport them to their new grid coordinates
+                activeMember.SetGridPosition(targetTile);
+                swappableAlly.SetGridPosition(oldPosition);
 
-                        // 1. Lift both completely from the grid first
-                        GridManager.Instance.UnregisterActor(activeMember.GridPosition);
-                        GridManager.Instance.UnregisterActor(swappableAlly.GridPosition);
+                // 3. Re-register and sync visuals
+                gridManager.RegisterActor(activeMember.GridPosition, activeMember);
+                gridManager.RegisterActor(swappableAlly.GridPosition, swappableAlly);
 
-                        // 2. Teleport them to their new grid coordinates
-                        activeMember.SetGridPosition(targetTile);
-                        swappableAlly.SetGridPosition(oldPosition);
+                activeMember.SyncPosition();
+                swappableAlly.SyncPosition();
 
-                        // 3. Re-register and sync visuals
-                        GridManager.Instance.RegisterActor(activeMember.GridPosition, activeMember);
-                        GridManager.Instance.RegisterActor(swappableAlly.GridPosition, swappableAlly);
-
-                        activeMember.SyncPosition(); // You may need to make SyncPosition public/internal
-                        swappableAlly.SyncPosition();
-
-                        Debug.Log($"[MANUAL-SWAP] {activeMember.name} swapped with {swappableAlly.name}");
-                        TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);
-                    }
-                    else if (activeMember.TryMove(direction))
-                    {
-                        TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);
-                    }
-                }
+                Debug.Log($"[MANUAL-SWAP] {activeMember.name} swapped with {swappableAlly.name}");
+                turnManager.OnPlayerActionComplete(activeMember.gameObject);
+            }
+            else if (activeMember.TryMove(direction))
+            {
+                turnManager.OnPlayerActionComplete(activeMember.gameObject);
             }
         }
 
         public void OnWait(InputAction.CallbackContext context)
         {
-            // Only trigger on the initial press and during the Player's turn
             if (IsContextInvalid(context)) return;
+            EnsureManagers();
 
-            BaseActor activeMember = PartyManager.Instance.GetActiveMember();
+            BaseActor activeMember = partyManager.GetActiveMember();
             if (activeMember == null) return;
 
-            // --- THE FIX ---
-            // If the character has already acted this turn, ignore the input
-            if (!TurnManager.Instance.CanActorTakeAction(activeMember.gameObject))
+            if (!turnManager.CanActorTakeAction(activeMember.gameObject))
             {
                 Debug.Log($"{activeMember.name} has already moved! Switch characters or end turn.");
                 return;
             }
-            // ----------------
 
-            // Check if Shift is held for "Party Wait" (You'll need to check your Input bindings)
+            // Shift-modified wait = "Party Wait", which ends the player phase.
             bool isPartyWait = Keyboard.current.shiftKey.isPressed;
-
             if (isPartyWait)
             {
                 Debug.Log("Party is skipping turns...");
-                // If they are in Auto mode, let them rush one step while waiting
-                if (PartyManager.Instance.IsFormationActive)
-                {
-                    ProcessFollowerRush();
-                }
+                if (partyManager.IsFormationActive) ProcessFollowerRush();
+                turnManager.ForceEndPlayerTurn();
+                return;
+            }
 
-                // Immediately end the player phase
-                TurnManager.Instance.ForceEndPlayerTurn();
+            Debug.Log($"{activeMember.name} is skipping turn...");
+            if (partyManager.IsFormationActive)
+            {
+                // In Formation mode, even a leader's wait still rushes followers,
+                // and the leader is the "clock" so the squad turn ends.
+                ProcessFollowerRush();
+                turnManager.OnPlayerActionComplete(activeMember.gameObject);
             }
             else
             {
-                Debug.Log($"{activeMember.name} is skipping turn...");
-                // If in Auto mode, others rush even if leader waits
-                // Even if only the leader waits, followers in "Auto" mode still move
-                if (PartyManager.Instance.IsFormationActive)
-                {
-                    ProcessFollowerRush();
-
-                    // In Formation mode, a Leader's wait typically ends the whole turn 
-                    // because they are the "Clock" for the squad.
-                    TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);
-                }
-                else
-                {
-                    // In Manual mode, only this character is marked as "Done"
-                    TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);
-                }
+                // Manual mode: only this character is marked done.
+                turnManager.OnPlayerActionComplete(activeMember.gameObject);
             }
         }
 
         public void OnConfirm(InputAction.CallbackContext context)
         {
             if (!context.performed || currentState != InputState.Targeting) return;
+            EnsureManagers();
 
-            BaseActor activeMember = PartyManager.Instance.GetActiveMember();
+            BaseActor activeMember = partyManager.GetActiveMember();
             if (activeMember == null || pendingAbility == null) return;
 
-            // Execute the ability at the reticle position
             if (pendingAbility.Execute(activeMember.gameObject, reticlePosition))
             {
-                currentState = InputState.Normal;
-                pendingAbility = null;
                 ExitTargetingMode();
 
-                if (PartyManager.Instance.IsFormationActive)
+                if (partyManager.IsFormationActive)
                 {
-                    // 1. Sync the history to the Leader's NEW teleported position
-                    // This ensures the followers' "target slots" are updated to the teleport destination
-
-                    // DO NOT call RecordNewLeaderPosition here for stationary abilities!
-                    // Just rush so laggards can finish catching up to the existing line.
-                    PartyManager.Instance.RecordNewLeaderPosition(activeMember.GridPosition);
-
-                    // 2. (Optional) Run the rush so followers move toward the new spot immediately
+                    // Sync history to the leader's new position so followers
+                    // rush toward the post-ability tile (e.g., teleport target).
+                    partyManager.RecordNewLeaderPosition(activeMember.GridPosition);
                     ProcessFollowerRush();
-
-                    // 3. End the squad turn
-                    TurnManager.Instance.ForceEndPlayerTurn();
+                    turnManager.ForceEndPlayerTurn();
                 }
                 else
                 {
-                    TurnManager.Instance.OnPlayerActionComplete(activeMember.gameObject);
+                    turnManager.OnPlayerActionComplete(activeMember.gameObject);
                 }
 
-                Debug.Log($"Teleport/Targeted Ability executed. Leader now at: {activeMember.GridPosition}");
+                Debug.Log($"Targeted ability executed. Leader now at: {activeMember.GridPosition}");
             }
         }
 
-        // You will need to bind this to a 'Confirm' action (e.g., Space or Enter) in your GameControls
         public void OnCancel(InputAction.CallbackContext context)
         {
             if (!context.performed || currentState != InputState.Targeting) return;
-
-            BaseActor activeMember = PartyManager.Instance.GetActiveMember();
-            if (activeMember == null || pendingAbility == null) return;
-
-            // Execute the ability at the reticle position
-            if (currentState == InputState.Targeting)
-            {
-                currentState = InputState.Normal;
-                pendingAbility = null;
-                ExitTargetingMode();
-                // TurnManager.Instance.OnPlayerActionComplete();
-                Debug.Log("Targeted Ability Cancelled.");
-            }
+            ExitTargetingMode();
+            Debug.Log("Targeted Ability Cancelled.");
         }
 
         public void OnToggleFormation(InputAction.CallbackContext context)
         {
             if (IsContextInvalid(context)) return;
+            EnsureManagers();
 
-            // Fetch the actor currently controlled by the player
-            BaseActor activeMember = PartyManager.Instance.GetActiveMember();
+            BaseActor activeMember = partyManager.GetActiveMember();
             if (activeMember == null) return;
 
-            // Requirement: Check if the current character has already acted
-            bool hasActed = !TurnManager.Instance.CanActorTakeAction(activeMember.gameObject);
+            bool hasActed = !turnManager.CanActorTakeAction(activeMember.gameObject);
 
-            if (!PartyManager.Instance.IsFormationActive)
+            if (!partyManager.IsFormationActive)
             {
                 if (hasActed)
                 {
@@ -280,72 +249,57 @@ namespace JRogue.Input
                     return;
                 }
 
-                // Enable Formation
-                PartyManager.Instance.ToggleFormationActive();
-
-                // Mid-turn activation: Snap history to current positions so 
-                // the breadcrumb trail starts exactly where everyone is standing.
-                PartyManager.Instance.SnapHistoryToCurrentPositions();
+                partyManager.ToggleFormationActive();
+                // Mid-turn activation: snap history to current positions so the
+                // breadcrumb trail starts where everyone is standing right now.
+                partyManager.SnapHistoryToCurrentPositions();
                 Debug.Log($"[FORMATION] Enabled. {activeMember.name} is now the leader.");
             }
             else
             {
-                // Disable Formation
-                PartyManager.Instance.ToggleFormationActive();
+                partyManager.ToggleFormationActive();
                 Debug.Log("[FORMATION] Disabled. Party members will move individually.");
             }
         }
 
         private void OnAbilityPerformed(InputAction.CallbackContext context, bool isShift, bool isCtrl)
         {
-            // Consistency Check: Match your OnMove turn check exactly
             if (IsContextInvalid(context)) return;
+            EnsureManagers();
 
-            BaseActor activeMember = PartyManager.Instance.GetActiveMember();
+            BaseActor activeMember = partyManager.GetActiveMember();
             if (activeMember == null) return;
 
-            // --- ADDED TURN CHECK ---
-            // Prevent character from even opening the targeting reticle if turn is over
-            if (!TurnManager.Instance.CanActorTakeAction(activeMember.gameObject))
+            // Don't even open targeting if the actor has already acted this turn.
+            if (!turnManager.CanActorTakeAction(activeMember.gameObject))
             {
                 Debug.LogWarning($"[INPUT] {activeMember.name} has already acted and cannot use abilities.");
                 return;
             }
 
             string keyName = context.control.name;
+            if (!int.TryParse(keyName, out int numberPressed)) return;
 
-            if (int.TryParse(keyName, out int numberPressed))
-            {
-                int slotIndex = numberPressed - 1;
-
-                // Fetch the actor currently controlled by the player
-                // BaseActor activeMember = PartyManager.Instance.GetActiveMember();
-
-                if (activeMember != null)
-                {
-                    ProcessAbilityInput(activeMember, slotIndex, isShift, isCtrl);
-                }
-            }
+            int slotIndex = numberPressed - 1;
+            ProcessAbilityInput(activeMember, slotIndex, isShift, isCtrl);
         }
 
         private void ProcessAbilityInput(BaseActor actor, int slotIndex, bool isShift, bool isCtrl)
         {
-            // Get the manager from the ACTIVE member, not 'this' gameObject
-            var essenceManager = actor.GetComponent<EssenceSlotManager>();
-            // if (essenceManager == null) return;
-            var equipManager = actor.GetComponent<EquipmentManager>();
+            EssenceSlotManager actorEssence = actor.GetComponent<EssenceSlotManager>();
+            EquipmentManager equipManager = actor.GetComponent<EquipmentManager>();
 
-            AbilityAction abilityToTry = null;
-            // bool success = false;
-
-            // Determine which ability we are looking at
+            // Modifiers select which ability to look up:
+            //   Ctrl  => item ability (slot from EquipmentManager)
+            //   Shift => second ability of essence in this slot
+            //   else  => primary ability of essence in this slot
             int abilityIndex = isShift ? 1 : 0;
-            if (isCtrl) abilityToTry = equipManager?.GetItemAbility(slotIndex, abilityIndex);
-            else abilityToTry = essenceManager?.GetAbility(slotIndex, abilityIndex);
+            AbilityAction abilityToTry = isCtrl
+                ? equipManager?.GetItemAbility(slotIndex, abilityIndex)
+                : actorEssence?.GetAbility(slotIndex, abilityIndex);
 
             if (abilityToTry == null) return;
 
-            // Check if it's a Targeted ability (We'll define this in the AbilityAction class next)
             if (abilityToTry.requiresTarget)
             {
                 EnterTargetingMode(actor, abilityToTry);
@@ -354,72 +308,36 @@ namespace JRogue.Input
             {
                 if (abilityToTry.Execute(actor.gameObject))
                 {
-                    TurnManager.Instance.OnPlayerActionComplete(actor.gameObject);
+                    turnManager.OnPlayerActionComplete(actor.gameObject);
                 }
             }
-
-            // if (isCtrl)
-            // {
-            //     // We use isShift to decide which ability index within the ITEM to fire
-            //     int abilityIndex = isShift ? 1 : 0;
-            //     success = equipManager.TryExecuteItemAbility(slotIndex, abilityIndex);
-            // }
-            // else if (isShift)
-            // {
-            //     // Second ability of the Essence in this slot
-            //     success = essenceManager.TryExecuteAbility(slotIndex, 1);
-            // }
-            // else
-            // {
-            //     // Primary ability of the Essence in this slot
-            //     success = essenceManager.TryExecuteAbility(slotIndex, 0);
-            // }
-
-            // if (success)
-            // {
-            //     // Consistency: Use your existing turn-ending method
-            //     TurnManager.Instance.OnPlayerActionComplete();
-            // }
         }
 
         private void EnterTargetingMode(BaseActor actor, AbilityAction ability)
         {
             currentState = InputState.Targeting;
             pendingAbility = ability;
-            // Start the reticle at the player's current grid position
-            //reticlePosition = Vector3Int.RoundToInt(actor.transform.position);
             reticlePosition = actor.GridPosition;
 
             Debug.Log($"Entered Targeting Mode for {ability.abilityName}. Move reticle, then confirm.");
 
-            // Instantiate the visual reticle
-            if (activeReticle == null)
-            {
-                activeReticle = Instantiate(reticlePrefab);
-            }
+            if (activeReticle == null) activeReticle = Instantiate(reticlePrefab);
             activeReticle.SetActive(true);
             UpdateReticleVisuals();
-
-            Debug.Log($"Targeting: {ability.abilityName}");
         }
 
         private void MoveReticle(Vector3Int direction)
         {
-            // Update the logical position
             reticlePosition += direction;
             UpdateReticleVisuals();
-
-            // TODO: Update the visual position of a reticle sprite/object here
             Debug.Log($"Targeting Reticle moved to: {reticlePosition}");
         }
 
         private void UpdateReticleVisuals()
         {
-            if (activeReticle != null)
-            {
-                // Align with your grid (adding 0.5f to center on tile)
-                activeReticle.transform.position = new Vector3(reticlePosition.x + 0.5f, reticlePosition.y + 0.5f, 0);
-            }
+            if (activeReticle == null) return;
+            // Add 0.5f to align with tile centers (matches GridMover.SyncPosition).
+            activeReticle.transform.position = new Vector3(reticlePosition.x + 0.5f, reticlePosition.y + 0.5f, 0);
         }
 
         private void ExitTargetingMode()
@@ -429,344 +347,46 @@ namespace JRogue.Input
             if (activeReticle != null) activeReticle.SetActive(false);
         }
 
-        private void PerformIndividualWait(BaseActor actor)
-        {
-            Debug.Log($"{actor.name} is waiting...");
-
-            // In "Auto" mode, even if the leader waits, the followers still get to "Rush"
-            if (PartyManager.Instance.IsFormationActive)
-            {
-                ProcessFollowerRush();
-            }
-
-            TurnManager.Instance.OnPlayerActionComplete(actor.gameObject);
-        }
-
-        private void PerformPartyWait()
-        {
-            Debug.Log("Entire party is waiting...");
-
-            // Logic for skipping everyone's turn simultaneously
-            // This effectively ends the Player Turn phase entirely
-            //TurnManager.Instance.OnPlayerActionComplete();
-            // Requirement: In Auto mode, making the leader wait ends the WHOLE party turn
-            TurnManager.Instance.ForceEndPlayerTurn();
-        }
-
         private void SwapTo(InputAction.CallbackContext context)
         {
             if (!context.performed) return;
+            EnsureManagers();
 
+            // Function keys arrive as "F1".."F5"; strip the prefix to get the index.
             string keyName = context.control.name;
-            // Should be F1,F2,F3,F4,F5; hack it for now
-            string prefix = "F";
-            string suffix = keyName.Replace(prefix, "").Replace(prefix.ToLower(), ""); // Handle both F1 and f1
-            int index;
-
-            if (int.TryParse(suffix, out int numberPressed))
-            {
-                index = numberPressed - 1;
-            }
-            else
+            string suffix = keyName.Replace("F", "").Replace("f", "");
+            if (!int.TryParse(suffix, out int numberPressed))
             {
                 Debug.LogWarning($"Unrecognized key for party swap: {keyName}");
                 return;
             }
 
-            // 1. Tell the PartyManager to change the activeIndex
-            PartyManager.Instance.SwapActiveMember(index);
+            int index = numberPressed - 1;
 
-            // 2. NEW: SNAP the history to the new arrangement
-            // This prevents the party from trying to rush toward the OLD leader's trail.
-            PartyManager.Instance.SnapHistoryToCurrentPositions();
+            partyManager.SwapActiveMember(index);
 
-            // 3. Camera Tracking
-            BaseActor newActive = PartyManager.Instance.GetActiveMember();
+            // Snap history to the new arrangement so the party doesn't try to rush
+            // toward the previous leader's trail.
+            partyManager.SnapHistoryToCurrentPositions();
+
+            BaseActor newActive = partyManager.GetActiveMember();
             if (newActive != null)
             {
-                // Use your camera's follow method
-                // Camera.main.GetComponent<CameraFollow>()?.SetTarget(newActive.transform);
                 Debug.Log($"[SWAP] Now controlling {newActive.name}. Camera following and History Snapped.");
             }
         }
 
+        // Thin wrapper kept so existing tests can drive the rush via reflection
+        // on this private name. The actual algorithm lives in FormationRushService.
         private void ProcessFollowerRush()
         {
-            var party = PartyManager.Instance.partyMembers;
-            var history = PartyManager.Instance.positionHistory;
-            BaseActor leader = PartyManager.Instance.GetActiveMember();
-
-            Debug.Log($"[RUSH] Starting Rush. Party: {party.Count}, History: {history.Count}");
-
-            int maxRushDistance = 2;
-
-            // 1. TOTAL LIFT - Your original logic
-            // 1. SELECTIVE LIFT: Only unregister those who CAN still act
-            foreach (var member in party)
-            {
-                // We lift everyone to clear the path, even if they have acted, 
-                // as long as they are part of the formation squad.
-                GridManager.Instance.UnregisterActor(member.GridPosition);
-            }
-
-            // 2. LOCK LEADER - Your original logic
-            GridManager.Instance.RegisterActor(leader.GridPosition, leader);
-
-            Dictionary<BaseActor, Vector3Int> plannedMoves = new Dictionary<BaseActor, Vector3Int>();
-
-            // 3. THE PLAN
-            for (int i = 1; i < party.Count; i++)
-            {
-                BaseActor follower = party[i];
-
-                // If they already acted, they 'claim' their current tile
-                if (!TurnManager.Instance.CanActorTakeAction(follower.gameObject))
-                {
-                    plannedMoves.Add(follower, follower.GridPosition);
-                    // CRITICAL: Tell the GridManager this tile is taken NOW 
-                    // so the next follower in the loop doesn't pick it.
-                    GridManager.Instance.RegisterActor(follower.GridPosition, follower);
-                    continue;
-                }
-                else
-                {
-                    Vector3Int historicalTarget = (i < history.Count) ? history[i] : follower.GridPosition;
-
-                    Vector3Int finalTarget = follower.GridPosition;
-                    float dist = Vector3Int.Distance(follower.GridPosition, historicalTarget);
-
-                    // Your distance-based target selection
-                    if (dist <= maxRushDistance)
-                        finalTarget = historicalTarget;
-                    else
-                    {
-                        Vector3 direction = ((Vector3)(historicalTarget - follower.GridPosition)).normalized;
-                        finalTarget = Vector3Int.RoundToInt((Vector3)follower.GridPosition + (direction * maxRushDistance));
-                    }
-
-                    if (IsValidMove(finalTarget, plannedMoves))
-                    {
-                        plannedMoves.Add(follower, finalTarget);
-                        Debug.Log($"[RUSH-PLAN] {follower.name} accepted target {finalTarget}");
-                    }
-                    else
-                    {
-                        // Your Smart Step search logic
-                        Vector3Int bestSmartTile = follower.GridPosition;
-                        float bestDistToBreadcrumb = float.MaxValue;
-                        bool foundSpot = false;
-
-                        for (int x = -1; x <= 1; x++)
-                        {
-                            for (int y = -1; y <= 1; y++)
-                            {
-                                if (x == 0 && y == 0) continue;
-                                Vector3Int neighbor = finalTarget + new Vector3Int(x, y, 0);
-                                if (Vector3Int.Distance(follower.GridPosition, neighbor) > maxRushDistance + 0.5f) continue;
-
-                                if (IsValidMove(neighbor, plannedMoves))
-                                {
-                                    float d = Vector3Int.Distance(neighbor, historicalTarget);
-                                    if (d < bestDistToBreadcrumb)
-                                    {
-                                        bestDistToBreadcrumb = d;
-                                        bestSmartTile = neighbor;
-                                        foundSpot = true;
-                                    }
-                                }
-                            }
-                        }
-                        plannedMoves.Add(follower, foundSpot ? bestSmartTile : follower.GridPosition);
-                    }
-                }
-            }
-
-            // 4. THE LAND
-            foreach (var move in plannedMoves)
-            {
-                BaseActor actor = move.Key;
-                Vector3Int dest = move.Value;
-
-                if (actor.GridPosition != dest)
-                {
-                    Debug.Log($"[RUSH-LAND] {actor.name} moving {actor.GridPosition} -> {dest}");
-                    actor.ApplyPositionChange(dest);
-                }
-                else
-                {
-                    GridManager.Instance.RegisterActor(actor.GridPosition, actor);
-                }
-
-                // Signal that this follower has finished their part of the turn
-                TurnManager.Instance.OnPlayerActionComplete(actor.gameObject);
-            }
-
-            // Signal leader completion
-            TurnManager.Instance.OnPlayerActionComplete(leader.gameObject);
-
-            Debug.Log("[RUSH-COMPLETE] Grid synchronized. Ending player turn.");
-            TurnManager.Instance.ForceEndPlayerTurn();
-        }
-
-        // private void ProcessFollowerRush()
-        // {
-        //     var party = PartyManager.Instance.partyMembers;
-        //     var history = PartyManager.Instance.positionHistory;
-        //     BaseActor leader = PartyManager.Instance.GetActiveMember();
-
-        //     Debug.Log($"[RUSH] Starting Rush. Party: {party.Count}, History: {history.Count}");
-
-        //     int maxRushDistance = 2;
-
-        //     // 1. TOTAL LIFT - Clear the whole party from the grid
-        //     foreach (var member in party)
-        //     {
-        //         GridManager.Instance.UnregisterActor(member.GridPosition);
-        //     }
-
-        //     // 2. LOCK LEADER - Immediately re-register leader at their NEW position
-        //     // This ensures no follower or enemy can claim this tile during the Rush calculation
-        //     GridManager.Instance.RegisterActor(leader.GridPosition, leader);
-
-        //     Dictionary<BaseActor, Vector3Int> plannedMoves = new Dictionary<BaseActor, Vector3Int>();
-        //     // We don't add leader to plannedMoves because they are already 'Landed'
-
-        //     // 3. THE PLAN (Skip index 0 as it's the leader)
-        //     for (int i = 1; i < party.Count; i++)
-        //     {
-        //         BaseActor follower = party[i];
-        //         Vector3Int historicalTarget = (i < history.Count) ? history[i] : follower.GridPosition;
-
-        //         Vector3Int finalTarget = follower.GridPosition;
-        //         float dist = Vector3Int.Distance(follower.GridPosition, historicalTarget);
-
-        //         if (dist <= maxRushDistance)
-        //             finalTarget = historicalTarget;
-        //         else
-        //         {
-        //             Vector3 direction = ((Vector3)(historicalTarget - follower.GridPosition)).normalized;
-        //             finalTarget = Vector3Int.RoundToInt((Vector3)follower.GridPosition + (direction * maxRushDistance));
-        //         }
-
-        //         if (IsValidMove(finalTarget, plannedMoves))
-        //         {
-        //             plannedMoves.Add(follower, finalTarget);
-        //             Debug.Log($"[RUSH-PLAN] {follower.name} accepted target {finalTarget}");
-        //         }
-        //         else
-        //         {
-        //             // Smart Step logic
-        //             Vector3Int bestSmartTile = follower.GridPosition;
-        //             float bestDistToBreadcrumb = float.MaxValue;
-        //             bool foundSpot = false;
-
-        //             for (int x = -1; x <= 1; x++)
-        //             {
-        //                 for (int y = -1; y <= 1; y++)
-        //                 {
-        //                     if (x == 0 && y == 0) continue;
-        //                     Vector3Int neighbor = finalTarget + new Vector3Int(x, y, 0);
-        //                     if (Vector3Int.Distance(follower.GridPosition, neighbor) > maxRushDistance + 0.5f) continue;
-
-        //                     if (IsValidMove(neighbor, plannedMoves))
-        //                     {
-        //                         float d = Vector3Int.Distance(neighbor, historicalTarget);
-        //                         if (d < bestDistToBreadcrumb)
-        //                         {
-        //                             bestDistToBreadcrumb = d;
-        //                             bestSmartTile = neighbor;
-        //                             foundSpot = true;
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //             plannedMoves.Add(follower, foundSpot ? bestSmartTile : follower.GridPosition);
-        //             Debug.Log($"[RUSH-SMART] {follower.name} directed to {plannedMoves[follower]}");
-        //         }
-        //     }
-
-        //     // 4. THE LAND
-        //     foreach (var move in plannedMoves)
-        //     {
-        //         BaseActor actor = move.Key;
-        //         Vector3Int dest = move.Value;
-
-        //         if (actor.GridPosition != dest)
-        //         {
-        //             Debug.Log($"[RUSH-LAND] {actor.name} moving {actor.GridPosition} -> {dest}");
-        //             actor.ApplyPositionChange(dest);
-        //         }
-        //         else
-        //         {
-        //             GridManager.Instance.RegisterActor(actor.GridPosition, actor);
-        //         }
-        //     }
-
-        //     Debug.Log("[RUSH-COMPLETE] Grid synchronized. Ending player turn.");
-        //     TurnManager.Instance.ForceEndPlayerTurn();
-        // }
-
-        private bool IsSwappableAlly(Vector3Int tile)
-        {
-            IBattleTarget occupant = GridManager.Instance.GetActorAt(tile);
-            if (occupant is BaseActor actor)
-            {
-                // Check if the actor is part of our party
-                return PartyManager.Instance.partyMembers.Contains(actor);
-            }
-            return false;
-        }
-
-        private bool IsValidMove(Vector3Int tile, Dictionary<BaseActor, Vector3Int> plannedMoves, bool allowAllies = false)
-        {
-            if (MapManager.Instance.IsWalkable(tile) == false) return false;
-
-            IBattleTarget occupant = GridManager.Instance.GetActorAt(tile);
-            if (occupant != null)
-            {
-                // If this is the Leader's manual move (allowAllies is true), 
-                // we return true so they can reach OnBump().
-                if (allowAllies) return true;
-
-                // If this is a Follower's Rush (allowAllies is false),
-                // we return false because followers shouldn't 'Rush' into enemies.
-                return false;
-            }
-
-            if (plannedMoves.ContainsValue(tile)) return false;
-            return true;
-        }
-
-        // private bool IsValidMove(Vector3Int tile, Dictionary<BaseActor, Vector3Int> plannedMoves, bool allowAllies = false)
-        // {
-        //     // Check Map (Walls/Void) - ALWAYS a hard block
-        //     if (MapManager.Instance.IsWalkable(tile) == false) return false;
-
-        //     // Check Actors
-        //     IBattleTarget occupant = GridManager.Instance.GetActorAt(tile);
-        //     if (occupant != null)
-        //     {
-        //         if (allowAllies && IsSwappableAlly(tile))
-        //         {
-        //             return true; // We can move here, but we'll need to swap
-        //         }
-        //         return false; // Enemy or non-swappable
-        //     }
-
-        //     // Check Teammate Claims (used during Rush)
-        //     if (plannedMoves.ContainsValue(tile)) return false;
-
-        //     return true;
-        // }
-
-        private Vector3Int ProcessInput(Vector2 input)
-        {
-            if (input.x != 0) return new Vector3Int(input.x > 0 ? 1 : -1, 0, 0);
-            if (input.y != 0) return new Vector3Int(0, input.y > 0 ? 1 : -1, 0);
-            return Vector3Int.zero;
+            EnsureManagers();
+            FormationRushService.Rush(partyManager, turnManager, gridManager, mapManager);
         }
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
-        (!context.performed) || (TurnManager.Instance.currentState != GameState.PLAYER_TURN);
+            !context.performed
+            || TurnManager.Instance == null
+            || TurnManager.Instance.currentState != GameState.PLAYER_TURN;
     }
 }
