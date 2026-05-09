@@ -53,29 +53,22 @@ namespace JRogue.Actors.Components
         /// </summary>
         public bool ApplyPositionChange(Vector3Int newPosition)
         {
-            EnsureGridManager();
-            if (gridManager == null) return false;
+            // Always use the live singleton so tests and scene reloads never update a stale GridManager.
+            GridManager grid = GridManager.Instance;
+            if (grid == null) return false;
+
+            if (self == null) self = GetComponent<IBattleTarget>();
 
             Vector3Int oldPosition = gridPosition;
             if (oldPosition == newPosition) return true;
 
-            // Only unregister if WE are the ones currently listed at the old cell.
-            if (gridManager.GetActorAt(oldPosition) == self)
+            if (!grid.TryMoveRegistration(self, oldPosition, newPosition))
             {
-                gridManager.UnregisterActor(oldPosition);
-            }
-
-            gridManager.RegisterActor(newPosition, self);
-
-            // Verification: if registration failed (target cell was blocked),
-            // restore the old cell and abort.
-            if (gridManager.GetActorAt(newPosition) != self)
-            {
-                gridManager.RegisterActor(oldPosition, self);
                 Debug.LogWarning($"[MOVE-ABORTED] {name} could not claim {newPosition}. Reverting to {oldPosition}.");
                 return false;
             }
 
+            gridManager = grid;
             gridPosition = newPosition;
             SyncPosition();
 
@@ -104,21 +97,24 @@ namespace JRogue.Actors.Components
             GridManager grid = GridManager.Instance;
             if (grid == null) return false;
 
+            if (a.self == null) a.self = a.GetComponent<IBattleTarget>();
+            if (b.self == null) b.self = b.GetComponent<IBattleTarget>();
+
             Vector3Int posA = a.gridPosition;
             Vector3Int posB = b.gridPosition;
             if (posA == posB) return false;
 
             // 1. Lift both off the spatial hash so the swap doesn't transiently
             //    fail RegisterActor's conflict check.
-            if (grid.GetActorAt(posA) == a.self) grid.UnregisterActor(posA);
-            if (grid.GetActorAt(posB) == b.self) grid.UnregisterActor(posB);
+            if (IsSameBattleTarget(grid.GetActorAt(posA), a.self)) grid.UnregisterActor(posA);
+            if (IsSameBattleTarget(grid.GetActorAt(posB), b.self)) grid.UnregisterActor(posB);
 
             // 2. Place each at the other's old tile.
             grid.RegisterActor(posB, a.self);
             grid.RegisterActor(posA, b.self);
 
             // 3. Verify both registrations took.
-            if (grid.GetActorAt(posB) != a.self || grid.GetActorAt(posA) != b.self)
+            if (!IsSameBattleTarget(grid.GetActorAt(posB), a.self) || !IsSameBattleTarget(grid.GetActorAt(posA), b.self))
             {
                 grid.UnregisterActor(posA);
                 grid.UnregisterActor(posB);
@@ -142,7 +138,19 @@ namespace JRogue.Actors.Components
 
         private void EnsureGridManager()
         {
-            if (gridManager == null) gridManager = GridManager.Instance;
+            // Always follow the live singleton. Tests (and scene loads) can replace or destroy the
+            // previous GridManager while this component still holds a stale reference; then spatial
+            // updates would hit the wrong map while callers use GridManager.Instance.
+            gridManager = GridManager.Instance;
+        }
+
+        private static bool IsSameBattleTarget(IBattleTarget a, IBattleTarget b)
+        {
+            if (a == null || b == null) return false;
+            if (ReferenceEquals(a, b)) return true;
+            GameObject ownerA = a.Owner;
+            GameObject ownerB = b.Owner;
+            return ownerA != null && ownerB != null && ownerA == ownerB;
         }
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.TestTools;
 using JRogue.Core.Actor;
 using JRogue.Manager.Grid;
 using JRogue.Tests.Mocks;
+using JRogue.Tests.UnitTests.Input;
 using System.Linq;
 
 namespace JRogue.Tests.UnitTests.Manager.Grid
@@ -25,6 +26,7 @@ namespace JRogue.Tests.UnitTests.Manager.Grid
         [SetUp]
         public void SetUp()
         {
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
             LogAssert.ignoreFailingMessages = true;
             // Create a fresh GridManager instance for each test
             GameObject gridManagerGameObject = new GameObject("GridManager");
@@ -50,6 +52,8 @@ namespace JRogue.Tests.UnitTests.Manager.Grid
             {
                 Object.DestroyImmediate(_gridManager.gameObject);
             }
+
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
         }
 
         #region RegisterActor Tests

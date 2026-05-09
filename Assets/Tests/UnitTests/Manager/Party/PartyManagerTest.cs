@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using JRogue.Actors;
 using JRogue.Manager.Party;
+using JRogue.Tests.UnitTests.Input;
 using JRogue.Tests.UnitTests.MockMonoBehavior;
 using NSubstitute;
 using NUnit.Framework;
@@ -20,6 +21,7 @@ namespace JRogue.Tests.UnitTests.Manager.Party
         [SetUp]
         public void SetUp()
         {
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
             LogAssert.ignoreFailingMessages = true;
         }
 
@@ -36,7 +38,7 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             }
 
             _createdObjects.Clear();
-            PartyManager.Instance = null;
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
         }
 
         [TestCase(1)]

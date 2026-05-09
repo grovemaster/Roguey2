@@ -78,7 +78,8 @@ namespace JRogue.Actors
 
         protected void EnsureManagers()
         {
-            if (gridManager == null) gridManager = GridManager.Instance;
+            // Always refresh GridManager from the live singleton (tests can recreate it).
+            gridManager = GridManager.Instance;
             if (turnManager == null) turnManager = TurnManager.Instance;
             if (partyManager == null) partyManager = PartyManager.Instance;
         }

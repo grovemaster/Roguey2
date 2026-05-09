@@ -2,10 +2,13 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using JRogue.Actors;
+using JRogue.Actors.Components;
+using JRogue.Core.Actor;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
+using JRogue.Tests.UnitTests.Input;
 using JRogue.Tests.UnitTests.MockMonoBehavior;
 using NUnit.Framework;
 using UnityEngine;
@@ -22,6 +25,7 @@ namespace JRogue.Tests.Controller
         [SetUp]
         public void SetUp()
         {
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
             LogAssert.ignoreFailingMessages = true;
         }
 
@@ -36,8 +40,7 @@ namespace JRogue.Tests.Controller
             }
 
             _createdObjects.Clear();
-            PartyManager.Instance = null;
-            TurnManager.Instance = null;
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
         }
 
         [Test]
@@ -111,7 +114,8 @@ namespace JRogue.Tests.Controller
             RegisterActor(mover, new Vector3Int(0, 0, 0));
             RegisterActor(blocker, new Vector3Int(1, 0, 0));
 
-            LogAssert.Expect(LogType.Error, new Regex(@"\[GRID-CONFLICT\].*failed to register at \(1, 0, 0\)"));
+            // GridMover uses TryMoveRegistration: blocked destination returns false without RegisterActor,
+            // so there is no [GRID-CONFLICT] log — only the revert warning from ApplyPositionChange.
             LogAssert.Expect(LogType.Warning, new Regex(@"\[MOVE-ABORTED\].*could not claim \(1, 0, 0\)"));
 
             mover.ApplyPositionChange(new Vector3Int(1, 0, 0));
@@ -228,7 +232,12 @@ namespace JRogue.Tests.Controller
         {
             actor.SetGridPosition(gridPos);
             actor.transform.position = new Vector3(gridPos.x, gridPos.y, 0f);
-            GridManager.Instance.RegisterActor(gridPos, actor);
+            BindGridMoverSelf(actor);
+            // Clear any stale cell entry so RegisterActor and GridMover.self agree on the same IBattleTarget reference.
+            GridManager.Instance.UnregisterActor(gridPos);
+            IBattleTarget battleSelf = actor.GetComponent<IBattleTarget>();
+            Assert.IsNotNull(battleSelf, "Test actor must implement IBattleTarget for grid registration.");
+            GridManager.Instance.RegisterActor(gridPos, battleSelf);
         }
 
         private TestActor CreateActor(MapManager map, Vector3Int gridPos)
@@ -240,7 +249,21 @@ namespace JRogue.Tests.Controller
             InjectMapManager(actor, map);
             actor.SetGridPosition(gridPos);
             actor.transform.position = new Vector3(gridPos.x, gridPos.y, 0f);
+            // GridMover.Awake can run before IBattleTarget is resolvable on the same GO; ensure self is bound
+            // so RegisterActor always receives a non-null IBattleTarget (avoids NRE in conflict logging).
+            BindGridMoverSelf(actor);
             return actor;
+        }
+
+        private static void BindGridMoverSelf(BaseActor actor)
+        {
+            GridMover mover = actor.GetComponent<GridMover>();
+            if (mover == null) return;
+            FieldInfo selfField = typeof(GridMover).GetField("self", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(selfField, "GridMover should expose a private 'self' IBattleTarget field for test binding.");
+            IBattleTarget battleSelf = actor.GetComponent<IBattleTarget>();
+            Assert.IsNotNull(battleSelf, "Actor must expose IBattleTarget for GridMover.ApplyPositionChange unregister checks.");
+            selfField.SetValue(mover, battleSelf);
         }
 
         private MapManager CreateMapWithFloorRadius(int radius)

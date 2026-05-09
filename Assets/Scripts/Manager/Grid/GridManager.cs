@@ -63,6 +63,49 @@ namespace JRogue.Manager.Grid
 
         public void UnregisterActor(Vector3Int pos) => actorMap.Remove(pos);
 
+        /// <summary>
+        /// Atomically moves <paramref name="mover"/>'s registration from <paramref name="from"/> to <paramref name="to"/>.
+        /// Clears every cell that currently maps to the same combatant (same reference or same <see cref="IBattleTarget.Owner"/>),
+        /// so duplicate hash entries cannot survive a move. Returns false if <paramref name="to"/> is held by someone else.
+        /// </summary>
+        public bool TryMoveRegistration(IBattleTarget mover, Vector3Int from, Vector3Int to)
+        {
+            if (mover == null) return false;
+            if (from == to) return true;
+
+            IBattleTarget atTo = GetActorAt(to);
+            if (atTo != null && !IsSameBattleTarget(atTo, mover))
+                return false;
+
+            RemoveBattleTargetFromAllCells(mover);
+            actorMap[to] = mover;
+            return IsSameBattleTarget(GetActorAt(to), mover);
+        }
+
+        private void RemoveBattleTargetFromAllCells(IBattleTarget mover)
+        {
+            List<Vector3Int> toRemove = null;
+            foreach (KeyValuePair<Vector3Int, IBattleTarget> kv in actorMap)
+            {
+                if (!IsSameBattleTarget(kv.Value, mover)) continue;
+                toRemove ??= new List<Vector3Int>();
+                toRemove.Add(kv.Key);
+            }
+
+            if (toRemove == null) return;
+            for (int i = 0; i < toRemove.Count; i++)
+                actorMap.Remove(toRemove[i]);
+        }
+
+        private static bool IsSameBattleTarget(IBattleTarget a, IBattleTarget b)
+        {
+            if (a == null || b == null) return false;
+            if (ReferenceEquals(a, b)) return true;
+            GameObject ownerA = a.Owner;
+            GameObject ownerB = b.Owner;
+            return ownerA != null && ownerB != null && ownerA == ownerB;
+        }
+
         public IBattleTarget GetActorAt(Vector3Int pos)
         {
             actorMap.TryGetValue(pos, out IBattleTarget actor);

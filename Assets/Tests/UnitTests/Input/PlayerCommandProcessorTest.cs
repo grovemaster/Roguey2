@@ -22,6 +22,7 @@ namespace JRogue.Tests.UnitTests.Input
         [SetUp]
         public void SetUp()
         {
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
             LogAssert.ignoreFailingMessages = true;
         }
 
@@ -45,8 +46,7 @@ namespace JRogue.Tests.UnitTests.Input
 
             _scriptableCleanup.Clear();
 
-            PartyManager.Instance = null;
-            TurnManager.Instance = null;
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
         }
 
         [Test]
@@ -116,7 +116,11 @@ namespace JRogue.Tests.UnitTests.Input
         [Test]
         public void TryApply_AbilitySlot_TargetableThenConfirm_CompletesTurn()
         {
-            SetupSingleMemberPartyWithTargetAbility(out PartyManager party, out PlayerCommandProcessor processor);
+            // Two members: leader's action must not finish the whole squad phase (IsPartyDone stays false),
+            // so TurnManager does not run EnemyTurnSequence and clear charactersWhoActed before we assert.
+            // A solo party would immediately end the player phase; the empty enemy sequence then starts a
+            // new player turn and the leader could act again — failing CanActorTakeAction == false.
+            SetupPartyWithTargetAbilityOnLeader(partySize: 2, out PartyManager party, out PlayerCommandProcessor processor);
             InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
             InputTestSceneBuilder.SetPrivateField(party, "isFormationActive", false);
 
@@ -127,6 +131,9 @@ namespace JRogue.Tests.UnitTests.Input
 
             Assert.AreEqual(InputState.Normal, processor.CurrentState);
             Assert.IsFalse(TurnManager.Instance.CanActorTakeAction(leader.gameObject));
+            Assert.IsTrue(
+                TurnManager.Instance.CanActorTakeAction(party.partyMembers[1].gameObject),
+                "Other party member should still be able to act this squad turn.");
         }
 
         [Test]
@@ -190,10 +197,13 @@ namespace JRogue.Tests.UnitTests.Input
             processor = NewProcessorWithReticle();
         }
 
-        private void SetupSingleMemberPartyWithTargetAbility(out PartyManager party, out PlayerCommandProcessor processor)
+        private void SetupSingleMemberPartyWithTargetAbility(out PartyManager party, out PlayerCommandProcessor processor) =>
+            SetupPartyWithTargetAbilityOnLeader(1, out party, out processor);
+
+        private void SetupPartyWithTargetAbilityOnLeader(int partySize, out PartyManager party, out PlayerCommandProcessor processor)
         {
             InputTestSceneBuilder.SetupMapAndManagers(_createdObjects);
-            party = InputTestSceneBuilder.CreatePartyWithTestActors(1, _createdObjects);
+            party = InputTestSceneBuilder.CreatePartyWithTestActors(partySize, _createdObjects);
 
             BaseActor leader = party.partyMembers[0];
 

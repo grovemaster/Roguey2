@@ -91,6 +91,40 @@ namespace JRogue.Tests.UnitTests.Input
             return partyManager;
         }
 
+        /// <summary>
+        /// Call after destroying test-owned <see cref="GameObject"/>s. Clears static singleton slots so the next
+        /// fixture does not create a second <see cref="GridManager"/> that is immediately destroyed in Awake.
+        /// </summary>
+        public static void ResetSingletonManagersForTests()
+        {
+            PartyManager.Instance = null;
+            TurnManager.Instance = null;
+            ClearPrivateStaticInstanceProperty(typeof(GridManager));
+            ClearPrivateStaticInstanceProperty(typeof(MapManager));
+        }
+
+        private static void ClearPrivateStaticInstanceProperty(Type managerType)
+        {
+            PropertyInfo instanceProp = managerType.GetProperty(
+                "Instance",
+                BindingFlags.Public | BindingFlags.Static);
+            if (instanceProp != null)
+            {
+                MethodInfo setter = instanceProp.GetSetMethod(nonPublic: true);
+                if (setter != null)
+                {
+                    setter.Invoke(null, new object[] { null });
+                    return;
+                }
+            }
+
+            // Auto-property private setter is not always visible to reflection; clear compiler backing field.
+            FieldInfo backing = managerType.GetField(
+                "<Instance>k__BackingField",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            backing?.SetValue(null, null);
+        }
+
         /// <summary>One history entry per party member at current grid positions.</summary>
         public static List<Vector3Int> BuildTrailHistory(List<BaseActor> members)
         {

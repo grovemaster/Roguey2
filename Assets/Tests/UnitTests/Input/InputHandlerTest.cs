@@ -27,6 +27,7 @@ namespace JRogue.Tests.UnitTests.Input
         [SetUp]
         public void SetUp()
         {
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
             LogAssert.ignoreFailingMessages = true;
             _processFollowerRushMethod = typeof(JRogue.Input.InputHandler)
                 .GetMethod("ProcessFollowerRush", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -48,8 +49,7 @@ namespace JRogue.Tests.UnitTests.Input
             }
 
             _createdObjects.Clear();
-            PartyManager.Instance = null;
-            TurnManager.Instance = null;
+            InputTestSceneBuilder.ResetSingletonManagersForTests();
         }
 
         [TestCase(1)]
@@ -546,6 +546,8 @@ namespace JRogue.Tests.UnitTests.Input
         {
             GameObject inputObject = new GameObject("InputHandler_Test");
             _createdObjects.Add(inputObject);
+            // Matches play mode setup: InputHandler expects TargetingReticleView on the same GameObject.
+            inputObject.AddComponent<JRogue.UI.Targeting.TargetingReticleView>();
             return inputObject.AddComponent<JRogue.Input.InputHandler>();
         }
 
