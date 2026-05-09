@@ -18,6 +18,13 @@ namespace JRogue.Manager.Inventory
 
         public float GetTotalWeight() => items.Sum(i => i.weight);
 
+        public bool TryRemoveAt(int index)
+        {
+            if (index < 0 || index >= items.Count) return false;
+            items.RemoveAt(index);
+            return true;
+        }
+
         public bool AddItem(ItemData item)
         {
             Debug.Log($"Attempting to add item {item.itemName}");

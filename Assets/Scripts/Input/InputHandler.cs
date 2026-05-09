@@ -1,4 +1,5 @@
 using JRogue.Manager.Turn;
+using JRogue.UI.Inventory;
 using JRogue.UI.Targeting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -54,6 +55,7 @@ namespace JRogue.Input
 
         public void OnMove(InputAction.CallbackContext context)
         {
+            if (InventoryUI.BlocksGameplay) return;
             if (IsContextInvalid(context)) return;
 
             Vector2 input = context.ReadValue<Vector2>();
@@ -63,6 +65,7 @@ namespace JRogue.Input
 
         public void OnWait(InputAction.CallbackContext context)
         {
+            if (InventoryUI.BlocksGameplay) return;
             if (IsContextInvalid(context)) return;
 
             bool partyWait = Keyboard.current != null && Keyboard.current.shiftKey.isPressed;
@@ -83,12 +86,14 @@ namespace JRogue.Input
 
         public void OnToggleFormation(InputAction.CallbackContext context)
         {
+            if (InventoryUI.BlocksGameplay) return;
             if (IsContextInvalid(context)) return;
             commandProcessor.TryApply(PlayerCommand.ToggleFormation());
         }
 
         private void OnAbilityPerformed(InputAction.CallbackContext context, bool isShift, bool isCtrl)
         {
+            if (InventoryUI.BlocksGameplay) return;
             if (IsContextInvalid(context)) return;
 
             string keyName = context.control.name;
@@ -101,6 +106,7 @@ namespace JRogue.Input
         private void SwapTo(InputAction.CallbackContext context)
         {
             if (!context.performed) return;
+            if (InventoryUI.BlocksGameplay) return;
 
             string keyName = context.control.name;
             string suffix = keyName.Replace("F", "").Replace("f", "");

@@ -118,6 +118,21 @@ namespace JRogue.Manager.Equipment
             return null;
         }
 
+        public bool TryGetEquippedSlot(ItemData item, out EquipmentSlot slot)
+        {
+            foreach (KeyValuePair<EquipmentSlot, ItemData> kv in currentEquipment)
+            {
+                if (kv.Value != null && kv.Value == item)
+                {
+                    slot = kv.Key;
+                    return true;
+                }
+            }
+
+            slot = default;
+            return false;
+        }
+
         // Inside EquipmentManager.cs
         public AbilityAction GetItemAbility(int slotIndex, int abilityIndex)
         {

@@ -57,6 +57,7 @@
     <Compile Include="Assets/Scripts/Controller/Player/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridManager.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/Algorithm/ShadowCaster.cs" />
+    <Compile Include="Assets/Scripts/UI/Inventory/InventoryItemRowView.cs" />
     <Compile Include="Assets/Scripts/Service/Formation/FormationRushService.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/GridMover.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
+    <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
     <Compile Include="Assets/Scripts/Controller/BaseActor.cs" />
     <Compile Include="Assets/Scripts/Abilities/Teleport/TeleportAbility.cs" />
