@@ -28,6 +28,20 @@ namespace JRogue.Manager.Visibility.Algorithm
             return visibleTiles;
         }
 
+        /// <summary>
+        /// True if <paramref name="target"/> is in the shadow-cast visibility set from <paramref name="origin"/>,
+        /// using the same rules as <see cref="GetVisibleTiles"/> (including range and opacity).
+        /// </summary>
+        public static bool IsVisible(Vector3Int origin, Vector3Int target, int range, IsOpaque isOpaque)
+        {
+            if (range <= 0)
+                return false;
+
+            Vector3Int o = new Vector3Int(origin.x, origin.y, origin.z);
+            Vector3Int t = new Vector3Int(target.x, target.y, origin.z);
+            return GetVisibleTiles(o, range, isOpaque).Contains(t);
+        }
+
         private static void Scan(Vector3Int origin, int range, int row, float startSlope, float endSlope,
                                  int xx, int xy, int yx, int yy,
                                  IsOpaque isOpaque, List<Vector3Int> visibleTiles)

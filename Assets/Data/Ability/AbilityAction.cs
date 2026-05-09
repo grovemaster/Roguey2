@@ -22,6 +22,9 @@ namespace JRogue.Ability
         [Tooltip("Volume of noise produced when this ability successfully executes. 0 = silent.")]
         public int noiseVolume = 0;
 
+        [Tooltip("When Execute uses a target tile (targeted abilities), originate sound at targetTile instead of the caster.")]
+        public bool noiseOriginAtTargetTile = false;
+
         // New Method: Can we actually use this right now?
         public abstract bool CanExecute(GameObject user);
 
@@ -38,7 +41,7 @@ namespace JRogue.Ability
         public bool Execute(GameObject user, Vector3Int targetTile)
         {
             bool success = ExecuteCore(user, targetTile);
-            if (success) EmitNoise(user);
+            if (success) EmitNoise(user, noiseOriginAtTargetTile ? targetTile : (Vector3Int?)null);
             return success;
         }
 
@@ -53,11 +56,19 @@ namespace JRogue.Ability
 
         private void EmitNoise(GameObject user)
         {
+            EmitNoise(user, null);
+        }
+
+        private void EmitNoise(GameObject user, Vector3Int? soundOriginTile)
+        {
             if (noiseVolume <= 0 || user == null) return;
-            if (user.TryGetComponent<INoiseProducer>(out var producer))
-            {
+            if (!user.TryGetComponent<INoiseProducer>(out INoiseProducer producer))
+                return;
+
+            if (soundOriginTile.HasValue)
+                producer.ProduceNoiseAt(noiseVolume, soundOriginTile.Value);
+            else
                 producer.ProduceNoise(noiseVolume);
-            }
         }
     }
 }

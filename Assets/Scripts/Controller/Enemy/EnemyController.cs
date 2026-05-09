@@ -1,7 +1,7 @@
 using JRogue.Actors;
 using JRogue.Controller.Player;
-using JRogue.Manager.Grid;
-using JRogue.Pathfinding;
+using JRogue.Manager.Map;
+using Roguey2.Sensing;
 using UnityEngine;
 
 namespace JRogue.Controller.Enemy
@@ -22,103 +22,72 @@ namespace JRogue.Controller.Enemy
         public float PrimaryConeAngle => primaryConeAngle;
         public float PeripheralRangeMultiplier => peripheralRangeMultiplier;
 
-        private PlayerController player;
-        private bool playerWasVisibleLastTurn;
+        /// <summary>For <see cref="EnemyAiBrain"/> pathing and LOS (same assembly).</summary>
+        internal MapManager BrainMapManager => mapManager;
 
-        new void Start()
+        private PlayerController player;
+        private EnemyAiBrain brain;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            brain = GetComponent<EnemyAiBrain>();
+            if (brain == null)
+                brain = gameObject.AddComponent<EnemyAiBrain>();
+            brain.Bind(this);
+        }
+
+        protected override void Start()
         {
             base.Start();
             player = FindAnyObjectByType<PlayerController>();
         }
 
+        internal void BrainEnsureManagers() => EnsureManagers();
+
+        /// <summary>Cone + shadow LOS sight check used by the AI brain and logging.</summary>
+        internal bool ComputePlayerVisible(PlayerController playerController, out ConeVisionZone zone)
+        {
+            zone = ConeVisionZone.None;
+            if (playerController == null || mapManager == null)
+                return false;
+
+            return ConeSightUtility.TrySenseTarget(
+                this,
+                playerController.GridPosition,
+                mapManager,
+                visionRange,
+                primaryConeAngle,
+                peripheralRangeMultiplier,
+                out zone);
+        }
+
         // Called by the TurnManager during ENEMY_TURN
         public void TakeTurn()
         {
-            if (player == null) player = FindAnyObjectByType<PlayerController>();
-            if (player == null) return;
+            if (player == null)
+                player = FindAnyObjectByType<PlayerController>();
+            if (player == null)
+                return;
 
             essenceManager?.NotifyTurnStart();
-
-            bool detectedThisTurn = DetectAndLogPlayerIfNew();
-
-            Vector3Int playerPos = player.GetGridPosition();
-
-            // 8-way adjacency (Chebyshev): matches diagonal movement and melee range.
-            Vector3Int diff = playerPos - GridPosition;
-            int cheb = Mathf.Max(Mathf.Abs(diff.x), Mathf.Abs(diff.y));
-            if (cheb <= 1)
-            {
-                AttackPlayer();
-                return;
-            }
-
-            if (mapManager != null
-                && GridManager.Instance != null
-                && GridAStarPathfinder.TryGetFirstStepTowards(
-                    GridPosition,
-                    playerPos,
-                    gameObject,
-                    mapManager,
-                    GridManager.Instance,
-                    out Vector3Int firstStep))
-            {
-                Vector3Int step = firstStep - GridPosition;
-                bool moved = TryMove(step);
-                if (moved && !detectedThisTurn)
-                {
-                    DetectAndLogPlayerIfNew();
-                }
-                return;
-            }
-
-            Vector3Int direction = GetFallbackCardinalStep(playerPos);
-            bool fallbackMoved = TryMove(direction);
-            if (fallbackMoved && !detectedThisTurn)
-            {
-                DetectAndLogPlayerIfNew();
-            }
+            brain.ExecuteTurn(player);
         }
 
-        private Vector3Int GetFallbackCardinalStep(Vector3Int target)
+        public override void OnHearNoise(BaseActor source, Vector3Int origin, int rawVolume, int effectiveVolume)
         {
-            Vector3Int diff = target - GridPosition;
-            if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
-                return new Vector3Int(diff.x > 0 ? 1 : -1, 0, 0);
-            return new Vector3Int(0, diff.y > 0 ? 1 : -1, 0);
+            Debug.Log(
+                $"[SENSE-HEARING] {name} heard noise of volume {rawVolume} from ({origin.x},{origin.y}). Effective Volume at Enemy: {effectiveVolume}.");
+            brain.NotifyHeard(origin, rawVolume, effectiveVolume);
         }
+
+        internal void BrainAttackPlayer() => AttackPlayer();
 
         private void AttackPlayer()
         {
             Debug.Log("The Enemy hits you!");
             // Future: player.TakeDamage(attackPower);
             ProduceNoise(meleeNoiseVolume);
-        }
-
-        public override void OnHearNoise(BaseActor source, Vector3Int origin, int rawVolume, int effectiveVolume)
-        {
-            Debug.Log($"[SENSE-HEARING] {name} heard noise of volume {rawVolume} from ({origin.x},{origin.y}). Effective Volume at Enemy: {effectiveVolume}.");
-        }
-
-        private bool DetectAndLogPlayerIfNew()
-        {
-            bool playerVisibleNow = Roguey2.Sensing.ConeSightUtility.TrySenseTarget(
-                this,
-                player.GridPosition,
-                mapManager,
-                visionRange,
-                primaryConeAngle,
-                peripheralRangeMultiplier,
-                out Roguey2.Sensing.ConeVisionZone zone);
-
-            bool newlyDetected = playerVisibleNow && !playerWasVisibleLastTurn;
-            if (newlyDetected)
-            {
-                Vector3Int p = player.GridPosition;
-                Debug.Log($"[SENSE-SIGHT] {name} detected {player.name} at ({p.x},{p.y}) (Zone: {zone}).");
-            }
-
-            playerWasVisibleLastTurn = playerVisibleNow;
-            return newlyDetected;
         }
 
         protected override void Die()

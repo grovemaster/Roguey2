@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace JRogue.Core.Actor
 {
     /// <summary>
@@ -8,5 +10,8 @@ namespace JRogue.Core.Actor
     public interface INoiseProducer
     {
         void ProduceNoise(int volume);
+
+        /// <summary>Emit from a grid cell (e.g. AoE blast), not necessarily the caster's position.</summary>
+        void ProduceNoiseAt(int volume, Vector3Int origin);
     }
 }

@@ -170,6 +170,12 @@ namespace JRogue.Actors
             AcousticsService.Broadcast(this, volume);
         }
 
+        public virtual void ProduceNoiseAt(int volume, Vector3Int origin)
+        {
+            if (volume <= 0) return;
+            AcousticsService.Broadcast(this, origin, volume);
+        }
+
         /// <summary>
         /// Invoked when this actor perceives noise from elsewhere. Default: no-op.
         /// Override on types that should react (player, enemies, future allies with hearing).

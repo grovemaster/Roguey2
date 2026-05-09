@@ -19,5 +19,7 @@ MonoBehaviour:
   requiresTarget: 1
   range: 0
   splashRadius: 2
+  noiseVolume: 35
+  noiseOriginAtTargetTile: 1
   fireDamage: 15
   canHurtCaster: 1
