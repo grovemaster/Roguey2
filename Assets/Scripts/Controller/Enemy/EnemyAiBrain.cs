@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Controller.Player;
+using JRogue.Manager.Party;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Visibility.Algorithm;
@@ -42,7 +43,16 @@ namespace JRogue.Controller.Enemy
         private int _patrolIndex;
         private bool _playerVisibleLatch;
 
+        [Header("Threat / pursuit decay")]
+        private bool _pursuitRefreshThisEnemyWave;
+        private int _pursuitStaleWaves;
+
         public EnemyAiState State => _state;
+
+        /// <summary>
+        /// Enemy is in active chase/attack posture (maps to design spec "IsPursuingParty").
+        /// </summary>
+        public bool IsPursuingParty => _state == EnemyAiState.Alert;
         public Vector3Int LastHeardPosition => _lastHeardPosition;
         public bool HasLastHeard => _hasLastHeard;
 
@@ -57,6 +67,8 @@ namespace JRogue.Controller.Enemy
                 return;
 
             _owner.BrainEnsureManagers();
+
+            _pursuitRefreshThisEnemyWave = false;
 
             if (TryPromoteSightToAlert(player, "turn-start"))
                 return;
@@ -88,8 +100,9 @@ namespace JRogue.Controller.Enemy
 
             if (_state == EnemyAiState.Alert)
             {
+                NotifyExternalPursuitRefresh();
                 if (verboseLogging)
-                    Debug.Log($"[AI-BRAIN] {_owner.name}: Ignoring new noise while Alert (raw={rawVolume}, eff={effectiveVolume} at {origin.x},{origin.y}).");
+                    Debug.Log($"[AI-BRAIN] {_owner.name}: Noise while Alert refreshes pursuit tracking (raw={rawVolume}, eff={effectiveVolume} at {origin.x},{origin.y}).");
                 return;
             }
 
@@ -224,11 +237,15 @@ namespace JRogue.Controller.Enemy
 
         private void RunAlertTurn(PlayerController player)
         {
+            if (TrySeeAnyPartyMember(player, out _))
+                _pursuitRefreshThisEnemyWave = true;
+
             Vector3Int playerPos = player.GridPosition;
             Vector3Int diff = playerPos - _owner.GridPosition;
             int cheb = Mathf.Max(Mathf.Abs(diff.x), Mathf.Abs(diff.y));
             if (cheb <= 1)
             {
+                _pursuitRefreshThisEnemyWave = true;
                 _owner.BrainAttackPlayer();
                 return;
             }
@@ -244,24 +261,33 @@ namespace JRogue.Controller.Enemy
                     out Vector3Int firstStep))
             {
                 Vector3Int step = firstStep - _owner.GridPosition;
-                if (_owner.TryMove(step) && verboseLogging)
-                    Debug.Log($"[AI-BRAIN] {_owner.name}: Alert chase step toward player.");
+                if (_owner.TryMove(step))
+                {
+                    _pursuitRefreshThisEnemyWave = true;
+                    if (verboseLogging)
+                        Debug.Log($"[AI-BRAIN] {_owner.name}: Alert chase step toward player.");
+                }
+
                 return;
             }
 
             Vector3Int fallback = GetFallbackCardinalStep(playerPos);
-            if (_owner.TryMove(fallback) && verboseLogging)
-                Debug.Log($"[AI-BRAIN] {_owner.name}: Alert fallback step.");
+            if (_owner.TryMove(fallback))
+            {
+                _pursuitRefreshThisEnemyWave = true;
+                if (verboseLogging)
+                    Debug.Log($"[AI-BRAIN] {_owner.name}: Alert fallback step.");
+            }
         }
 
         private bool TryPromoteSightToAlert(PlayerController player, string context)
         {
-            bool visible = _owner.ComputePlayerVisible(player, out ConeVisionZone zone);
+            bool visible = TrySeeAnyPartyMember(player, out ConeVisionZone zone, out BaseActor spotted);
             bool newly = visible && !_playerVisibleLatch;
-            if (newly)
+            if (newly && spotted != null)
             {
-                Vector3Int p = player.GridPosition;
-                Debug.Log($"[SENSE-SIGHT] {_owner.name} detected {player.name} at ({p.x},{p.y}) (Zone: {zone}) [{context}].");
+                Vector3Int p = spotted.GridPosition;
+                Debug.Log($"[SENSE-SIGHT] {_owner.name} detected party member {spotted.name} at ({p.x},{p.y}) (Zone: {zone}) [{context}].");
             }
 
             _playerVisibleLatch = visible;
@@ -276,11 +302,94 @@ namespace JRogue.Controller.Enemy
             return true;
         }
 
+        /// <summary>
+        /// Sight check against any party member (cone + shadow LOS, same as ComputePlayerVisible for a single observer).
+        /// </summary>
+        private bool TrySeeAnyPartyMember(PlayerController fallbackPlayer, out ConeVisionZone zone, out BaseActor seenMember)
+        {
+            PartyManager party = PartyManager.Instance;
+            if (party != null && party.partyMembers != null && party.partyMembers.Count > 0 && _owner.BrainMapManager != null)
+            {
+                for (int i = 0; i < party.partyMembers.Count; i++)
+                {
+                    BaseActor m = party.partyMembers[i];
+                    if (m == null || !m.gameObject.activeInHierarchy)
+                        continue;
+
+                    if (ConeSightUtility.TrySenseTarget(
+                            _owner,
+                            m.GridPosition,
+                            _owner.BrainMapManager,
+                            _owner.VisionRange,
+                            _owner.PrimaryConeAngle,
+                            _owner.PeripheralRangeMultiplier,
+                            out zone))
+                    {
+                        seenMember = m;
+                        return true;
+                    }
+                }
+            }
+
+            if (fallbackPlayer != null && _owner.ComputePlayerVisible(fallbackPlayer, out zone))
+            {
+                seenMember = fallbackPlayer;
+                return true;
+            }
+
+            zone = ConeVisionZone.None;
+            seenMember = null;
+            return false;
+        }
+
+        /// <summary>Cone sight convenience when the spotted member identity is unused.</summary>
+        private bool TrySeeAnyPartyMember(PlayerController fallbackPlayer, out ConeVisionZone zone) =>
+            TrySeeAnyPartyMember(fallbackPlayer, out zone, out _);
+
+        /// <summary>
+        /// Called once per enemy wave after all enemies have acted — drops Alert if stale.
+        /// </summary>
+        public void ApplyPursuitDecayAfterEnemyWave(int decayWavesThreshold)
+        {
+            if (_owner == null)
+                return;
+
+            if (_state != EnemyAiState.Alert)
+            {
+                _pursuitStaleWaves = 0;
+                return;
+            }
+
+            if (_pursuitRefreshThisEnemyWave)
+            {
+                _pursuitStaleWaves = 0;
+                _pursuitRefreshThisEnemyWave = false;
+                return;
+            }
+
+            _pursuitStaleWaves++;
+            _pursuitRefreshThisEnemyWave = false;
+
+            if (_pursuitStaleWaves >= decayWavesThreshold)
+            {
+                TransitionToIdle($"pursuit decay ({_pursuitStaleWaves} enemy waves without pursuit refresh)");
+                _pursuitStaleWaves = 0;
+            }
+        }
+
+        /// <summary>Telemetry / future combat hooks (damage, etc.).</summary>
+        public void NotifyExternalPursuitRefresh()
+        {
+            _pursuitRefreshThisEnemyWave = true;
+        }
+
         private void EnterAlert(PlayerController player, string reason)
         {
             EnemyAiState prev = _state;
             _state = EnemyAiState.Alert;
             _searchTurnsRemaining = 0;
+            _pursuitRefreshThisEnemyWave = true;
+            _pursuitStaleWaves = 0;
             Debug.Log($"[AI-STATE] {_owner.name}: {prev} → Alert ({reason}).");
 
             if (prev != EnemyAiState.Alert)
@@ -293,6 +402,9 @@ namespace JRogue.Controller.Enemy
             _state = EnemyAiState.Idle;
             _hasLastHeard = false;
             _searchTurnsRemaining = 0;
+            _pursuitStaleWaves = 0;
+            _pursuitRefreshThisEnemyWave = false;
+            _playerVisibleLatch = false;
             Debug.Log($"[AI-STATE] {_owner.name}: {prev} → Idle ({reason}).");
         }
 

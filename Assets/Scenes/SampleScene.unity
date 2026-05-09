@@ -1434,6 +1434,7 @@ GameObject:
   - component: {fileID: 1529000333}
   - component: {fileID: 1529000334}
   - component: {fileID: 1529000335}
+  - component: {fileID: 1529000336}
   m_Layer: 0
   m_Name: GameSystems
   m_TagString: Untagged
@@ -1483,6 +1484,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
   currentState: 0
+--- !u!114 &1529000336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529000332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9673d0e3578bcb33895cb1304e7327b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Manager.Combat.CombatThreatCoordinator
+  pursuitDecayEnemyWaves: 3
+  remoteSenseChebyshevRadius: 16
+  tileSightRangeFallback: 8
+  verboseLogging: 1
 --- !u!1 &1623672201
 GameObject:
   m_ObjectHideFlags: 0
@@ -2844,9 +2861,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.UI.Inventory.InventoryUI
   playerInventory: {fileID: 1776855719}
   inventoryPanel: {fileID: 681267956}
-  weightText: {fileID: 1623672203}
   itemContainer: {fileID: 681267957}
+  weightText: {fileID: 1623672203}
   itemRowPrefab: {fileID: 7361073103135125435, guid: 2a6f184776f9893619029e20364d0e7b, type: 3}
+  footerText: {fileID: 0}
+  panelBackgroundColor: {r: 0.08, g: 0.085, b: 0.095, a: 0.96}
+  rowNormalTint: {r: 0.16, g: 0.166, b: 0.177, a: 0.94}
+  rowSelectedTint: {r: 0.22, g: 0.285, b: 0.34, a: 0.96}
 --- !u!1 &2082113325
 GameObject:
   m_ObjectHideFlags: 0
@@ -3022,6 +3043,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: be4f7573-dbaa-4961-a811-804ee0ad6077
     m_ActionName: 'Player/SelectPartyMember[/Keyboard/f1,/Keyboard/f2,/Keyboard/f3,/Keyboard/f4,/Keyboard/f5]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 620ee475-5028-4abc-ac43-a06403e2cd5d
+    m_ActionName: 'Player/ToggleFormation[/Keyboard/t]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

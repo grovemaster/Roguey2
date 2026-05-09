@@ -6,7 +6,28 @@ using UnityEngine;
 
 namespace JRogue.Item
 {
-    public enum ItemCategory { Weapon, Armor, Accessory, Consumable, Potion, Scroll, Utility }
+    public enum ItemCategory
+    {
+        Accessory,
+        Armor,
+        Artifact,
+        Book,
+        Currency,
+        Essence,
+        Evocable,
+        Junk,
+        Missile,
+        PlotItem,
+        Potion,
+        QuestItem,
+        Relic,
+        Scroll,
+        Spellbook,
+        Staff,
+        Treasure,
+        Wand,
+        Weapon
+    }
     public enum EquipmentSlot
     {
         MainHand,

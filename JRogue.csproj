@@ -65,6 +65,7 @@
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
+    <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
     <Compile Include="Assets/Scripts/Controller/BaseActor.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Assets/Scripts/Abilities/Passive/RadarPassive.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
+    <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
     <Compile Include="Assets/Scripts/Abilities/Fireball/FIreballAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentManager.cs" />

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using JRogue.Controller.Enemy;
+using JRogue.Manager.Combat;
 using JRogue.Manager.Essence;
 using JRogue.Manager.Party;
 using UnityEngine;
@@ -50,6 +51,8 @@ namespace JRogue.Manager.Turn
             // Mark this specific character as done
             charactersWhoActed.Add(actor);
 
+            CombatThreatCoordinator.Instance?.EvaluateThreat();
+
             // Check if the WHOLE party is done
             if (IsPartyDone())
             {
@@ -86,6 +89,9 @@ namespace JRogue.Manager.Turn
                     yield return new WaitForSeconds(0.05f); // Slight delay for visual clarity
                 }
             }
+
+            CombatThreatCoordinator.Instance?.ApplyPursuitDecayAfterEnemyWave();
+            CombatThreatCoordinator.Instance?.EvaluateThreat();
 
             currentState = GameState.PLAYER_TURN;
             Debug.Log("--- New Player Turn ---");
