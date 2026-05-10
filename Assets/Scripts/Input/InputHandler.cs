@@ -9,6 +9,7 @@ namespace JRogue.Input
     public class InputHandler : MonoBehaviour
     {
         private GameControls controls;
+        private InputAction toggleInventoryAction;
         private readonly PlayerCommandProcessor commandProcessor = new PlayerCommandProcessor();
 
         [Header("Targeting Visuals")]
@@ -38,6 +39,23 @@ namespace JRogue.Input
 
             controls.Player.SelectPartyMember.performed += SwapTo;
             controls.Player.ToggleFormation.performed += OnToggleFormation;
+
+            // Same InputActionAsset instance as PlayerInput (standalone InputActions can miss pairing / routing).
+            var playerInput = GetComponent<PlayerInput>();
+            toggleInventoryAction = playerInput != null
+                ? playerInput.actions.FindAction("ToggleInventory", throwIfNotFound: false)
+                : null;
+
+            if (toggleInventoryAction == null)
+            {
+                Debug.LogError(
+                    $"{nameof(InputHandler)}: No <b>ToggleInventory</b> action found on this {nameof(PlayerInput)}. "
+                    + "Reimport Assets/Controls/GameControls.inputactions (binding <Keyboard>/i).");
+            }
+            else
+            {
+                toggleInventoryAction.performed += OnToggleInventoryPerformed;
+            }
         }
 
         private void OnEnable() => controls.Player.Enable();
@@ -45,7 +63,21 @@ namespace JRogue.Input
 
         private void OnDestroy()
         {
+            if (toggleInventoryAction != null)
+            {
+                toggleInventoryAction.performed -= OnToggleInventoryPerformed;
+                toggleInventoryAction = null;
+            }
+
             controls?.Dispose();
+        }
+
+        void OnToggleInventoryPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            InventoryUI.TogglePanelFromGameplayInput();
         }
 
         /// <summary>

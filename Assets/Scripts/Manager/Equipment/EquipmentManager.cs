@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JRogue.Ability;
 using JRogue.Item;
+using JRogue.Manager.Inventory;
 using JRogue.Stats;
 using UnityEngine;
 
@@ -9,99 +10,144 @@ namespace JRogue.Manager.Equipment
 {
     public class EquipmentManager : MonoBehaviour
     {
-        // This stores everything: Weapon, Armor, Rings, etc.
-        [SerializeField]
-        private Dictionary<EquipmentSlot, ItemData> currentEquipment = new Dictionary<EquipmentSlot, ItemData>();
+        readonly Dictionary<EquipmentSlot, ItemInstance> _equipment = new Dictionary<EquipmentSlot, ItemInstance>();
 
-        private CharacterStats stats;
+        CharacterStats stats;
 
-        void Awake() // Better to cache stats in Awake
+        void Awake() => stats = GetComponent<CharacterStats>();
+
+        public float GetEquippedWeight() =>
+            _equipment.Values.Where(v => v != null).Sum(i => i.TotalWeight);
+
+        public IReadOnlyDictionary<EquipmentSlot, ItemInstance> EquippedSnapshot => _equipment;
+
+        public void EquipItem(EquipmentSlot slot, ItemInstance newItem)
         {
-            stats = GetComponent<CharacterStats>();
-        }
+            InventoryManager inv = GetComponent<InventoryManager>();
 
-        public void EquipItem(EquipmentSlot slot, ItemData newItem)
-        {
-            // 1. Unequip the old item and CLEAN UP all its effects
-            if (currentEquipment.TryGetValue(slot, out ItemData oldItem) && oldItem != null)
+            if (newItem != null && inv != null)
             {
-                // Remove Stat Modifiers (Source-based removal)
-                foreach (var mod in oldItem.statModifiers)
+                bool inBag = false;
+                foreach (ItemInstance c in inv.CarriedItems)
                 {
-                    var stat = stats.GetStatByType(mod.targetStat);
-                    stat?.RemoveModifiersFromSource(oldItem);
+                    if (c != null && c.Id == newItem.Id)
+                    {
+                        inBag = true;
+                        break;
+                    }
                 }
 
-                // Remove all Passive Logic Hooks
-                foreach (var passive in oldItem.passiveEffects)
+                if (!inBag)
                 {
+                    Debug.LogWarning($"[Equip] {newItem.Definition?.itemName} ({newItem.Id}) is not in {name}'s bag.");
+                    return;
+                }
+
+                inv.TryRemoveCarried(newItem);
+                newItem.StorageLocation = ItemStorageLocation.Equipped;
+            }
+
+            if (_equipment.TryGetValue(slot, out ItemInstance oldItem) && oldItem != null)
+            {
+                foreach (var mod in oldItem.Definition.statModifiers)
+                {
+                    var s = stats.GetStatByType(mod.targetStat);
+                    s?.RemoveModifiersFromSource(oldItem.Definition);
+                }
+
+                foreach (var passive in oldItem.Definition.passiveEffects)
                     passive.OnRemove(gameObject);
-                }
 
-                currentEquipment.Remove(slot);
+                _equipment.Remove(slot);
+
+                if (inv != null && oldItem.Definition != null)
+                {
+                    oldItem.StorageLocation = ItemStorageLocation.Carried;
+                    inv.AddItem(oldItem);
+                }
             }
 
-            // 2. Equip the new item and INITIALIZE all effects
-            if (newItem != null)
+            if (newItem != null && newItem.Definition != null)
             {
-                currentEquipment[slot] = newItem;
+                _equipment[slot] = newItem;
+                newItem.StorageLocation = ItemStorageLocation.Equipped;
 
-                // Apply Stat Modifiers
-                foreach (var mod in newItem.statModifiers)
+                foreach (var mod in newItem.Definition.statModifiers)
                 {
-                    var stat = stats.GetStatByType(mod.targetStat);
-                    stat?.AddModifier(mod.modifierAmount, newItem); // 'newItem' is the Source
+                    var s = stats.GetStatByType(mod.targetStat);
+                    s?.AddModifier(mod.modifierAmount, newItem.Definition);
                 }
 
-                // Apply all Passive Logic Hooks
-                foreach (var passive in newItem.passiveEffects)
-                {
+                foreach (var passive in newItem.Definition.passiveEffects)
                     passive.OnApply(gameObject);
-                }
 
-                Debug.Log($"Equipped {newItem.itemName} to {slot}. Stats recalculated.");
+                Debug.Log($"Equipped {newItem.Definition.itemName} to {slot} (instance {newItem.Id}).");
             }
         }
 
-        // Keep your specialized weapon logic, but pull from the dictionary
+        /// <summary>Moves equipped item back to this actor&apos;s carried list if weight allows.</summary>
+        public bool TryUnequipToBag(EquipmentSlot slot)
+        {
+            InventoryManager inv = GetComponent<InventoryManager>();
+            if (inv == null)
+                return false;
+
+            if (!_equipment.TryGetValue(slot, out ItemInstance inst) || inst?.Definition == null)
+                return false;
+
+            if (!inv.CanCarry(inst))
+            {
+                Debug.LogWarning($"[Unequip] Too encumbered to stow {inst.Definition.itemName} ({slot}).");
+                return false;
+            }
+
+            foreach (var mod in inst.Definition.statModifiers)
+            {
+                var s = stats.GetStatByType(mod.targetStat);
+                s?.RemoveModifiersFromSource(inst.Definition);
+            }
+
+            foreach (var passive in inst.Definition.passiveEffects)
+                passive.OnRemove(gameObject);
+
+            _equipment.Remove(slot);
+            inst.StorageLocation = ItemStorageLocation.Carried;
+            inv.AddItem(inst);
+            Debug.Log($"[Unequip] Moved {inst.Definition.itemName} from {slot} to bag ({inst.Id}).");
+            return true;
+        }
+
         public int GetTotalAttack(int baseStats)
         {
             int total = baseStats;
 
-            if (currentEquipment.TryGetValue(EquipmentSlot.MainHand, out ItemData weapon))
+            if (_equipment.TryGetValue(EquipmentSlot.MainHand, out ItemInstance weapon)
+                && weapon?.Definition != null)
             {
-                int weaponDamage = weapon.damageModules.Sum(module => module.value);
+                int weaponDamage = weapon.Definition.damageModules.Sum(m => m.value);
                 total += weaponDamage;
-                Debug.Log("The weapon damage module size is " + weapon.damageModules.Count);
-                Debug.Log("The weapon damage is " + weaponDamage);
-
             }
 
             return total;
         }
 
-        // Logic for the InputHandler to fire an active ability from gear.
-        // Items currently do not consume Soul Power (gear is governed by
-        // charges/cooldowns instead). If that changes, mirror the resource
-        // logic from EssenceSlotManager.TryExecuteAbility here.
-        public bool TryExecuteItemAbility(int slotIndex, int abilityIndex)
-        {
-            return TryExecuteItemInternal(slotIndex, abilityIndex, useTarget: false, targetTile: default);
-        }
+        public bool TryExecuteItemAbility(int slotIndex, int abilityIndex) =>
+            TryExecuteItemInternal(slotIndex, abilityIndex, false, default);
 
-        public bool TryExecuteItemAbility(int slotIndex, int abilityIndex, Vector3Int targetTile)
-        {
-            return TryExecuteItemInternal(slotIndex, abilityIndex, useTarget: true, targetTile);
-        }
+        public bool TryExecuteItemAbility(int slotIndex, int abilityIndex, Vector3Int targetTile) =>
+            TryExecuteItemInternal(slotIndex, abilityIndex, true, targetTile);
 
-        private bool TryExecuteItemInternal(int slotIndex, int abilityIndex, bool useTarget, Vector3Int targetTile)
+        bool TryExecuteItemInternal(int slotIndex, int abilityIndex, bool useTarget, Vector3Int targetTile)
         {
             EquipmentSlot targetSlot = MapIndexToSlot(slotIndex);
-            if (!currentEquipment.TryGetValue(targetSlot, out ItemData item)) return false;
-            if (item.activeAbilities == null || abilityIndex >= item.activeAbilities.Count) return false;
+            if (!_equipment.TryGetValue(targetSlot, out ItemInstance item) || item?.Definition == null)
+                return false;
+            if (item.Definition.activeAbilities == null || abilityIndex >= item.Definition.activeAbilities.Count)
+                return false;
 
-            AbilityAction ability = item.activeAbilities[abilityIndex];
-            if (!ability.CanExecute(gameObject)) return false;
+            AbilityAction ability = item.Definition.activeAbilities[abilityIndex];
+            if (!ability.CanExecute(gameObject))
+                return false;
 
             return useTarget
                 ? ability.Execute(gameObject, targetTile)
@@ -110,19 +156,19 @@ namespace JRogue.Manager.Equipment
 
         public ItemData GetItemFromEquipmentSlot(EquipmentSlot equipmentSlot)
         {
-            if (currentEquipment.TryGetValue(equipmentSlot, out ItemData equippedItem))
-            {
-                return equippedItem;
-            }
-
-            return null;
+            return _equipment.TryGetValue(equipmentSlot, out ItemInstance equippedItem)
+                ? equippedItem?.Definition
+                : null;
         }
 
-        public bool TryGetEquippedSlot(ItemData item, out EquipmentSlot slot)
+        public ItemInstance GetEquippedInstance(EquipmentSlot equipmentSlot) =>
+            _equipment.TryGetValue(equipmentSlot, out ItemInstance i) ? i : null;
+
+        public bool TryGetEquippedSlot(ItemInstance item, out EquipmentSlot slot)
         {
-            foreach (KeyValuePair<EquipmentSlot, ItemData> kv in currentEquipment)
+            foreach (KeyValuePair<EquipmentSlot, ItemInstance> kv in _equipment)
             {
-                if (kv.Value != null && kv.Value == item)
+                if (kv.Value != null && item != null && kv.Value.Id == item.Id)
                 {
                     slot = kv.Key;
                     return true;
@@ -133,22 +179,21 @@ namespace JRogue.Manager.Equipment
             return false;
         }
 
-        // Inside EquipmentManager.cs
         public AbilityAction GetItemAbility(int slotIndex, int abilityIndex)
         {
             EquipmentSlot targetSlot = MapIndexToSlot(slotIndex);
 
-            if (currentEquipment.TryGetValue(targetSlot, out ItemData item))
+            if (_equipment.TryGetValue(targetSlot, out ItemInstance item)
+                && item?.Definition?.activeAbilities != null
+                && abilityIndex < item.Definition.activeAbilities.Count)
             {
-                if (item.activeAbilities != null && abilityIndex < item.activeAbilities.Count)
-                {
-                    return item.activeAbilities[abilityIndex];
-                }
+                return item.Definition.activeAbilities[abilityIndex];
             }
+
             return null;
         }
 
-        private EquipmentSlot MapIndexToSlot(int index)
+        static EquipmentSlot MapIndexToSlot(int index)
         {
             return index switch
             {

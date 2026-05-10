@@ -8,8 +8,8 @@ namespace JRogue.Stats
 {
     public class InventoryCollector : MonoBehaviour
     {
-        private InventoryManager inventory;
-        private EquipmentManager equipment;
+        InventoryManager inventory;
+        EquipmentManager equipment;
 
         void Awake()
         {
@@ -17,27 +17,26 @@ namespace JRogue.Stats
             equipment = GetComponent<EquipmentManager>();
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        void OnTriggerEnter2D(Collider2D other)
         {
-            // 1. Check if the object is even a WorldItem
-            if (other.TryGetComponent(out WorldItem groundItem))
+            if (!other.TryGetComponent(out WorldItem groundItem))
+                return;
+
+            ItemInstance inst = groundItem.CollectInstance();
+            if (inst == null || inst.Definition == null)
+                return;
+
+            if (inventory == null || !inventory.AddItem(inst))
+                return;
+
+            if (equipment != null
+                && inst.Definition.damageModules != null
+                && inst.Definition.damageModules.Count > 0)
             {
-                // 2. Get the unique data instance
-                ItemData instance = groundItem.Collect();
-
-                // 3. Attempt to add to this specific entity's inventory
-                if (inventory != null && inventory.AddItem(instance))
-                {
-                    // 4. Auto-equip if it's a weapon (Matches your current logic)
-                    if (equipment != null && instance.damageModules.Count > 0)
-                    {
-                        equipment.EquipItem(EquipmentSlot.MainHand, instance);
-                        // equipment.EquipWeapon(instance);
-                    }
-
-                    Destroy(other.gameObject);
-                }
+                equipment.EquipItem(EquipmentSlot.MainHand, inst);
             }
+
+            Destroy(other.gameObject);
         }
     }
 }

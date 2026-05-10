@@ -181,6 +181,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""c5cd3d7e-6160-4d70-ba97-cabf107785c8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1206,6 +1215,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleFormation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""68191e92-3b69-4022-8ff3-0ef9ba0db16c"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1224,6 +1244,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_CyclePartyMembers = m_Player.FindAction("CyclePartyMembers", throwIfNotFound: true);
         m_Player_SelectPartyMember = m_Player.FindAction("SelectPartyMember", throwIfNotFound: true);
         m_Player_ToggleFormation = m_Player.FindAction("ToggleFormation", throwIfNotFound: true);
+        m_Player_ToggleInventory = m_Player.FindAction("ToggleInventory", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -1314,6 +1335,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_CyclePartyMembers;
     private readonly InputAction m_Player_SelectPartyMember;
     private readonly InputAction m_Player_ToggleFormation;
+    private readonly InputAction m_Player_ToggleInventory;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1365,6 +1387,10 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/ToggleFormation".
         /// </summary>
         public InputAction @ToggleFormation => m_Wrapper.m_Player_ToggleFormation;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ToggleInventory".
+        /// </summary>
+        public InputAction @ToggleInventory => m_Wrapper.m_Player_ToggleInventory;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1421,6 +1447,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ToggleFormation.started += instance.OnToggleFormation;
             @ToggleFormation.performed += instance.OnToggleFormation;
             @ToggleFormation.canceled += instance.OnToggleFormation;
+            @ToggleInventory.started += instance.OnToggleInventory;
+            @ToggleInventory.performed += instance.OnToggleInventory;
+            @ToggleInventory.canceled += instance.OnToggleInventory;
         }
 
         /// <summary>
@@ -1462,6 +1491,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ToggleFormation.started -= instance.OnToggleFormation;
             @ToggleFormation.performed -= instance.OnToggleFormation;
             @ToggleFormation.canceled -= instance.OnToggleFormation;
+            @ToggleInventory.started -= instance.OnToggleInventory;
+            @ToggleInventory.performed -= instance.OnToggleInventory;
+            @ToggleInventory.canceled -= instance.OnToggleInventory;
         }
 
         /// <summary>
@@ -1572,5 +1604,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleFormation(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleInventory" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleInventory(InputAction.CallbackContext context);
     }
 }

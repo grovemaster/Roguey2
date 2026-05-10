@@ -6,6 +6,17 @@ using UnityEngine;
 
 namespace JRogue.Item
 {
+    /// <summary>UX / inventory policy hints (config can also require confirms by category).</summary>
+    [System.Flags]
+    public enum ItemInventoryRiskHint
+    {
+        None = 0,
+        StoryTagged = 1 << 0,
+        Rare = 1 << 1,
+        Cursed = 1 << 2,
+        HighValue = 1 << 3
+    }
+
     public enum ItemCategory
     {
         Accessory,
@@ -46,6 +57,8 @@ namespace JRogue.Item
     {
         [Header("Identity")]
         public string itemName;
+        public ItemCategory category;
+        public ItemInventoryRiskHint inventoryRiskHints;
         public EquipmentSlot slotType; // Head, Body, Ring, etc.
         public float weight;
         public Sprite icon;

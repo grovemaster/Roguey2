@@ -1,51 +1,86 @@
-using UnityEngine;
 using System.Collections.Generic;
-using JRogue.Stats;
 using System.Linq;
-using JRogue.Item; // Added for easy Summing
+using JRogue.Item;
+using JRogue.Manager.Equipment;
+using JRogue.Manager.Party;
+using JRogue.Stats;
+using UnityEngine;
 
 namespace JRogue.Manager.Inventory
 {
     public class InventoryManager : MonoBehaviour
     {
-        public List<ItemData> items = new List<ItemData>();
-        private CharacterStats stats;
+        [SerializeField] List<ItemInstance> carriedItems = new List<ItemInstance>();
 
-        void Awake()
+        CharacterStats stats;
+
+        void Awake() => stats = GetComponent<CharacterStats>();
+
+        public IReadOnlyList<ItemInstance> CarriedItems => carriedItems;
+
+        public float GetCarriedWeight() => carriedItems.Sum(i => i.TotalWeight);
+
+        public float GetTotalWeight()
         {
-            stats = GetComponent<CharacterStats>();
+            float w = GetCarriedWeight();
+            EquipmentManager eq = GetComponent<EquipmentManager>();
+            if (eq != null)
+                w += eq.GetEquippedWeight();
+            return w;
         }
 
-        public float GetTotalWeight() => items.Sum(i => i.weight);
-
-        public bool TryRemoveAt(int index)
+        public bool TryRemoveCarriedAt(int index)
         {
-            if (index < 0 || index >= items.Count) return false;
-            items.RemoveAt(index);
+            if (index < 0 || index >= carriedItems.Count)
+                return false;
+            carriedItems.RemoveAt(index);
             return true;
         }
 
-        public bool AddItem(ItemData item)
+        public bool TryRemoveCarried(ItemInstance instance)
         {
-            Debug.Log($"Attempting to add item {item.itemName}");
-            if (CanCarry(item))
+            return instance != null && carriedItems.Remove(instance);
+        }
+
+        public bool AddItem(ItemInstance instance)
+        {
+            if (instance == null || instance.Definition == null)
             {
-                items.Add(item);
-                Debug.Log($"Inventory: Added {item.itemName}. Current Weight: {GetTotalWeight()}/{stats.EncumbranceLimit}");
+                Debug.LogWarning("[Inventory] AddItem rejected: null instance or definition.");
+                return false;
+            }
+
+            if (instance.IsCurrency)
+            {
+                if (PartyCurrencyLedger.Instance != null)
+                    PartyCurrencyLedger.Instance.Add(instance.Definition, instance.Quantity);
+                else
+                    Debug.LogWarning("[Inventory] Currency pickup but no PartyCurrencyLedger in scene.");
                 return true;
             }
 
-            Debug.LogWarning($"Too heavy! Cannot carry {item.itemName}");
-            Debug.Log($"<color=red>Too heavy!</color> Cannot pick up {item.itemName}.");
-            return false;
+            if (!CanCarry(instance))
+            {
+                Debug.LogWarning($"Too heavy! Cannot carry {instance.Definition.itemName}");
+                return false;
+            }
+
+            instance.StorageLocation = ItemStorageLocation.Carried;
+            carriedItems.Add(instance);
+            Debug.Log(
+                $"Inventory: Added {instance.Definition.itemName} [{instance.Id}]. Weight: {GetTotalWeight()}/{stats.EncumbranceLimit}");
+            return true;
         }
 
-        // Logic to determine if an item can be picked up
-        public bool CanCarry(ItemData item)
+        public bool CanCarry(ItemInstance instance)
         {
-            float potentialWeight = GetTotalWeight() + item.weight;
-            // EncumbranceLimit was defined in Milestone 7b (usually Constitution * 2)
-            return potentialWeight <= stats.EncumbranceLimit;
+            if (instance == null || instance.Definition == null)
+                return false;
+            if (instance.IsCurrency)
+                return true;
+
+            float potential = GetTotalWeight() + instance.TotalWeight;
+            return potential <= stats.EncumbranceLimit;
         }
     }
 }

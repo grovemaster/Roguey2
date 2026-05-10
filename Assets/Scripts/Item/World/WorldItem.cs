@@ -53,10 +53,15 @@ namespace JRogue.Item.World
         //     }
         // }
 
-        // Returns a unique instance of the item data for the collector
-        public ItemData Collect()
+        /// <summary>Creates a new runtime <see cref="ItemInstance"/> (distinct id) from this world pick-up's <see cref="data"/>.</summary>
+        public ItemInstance CollectInstance()
         {
-            return Instantiate(data);
+            if (data == null)
+                return null;
+
+            var inst = new ItemInstance(Instantiate(data));
+            inst.StorageLocation = ItemStorageLocation.OnGround;
+            return inst;
         }
 
         // public void PickUp(GameObject player)

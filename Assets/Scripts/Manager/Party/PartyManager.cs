@@ -14,6 +14,10 @@ namespace JRogue.Manager.Party
         public List<BaseActor> partyMembers = new List<BaseActor>();
         private int activeIndex = 0;
 
+        [Header("Merchant (future)")]
+        [SerializeField, Tooltip("Party member index that talks to shops (single shopper per requirements).")]
+        private int activeShopperMemberIndex;
+
         [Header("Formation Settings")]
         [SerializeField]
         // Requirement: Toggle between Follow-the-leader and Manual control
@@ -31,6 +35,13 @@ namespace JRogue.Manager.Party
         public bool IsFormationActive
         {
             get => isFormationActive;
+        }
+
+        /// <summary>Index into <see cref="partyMembers"/> for the current merchant UI (not yet wired).</summary>
+        public int ActiveShopperMemberIndex
+        {
+            get => Mathf.Clamp(activeShopperMemberIndex, 0, Mathf.Max(0, partyMembers.Count - 1));
+            set => activeShopperMemberIndex = value;
         }
 
         // public bool ToggleFormationActive() =>

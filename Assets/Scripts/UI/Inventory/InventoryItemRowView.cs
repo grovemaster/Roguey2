@@ -45,6 +45,9 @@ namespace JRogue.UI.Inventory
             h.childForceExpandHeight = true;
             h.childForceExpandWidth = false;
 
+            // Keep transition off so Graphic.color we set isn't overridden every frame.
+            _button.transition = Selectable.Transition.None;
+
             if (transform.childCount == 0)
             {
                 _letterText = CreateLetterChild();
@@ -82,8 +85,11 @@ namespace JRogue.UI.Inventory
 
                 LayoutElement flex = textChild.GetComponent<LayoutElement>() ?? textChild.gameObject.AddComponent<LayoutElement>();
                 flex.flexibleWidth = 1;
+                flex.flexibleHeight = 1;
+                flex.minHeight = 40f;
 
                 ConfigureDetailsTMP(_detailsText);
+                AttachDetailsSizeFitter(textChild.gameObject);
             }
         }
 
@@ -119,12 +125,22 @@ namespace JRogue.UI.Inventory
             ConfigureDetailsTMP(tmp);
             var le = go.AddComponent<LayoutElement>();
             le.flexibleWidth = 1;
+            le.flexibleHeight = 1;
+            le.minHeight = 40f;
+            AttachDetailsSizeFitter(go);
             return tmp;
+        }
+
+        static void AttachDetailsSizeFitter(GameObject detailsGo)
+        {
+            var csf = detailsGo.GetComponent<ContentSizeFitter>() ?? detailsGo.AddComponent<ContentSizeFitter>();
+            csf.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
         }
 
         static void SetupLetter(TextMeshProUGUI tmp)
         {
-            tmp.fontSize = 22;
+            tmp.fontSize = 18;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.verticalAlignment = VerticalAlignmentOptions.Middle;
             tmp.color = new Color(0.92f, 0.93f, 0.94f);
@@ -141,12 +157,12 @@ namespace JRogue.UI.Inventory
 
         static void ConfigureDetailsTMP(TextMeshProUGUI tmp)
         {
-            tmp.fontSize = 18;
-            tmp.alignment = TextAlignmentOptions.MidlineLeft;
-            tmp.verticalAlignment = VerticalAlignmentOptions.Middle;
+            tmp.fontSize = 14;
+            tmp.alignment = TextAlignmentOptions.TopLeft;
+            tmp.verticalAlignment = VerticalAlignmentOptions.Top;
             tmp.color = new Color(0.92f, 0.93f, 0.94f);
-            tmp.overflowMode = TextOverflowModes.Truncate;
-            tmp.textWrappingMode = TextWrappingModes.NoWrap;
+            tmp.overflowMode = TextOverflowModes.Overflow;
+            tmp.textWrappingMode = TextWrappingModes.Normal;
         }
 
         public void Bind(
@@ -158,16 +174,26 @@ namespace JRogue.UI.Inventory
         {
             _letterText.text = row.Letter.ToString();
 
-            string qty = row.Quantity > 1 ? $" ×{row.Quantity}" : string.Empty;
-            string slot = row.Item.slotType.ToString();
+            int qty = row.Instance != null ? row.Instance.Quantity : 1;
+            string qtyLabel = qty > 1 ? $" ×{qty}" : string.Empty;
+            string slot = row.Item != null ? row.Item.slotType.ToString() : "?";
             string weight = $"{row.StackedWeight:0.#} kg";
             string equipped = string.Empty;
             if (row.IsEquipped && row.EquippedSlot.HasValue)
-                equipped = $"  <color=#7dd3fc>[equipped {row.EquippedSlot}]</color>";
+                equipped = $"  <color=#7dd3fc>[E {row.EquippedSlot} · {row.OwnerDisplayName}]</color>";
 
             string nameHex = ColorUtility.ToHtmlStringRGB(nameColor);
+            string baseName = row.Item != null ? row.Item.itemName : "(?)";
+            string idShort = row.Instance != null && row.Instance.Id != null && row.Instance.Id.Length >= 6
+                ? row.Instance.Id.Substring(0, 6)
+                : "";
+
+            string nameWithId = string.IsNullOrEmpty(idShort)
+                ? baseName
+                : $"{baseName} <color=#5a6a72><size=11>#{idShort}</size></color>";
+
             _detailsText.text =
-                $"<color=#{nameHex}>{row.Item.itemName}</color>{qty}  ·  [{slot}]  ·  {weight}{equipped}";
+                $"<color=#{nameHex}>{nameWithId}</color>{qtyLabel}  ·  {row.OwnerDisplayName}  ·  [{slot}]  ·  {weight}{equipped}";
 
             Sprite use = itemIcon != null ? itemIcon : placeholderIcon;
             _iconImage.sprite = use;

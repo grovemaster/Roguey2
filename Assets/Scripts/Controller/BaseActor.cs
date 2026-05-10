@@ -35,9 +35,15 @@ namespace JRogue.Actors
         public FacingDirection currentFacing = FacingDirection.North;
 
         [Header("Identity")]
+        [SerializeField, Tooltip("Shown in party inventory and menus (fallback: GameObject name).")]
+        private string displayName;
+
         [SerializeField, Tooltip("Categorical 'kind' of this actor for detection filters (radar etc.). Set a single bit per actor.")]
         private EssenceType essenceType = EssenceType.Life;
         public EssenceType EssenceType => essenceType;
+
+        public string DisplayName =>
+            string.IsNullOrWhiteSpace(displayName) ? gameObject.name : displayName.Trim();
 
         protected MapManager mapManager;
         protected EssenceSlotManager essenceManager;

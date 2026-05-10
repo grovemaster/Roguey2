@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Data/Item/ItemData.cs" />
+    <Compile Include="Assets/Data/Inventory/DestructiveInventoryActionConfig.cs" />
     <Compile Include="Assets/Data/Item/ItemEffect.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />
