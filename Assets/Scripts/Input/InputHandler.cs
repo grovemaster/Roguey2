@@ -77,6 +77,10 @@ namespace JRogue.Input
             if (!context.performed)
                 return;
 
+            // Same key as typing "i" in inventory search (e.g. "giant"); do not close the panel while search focus is on.
+            if (InventoryUI.IsOpenInSearchFocus())
+                return;
+
             InventoryUI.TogglePanelFromGameplayInput();
         }
 

@@ -54,6 +54,7 @@ namespace JRogue.UI.Inventory
 
         bool _usableOnlyFilter;
         string _plainSearchNeedle = string.Empty;
+        bool _searchFocusMode;
 
         bool _destructiveBlocking;
         string _destructivePrompt;
@@ -75,8 +76,17 @@ namespace JRogue.UI.Inventory
         GameObject _modalRoot;
         TextMeshProUGUI _modalBody;
 
+        TextMeshProUGUI _searchPromptText;
+
         public static bool BlocksGameplay =>
             _instance != null && _instance.inventoryPanel != null && _instance.inventoryPanel.activeSelf;
+
+        /// <summary>Inventory is open and / search focus is on — gameplay must not treat ToggleInventory (e.g. <c>i</c>) as closing the panel.</summary>
+        public static bool IsOpenInSearchFocus() =>
+            _instance != null &&
+            _instance.inventoryPanel != null &&
+            _instance.inventoryPanel.activeSelf &&
+            _instance._searchFocusMode;
 
         public bool IsOpen =>
             inventoryPanel != null && inventoryPanel.activeSelf;
@@ -88,6 +98,10 @@ namespace JRogue.UI.Inventory
         public static void TogglePanelFromGameplayInput()
         {
             if (_instance == null)
+                return;
+
+            // Search focus uses the same keys as gameplay (e.g. i); never close the panel from Toggle here.
+            if (_instance.IsOpen && _instance._searchFocusMode)
                 return;
 
             _instance.OnInventoryToggleShortcut();
@@ -136,10 +150,72 @@ namespace JRogue.UI.Inventory
             EnsureItemListScrollView();
             EnsureInventoryBodySplitAndDetails();
             NormalizeWeightHeaderLayout();
+            EnsureSearchPromptLine();
             EnsureDestructiveModalRoot();
 
             ApplyFooterCopy();
             ApplyDarkPanelTheme();
+        }
+
+        void EnsureSearchPromptLine()
+        {
+            if (_searchPromptText != null || inventoryPanel == null)
+                return;
+
+            Transform existing = inventoryPanel.transform.Find("SearchPromptLine");
+            if (existing != null)
+            {
+                _searchPromptText = existing.GetComponent<TextMeshProUGUI>();
+                return;
+            }
+
+            var go = new GameObject("SearchPromptLine", typeof(RectTransform), typeof(TextMeshProUGUI));
+            go.transform.SetParent(inventoryPanel.transform, false);
+
+            _searchPromptText = go.GetComponent<TextMeshProUGUI>();
+            _searchPromptText.richText = false;
+            _searchPromptText.fontSize = 15f;
+            _searchPromptText.margin = new Vector4(6f, 2f, 6f, 4f);
+            _searchPromptText.textWrappingMode = TextWrappingModes.Normal;
+            _searchPromptText.overflowMode = TextOverflowModes.Ellipsis;
+            _searchPromptText.alignment = TextAlignmentOptions.MidlineLeft;
+            _searchPromptText.color = new Color(0.78f, 0.82f, 0.88f);
+
+            var le = go.AddComponent<LayoutElement>();
+            le.minHeight = 26f;
+            le.preferredHeight = 30f;
+            le.flexibleWidth = 1f;
+
+            if (weightText != null)
+                go.transform.SetSiblingIndex(weightText.transform.GetSiblingIndex() + 1);
+        }
+
+        void UpdateSearchPromptVisual()
+        {
+            if (_searchPromptText == null)
+                return;
+
+            string q = _plainSearchNeedle ?? string.Empty;
+            const int maxDisplay = 120;
+            if (q.Length > maxDisplay)
+                q = q.Substring(0, maxDisplay) + "…";
+
+            if (_searchFocusMode)
+            {
+                bool blink = (Mathf.FloorToInt(Time.unscaledTime * 2f) & 1) == 0;
+                string caret = blink ? "_" : " ";
+                _searchPromptText.text = string.IsNullOrEmpty(q)
+                    ? $"Search [editing]: {caret}"
+                    : $"Search [editing]: {q}{caret}";
+                _searchPromptText.color = new Color(0.55f, 0.82f, 1f);
+            }
+            else
+            {
+                _searchPromptText.text = string.IsNullOrEmpty(q)
+                    ? "Search: (empty)   Press / to type a filter"
+                    : $"Search: {q}   Press / to edit";
+                _searchPromptText.color = new Color(0.78f, 0.82f, 0.88f);
+            }
         }
 
         void OnInventoryToggleShortcut()
@@ -154,8 +230,11 @@ namespace JRogue.UI.Inventory
                 _selection = 0;
                 _categoryCycleIndex = 0;
                 _plainSearchNeedle = string.Empty;
+                _searchFocusMode = false;
                 RefreshInventoryDisplay();
             }
+            else
+                _searchFocusMode = false;
         }
 
         void ResolveItemContainer()
@@ -566,8 +645,18 @@ namespace JRogue.UI.Inventory
                 Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f));
         }
 
+        void LateUpdate()
+        {
+            if (!IsOpen || !_searchFocusMode)
+                return;
+
+            UpdateSearchPromptVisual();
+        }
+
         void ApplyFooterCopy()
         {
+            UpdateSearchPromptVisual();
+
             if (!footerText) return;
 
             string catLbl = "(all)";
@@ -580,11 +669,15 @@ namespace JRogue.UI.Inventory
             BaseActor mb = ResolvedFocusedMemberDisplay();
             string who = mb != null ? mb.DisplayName : "—";
 
+            string searchUi = _searchFocusMode
+                ? "<color=#9bbdff>SEARCH</color> (see line above · Backspace clears · Esc exits focus, keeps text)"
+                : "<color=#8ae68a>/</color> search focus";
+
             footerText.text =
                 $"Mode: {_browseMode}   ·   Scope: {( _browseMode == BrowseMode.FocusedMember ? $"Member {who}" : "All party aggregate")}"
-                + $"\n[ ] filter: {catLbl}   ·   [ / ] clear search ({(_plainSearchNeedle.Length > 0 ? _plainSearchNeedle : "—")})   ·   Semicolon ';' pivot browse mode   ·   F usable-only ({(_usableOnlyFilter ? "ON" : "off")})"
-                + "\nNav: ↑↓/WS · letters · Tab/shift-tab party · [ / ] adj category strip"
-                + "\nActs: Enter/E equip · U unequip · D drop (+confirm) · C use/consume stub · G give stub · X log inspect"
+                + $"\n[ ] category: {catLbl}   ·   {searchUi}   ·   ';' pivot browse   ·   F usable-only ({(_usableOnlyFilter ? "ON" : "off")})"
+                + "\nNav: ↑↓/WS · item letters · Tab/shift-tab party · [ ] prev/next category"
+                + "\nActs: Enter/E equip · U unequip · D drop (+confirm) · C use stub · G give stub · X inspect"
                 + "\n<color=#6a7a84>In combat: ally bag use-policy enforced; exchanges still stub (initiator consumes turn).</color>";
         }
 
@@ -768,6 +861,9 @@ namespace JRogue.UI.Inventory
 
         bool HandlePlainSearchTyping(Keyboard kb)
         {
+            if (!_searchFocusMode)
+                return false;
+
             const int maxLen = 48;
             bool shift = kb.leftShiftKey.isPressed || kb.rightShiftKey.isPressed;
 
@@ -797,15 +893,14 @@ namespace JRogue.UI.Inventory
                 return true;
             }
 
-            if (shift)
-                return false;
-
             for (int letterIndex = 0; letterIndex < 26; letterIndex++)
             {
                 Key key = (Key)((int)Key.A + letterIndex);
                 if (!kb[key].wasPressedThisFrame || _plainSearchNeedle.Length >= maxLen)
                     continue;
-                _plainSearchNeedle += (char)('a' + letterIndex);
+
+                char ch = shift ? (char)('A' + letterIndex) : (char)('a' + letterIndex);
+                _plainSearchNeedle += ch;
                 return true;
             }
 
@@ -831,12 +926,18 @@ namespace JRogue.UI.Inventory
                 return;
             }
 
-            bool searchDirty = HandlePlainSearchTyping(kb);
-
             if (kb.escapeKey.wasPressedThisFrame)
             {
+                if (_searchFocusMode)
+                {
+                    _searchFocusMode = false;
+                    ApplyFooterCopy();
+                    return;
+                }
+
                 inventoryPanel.SetActive(false);
                 CancelDestructive();
+                _searchFocusMode = false;
                 return;
             }
 
@@ -849,8 +950,7 @@ namespace JRogue.UI.Inventory
                     _memberCarouselIndex = (_memberCarouselIndex + dir + party.Count) % party.Count;
                     RefreshInventoryDisplay();
                 }
-                else if (searchDirty)
-                    RefreshInventoryDisplay();
+
                 return;
             }
 
@@ -877,8 +977,20 @@ namespace JRogue.UI.Inventory
 
             if (kb.slashKey.wasPressedThisFrame)
             {
-                _plainSearchNeedle = string.Empty;
-                RefreshInventoryDisplay();
+                if (!_searchFocusMode)
+                {
+                    _searchFocusMode = true;
+                    ApplyFooterCopy();
+                    return;
+                }
+
+                if (_plainSearchNeedle.Length < 48)
+                {
+                    _plainSearchNeedle += "/";
+                    RefreshInventoryDisplay();
+                }
+
+                ApplyFooterCopy();
                 return;
             }
 
@@ -889,11 +1001,16 @@ namespace JRogue.UI.Inventory
                 return;
             }
 
+            if (_searchFocusMode)
+            {
+                bool searchDirty = HandlePlainSearchTyping(kb);
+                if (searchDirty)
+                    RefreshInventoryDisplay();
+                return;
+            }
+
             HandleInventoryCommands(kb);
             PollArrowMovement(kb);
-
-            if (searchDirty)
-                RefreshInventoryDisplay();
         }
 
         static int LetterRowIndexExact(IReadOnlyList<InventoryViewModel.Row> rows, char needle)
@@ -923,7 +1040,8 @@ namespace JRogue.UI.Inventory
                 int idx = LetterRowIndexExact(_presentation.ItemRows, needle);
                 if (idx >= 0)
                     SetSelection(idx);
-                return true;
+                // Only consume the key when it actually jumped to a row; otherwise let search / other handlers see it.
+                return idx >= 0;
             }
 
             return false;
