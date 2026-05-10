@@ -62,7 +62,33 @@ namespace JRogue.UI.Inventory
                 }
             }
 
-            sb.Append("<color=#5a6974>Lore/tags: Phase 2 shell — tie into ItemGameplayTags.</color>");
+            if (selectedRow.Instance != null)
+            {
+                ItemUserMark m = selectedRow.Instance.UserMarks;
+                if (m != ItemUserMark.None)
+                {
+                    var bits = new System.Collections.Generic.List<string>();
+                    if ((m & ItemUserMark.Favorite) != 0)
+                        bits.Add("<color=#e8c56c>Fav</color>");
+                    if ((m & ItemUserMark.Protected) != 0)
+                        bits.Add("<color=#7ec8ff>Protected</color>");
+                    if ((m & ItemUserMark.Junk) != 0)
+                        bits.Add("<color=#9aa7b0>Junk</color>");
+                    sb.AppendLine($"<color=#8a97a3>Marks:</color> {string.Join(" · ", bits)}");
+                }
+
+                string ins = selectedRow.Instance.UserInscription;
+                if (!string.IsNullOrWhiteSpace(ins))
+                    sb.AppendLine($"<color=#8a97a3>Inscription:</color> {ins}");
+
+                InventoryInscriptionGuards.ParsedGuards g =
+                    InventoryInscriptionGuards.Parse(selectedRow.Instance.UserInscription);
+                if (g != InventoryInscriptionGuards.ParsedGuards.None)
+                    sb.AppendLine($"<color=#6a7884>Active guards:</color> {g}");
+                else
+                    sb.AppendLine("<color=#5a6974>Inscription guards: <i>stub</i> (!d / !u etc. Phase 3+).</color>");
+            }
+
             return sb.ToString();
         }
 

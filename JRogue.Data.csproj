@@ -51,7 +51,9 @@
   <ItemGroup>
     <Compile Include="Assets/Data/Item/ItemData.cs" />
     <Compile Include="Assets/Data/Inventory/DestructiveInventoryActionConfig.cs" />
+    <Compile Include="Assets/Data/Inventory/InventoryHotkeyProfile.cs" />
     <Compile Include="Assets/Data/Item/ItemEffect.cs" />
+    <Compile Include="Assets/Data/Inventory/InventoryAccessibilitySettings.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />
     <Compile Include="Assets/Data/Ability/PassiveEffect.cs" />
@@ -1175,6 +1177,10 @@
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>/home/jonathan/Unity/Hub/Editor/6000.4.0f1/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/mscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>Library/ScriptAssemblies/Unity.InputSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.UI">

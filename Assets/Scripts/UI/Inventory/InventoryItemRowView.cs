@@ -1,4 +1,5 @@
 using System;
+using JRogue.Item;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -170,9 +171,12 @@ namespace JRogue.UI.Inventory
             Color nameColor,
             Action onClicked,
             Sprite itemIcon,
-            Sprite placeholderIcon)
+            Sprite placeholderIcon,
+            float detailsFontScale = 1f)
         {
             _letterText.text = row.Letter.ToString();
+            _letterText.fontSize = 18f * detailsFontScale;
+            _detailsText.fontSize = 14f * detailsFontScale;
 
             int qty = row.Instance != null ? row.Instance.Quantity : 1;
             string qtyLabel = qty > 1 ? $" ×{qty}" : string.Empty;
@@ -192,8 +196,10 @@ namespace JRogue.UI.Inventory
                 ? baseName
                 : $"{baseName} <color=#5a6a72><size=11>#{idShort}</size></color>";
 
+            string markPrefix = FormatUserMarksPrefix(row.Instance);
+
             _detailsText.text =
-                $"<color=#{nameHex}>{nameWithId}</color>{qtyLabel}  ·  {row.OwnerDisplayName}  ·  [{slot}]  ·  {weight}{equipped}";
+                $"{markPrefix}<color=#{nameHex}>{nameWithId}</color>{qtyLabel}  ·  {row.OwnerDisplayName}  ·  [{slot}]  ·  {weight}{equipped}";
 
             Sprite use = itemIcon != null ? itemIcon : placeholderIcon;
             _iconImage.sprite = use;
@@ -210,5 +216,26 @@ namespace JRogue.UI.Inventory
         }
 
         public void SetInteractable(bool interactable) => _button.interactable = interactable;
+
+        static string FormatUserMarksPrefix(ItemInstance inst)
+        {
+            if (inst == null)
+                return string.Empty;
+
+            ItemUserMark m = inst.UserMarks;
+            if (m == ItemUserMark.None)
+                return string.Empty;
+
+            var parts = new System.Collections.Generic.List<string>();
+            if ((m & ItemUserMark.Favorite) != 0)
+                parts.Add("<color=#e8c56c>[F]</color>");
+            if ((m & ItemUserMark.Protected) != 0)
+                parts.Add("<color=#7ec8ff>[P]</color>");
+            if ((m & ItemUserMark.Junk) != 0)
+                parts.Add("<color=#9aa7b0>[J]</color>");
+
+            return string.Join(string.Empty, parts) + " ";
+        }
     }
 }
+

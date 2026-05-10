@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a8767c16c86661ea3d2e21f51dee02, type: 3}
+  m_Name: InventoryAccessibility
+  m_EditorClassIdentifier: JRogue.Data::JRogue.UI.Inventory.InventoryAccessibilitySettings
+  listAndFooterFontScale: 1
+  detailPaneFontScale: 1
+  highContrastRows: 0
+  highContrastRowNormal: {r: 0.12, g: 0.14, b: 0.18, a: 0.96}
+  highContrastRowSelected: {r: 0.18, g: 0.32, b: 0.42, a: 0.98}
+  tooltipShowDelaySeconds: 0.35

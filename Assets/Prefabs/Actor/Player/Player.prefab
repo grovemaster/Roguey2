@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 14020384444482333}
   - component: {fileID: 614855503770921028}
   - component: {fileID: 7471007482051096710}
+  - component: {fileID: 2061355635181889388}
+  - component: {fileID: 7840245774233295368}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -112,7 +114,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   stats: {fileID: 0}
+  currentFacing: 0
+  displayName: 
+  essenceType: 1
   baseAttack: 1
+  meleeNoiseVolume: 5
 --- !u!114 &9201910849185023974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +143,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34727171726e44404a4dd8866cad22f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Manager.Inventory.InventoryManager
-  items: []
+  carriedItems: []
+  automationProfile: {fileID: 11400000, guid: 2cdc2fe25895c23a0b771779317368f2, type: 2}
 --- !u!114 &6634713874642293454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,3 +287,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Manager.Essence.EssenceSlotManager
   totalSlots: 3
   equippedEssences: []
+--- !u!114 &2061355635181889388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339168105576016893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d36b32a08221baadbe029f23f0347d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Actors.Components.HealthComponent
+--- !u!114 &7840245774233295368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339168105576016893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50e40c737cfecffe4bf3b5c5347aeb79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Actors.Components.GridMover

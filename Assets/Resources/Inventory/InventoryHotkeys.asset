@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 952a02bd8d83709f5bff87dfcadaa4ba, type: 3}
+  m_Name: InventoryHotkeys
+  m_EditorClassIdentifier: JRogue.Data::JRogue.UI.Inventory.InventoryHotkeyProfile
+  toggleBrowseScope: 6
+  categoryPrevious: 11
+  categoryNext: 12
+  toggleUsableFilter: 20
+  cycleSortMode: 50
+  toggleFavoriteMark: 41
+  toggleProtectedMark: 42
+  toggleJunkMark: 43
+  markModifierRequired: 55

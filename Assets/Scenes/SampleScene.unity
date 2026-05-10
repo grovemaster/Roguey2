@@ -2836,17 +2836,17 @@ RectTransform:
   m_GameObject: {fileID: 2033189838}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 681267957}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &2033189843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2865,6 +2865,9 @@ MonoBehaviour:
   weightText: {fileID: 1623672203}
   itemRowPrefab: {fileID: 7361073103135125435, guid: 2a6f184776f9893619029e20364d0e7b, type: 3}
   footerText: {fileID: 0}
+  destructiveActionRules: {fileID: 11400000, guid: da345efb6c4435043a7015e2a82d5d5f, type: 2}
+  phase3HotkeyProfile: {fileID: 11400000, guid: 386d19f9201e7a3d19ab3dbc59a62bb8, type: 2}
+  accessibilitySettings: {fileID: 11400000, guid: 9e0e8f3a4bf0f3cc8a919482b18117a5, type: 2}
   panelBackgroundColor: {r: 0.08, g: 0.085, b: 0.095, a: 0.96}
   rowNormalTint: {r: 0.16, g: 0.166, b: 0.177, a: 0.94}
   rowSelectedTint: {r: 0.22, g: 0.285, b: 0.34, a: 0.96}
@@ -2932,6 +2935,7 @@ MonoBehaviour:
   - {fileID: 1776855714}
   - {fileID: 2120655062}
   - {fileID: 1974283755}
+  activeShopperMemberIndex: 0
   isFormationActive: 1
   positionHistory: []
 --- !u!114 &2082113330
@@ -3047,6 +3051,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 620ee475-5028-4abc-ac43-a06403e2cd5d
     m_ActionName: 'Player/ToggleFormation[/Keyboard/t]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c5cd3d7e-6160-4d70-ba97-cabf107785c8
+    m_ActionName: 'Player/ToggleInventory[/Keyboard/i]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

@@ -6,7 +6,7 @@ using JRogue.Item;
 namespace JRogue.UI.Inventory
 {
     /// <summary>
-    /// Filters an <see cref="InventoryViewModel"/> and builds category-grouped presentation lines plus a flat lettered row list for selection.
+    /// Filters an <see cref="InventoryViewModel"/> and builds sectioned presentation lines plus a flat lettered row list for selection.
     /// </summary>
     public sealed class InventoryPresentationModel
     {
@@ -50,7 +50,8 @@ namespace JRogue.UI.Inventory
             ItemCategory? categoryFilter,
             string searchNeedle,
             bool usableOnly,
-            bool inCombat)
+            bool inCombat,
+            InventorySortMode sortMode)
         {
             var lines = new List<PresentationLine>();
             var orderedItems = new List<InventoryViewModel.Row>();
@@ -73,20 +74,81 @@ namespace JRogue.UI.Inventory
             if (usableOnly)
                 q = q.Where(r => InventoryUsability.AppearsUsableNow(r, inCombat));
 
-            List<InventoryViewModel.Row> working = q
+            List<InventoryViewModel.Row> pool = q.ToList();
+
+            switch (sortMode)
+            {
+                case InventorySortMode.FlatByName:
+                    pool.Sort((a, b) => string.Compare(
+                        a.Item.itemName,
+                        b.Item.itemName,
+                        StringComparison.OrdinalIgnoreCase));
+                    AppendFlat(lines, orderedItems, pool, "<color=#cfd6dd><b>All items</b></color>");
+                    break;
+
+                case InventorySortMode.FlatByWeightDesc:
+                    pool = pool
+                        .OrderByDescending(r => r.StackedWeight)
+                        .ThenBy(r => r.Item.itemName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+                    AppendFlat(lines, orderedItems, pool, "<color=#cfd6dd><b>All items · by weight</b></color>");
+                    break;
+
+                case InventorySortMode.CategoryFavoritesFirst:
+                    AppendCategoryGrouped(lines, orderedItems, pool, favoritesFirst: true);
+                    break;
+
+                default:
+                    AppendCategoryGrouped(lines, orderedItems, pool, favoritesFirst: false);
+                    break;
+            }
+
+            return new InventoryPresentationModel(lines, orderedItems);
+        }
+
+        static void AppendFlat(
+            List<PresentationLine> lines,
+            List<InventoryViewModel.Row> orderedItems,
+            List<InventoryViewModel.Row> rows,
+            string headerRich)
+        {
+            if (rows.Count == 0)
+                return;
+
+            lines.Add(PresentationLine.Header(headerRich));
+
+            foreach (InventoryViewModel.Row raw in rows)
+            {
+                char letter = InventoryViewModel.LetterForIndex(orderedItems.Count);
+                InventoryViewModel.Row tagged = raw.WithLetter(letter);
+                orderedItems.Add(tagged);
+                lines.Add(PresentationLine.Item(tagged));
+            }
+        }
+
+        static void AppendCategoryGrouped(
+            List<PresentationLine> lines,
+            List<InventoryViewModel.Row> orderedItems,
+            List<InventoryViewModel.Row> pool,
+            bool favoritesFirst)
+        {
+            List<InventoryViewModel.Row> working = pool
                 .OrderBy(r => r.Item.itemName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
-            IGrouping<ItemCategory, InventoryViewModel.Row>[] grouped = working
+            IOrderedEnumerable<IGrouping<ItemCategory, InventoryViewModel.Row>> grouped = working
                 .GroupBy(r => r.Item.category)
                 .OrderBy(g => ItemCategoryRegistry.Get(g.Key).SortOrder)
-                .ThenBy(g => g.Key.ToString())
-                .ToArray();
+                .ThenBy(g => g.Key.ToString());
 
             foreach (IGrouping<ItemCategory, InventoryViewModel.Row> g in grouped)
             {
-                List<InventoryViewModel.Row> inCat =
-                    g.OrderBy(r => r.Item.itemName ?? string.Empty, StringComparer.OrdinalIgnoreCase).ToList();
+                IEnumerable<InventoryViewModel.Row> orderedInCat = favoritesFirst
+                    ? g.OrderBy(r => IsFavorite(r) ? 0 : 1)
+                        .ThenBy(r => r.Item.itemName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                    : g.OrderBy(r => r.Item.itemName ?? string.Empty, StringComparer.OrdinalIgnoreCase);
+
+                List<InventoryViewModel.Row> inCat = orderedInCat.ToList();
                 if (inCat.Count == 0)
                     continue;
 
@@ -104,8 +166,9 @@ namespace JRogue.UI.Inventory
                     lines.Add(PresentationLine.Item(tagged));
                 }
             }
-
-            return new InventoryPresentationModel(lines, orderedItems);
         }
+
+        static bool IsFavorite(InventoryViewModel.Row r) =>
+            r.Instance != null && (r.Instance.UserMarks & ItemUserMark.Favorite) != 0;
     }
 }

@@ -38,6 +38,11 @@ namespace JRogue.UI.Inventory
         [SerializeField] TextMeshProUGUI footerText;
         [SerializeField] DestructiveInventoryActionConfig destructiveActionRules;
 
+        [Header("Phase 3 — optional profiles")]
+        [SerializeField] InventoryHotkeyProfile phase3HotkeyProfile;
+
+        [SerializeField] InventoryAccessibilitySettings accessibilitySettings;
+
         [Header("Dark theme")]
         [SerializeField] Color panelBackgroundColor = new Color(0.08f, 0.085f, 0.095f, 0.96f);
 
@@ -55,6 +60,10 @@ namespace JRogue.UI.Inventory
         bool _usableOnlyFilter;
         string _plainSearchNeedle = string.Empty;
         bool _searchFocusMode;
+        bool _inscriptionFocusMode;
+        string _inscriptionDraft = string.Empty;
+
+        InventorySortMode _sortMode = InventorySortMode.CategoryThenName;
 
         bool _destructiveBlocking;
         string _destructivePrompt;
@@ -81,15 +90,29 @@ namespace JRogue.UI.Inventory
         public static bool BlocksGameplay =>
             _instance != null && _instance.inventoryPanel != null && _instance.inventoryPanel.activeSelf;
 
-        /// <summary>Inventory is open and / search focus is on — gameplay must not treat ToggleInventory (e.g. <c>i</c>) as closing the panel.</summary>
+        /// <summary>Inventory is open and a text field (search or inscription) has focus — do not treat ToggleInventory (e.g. <c>i</c>) as closing the panel.</summary>
         public static bool IsOpenInSearchFocus() =>
             _instance != null &&
             _instance.inventoryPanel != null &&
             _instance.inventoryPanel.activeSelf &&
-            _instance._searchFocusMode;
+            (_instance._searchFocusMode || _instance._inscriptionFocusMode);
 
         public bool IsOpen =>
             inventoryPanel != null && inventoryPanel.activeSelf;
+
+        Color EffectiveRowNormal =>
+            accessibilitySettings != null && accessibilitySettings.highContrastRows
+                ? accessibilitySettings.highContrastRowNormal
+                : rowNormalTint;
+
+        Color EffectiveRowSelected =>
+            accessibilitySettings != null && accessibilitySettings.highContrastRows
+                ? accessibilitySettings.highContrastRowSelected
+                : rowSelectedTint;
+
+        float ListFontScale => accessibilitySettings != null ? accessibilitySettings.listAndFooterFontScale : 1f;
+
+        float DetailFontScale => accessibilitySettings != null ? accessibilitySettings.detailPaneFontScale : 1f;
 
         static bool InCombatContext =>
             CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat;
@@ -155,6 +178,26 @@ namespace JRogue.UI.Inventory
 
             ApplyFooterCopy();
             ApplyDarkPanelTheme();
+            ApplyAccessibilityToUiChrome();
+        }
+
+        void ApplyAccessibilityToUiChrome()
+        {
+            float s = ListFontScale;
+            if (footerText != null)
+                footerText.fontSize = 12f * s;
+
+            if (weightText != null)
+            {
+                weightText.fontSize = 16f * s;
+                weightText.textWrappingMode = TextWrappingModes.Normal;
+            }
+
+            if (_searchPromptText != null)
+                _searchPromptText.fontSize = 15f * s;
+
+            if (_detailPane != null)
+                _detailPane.fontSize = 13f * DetailFontScale;
         }
 
         void EnsureSearchPromptLine()
@@ -195,6 +238,22 @@ namespace JRogue.UI.Inventory
             if (_searchPromptText == null)
                 return;
 
+            if (_inscriptionFocusMode)
+            {
+                string d = _inscriptionDraft ?? string.Empty;
+                const int maxInscriptionDisplay = 120;
+                if (d.Length > maxInscriptionDisplay)
+                    d = d.Substring(0, maxInscriptionDisplay) + "…";
+
+                bool blink = (Mathf.FloorToInt(Time.unscaledTime * 2f) & 1) == 0;
+                string caret = blink ? "_" : " ";
+                _searchPromptText.text = string.IsNullOrEmpty(d)
+                    ? $"Inscription [editing]: {caret}"
+                    : $"Inscription [editing]: {d}{caret}";
+                _searchPromptText.color = new Color(0.55f, 1f, 0.78f);
+                return;
+            }
+
             string q = _plainSearchNeedle ?? string.Empty;
             const int maxDisplay = 120;
             if (q.Length > maxDisplay)
@@ -223,18 +282,57 @@ namespace JRogue.UI.Inventory
             if (inventoryPanel == null)
                 return;
 
-            inventoryPanel.SetActive(!inventoryPanel.activeSelf);
+            bool willOpen = !inventoryPanel.activeSelf;
+            inventoryPanel.SetActive(willOpen);
+
             if (IsOpen)
             {
                 ApplyInventoryPanelFullScreenLayout();
-                _selection = 0;
-                _categoryCycleIndex = 0;
-                _plainSearchNeedle = string.Empty;
+                InventoryTelemetry.NotifyInventoryOpened();
+
+                InventorySessionPersistence.Load(
+                    out int browseMode,
+                    out int memberCarousel,
+                    out int catIdx,
+                    out bool usableOnly,
+                    out string needle,
+                    out int savedSelection,
+                    out InventorySortMode sort);
+
+                _browseMode = Enum.IsDefined(typeof(BrowseMode), browseMode)
+                    ? (BrowseMode)browseMode
+                    : BrowseMode.FocusedMember;
+                _memberCarouselIndex = memberCarousel;
+                _categoryCycleIndex = catIdx;
+                _usableOnlyFilter = usableOnly;
+                _plainSearchNeedle = needle ?? string.Empty;
+                _sortMode = sort;
+                _selection = savedSelection;
                 _searchFocusMode = false;
+                _inscriptionFocusMode = false;
+                _inscriptionDraft = string.Empty;
+
                 RefreshInventoryDisplay();
             }
             else
+            {
                 _searchFocusMode = false;
+                _inscriptionFocusMode = false;
+                SaveInventorySessionState();
+                InventoryTelemetry.NotifyInventoryClosed();
+            }
+        }
+
+        void SaveInventorySessionState()
+        {
+            InventorySessionPersistence.Save(
+                (int)_browseMode,
+                _memberCarouselIndex,
+                _categoryCycleIndex,
+                _usableOnlyFilter,
+                _plainSearchNeedle ?? string.Empty,
+                _selection,
+                _sortMode);
         }
 
         void ResolveItemContainer()
@@ -566,7 +664,7 @@ namespace JRogue.UI.Inventory
             rt.anchoredPosition = Vector2.zero;
             rt.sizeDelta = new Vector2(0f, 74f);
 
-            weightText.fontSize = 16f;
+            weightText.fontSize = 16f * ListFontScale;
             weightText.margin = new Vector4(4f, 4f, 4f, 2f);
             weightText.textWrappingMode = TextWrappingModes.Normal;
             weightText.overflowMode = TextOverflowModes.Overflow;
@@ -614,6 +712,9 @@ namespace JRogue.UI.Inventory
 
         void OnDestroy()
         {
+            if (IsOpen)
+                SaveInventorySessionState();
+
             if (_instance == this)
                 _instance = null;
         }
@@ -647,7 +748,7 @@ namespace JRogue.UI.Inventory
 
         void LateUpdate()
         {
-            if (!IsOpen || !_searchFocusMode)
+            if (!IsOpen || (!_searchFocusMode && !_inscriptionFocusMode))
                 return;
 
             UpdateSearchPromptVisual();
@@ -673,11 +774,17 @@ namespace JRogue.UI.Inventory
                 ? "<color=#9bbdff>SEARCH</color> (see line above · Backspace clears · Esc exits focus, keeps text)"
                 : "<color=#8ae68a>/</color> search focus";
 
+            string sortLbl = _sortMode.ToString();
+            string hotkeyNote =
+                "<color=#7a8a9a>Hotkeys from profile + PlayerPrefs JRogue.Inv.Key.* (see InventoryHotkeyRuntimeOverrides).</color>";
+
             footerText.text =
                 $"Mode: {_browseMode}   ·   Scope: {( _browseMode == BrowseMode.FocusedMember ? $"Member {who}" : "All party aggregate")}"
-                + $"\n[ ] category: {catLbl}   ·   {searchUi}   ·   ';' pivot browse   ·   F usable-only ({(_usableOnlyFilter ? "ON" : "off")})"
-                + "\nNav: ↑↓/WS · item letters · Tab/shift-tab party · [ ] prev/next category"
+                + $"\n[ ] category: {catLbl}   ·   {searchUi}   ·   browse toggle · usable filter · sort: <b>{sortLbl}</b>"
+                + "\nNav: ↑↓/WS · item letters · Tab/shift-tab party · [ ] category (profile keys)"
                 + "\nActs: Enter/E equip · U unequip · D drop (+confirm) · C use stub · G give stub · X inspect"
+                + "\n<color=#9bbdff>Phase 3:</color> ` inscription · 0 cycle sort · Ctrl+1/2/3 fav/prot/junk · "
+                + hotkeyNote
                 + "\n<color=#6a7a84>In combat: ally bag use-policy enforced; exchanges still stub (initiator consumes turn).</color>";
         }
 
@@ -791,6 +898,15 @@ namespace JRogue.UI.Inventory
             sb.AppendLine(InventoryDetailFormatter.Format(item, sel));
             sb.AppendLine();
             sb.AppendLine(InventoryDetailFormatter.FormatCompareEquippedSameSlot(equippedOther, sel));
+
+            if (_inscriptionFocusMode)
+            {
+                sb.AppendLine();
+                sb.AppendLine(
+                    "<color=#8ae68a>Editing inscription</color> — type, <b>Enter</b> save, <b>Esc</b> cancel. "
+                    + $"<color=#cfd6dd>{(_inscriptionDraft.Length > 0 ? _inscriptionDraft : "(empty)")}</color>");
+            }
+
             _detailPane.text = sb.ToString();
         }
 
@@ -806,13 +922,17 @@ namespace JRogue.UI.Inventory
         {
             int modes = Mathf.Max(1, _categoryCycle.Count + 1);
             _categoryCycleIndex = (_categoryCycleIndex + delta + modes) % modes;
+            InventoryTelemetry.RecordAction(delta < 0 ? "category_prev" : "category_next");
             RefreshInventoryDisplay();
         }
 
-        bool RequiresConfirmDestructiveDrop(ItemData item)
+        bool RequiresConfirmDestructiveDrop(ItemData item, ItemInstance instance)
         {
             if (item == null)
                 return false;
+
+            if (instance != null && (instance.UserMarks & ItemUserMark.Protected) != 0)
+                return true;
 
             if (destructiveActionRules != null)
                 return destructiveActionRules.ShouldConfirmDrop(item);
@@ -907,6 +1027,168 @@ namespace JRogue.UI.Inventory
             return false;
         }
 
+        static bool MarkModifierHeld(Keyboard kb) =>
+            kb[Key.LeftCtrl].isPressed || kb[Key.RightCtrl].isPressed;
+
+        bool TryHandleMarkHotkeys(Keyboard kb)
+        {
+            if (_searchFocusMode || _inscriptionFocusMode || _presentation == null ||
+                _presentation.ItemRows.Count == 0 || !MarkModifierHeld(kb))
+                return false;
+
+            Key kFav = InventoryHotkeyRuntimeOverrides.ToggleFavoriteMark(phase3HotkeyProfile);
+            Key kProt = InventoryHotkeyRuntimeOverrides.ToggleProtectedMark(phase3HotkeyProfile);
+            Key kJunk = InventoryHotkeyRuntimeOverrides.ToggleJunkMark(phase3HotkeyProfile);
+
+            if (kb[kFav].wasPressedThisFrame)
+            {
+                ToggleMarkOnSelection(ItemUserMark.Favorite);
+                return true;
+            }
+
+            if (kb[kProt].wasPressedThisFrame)
+            {
+                ToggleMarkOnSelection(ItemUserMark.Protected);
+                return true;
+            }
+
+            if (kb[kJunk].wasPressedThisFrame)
+            {
+                ToggleMarkOnSelection(ItemUserMark.Junk);
+                return true;
+            }
+
+            return false;
+        }
+
+        void ToggleMarkOnSelection(ItemUserMark mark)
+        {
+            if (_presentation == null || _presentation.ItemRows.Count == 0)
+                return;
+
+            InventoryViewModel.Row row =
+                _presentation.ItemRows[Mathf.Clamp(_selection, 0, _presentation.ItemRows.Count - 1)];
+
+            if (row.Instance == null)
+                return;
+
+            row.Instance.ToggleMark(mark);
+            InventoryTelemetry.RecordAction($"mark_{mark}");
+            RefreshInventoryDisplay();
+        }
+
+        void TryBeginInscriptionEdit()
+        {
+            if (_presentation == null || _presentation.ItemRows.Count == 0)
+                return;
+
+            InventoryViewModel.Row row =
+                _presentation.ItemRows[Mathf.Clamp(_selection, 0, _presentation.ItemRows.Count - 1)];
+
+            if (row.Instance == null)
+                return;
+
+            _inscriptionDraft = row.Instance.UserInscription ?? string.Empty;
+            _inscriptionFocusMode = true;
+            _searchFocusMode = false;
+            InventoryTelemetry.RecordAction("inscription_focus");
+        }
+
+        bool HandleInscriptionTyping(Keyboard kb)
+        {
+            const int maxLen = ItemInstance.MaxInscriptionLength;
+
+            if (kb.backspaceKey.wasPressedThisFrame && _inscriptionDraft.Length > 0)
+            {
+                _inscriptionDraft = _inscriptionDraft[..^1];
+                return true;
+            }
+
+            if (kb.spaceKey.wasPressedThisFrame && _inscriptionDraft.Length < maxLen)
+            {
+                _inscriptionDraft += " ";
+                return true;
+            }
+
+            if (kb.minusKey.wasPressedThisFrame && _inscriptionDraft.Length < maxLen)
+            {
+                _inscriptionDraft += "-";
+                return true;
+            }
+
+            if (kb.periodKey.wasPressedThisFrame && _inscriptionDraft.Length < maxLen)
+            {
+                _inscriptionDraft += ".";
+                return true;
+            }
+
+            if (kb.commaKey.wasPressedThisFrame && _inscriptionDraft.Length < maxLen)
+            {
+                _inscriptionDraft += ",";
+                return true;
+            }
+
+            if (kb.slashKey.wasPressedThisFrame && _inscriptionDraft.Length < maxLen)
+            {
+                _inscriptionDraft += "/";
+                return true;
+            }
+
+            bool shift = kb.leftShiftKey.isPressed || kb.rightShiftKey.isPressed;
+
+            if (kb[Key.Digit1].wasPressedThisFrame && shift && _inscriptionDraft.Length < maxLen)
+            {
+                _inscriptionDraft += "!";
+                return true;
+            }
+
+            var digitKeys = new[]
+            {
+                Key.Digit0, Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4,
+                Key.Digit5, Key.Digit6, Key.Digit7, Key.Digit8, Key.Digit9
+            };
+
+            for (int d = 0; d < digitKeys.Length; d++)
+            {
+                if (d == 1 && shift)
+                    continue;
+
+                if (!kb[digitKeys[d]].wasPressedThisFrame || _inscriptionDraft.Length >= maxLen)
+                    continue;
+                _inscriptionDraft += (char)('0' + d);
+                return true;
+            }
+
+            for (int letterIndex = 0; letterIndex < 26; letterIndex++)
+            {
+                Key key = (Key)((int)Key.A + letterIndex);
+                if (!kb[key].wasPressedThisFrame || _inscriptionDraft.Length >= maxLen)
+                    continue;
+
+                char ch = shift ? (char)('A' + letterIndex) : (char)('a' + letterIndex);
+                _inscriptionDraft += ch;
+                return true;
+            }
+
+            return false;
+        }
+
+        void CommitInscriptionDraft()
+        {
+            if (!_inscriptionFocusMode || _presentation == null || _presentation.ItemRows.Count == 0)
+                return;
+
+            InventoryViewModel.Row row =
+                _presentation.ItemRows[Mathf.Clamp(_selection, 0, _presentation.ItemRows.Count - 1)];
+
+            if (row.Instance != null)
+                row.Instance.UserInscription = _inscriptionDraft ?? string.Empty;
+
+            _inscriptionFocusMode = false;
+            _inscriptionDraft = string.Empty;
+            InventoryTelemetry.RecordAction("inscription_commit");
+        }
+
         void Update()
         {
             if (Keyboard.current == null)
@@ -935,9 +1217,19 @@ namespace JRogue.UI.Inventory
                     return;
                 }
 
+                if (_inscriptionFocusMode)
+                {
+                    _inscriptionFocusMode = false;
+                    _inscriptionDraft = string.Empty;
+                    ApplyFooterCopy();
+                    return;
+                }
+
+                SaveInventorySessionState();
                 inventoryPanel.SetActive(false);
                 CancelDestructive();
                 _searchFocusMode = false;
+                InventoryTelemetry.NotifyInventoryClosed();
                 return;
             }
 
@@ -948,30 +1240,61 @@ namespace JRogue.UI.Inventory
                 {
                     int dir = kb.leftShiftKey.isPressed ? -1 : 1;
                     _memberCarouselIndex = (_memberCarouselIndex + dir + party.Count) % party.Count;
+                    InventoryTelemetry.RecordAction("party_member_tab");
                     RefreshInventoryDisplay();
                 }
 
                 return;
             }
 
-            if (kb.semicolonKey.wasPressedThisFrame)
+            Key browseKey = InventoryHotkeyRuntimeOverrides.ToggleBrowseScope(phase3HotkeyProfile);
+            if (kb[browseKey].wasPressedThisFrame && !_searchFocusMode && !_inscriptionFocusMode)
             {
                 _browseMode = _browseMode == BrowseMode.PartyAggregate
                     ? BrowseMode.FocusedMember
                     : BrowseMode.PartyAggregate;
+                InventoryTelemetry.RecordAction("browse_scope_toggle");
                 RefreshInventoryDisplay();
                 return;
             }
 
-            if (kb.leftBracketKey.wasPressedThisFrame)
+            Key catPrev = InventoryHotkeyRuntimeOverrides.CategoryPrevious(phase3HotkeyProfile);
+            if (kb[catPrev].wasPressedThisFrame && !_inscriptionFocusMode)
             {
                 CycleCategoryFilter(-1);
                 return;
             }
 
-            if (kb.rightBracketKey.wasPressedThisFrame)
+            Key catNext = InventoryHotkeyRuntimeOverrides.CategoryNext(phase3HotkeyProfile);
+            if (kb[catNext].wasPressedThisFrame && !_inscriptionFocusMode)
             {
                 CycleCategoryFilter(1);
+                return;
+            }
+
+            Key sortKey = InventoryHotkeyRuntimeOverrides.CycleSortMode(phase3HotkeyProfile);
+            if (kb[sortKey].wasPressedThisFrame && !_searchFocusMode && !_inscriptionFocusMode)
+            {
+                _sortMode = (InventorySortMode)(((int)_sortMode + 1) % 4);
+                InventoryTelemetry.RecordAction("sort_mode_cycle");
+                RefreshInventoryDisplay();
+                return;
+            }
+
+            if (TryHandleMarkHotkeys(kb))
+                return;
+
+            if (kb[Key.Backquote].wasPressedThisFrame && !_searchFocusMode)
+            {
+                if (_inscriptionFocusMode)
+                {
+                    _inscriptionFocusMode = false;
+                    _inscriptionDraft = string.Empty;
+                }
+                else
+                    TryBeginInscriptionEdit();
+
+                ApplyFooterCopy();
                 return;
             }
 
@@ -979,6 +1302,7 @@ namespace JRogue.UI.Inventory
             {
                 if (!_searchFocusMode)
                 {
+                    _inscriptionFocusMode = false;
                     _searchFocusMode = true;
                     ApplyFooterCopy();
                     return;
@@ -994,10 +1318,27 @@ namespace JRogue.UI.Inventory
                 return;
             }
 
-            if (kb.fKey.wasPressedThisFrame)
+            Key usableKey = InventoryHotkeyRuntimeOverrides.ToggleUsableFilter(phase3HotkeyProfile);
+            if (kb[usableKey].wasPressedThisFrame && !_inscriptionFocusMode)
             {
                 _usableOnlyFilter = !_usableOnlyFilter;
+                InventoryTelemetry.RecordAction("usable_filter_toggle");
                 RefreshInventoryDisplay();
+                return;
+            }
+
+            if (_inscriptionFocusMode)
+            {
+                if (kb.enterKey.wasPressedThisFrame)
+                {
+                    CommitInscriptionDraft();
+                    RefreshInventoryDisplay();
+                    return;
+                }
+
+                if (HandleInscriptionTyping(kb))
+                    UpdateDetailPane();
+
                 return;
             }
 
@@ -1056,18 +1397,34 @@ namespace JRogue.UI.Inventory
                 return;
 
             if (kb.enterKey.wasPressedThisFrame || kb.eKey.wasPressedThisFrame)
+            {
+                InventoryTelemetry.RecordAction("equip_try");
                 TryEquipSelection();
+            }
             else if (kb.uKey.wasPressedThisFrame)
+            {
+                InventoryTelemetry.RecordAction("unequip_try");
                 TryUnequipSelection();
+            }
             else if (kb.dKey.wasPressedThisFrame)
+            {
+                InventoryTelemetry.RecordAction("drop_try");
                 BeginDropFlow();
+            }
             else if (kb.cKey.wasPressedThisFrame)
+            {
+                InventoryTelemetry.RecordAction("use_try");
                 TryUseConsumeStub();
+            }
             else if (kb.gKey.wasPressedThisFrame)
+            {
+                InventoryTelemetry.RecordAction("give_try");
                 GiveToStub();
+            }
             else if (kb.xKey.wasPressedThisFrame)
             {
                 int i = Mathf.Clamp(_selection, 0, _presentation.ItemRows.Count - 1);
+                InventoryTelemetry.RecordAction("inspect");
                 LogInspect(_presentation.ItemRows[i].Item);
             }
         }
@@ -1105,7 +1462,7 @@ namespace JRogue.UI.Inventory
             for (int i = 0; i < _selectableRowViews.Count; i++)
             {
                 bool sel = i == _selection;
-                _selectableRowViews[i].SetSelected(sel, rowSelectedTint, rowNormalTint);
+                _selectableRowViews[i].SetSelected(sel, EffectiveRowSelected, EffectiveRowNormal);
             }
         }
 
@@ -1158,7 +1515,7 @@ namespace JRogue.UI.Inventory
             ItemData item = snapshot.Item;
             Action dropCore = DropCore;
 
-            if (RequiresConfirmDestructiveDrop(item))
+            if (RequiresConfirmDestructiveDrop(item, snapshot.Instance))
                 BeginDestructive($"Drop <b>{item.itemName}</b> from <b>{snapshot.OwnerDisplayName}</b>?", dropCore);
             else
                 dropCore.Invoke();
@@ -1241,7 +1598,8 @@ namespace JRogue.UI.Inventory
                 cat,
                 needle,
                 _usableOnlyFilter,
-                InCombatContext);
+                InCombatContext,
+                _sortMode);
 
             int itemCount = _presentation.ItemRows.Count;
             _selection = Mathf.Clamp(_selection, 0, Mathf.Max(0, itemCount - 1));
@@ -1270,7 +1628,8 @@ namespace JRogue.UI.Inventory
                     ResolveNameTint(prow.Item, prow.IsEquipped),
                     () => SetSelection(captured),
                     prow.Item ? prow.Item.icon : null,
-                    _placeholderSprite);
+                    _placeholderSprite,
+                    ListFontScale);
 
                 _selectableRowViews.Add(view);
             }
@@ -1280,6 +1639,7 @@ namespace JRogue.UI.Inventory
 
             ApplyFooterCopy();
             ApplyDarkPanelTheme();
+            ApplyAccessibilityToUiChrome();
             ApplySelectionVisuals();
 
             BuildWeightAndCurrencyLine();

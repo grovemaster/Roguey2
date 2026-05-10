@@ -19,6 +19,12 @@ namespace JRogue.Item
 
         [SerializeField] ItemStorageLocation storageLocation = ItemStorageLocation.Unknown;
 
+        [SerializeField] ItemUserMark userMarks;
+
+        [SerializeField] string userInscription = string.Empty;
+
+        public const int MaxInscriptionLength = 280;
+
         public ItemInstance(ItemData def, int qty = 1)
         {
             id = Guid.NewGuid().ToString("N");
@@ -57,5 +63,33 @@ namespace JRogue.Item
             get => storageLocation;
             set => storageLocation = value;
         }
+
+        public ItemUserMark UserMarks
+        {
+            get => userMarks;
+            set => userMarks = value;
+        }
+
+        public string UserInscription
+        {
+            get => userInscription ?? string.Empty;
+            set => userInscription = ClampInscription(value);
+        }
+
+        public bool ToggleMark(ItemUserMark mark)
+        {
+            bool had = (userMarks & mark) != 0;
+            userMarks ^= mark;
+            return !had;
+        }
+
+        static string ClampInscription(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return string.Empty;
+            string v = value.Replace('\r', ' ').Replace('\n', ' ');
+            return v.Length <= MaxInscriptionLength ? v : v.Substring(0, MaxInscriptionLength);
+        }
     }
 }
+

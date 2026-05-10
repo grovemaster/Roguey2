@@ -12,6 +12,8 @@ namespace JRogue.Manager.Inventory
     {
         [SerializeField] List<ItemInstance> carriedItems = new List<ItemInstance>();
 
+        [SerializeField] InventoryAutomationProfile automationProfile;
+
         CharacterStats stats;
 
         void Awake() => stats = GetComponent<CharacterStats>();
@@ -67,6 +69,16 @@ namespace JRogue.Manager.Inventory
 
             instance.StorageLocation = ItemStorageLocation.Carried;
             carriedItems.Add(instance);
+
+            if (automationProfile != null)
+            {
+                if (automationProfile.ShouldAutoJunk(instance.Definition.category))
+                    instance.UserMarks |= ItemUserMark.Junk;
+
+                if (automationProfile.sortCarriedAfterEveryPickup)
+                    InventoryCarriedSorter.SortInPlace(carriedItems);
+            }
+
             Debug.Log(
                 $"Inventory: Added {instance.Definition.itemName} [{instance.Id}]. Weight: {GetTotalWeight()}/{stats.EncumbranceLimit}");
             return true;
