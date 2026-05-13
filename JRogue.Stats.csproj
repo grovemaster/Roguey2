@@ -49,9 +49,14 @@
     <Analyzer Include="/home/jonathan/Unity/Hub/Editor/6000.4.0f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Scripts/Stats/Racial/BodyCapabilityFlags.cs" />
+    <Compile Include="Assets/Scripts/Stats/Racial/RacialSubsystemKind.cs" />
     <Compile Include="Assets/Scripts/Stats/StatModifier.cs" />
+    <Compile Include="Assets/Scripts/Stats/Racial/HumanClass.cs" />
     <Compile Include="Assets/Scripts/Stats/Stat.cs" />
+    <Compile Include="Assets/Scripts/Stats/Racial/RacialIdentitySnapshot.cs" />
     <Compile Include="Assets/Scripts/Stats/CharacterStats.cs" />
+    <Compile Include="Assets/Scripts/Stats/Racial/RacialCommitmentPolicy.cs" />
     <Compile Include="Assets/Scripts/Stats/StatTypes.cs" />
   </ItemGroup>
   <ItemGroup>

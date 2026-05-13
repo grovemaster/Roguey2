@@ -4,6 +4,7 @@ using JRogue.Controller.Enemy;
 using JRogue.Manager.Combat;
 using JRogue.Manager.Essence;
 using JRogue.Manager.Party;
+using JRogue.Racial;
 using UnityEngine;
 public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY }
 
@@ -104,6 +105,7 @@ namespace JRogue.Manager.Turn
             foreach (var member in PartyManager.Instance.partyMembers)
             {
                 if (member == null) continue;
+                RacialPassiveHooks.NotifyTurnStart(member.gameObject);
                 var slots = member.GetComponent<EssenceSlotManager>();
                 if (slots != null) slots.NotifyTurnStart();
             }

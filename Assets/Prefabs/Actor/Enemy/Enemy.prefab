@@ -121,7 +121,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0d32309e2261ce829291e725bda5e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Stats.CharacterStats
-  race: 4
+  race: 8
+  humanClass: 0
+  racialSubsystem: 0
+  bodyCapabilities: 0
   gender: 0
   alignment: 8
   age: 100

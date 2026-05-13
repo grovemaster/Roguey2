@@ -1,14 +1,22 @@
 using System;
 using System.Collections.Generic;
+using JRogue.Stats.Racial;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace JRogue.Stats
 {
     public class CharacterStats : MonoBehaviour
     {
         [Header("Persona & Biography")]
-        public Race race;
+        [FormerlySerializedAs("folk")]
+        public Race race = Race.Human;
+
+        public HumanClass humanClass = HumanClass.None;
+        public RacialSubsystemKind racialSubsystem = RacialSubsystemKind.None;
+        public BodyCapabilityFlags bodyCapabilities = BodyCapabilityFlags.None;
+
         public Gender gender;
         public Alignment alignment;
         public int age;
@@ -131,6 +139,18 @@ namespace JRogue.Stats
                 StatType.Hearing => hearing,
                 StatType.Smell => smell,
                 _ => null
+            };
+        }
+
+        public RacialIdentitySnapshot GetRacialIdentitySnapshot()
+        {
+            return new RacialIdentitySnapshot
+            {
+                snapshotVersion = 1,
+                race = race,
+                humanClass = humanClass,
+                subsystemKind = racialSubsystem,
+                bodyCapabilities = bodyCapabilities
             };
         }
 

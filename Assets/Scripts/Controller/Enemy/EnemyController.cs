@@ -1,6 +1,7 @@
 using JRogue.Actors;
 using JRogue.Controller.Player;
 using JRogue.Manager.Map;
+using JRogue.Racial;
 using Roguey2.Sensing;
 using UnityEngine;
 
@@ -70,6 +71,7 @@ namespace JRogue.Controller.Enemy
             if (player == null)
                 return;
 
+            RacialPassiveHooks.NotifyTurnStart(gameObject);
             essenceManager?.NotifyTurnStart();
             brain.ExecuteTurn(player);
         }

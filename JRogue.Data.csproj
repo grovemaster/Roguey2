@@ -50,10 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Data/Item/ItemData.cs" />
+    <Compile Include="Assets/Data/Racial/RacialLoadoutDefinition.cs" />
     <Compile Include="Assets/Data/Inventory/DestructiveInventoryActionConfig.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryHotkeyProfile.cs" />
     <Compile Include="Assets/Data/Item/ItemEffect.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryAccessibilitySettings.cs" />
+    <Compile Include="Assets/Data/Racial/RacialPassiveHooks.cs" />
+    <Compile Include="Assets/Data/Racial/RacialLoadoutApplier.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />
     <Compile Include="Assets/Data/Ability/PassiveEffect.cs" />

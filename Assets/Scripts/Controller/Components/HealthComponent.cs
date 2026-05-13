@@ -1,5 +1,6 @@
 using System;
 using JRogue.Manager.Essence;
+using JRogue.Racial;
 using JRogue.Stats;
 using UnityEngine;
 
@@ -43,6 +44,7 @@ namespace JRogue.Actors.Components
             // Update conditional passives whose threshold may now have flipped
             // (e.g., Heroic Spirit at half HP).
             essenceManager?.RefreshConditionalPassives();
+            RacialPassiveHooks.RefreshPassives(gameObject);
 
             Debug.Log($"{gameObject.name} took {damage} {type} damage. " +
                       $"HP: {stats.currentHP}/{stats.MaxHP}");
