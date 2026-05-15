@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1858
     height: 1169
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Inspector
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ProjectBrowser
+  m_Name: ConsoleWindow
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -245,14 +245,14 @@ MonoBehaviour:
     y: 712
     width: 1426
     height: 401
-  m_MinSize: {x: 231, y: 276}
-  m_MaxSize: {x: 10001, y: 10026}
-  m_ActualView: {fileID: 16}
+  m_MinSize: {x: 101, y: 126}
+  m_MaxSize: {x: 4001, y: 4026}
+  m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 16}
   - {fileID: 17}
-  m_Selected: 0
-  m_LastSelected: 1
+  m_Selected: 1
+  m_LastSelected: 0
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -693,14 +693,7 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -3760
-      - m_Data: -2632
       - m_Data: -1344
-      - m_Data: 52422
-      - m_Data: 52530
-      - m_Data: 53088
-      - m_Data: 53122
-      - m_Data: 53196
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1334,8 +1327,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Project\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 0
-    y: 736
+    x: 1971
+    y: 974
     width: 1425
     height: 375
   m_SerializedDataModeController:
@@ -1362,7 +1355,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Resources/Inventory
+    - Assets/Prefabs/Actor/Enemy
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1372,42 +1365,42 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 73
   m_LastFolders:
-  - Assets/Resources/Inventory
+  - Assets/Prefabs/Actor/Enemy
   m_LastFoldersGridSize: 73
   m_LastProjectPath: /home/jonathan/UnityProjects/Roguey2
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 240}
+    scrollPos: {x: 0, y: 61}
     m_SelectedIDs:
-    - m_Data: 55708
+    - m_Data: 52918
     m_LastClickedID:
-      m_Data: 55708
+      m_Data: 52918
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 52768
-    - m_Data: 52770
-    - m_Data: 52772
-    - m_Data: 52774
-    - m_Data: 52776
-    - m_Data: 52778
-    - m_Data: 52780
-    - m_Data: 52782
-    - m_Data: 52784
-    - m_Data: 52786
-    - m_Data: 52788
-    - m_Data: 52790
-    - m_Data: 52792
-    - m_Data: 52794
-    - m_Data: 52796
-    - m_Data: 52798
-    - m_Data: 52800
-    - m_Data: 52802
-    - m_Data: 52804
-    - m_Data: 52806
-    - m_Data: 52808
-    - m_Data: 52810
+    - m_Data: 52828
+    - m_Data: 52830
+    - m_Data: 52832
+    - m_Data: 52834
+    - m_Data: 52836
+    - m_Data: 52838
+    - m_Data: 52840
+    - m_Data: 52842
+    - m_Data: 52844
+    - m_Data: 52846
+    - m_Data: 52848
+    - m_Data: 52850
+    - m_Data: 52852
+    - m_Data: 52854
+    - m_Data: 52856
+    - m_Data: 52858
+    - m_Data: 52860
+    - m_Data: 52862
+    - m_Data: 52864
+    - m_Data: 52866
+    - m_Data: 52868
+    - m_Data: 52870
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1442,28 +1435,28 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 52768
-    - m_Data: 52770
-    - m_Data: 52772
-    - m_Data: 52774
-    - m_Data: 52776
-    - m_Data: 52778
-    - m_Data: 52780
-    - m_Data: 52782
-    - m_Data: 52784
-    - m_Data: 52786
-    - m_Data: 52788
-    - m_Data: 52790
-    - m_Data: 52792
-    - m_Data: 52794
-    - m_Data: 52796
-    - m_Data: 52798
-    - m_Data: 52800
-    - m_Data: 52802
-    - m_Data: 52804
-    - m_Data: 52806
-    - m_Data: 52808
-    - m_Data: 52810
+    - m_Data: 52828
+    - m_Data: 52830
+    - m_Data: 52832
+    - m_Data: 52834
+    - m_Data: 52836
+    - m_Data: 52838
+    - m_Data: 52840
+    - m_Data: 52842
+    - m_Data: 52844
+    - m_Data: 52846
+    - m_Data: 52848
+    - m_Data: 52850
+    - m_Data: 52852
+    - m_Data: 52854
+    - m_Data: 52856
+    - m_Data: 52858
+    - m_Data: 52860
+    - m_Data: 52862
+    - m_Data: 52864
+    - m_Data: 52866
+    - m_Data: 52868
+    - m_Data: 52870
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1492,9 +1485,9 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: -38772
+    - m_Data: -1400
     m_LastClickedEntityId:
-      m_Data: -38772
+      m_Data: -1400
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 52882
@@ -1552,8 +1545,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Console\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1971
-    y: 974
+    x: 0
+    y: 736
     width: 1425
     height: 375
   m_SerializedDataModeController:

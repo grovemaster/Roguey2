@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4b29a01f3e42d892e6b5a4c3d2e1f0, type: 3}
+  m_Name: BarbarianSpiritImprintSample
+  m_EditorClassIdentifier: Assembly-CSharp::JRogue.Racial.SpiritImprintGraph
+  rootNodeId: imprint_root
+  nodes:
+  - nodeId: imprint_root
+    displayName: Spirit Imprint (dormant)
+    description: Rank 0 — empty payload (D2.0).
+    parentNodeId: 
+    siblingExclusivityGroup: 0
+    statModifiers: []
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []
+  - nodeId: tier1_str
+    displayName: First Mark — Strength
+    description: +1 Strength from the imprint path.
+    parentNodeId: imprint_root
+    siblingExclusivityGroup: 1
+    statModifiers:
+    - attribute: 0
+      value: 1
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []
+  - nodeId: tier1_dex
+    displayName: First Mark — Dexterity
+    description: +1 Dexterity (exclusive with Strength first mark).
+    parentNodeId: imprint_root
+    siblingExclusivityGroup: 1
+    statModifiers:
+    - attribute: 1
+      value: 1
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []

@@ -22,9 +22,10 @@
 
 ## Authoring
 
-- Create assets via **Create → JRogue → Racial Loadout**. Leave lists empty for “no modifiers.”
-- Add **`RacialLoadoutApplier`** to an actor and assign a loadout only when that actor should gain racial SO effects.
-- Party humans with no loadout: **omit the component** (or leave loadout null).
+- **`Assets/Data/Racial/DefaultHumanRacialLoadout.asset`**: empty human loadout (`requiredRace: Human`); extend in the Inspector or duplicate for variants.
+- **Player prefab** includes **`RacialLoadoutApplier`** referencing that asset so party leader gets racial hooks with no mechanical effect until you add modifiers/passives.
+- Create additional assets via **Create → JRogue → Racial Loadout**.
+- Party members: add the same applier + asset (or `requiredRace: Unset` empty asset) on each member prefab if they are not the shared Player prefab.
 
 ## Still deferred
 

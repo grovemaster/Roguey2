@@ -7,10 +7,16 @@ namespace JRogue.Racial
     /// </summary>
     public static class RacialPassiveHooks
     {
-        public static void RefreshPassives(GameObject actor) =>
+        public static void RefreshPassives(GameObject actor)
+        {
             actor.GetComponent<RacialLoadoutApplier>()?.RefreshPassives();
+            actor.GetComponent<SpiritImprintRuntime>()?.RefreshPassives();
+        }
 
-        public static void NotifyTurnStart(GameObject actor) =>
+        public static void NotifyTurnStart(GameObject actor)
+        {
             actor.GetComponent<RacialLoadoutApplier>()?.NotifyPassivesTurnStart();
+            actor.GetComponent<SpiritImprintRuntime>()?.NotifyPassivesTurnStart();
+        }
     }
 }
