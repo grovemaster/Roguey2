@@ -87,6 +87,20 @@ namespace JRogue.UI.Inventory
 
         TextMeshProUGUI _searchPromptText;
 
+        InventoryPartyStripView _partyStrip;
+        InventoryCategoryTabsView _categoryTabs;
+        Transform _itemListPane;
+        InventoryActionsBarView _actionsBar;
+        InventoryInspectPaneView _inspectPane;
+        Image _encumbranceFill;
+        TextMeshProUGUI _titleText;
+
+        bool _footerExpanded;
+        Button _footerHelpToggle;
+        TextMeshProUGUI _footerCollapsedLine;
+
+        const string FooterExpandedPrefKey = "JRogue.Inv.FooterExpanded";
+
         public static bool BlocksGameplay =>
             _instance != null && _instance.inventoryPanel != null && _instance.inventoryPanel.activeSelf;
 
@@ -144,37 +158,25 @@ namespace JRogue.UI.Inventory
             EnsurePlaceholderSprite();
             ApplyInventoryPanelFullScreenLayout();
 
-            if (!footerText)
-            {
-                var footGo = new GameObject("FooterHints", typeof(RectTransform), typeof(TextMeshProUGUI));
-                footGo.transform.SetParent(inventoryPanel.transform, false);
-
-                footerText = footGo.GetComponent<TextMeshProUGUI>();
-                footerText.fontSize = 12;
-                footerText.textWrappingMode = TextWrappingModes.Normal;
-                footerText.overflowMode = TextOverflowModes.Overflow;
-                footerText.margin = new Vector4(0, 10, 0, 10);
-                footerText.color = new Color(0.68f, 0.71f, 0.74f);
-
-                LayoutElement footerLayout = footGo.AddComponent<LayoutElement>();
-                footerLayout.minHeight = 36;
-                footerLayout.preferredHeight = 72;
-                footerLayout.flexibleWidth = 1;
-            }
-
             _panelImage = inventoryPanel.GetComponent<Image>();
             if (weightText != null)
                 _weightBarRoot = weightText.transform.parent;
 
-            if (inventoryPanel.TryGetComponent<VerticalLayoutGroup>(out var outerVlg))
-                outerVlg.childForceExpandWidth = true;
-
-            ResolveItemContainer();
-            EnsureItemListScrollView();
-            EnsureInventoryBodySplitAndDetails();
+            ConfigureOuterPanelLayout();
+            EnsureTitleBar();
+            EnsurePartyStrip();
             NormalizeWeightHeaderLayout();
+            EnsureEncumbranceBarFill();
             EnsureSearchPromptLine();
+            EnsureCategoryTabs();
+            EnsureItemListPaneAndScroll();
+            EnsureInventoryBodySplitAndDetails();
+            EnsureActionsBar();
+            EnsureFooterCollapseChrome();
             EnsureDestructiveModalRoot();
+            ReorderChromeChildren();
+
+            _footerExpanded = PlayerPrefs.GetInt(FooterExpandedPrefKey, 0) == 1;
 
             ApplyFooterCopy();
             ApplyDarkPanelTheme();
@@ -196,8 +198,313 @@ namespace JRogue.UI.Inventory
             if (_searchPromptText != null)
                 _searchPromptText.fontSize = 15f * s;
 
-            if (_detailPane != null)
-                _detailPane.fontSize = 13f * DetailFontScale;
+            if (_inspectPane != null)
+            { }
+
+            if (_titleText != null)
+                _titleText.fontSize = 18f * ListFontScale;
+        }
+
+        void ConfigureOuterPanelLayout()
+        {
+            if (inventoryPanel == null)
+                return;
+
+            if (inventoryPanel.TryGetComponent(out VerticalLayoutGroup outerVlg))
+            {
+                outerVlg.padding = new RectOffset(12, 12, 12, 12);
+                outerVlg.spacing = 6;
+                outerVlg.childForceExpandWidth = true;
+                outerVlg.childControlWidth = true;
+                outerVlg.childControlHeight = true;
+            }
+        }
+
+        void EnsureTitleBar()
+        {
+            if (inventoryPanel == null)
+                return;
+
+            Transform existing = inventoryPanel.transform.Find("InventoryTitle");
+            if (existing != null)
+            {
+                _titleText = existing.GetComponent<TextMeshProUGUI>();
+                return;
+            }
+
+            var go = new GameObject("InventoryTitle", typeof(RectTransform), typeof(TextMeshProUGUI));
+            go.transform.SetParent(inventoryPanel.transform, false);
+            _titleText = go.GetComponent<TextMeshProUGUI>();
+            _titleText.text = "INVENTORY";
+            _titleText.fontSize = 18f;
+            _titleText.fontStyle = FontStyles.Bold;
+            _titleText.color = new Color(0.9f, 0.92f, 0.95f);
+            _titleText.alignment = TextAlignmentOptions.MidlineLeft;
+            _titleText.margin = new Vector4(4, 0, 0, 4);
+
+            var le = go.AddComponent<LayoutElement>();
+            le.minHeight = 28f;
+            le.preferredHeight = 32f;
+        }
+
+        void EnsurePartyStrip()
+        {
+            if (inventoryPanel == null)
+                return;
+
+            _partyStrip = InventoryPartyStripView.Create(
+                inventoryPanel.transform,
+                OnPartyMemberClicked,
+                OnBrowseModeToggleClicked);
+        }
+
+        void OnPartyMemberClicked(int index)
+        {
+            _browseMode = BrowseMode.FocusedMember;
+            _memberCarouselIndex = index;
+            InventoryTelemetry.RecordAction("party_member_click");
+            RefreshInventoryDisplay();
+        }
+
+        void OnBrowseModeToggleClicked()
+        {
+            _browseMode = _browseMode == BrowseMode.PartyAggregate
+                ? BrowseMode.FocusedMember
+                : BrowseMode.PartyAggregate;
+            InventoryTelemetry.RecordAction("browse_scope_toggle");
+            RefreshInventoryDisplay();
+        }
+
+        void OnCategoryTabSelected(int categoryCycleIndex)
+        {
+            _categoryCycleIndex = categoryCycleIndex;
+            InventoryTelemetry.RecordAction("category_tab");
+            RefreshInventoryDisplay();
+        }
+
+        void EnsureCategoryTabs()
+        {
+            if (inventoryPanel == null)
+                return;
+
+            _categoryTabs = InventoryCategoryTabsView.Create(inventoryPanel.transform, OnCategoryTabSelected);
+        }
+
+        void EnsureEncumbranceBarFill()
+        {
+            if (weightText == null)
+                return;
+
+            Transform wt = weightText.transform;
+            if (wt.Find("EncumbranceFill") != null)
+            {
+                _encumbranceFill = wt.Find("EncumbranceFill").GetComponent<Image>();
+                return;
+            }
+
+            var track = new GameObject("EncumbranceTrack", typeof(RectTransform), typeof(Image));
+            track.transform.SetParent(wt, false);
+            track.transform.SetAsFirstSibling();
+            var trackRt = track.GetComponent<RectTransform>();
+            trackRt.anchorMin = new Vector2(0f, 0f);
+            trackRt.anchorMax = new Vector2(0.35f, 0.35f);
+            trackRt.offsetMin = new Vector2(4f, 4f);
+            trackRt.offsetMax = new Vector2(-4f, -2f);
+            track.GetComponent<Image>().color = new Color(0.12f, 0.125f, 0.14f, 0.95f);
+
+            var fill = new GameObject("EncumbranceFill", typeof(RectTransform), typeof(Image));
+            fill.transform.SetParent(track.transform, false);
+            var fillRt = fill.GetComponent<RectTransform>();
+            fillRt.anchorMin = Vector2.zero;
+            fillRt.anchorMax = Vector2.one;
+            fillRt.offsetMin = Vector2.zero;
+            fillRt.offsetMax = Vector2.zero;
+            _encumbranceFill = fill.GetComponent<Image>();
+            _encumbranceFill.color = new Color(0.35f, 0.72f, 0.48f, 0.95f);
+            _encumbranceFill.type = Image.Type.Filled;
+            _encumbranceFill.fillMethod = Image.FillMethod.Horizontal;
+            _encumbranceFill.fillOrigin = (int)Image.OriginHorizontal.Left;
+            _encumbranceFill.fillAmount = 0.5f;
+        }
+
+        void EnsureItemListPaneAndScroll()
+        {
+            if (inventoryPanel == null)
+                return;
+
+            Transform existingPane = inventoryPanel.transform.Find("InventoryBodyColumns/ItemListPane");
+            if (existingPane == null)
+                existingPane = inventoryPanel.transform.Find("ItemListPane");
+
+            if (existingPane != null)
+            {
+                _itemListPane = existingPane;
+                ResolveItemContainer();
+                if (_itemsScrollContent == null)
+                    EnsureItemListScrollView();
+                return;
+            }
+
+            _itemListPane = new GameObject("ItemListPane", typeof(RectTransform)).transform;
+            _itemListPane.SetParent(inventoryPanel.transform, false);
+
+            var le = _itemListPane.gameObject.AddComponent<LayoutElement>();
+            le.flexibleWidth = 1f;
+            le.flexibleHeight = 1f;
+            le.minWidth = 120f;
+
+            var v = _itemListPane.gameObject.AddComponent<VerticalLayoutGroup>();
+            v.spacing = 0;
+            v.childControlWidth = true;
+            v.childControlHeight = true;
+            v.childForceExpandWidth = true;
+            v.childForceExpandHeight = false;
+
+            InventoryListColumnHeaderView.Create(_itemListPane, ListFontScale);
+            EnsureItemListScrollView();
+        }
+
+        void EnsureActionsBar()
+        {
+            if (inventoryPanel == null)
+                return;
+
+            _actionsBar = InventoryActionsBarView.Create(
+                inventoryPanel.transform,
+                () => { InventoryTelemetry.RecordAction("equip_ui"); TryEquipOrUnequipSelection(); },
+                () => { InventoryTelemetry.RecordAction("use_ui"); TryUseConsumeStub(); },
+                () => { InventoryTelemetry.RecordAction("drop_ui"); BeginDropFlow(); },
+                () => { InventoryTelemetry.RecordAction("give_ui"); GiveToStub(); });
+        }
+
+        void TryEquipOrUnequipSelection()
+        {
+            if (_presentation == null || _presentation.ItemRows.Count == 0)
+                return;
+
+            InventoryViewModel.Row row =
+                _presentation.ItemRows[Mathf.Clamp(_selection, 0, _presentation.ItemRows.Count - 1)];
+
+            if (row.IsEquipped)
+                TryUnequipSelection();
+            else
+                TryEquipSelection();
+        }
+
+        void EnsureFooterCollapseChrome()
+        {
+            if (inventoryPanel == null)
+                return;
+
+            Transform row = inventoryPanel.transform.Find("FooterRow");
+            if (row == null)
+            {
+                var rowGo = new GameObject("FooterRow", typeof(RectTransform));
+                rowGo.transform.SetParent(inventoryPanel.transform, false);
+                var rowLe = rowGo.AddComponent<LayoutElement>();
+                rowLe.minHeight = 28f;
+                rowLe.preferredHeight = _footerExpanded ? 72f : 28f;
+                rowLe.flexibleWidth = 1f;
+
+                var h = rowGo.AddComponent<HorizontalLayoutGroup>();
+                h.spacing = 8;
+                h.padding = new RectOffset(4, 4, 4, 4);
+                h.childAlignment = TextAnchor.UpperLeft;
+                h.childControlWidth = true;
+                h.childForceExpandWidth = false;
+
+                var toggleGo = new GameObject("HelpToggle", typeof(RectTransform), typeof(Image), typeof(Button));
+                toggleGo.transform.SetParent(rowGo.transform, false);
+                var toggleLe = toggleGo.AddComponent<LayoutElement>();
+                toggleLe.minWidth = 32f;
+                toggleLe.preferredWidth = 36f;
+
+                toggleGo.GetComponent<Image>().color = new Color(0.16f, 0.17f, 0.19f, 0.95f);
+                var toggleLabel = new GameObject("Label", typeof(RectTransform));
+                toggleLabel.transform.SetParent(toggleGo.transform, false);
+                var tlRt = toggleLabel.GetComponent<RectTransform>();
+                tlRt.anchorMin = Vector2.zero;
+                tlRt.anchorMax = Vector2.one;
+                tlRt.offsetMin = Vector2.zero;
+                tlRt.offsetMax = Vector2.zero;
+                var tlTmp = toggleLabel.AddComponent<TextMeshProUGUI>();
+                tlTmp.text = "?";
+                tlTmp.fontSize = 16f;
+                tlTmp.alignment = TextAlignmentOptions.Center;
+                tlTmp.color = new Color(0.85f, 0.88f, 0.92f);
+
+                _footerHelpToggle = toggleGo.GetComponent<Button>();
+                _footerHelpToggle.onClick.AddListener(ToggleFooterExpanded);
+
+                var hintGo = new GameObject("CollapsedHint", typeof(RectTransform), typeof(TextMeshProUGUI));
+                hintGo.transform.SetParent(rowGo.transform, false);
+                var hintLe = hintGo.AddComponent<LayoutElement>();
+                hintLe.flexibleWidth = 1f;
+                _footerCollapsedLine = hintGo.GetComponent<TextMeshProUGUI>();
+                _footerCollapsedLine.fontSize = 12f;
+                _footerCollapsedLine.color = new Color(0.68f, 0.71f, 0.74f);
+                _footerCollapsedLine.alignment = TextAlignmentOptions.MidlineLeft;
+
+                if (footerText != null)
+                    footerText.transform.SetParent(rowGo.transform, false);
+                else
+                {
+                    var footGo = new GameObject("FooterHints", typeof(RectTransform), typeof(TextMeshProUGUI));
+                    footGo.transform.SetParent(rowGo.transform, false);
+                    footerText = footGo.GetComponent<TextMeshProUGUI>();
+                    footerText.fontSize = 12;
+                    footerText.textWrappingMode = TextWrappingModes.Normal;
+                    footerText.overflowMode = TextOverflowModes.Overflow;
+                    footerText.color = new Color(0.68f, 0.71f, 0.74f);
+                    var footerLayout = footGo.AddComponent<LayoutElement>();
+                    footerLayout.flexibleWidth = 1f;
+                    footerLayout.minHeight = 36;
+                }
+
+                row = rowGo.transform;
+            }
+            else
+            {
+                _footerHelpToggle = row.Find("HelpToggle")?.GetComponent<Button>();
+                _footerCollapsedLine = row.Find("CollapsedHint")?.GetComponent<TextMeshProUGUI>();
+                if (_footerHelpToggle != null)
+                {
+                    _footerHelpToggle.onClick.RemoveAllListeners();
+                    _footerHelpToggle.onClick.AddListener(ToggleFooterExpanded);
+                }
+            }
+        }
+
+        void ToggleFooterExpanded()
+        {
+            _footerExpanded = !_footerExpanded;
+            PlayerPrefs.SetInt(FooterExpandedPrefKey, _footerExpanded ? 1 : 0);
+            PlayerPrefs.Save();
+            ApplyFooterCopy();
+        }
+
+        void ReorderChromeChildren()
+        {
+            if (inventoryPanel == null)
+                return;
+
+            int order = 0;
+            void Place(Transform t)
+            {
+                if (t != null && t.parent == inventoryPanel.transform)
+                    t.SetSiblingIndex(order++);
+            }
+
+            Place(_titleText != null ? _titleText.transform : null);
+            Place(_partyStrip != null ? _partyStrip.transform : null);
+            if (weightText != null)
+                Place(weightText.transform);
+            Place(_searchPromptText != null ? _searchPromptText.transform : null);
+            Place(_categoryTabs != null ? _categoryTabs.transform : null);
+            Place(_bodyColumnsParent != null ? _bodyColumnsParent : _inventoryBodyColumnsRt);
+            Place(_actionsBar != null ? _actionsBar.transform : null);
+            Transform footerRow = inventoryPanel.transform.Find("FooterRow");
+            Place(footerRow);
         }
 
         void EnsureSearchPromptLine()
@@ -350,7 +657,10 @@ namespace JRogue.UI.Inventory
                 return;
             }
 
-            Transform existing = inventoryPanel.transform.Find("ItemListScroll");
+            Transform listParent = _itemListPane != null ? _itemListPane : inventoryPanel.transform;
+            Transform existing = listParent.Find("ItemListScroll");
+            if (existing == null)
+                existing = inventoryPanel.transform.Find("ItemListScroll");
             if (existing != null)
             {
                 _itemScrollRect = existing.GetComponent<ScrollRect>();
@@ -367,7 +677,7 @@ namespace JRogue.UI.Inventory
             }
 
             var scrollGo = new GameObject("ItemListScroll", typeof(RectTransform), typeof(Image), typeof(ScrollRect));
-            scrollGo.transform.SetParent(inventoryPanel.transform, false);
+            scrollGo.transform.SetParent(listParent, false);
 
             var scrollLe = scrollGo.AddComponent<LayoutElement>();
             scrollLe.flexibleHeight = 1f;
@@ -427,9 +737,6 @@ namespace JRogue.UI.Inventory
             _itemScrollRect.scrollSensitivity = 28f;
 
             itemContainer = _itemsScrollContent;
-
-            int insertAfterWeight = weightText != null ? weightText.transform.GetSiblingIndex() + 1 : 0;
-            scrollGo.transform.SetSiblingIndex(insertAfterWeight);
         }
 
         void EnsureInventoryBodySplitAndDetails()
@@ -445,8 +752,18 @@ namespace JRogue.UI.Inventory
             {
                 _bodyColumnsParent = scrollTf.parent;
                 _inventoryBodyColumnsRt = (RectTransform)_bodyColumnsParent.transform;
-                _detailPane = scrollTf.parent.Find("DetailsPane")?.GetComponent<TextMeshProUGUI>();
+                ApplyFiftyFiftySplit();
+                EnsureInspectPaneOnBodyColumn();
                 return;
+            }
+
+            if (_itemListPane == null)
+                EnsureItemListPaneAndScroll();
+
+            if (_itemListPane != null && scrollTf.parent != _itemListPane)
+            {
+                _itemListPane.SetParent(inventoryPanel.transform, false);
+                scrollTf.SetParent(_itemListPane, false);
             }
 
             int idx = scrollTf.GetSiblingIndex();
@@ -472,35 +789,58 @@ namespace JRogue.UI.Inventory
 
             wrapper.transform.SetSiblingIndex(idx);
 
-            scrollTf.SetParent(wrapper.transform, false);
-            ScrollLayoutElement(scrollTf.gameObject).flexibleWidth = 1f;
-            ScrollLayoutElement(scrollTf.gameObject).flexibleHeight = 1f;
+            if (_itemListPane == null)
+                EnsureItemListPaneAndScroll();
 
-            var detailGo = new GameObject("DetailsPane", typeof(RectTransform));
-            detailGo.transform.SetParent(wrapper.transform, false);
-            _detailPane = detailGo.AddComponent<TextMeshProUGUI>();
-            _detailPane.margin = new Vector4(10, 16, 10, 14);
-            _detailPane.richText = true;
-            _detailPane.fontSize = 13f;
-            _detailPane.alignment = TextAlignmentOptions.TopJustified;
-            _detailPane.textWrappingMode = TextWrappingModes.Normal;
-            _detailPane.overflowMode = TextOverflowModes.Overflow;
-
-            LayoutElement dl = detailGo.AddComponent<LayoutElement>();
-            dl.preferredWidth = 270f;
-            dl.flexibleWidth = 0f;
-            dl.flexibleHeight = 1f;
-
-            RectTransform dlRt = detailGo.GetComponent<RectTransform>();
-            dlRt.anchorMin = Vector2.zero;
-            dlRt.anchorMax = Vector2.one;
-            dlRt.offsetMin = Vector2.zero;
-            dlRt.offsetMax = Vector2.zero;
+            _itemListPane.SetParent(wrapper.transform, false);
+            ApplyListPaneLayoutElement(_itemListPane.gameObject);
 
             _inventoryBodyColumnsRt = hzRt;
             _bodyColumnsParent = wrapper.transform;
 
-            _detailPane.text = "<color=#6a7380>Open inventory to browse.</color>";
+            EnsureInspectPaneOnBodyColumn();
+            ApplyFiftyFiftySplit();
+        }
+
+        static void ApplyListPaneLayoutElement(GameObject listPaneGo)
+        {
+            LayoutElement le = ScrollLayoutElement(listPaneGo);
+            le.flexibleWidth = 1f;
+            le.flexibleHeight = 1f;
+            le.minWidth = 120f;
+            le.preferredWidth = -1f;
+        }
+
+        void EnsureInspectPaneOnBodyColumn()
+        {
+            if (_bodyColumnsParent == null)
+                return;
+
+            Transform legacy = _bodyColumnsParent.Find("DetailsPane");
+            if (legacy != null && legacy.GetComponent<InventoryInspectPaneView>() == null)
+            {
+                _detailPane = legacy.GetComponent<TextMeshProUGUI>();
+                Destroy(legacy.gameObject);
+            }
+
+            _inspectPane = InventoryInspectPaneView.Create(_bodyColumnsParent, _placeholderSprite);
+            ApplyListPaneLayoutElement(_inspectPane.gameObject);
+        }
+
+        void ApplyFiftyFiftySplit()
+        {
+            if (_bodyColumnsParent == null)
+                return;
+
+            for (int i = 0; i < _bodyColumnsParent.childCount; i++)
+            {
+                Transform child = _bodyColumnsParent.GetChild(i);
+                LayoutElement le = ScrollLayoutElement(child.gameObject);
+                le.flexibleWidth = 1f;
+                le.flexibleHeight = 1f;
+                le.preferredWidth = -1f;
+                le.minWidth = 120f;
+            }
         }
 
         static LayoutElement ScrollLayoutElement(GameObject go) =>
@@ -758,7 +1098,19 @@ namespace JRogue.UI.Inventory
         {
             UpdateSearchPromptVisual();
 
-            if (!footerText) return;
+            if (_footerCollapsedLine != null)
+                _footerCollapsedLine.text = "Press ? for controls";
+
+            if (!footerText)
+                return;
+
+            Transform footerRow = footerText.transform.parent;
+            if (footerRow != null && footerRow.TryGetComponent(out LayoutElement footerRowLe))
+                footerRowLe.preferredHeight = _footerExpanded ? 88f : 28f;
+
+            footerText.gameObject.SetActive(_footerExpanded);
+            if (!_footerExpanded)
+                return;
 
             string catLbl = "(all)";
             if (_categoryCycleIndex > 0 && _categoryCycleIndex <= _categoryCycle.Count)
@@ -876,13 +1228,19 @@ namespace JRogue.UI.Inventory
 
         void UpdateDetailPane()
         {
-            if (_detailPane == null)
+            if (_inspectPane == null && _detailPane == null)
                 return;
 
             if (_presentation == null || _presentation.ItemRows.Count == 0 ||
                 _selection < 0 || _selection >= _presentation.ItemRows.Count)
             {
-                _detailPane.text = "<color=#6a7380>Select an item row.</color>";
+                if (_inspectPane != null)
+                    _inspectPane.SetContent(null,
+                        "<color=#6a7380>Select an item row.</color>",
+                        string.Empty,
+                        DetailFontScale);
+                else if (_detailPane != null)
+                    _detailPane.text = "<color=#6a7380>Select an item row.</color>";
                 return;
             }
 
@@ -895,7 +1253,7 @@ namespace JRogue.UI.Inventory
                 : null;
 
             var sb = new StringBuilder();
-            sb.AppendLine(InventoryDetailFormatter.Format(item, sel));
+            sb.AppendLine(InventoryDetailFormatter.FormatInspectBody(item, sel));
             sb.AppendLine();
             sb.AppendLine(InventoryDetailFormatter.FormatCompareEquippedSameSlot(equippedOther, sel));
 
@@ -907,7 +1265,23 @@ namespace JRogue.UI.Inventory
                     + $"<color=#cfd6dd>{(_inscriptionDraft.Length > 0 ? _inscriptionDraft : "(empty)")}</color>");
             }
 
-            _detailPane.text = sb.ToString();
+            string hero = item != null
+                ? InventoryDetailFormatter.FormatHeroTitle(item, sel.Instance) + "\n" +
+                  $"<color=#8a97a3>{InventoryDetailFormatter.FormatHeroSubtitle(item, sel)}</color>"
+                : string.Empty;
+
+            Sprite icon = item != null ? item.icon : null;
+
+            if (_inspectPane != null)
+            {
+                _inspectPane.SetContent(icon, hero, sb.ToString(), DetailFontScale);
+                return;
+            }
+
+            if (_detailPane != null)
+            {
+                _detailPane.text = hero + "\n\n" + sb;
+            }
         }
 
         ItemCategory? CurrentCategoryFilter()
@@ -923,7 +1297,14 @@ namespace JRogue.UI.Inventory
             int modes = Mathf.Max(1, _categoryCycle.Count + 1);
             _categoryCycleIndex = (_categoryCycleIndex + delta + modes) % modes;
             InventoryTelemetry.RecordAction(delta < 0 ? "category_prev" : "category_next");
+            SyncCategoryTabs();
             RefreshInventoryDisplay();
+        }
+
+        void SyncCategoryTabs()
+        {
+            if (_categoryTabs != null)
+                _categoryTabs.SetActiveIndex(_categoryCycleIndex);
         }
 
         bool RequiresConfirmDestructiveDrop(ItemData item, ItemInstance instance)
@@ -1300,6 +1681,15 @@ namespace JRogue.UI.Inventory
 
             if (kb.slashKey.wasPressedThisFrame)
             {
+                if (kb.leftShiftKey.isPressed || kb.rightShiftKey.isPressed)
+                {
+                    if (!_searchFocusMode && !_inscriptionFocusMode)
+                    {
+                        ToggleFooterExpanded();
+                        return;
+                    }
+                }
+
                 if (!_searchFocusMode)
                 {
                     _inscriptionFocusMode = false;
@@ -1455,6 +1845,7 @@ namespace JRogue.UI.Inventory
             ApplySelectionVisuals();
             ScrollSelectedRowIntoView();
             UpdateDetailPane();
+            UpdateActionsBarState();
         }
 
         void ApplySelectionVisuals()
@@ -1617,11 +2008,15 @@ namespace JRogue.UI.Inventory
             int itemCount = _presentation.ItemRows.Count;
             _selection = Mathf.Clamp(_selection, 0, Mathf.Max(0, itemCount - 1));
 
+            bool showOwnerSubtitle = _browseMode == BrowseMode.PartyAggregate;
+            bool hideCategoryHeaders = _categoryCycleIndex > 0;
+
             foreach (InventoryPresentationModel.PresentationLine line in _presentation.Lines)
             {
                 if (line.IsSectionHeader)
                 {
-                    InventorySectionHeaderView.Create(itemContainer, line.HeaderRichText);
+                    if (!hideCategoryHeaders)
+                        InventorySectionHeaderView.Create(itemContainer, line.HeaderRichText);
                     continue;
                 }
 
@@ -1639,6 +2034,7 @@ namespace JRogue.UI.Inventory
                 view.Bind(
                     prow,
                     ResolveNameTint(prow.Item, prow.IsEquipped),
+                    showOwnerSubtitle,
                     () => SetSelection(captured),
                     prow.Item ? prow.Item.icon : null,
                     _placeholderSprite,
@@ -1647,8 +2043,15 @@ namespace JRogue.UI.Inventory
                 _selectableRowViews.Add(view);
             }
 
-            if (footerText != null)
-                footerText.transform.SetAsLastSibling();
+            List<BaseActor> party = GatherPartyActors();
+            _partyStrip?.Rebuild(party, _memberCarouselIndex, _browseMode, ListFontScale);
+            _categoryTabs?.Rebuild(_categoryCycle, _categoryCycleIndex, ListFontScale);
+            SyncCategoryTabs();
+
+            if (_itemListPane != null)
+                InventoryListColumnHeaderView.Create(_itemListPane, ListFontScale);
+
+            UpdateActionsBarState();
 
             ApplyFooterCopy();
             ApplyDarkPanelTheme();
@@ -1732,6 +2135,38 @@ namespace JRogue.UI.Inventory
             weightText.color = sumCap > 0 && sumW > sumCap
                 ? new Color(1f, 0.35f, 0.35f)
                 : new Color(0.88f, 0.91f, 0.93f);
+
+            if (_encumbranceFill != null)
+            {
+                float ratio = sumCap > 0.01f ? Mathf.Clamp01(sumW / sumCap) : 0f;
+                _encumbranceFill.fillAmount = ratio;
+                _encumbranceFill.color = ratio > 1f
+                    ? new Color(0.9f, 0.32f, 0.32f, 0.95f)
+                    : ratio > 0.85f
+                        ? new Color(0.95f, 0.72f, 0.28f, 0.95f)
+                        : new Color(0.35f, 0.72f, 0.48f, 0.95f);
+            }
+        }
+
+        void UpdateActionsBarState()
+        {
+            if (_actionsBar == null || _presentation == null || _presentation.ItemRows.Count == 0)
+            {
+                _actionsBar?.SetState(false, false, false, false, false, ListFontScale);
+                return;
+            }
+
+            InventoryViewModel.Row row =
+                _presentation.ItemRows[Mathf.Clamp(_selection, 0, _presentation.ItemRows.Count - 1)];
+
+            bool canEquip = !row.IsEquipped && row.CarriedListIndex >= 0 && row.Item != null &&
+                            row.Instance != null && row.Owner != null;
+            bool canUnequip = row.IsEquipped && row.EquippedSlot.HasValue && row.Owner != null;
+            bool canUse = InventoryUsability.AppearsUsableNow(row, InCombatContext);
+            bool canDrop = !row.IsEquipped && row.CarriedListIndex >= 0 && row.Owner != null;
+            bool canGive = row.Owner != null && row.Item != null;
+
+            _actionsBar.SetState(canEquip, canUnequip, canUse, canDrop, canGive, ListFontScale);
         }
     }
 }

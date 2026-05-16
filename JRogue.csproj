@@ -62,11 +62,13 @@
     <Compile Include="Assets/Scripts/Manager/Grid/GridManager.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/Algorithm/ShadowCaster.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryItemRowView.cs" />
+    <Compile Include="Assets/Scripts/UI/Inventory/InventoryCategoryTabsView.cs" />
     <Compile Include="Assets/Scripts/Service/Formation/FormationRushService.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/GridMover.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
+    <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentLegalityEvaluator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySessionPersistence.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
+    <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
     <Compile Include="Assets/Scripts/Controller/BaseActor.cs" />
@@ -85,6 +88,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryHotkeyRuntimeOverrides.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryManager.cs" />
+    <Compile Include="Assets/Scripts/UI/Inventory/InventoryInspectPaneView.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryDetailFormatter.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryCarriedSorter.cs" />
@@ -107,9 +111,11 @@
     <Compile Include="Assets/Scripts/Manager/Map/MapManager.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommand.cs" />
     <Compile Include="Assets/Scripts/Testing/Essence/EssenceTestHarness.cs" />
+    <Compile Include="Assets/Scripts/UI/Inventory/InventoryListColumnHeaderView.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInscriptionGuards.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyCurrencyLedger.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyAiBrain.cs" />
+    <Compile Include="Assets/Scripts/UI/Inventory/InventoryValueDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Scripts/JRogue.asmdef" />

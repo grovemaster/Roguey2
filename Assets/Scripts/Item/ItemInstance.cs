@@ -23,6 +23,8 @@ namespace JRogue.Item
 
         [SerializeField] string userInscription = string.Empty;
 
+        [SerializeField] bool isAppraised;
+
         public const int MaxInscriptionLength = 280;
 
         public ItemInstance(ItemData def, int qty = 1)
@@ -74,6 +76,13 @@ namespace JRogue.Item
         {
             get => userInscription ?? string.Empty;
             set => userInscription = ClampInscription(value);
+        }
+
+        /// <summary>When false and definition <see cref="ItemData.requiresAppraisal"/>, UI shows ? for value.</summary>
+        public bool IsAppraised
+        {
+            get => isAppraised;
+            set => isAppraised = value;
         }
 
         public bool ToggleMark(ItemUserMark mark)

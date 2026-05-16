@@ -64,6 +64,16 @@ namespace JRogue.Item
         public float weight;
         public Sprite icon;
 
+        [Header("Economy")]
+        [Tooltip("Base gold value per unit. Stack value = goldValue × quantity when appraised.")]
+        public int goldValue;
+
+        [Tooltip("When true, list/inspect show ? until ItemInstance.IsAppraised.")]
+        public bool requiresAppraisal = true;
+
+        /// <summary>Item participates in value column (worth showing gold or ?).</summary>
+        public bool HasMonetaryValue => goldValue > 0 || requiresAppraisal;
+
         [Header("Phase 4 — Anatomy / equip rules")]
         [Tooltip("Actor effective flags must include all these bits (after intrinsic + essence OR-masks).")]
         public BodyCapabilityFlags equipRequiresAllFlags = BodyCapabilityFlags.None;

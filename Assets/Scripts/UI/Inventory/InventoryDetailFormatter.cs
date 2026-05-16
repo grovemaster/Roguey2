@@ -14,11 +14,23 @@ namespace JRogue.UI.Inventory
                 return "<color=#7a8690>(no item)</color>";
 
             var sb = new StringBuilder();
-            sb.AppendLine($"<size=18><b>{item.itemName}</b></size>");
+            sb.AppendLine(FormatHeroTitle(item, selectedRow.Instance));
             sb.AppendLine(
-                $"<color=#8a97a3>Category:</color> {item.category}    <color=#8a97a3>Slot:</color> {item.slotType}");
+                $"<color=#8a97a3>{FormatHeroSubtitle(item, selectedRow)}</color>");
+            sb.Append(FormatInspectBody(item, selectedRow));
+            return sb.ToString();
+        }
+
+        /// <summary>Scrollable inspect body (stats, marks, inscription) — excludes hero header.</summary>
+        public static string FormatInspectBody(ItemData item, InventoryViewModel.Row selectedRow = default)
+        {
+            if (item == null)
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            sb.AppendLine(InventoryValueDisplay.FormatInspectValue(selectedRow.Instance, item, richText: true));
             sb.AppendLine(
-                $"<color=#8a97a3>Weight:</color> {item.weight:0.#} ea.    <color=#8a97a3>Location:</color> {DescribeLocation(selectedRow.Instance)}");
+                $"<color=#8a97a3>Weight (stack):</color> {StackWeight(selectedRow):0.#} kg    <color=#8a97a3>Location:</color> {DescribeLocation(selectedRow.Instance, selectedRow.OwnerDisplayName)}");
 
             if ((item.inventoryRiskHints & ItemInventoryRiskHint.Rare) != 0)
                 sb.AppendLine("<color=#c4a35a>Rare</color>");
@@ -89,25 +101,69 @@ namespace JRogue.UI.Inventory
                     sb.AppendLine("<color=#5a6974>Inscription guards: <i>stub</i> (!d / !u etc. Phase 3+).</color>");
             }
 
-            return sb.ToString();
+            return sb.ToString().TrimEnd();
         }
 
-        static string DescribeLocation(ItemInstance instance)
+        public static string FormatHeroSubtitle(ItemData item, InventoryViewModel.Row row)
+        {
+            if (item == null)
+                return string.Empty;
+
+            var parts = new System.Collections.Generic.List<string>();
+            if (item.damageModules is { Count: > 0 })
+                parts.Add(item.damageModules[0].type.ToString());
+            parts.Add(item.slotType.ToString());
+            if ((item.inventoryRiskHints & ItemInventoryRiskHint.Rare) != 0)
+                parts.Add("Rare");
+            if (!string.IsNullOrEmpty(row.OwnerDisplayName))
+                parts.Add(row.OwnerDisplayName);
+            return string.Join(" · ", parts);
+        }
+
+        public static string FormatHeroTitle(ItemData item, ItemInstance instance)
+        {
+            if (item == null)
+                return "(no item)";
+
+            string marks = string.Empty;
+            if (instance != null && (instance.UserMarks & ItemUserMark.Favorite) != 0)
+                marks = "  <color=#e8c56c>★</color>";
+
+            return $"<size=20><b>{item.itemName}</b></size>{marks}";
+        }
+
+        static float StackWeight(InventoryViewModel.Row row)
+        {
+            if (row.Instance != null)
+                return row.Instance.TotalWeight;
+            return row.Item != null ? row.Item.weight : 0f;
+        }
+
+        static string DescribeLocation(ItemInstance instance, string ownerName)
         {
             if (instance == null)
                 return "—";
 
+            string place;
             switch (instance.StorageLocation)
             {
                 case ItemStorageLocation.OnGround:
-                    return "<color=#9aabbe>On ground (pre-pickup)</color>";
+                    place = "<color=#9aabbe>On ground</color>";
+                    break;
                 case ItemStorageLocation.Equipped:
-                    return "<color=#8ed4ff>Equipped</color>";
+                    place = "<color=#8ed4ff>Equipped</color>";
+                    break;
                 case ItemStorageLocation.Carried:
-                    return "<color=#c8dae8>Carried</color>";
+                    place = "<color=#c8dae8>Carried</color>";
+                    break;
                 default:
-                    return instance.StorageLocation.ToString();
+                    place = instance.StorageLocation.ToString();
+                    break;
             }
+
+            if (!string.IsNullOrEmpty(ownerName))
+                return $"{place} · {ownerName}";
+            return place;
         }
 
         public static string FormatCompareEquippedSameSlot(ItemData equippedDef, InventoryViewModel.Row baseline)
