@@ -72,6 +72,13 @@ namespace JRogue.Manager.Party
 
             for (int i = 0; i < partyMembers.Count; i++)
             {
+                if (partyMembers[i] == null)
+                {
+                    Debug.LogError(
+                        $"[PartyManager] partyMembers[{i}] is null (missing prefab reference or stripped component). Fix PartyManager list in the scene.");
+                    continue;
+                }
+
                 Vector3Int actPos = partyMembers[i].GridPosition;
                 positionHistory.Add(actPos);
                 Debug.Log($"[START-INIT] Slot [{i}] ({partyMembers[i].name}) set to {actPos}");
@@ -249,6 +256,12 @@ namespace JRogue.Manager.Party
             // index 0 = Leader, index 1 = First Follower, etc.
             for (int i = 0; i < partyMembers.Count; i++)
             {
+                if (partyMembers[i] == null)
+                {
+                    Debug.LogError($"[PartyManager] partyMembers[{i}] is null; skipping snap slot.");
+                    continue;
+                }
+
                 Vector3Int pos = partyMembers[i].GridPosition;
                 positionHistory.Add(pos);
                 Debug.Log($"[PARTY-SNAP] Index [{i}] set to {pos}");

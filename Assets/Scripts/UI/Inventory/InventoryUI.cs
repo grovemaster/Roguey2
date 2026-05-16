@@ -1582,7 +1582,11 @@ namespace JRogue.UI.Inventory
 
         public void RefreshInventoryDisplay()
         {
-            if (itemContainer == null || itemRowPrefab == null || playerInventory == null)
+            if (itemContainer == null || itemRowPrefab == null)
+                return;
+
+            // Party mode uses PartyManager + per-member InventoryManager; playerInventory is only for solo / legacy.
+            if (GatherPartyActors().Count == 0 && playerInventory == null)
                 return;
 
             ClearItemListChildrenOnly();
