@@ -1479,6 +1479,15 @@ namespace JRogue.UI.Inventory
                 return;
 
             EquipmentManager eq = row.Owner.GetComponent<EquipmentManager>();
+
+            bool legal = EquipmentLegalityEvaluator.CanEquip(row.Owner.gameObject, row.Instance.Definition,
+                row.Item.slotType, out string equipDenyReason);
+            if (!legal)
+            {
+                Debug.LogWarning($"[Inventory] Cannot equip {row.Item.itemName}: {equipDenyReason}");
+                return;
+            }
+
             eq?.EquipItem(row.Item.slotType, row.Instance);
             RefreshInventoryDisplay();
         }

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using JRogue.Item.Essence;
 using JRogue.Ability;
+using JRogue.Stats;
 
 namespace JRogue.Manager.Essence
 {
@@ -18,11 +19,16 @@ namespace JRogue.Manager.Essence
             // Don't do this: equippedEssences = new List<EssenceData>(); 
 
             // Instead, do this:
-            foreach (var essence in equippedEssences)
+            if (equippedEssences == null)
+                return;
+
+            for (int i = 0; i < equippedEssences.Length; i++)
             {
+                EssenceData essence = equippedEssences[i];
                 if (essence != null)
                 {
-                    essence.Apply(gameObject); // Re-apply stats/passives on load
+                    essence.Apply(gameObject);
+                    RegisterEssenceBodyContribution(i, essence);
                 }
             }
         }
@@ -34,6 +40,7 @@ namespace JRogue.Manager.Essence
             // 1. Remove bonuses from the old essence if one exists in this slot
             if (equippedEssences[slotIndex] != null)
             {
+                UnregisterEssenceBodyContribution(slotIndex);
                 equippedEssences[slotIndex].Remove(gameObject);
             }
 
@@ -43,6 +50,7 @@ namespace JRogue.Manager.Essence
             if (newEssence != null)
             {
                 newEssence.Apply(gameObject);
+                RegisterEssenceBodyContribution(slotIndex, newEssence);
                 Debug.Log($"{gameObject.name} equipped {newEssence.essenceName}!");
             }
 
@@ -81,7 +89,7 @@ namespace JRogue.Manager.Essence
             if (essence == null || abilityIndex >= essence.activeAbilities.Count) return;
 
             AbilityAction ability = essence.activeAbilities[abilityIndex];
-            var stats = GetComponent<JRogue.Stats.CharacterStats>();
+            var stats = GetComponent<CharacterStats>();
 
             if (stats.currentSoulPower >= ability.soulPowerCost)
             {
@@ -138,7 +146,7 @@ namespace JRogue.Manager.Essence
             AbilityAction ability = GetAbility(slotIndex, abilityIndex);
             if (ability == null) return false;
 
-            var stats = GetComponent<JRogue.Stats.CharacterStats>();
+            var stats = GetComponent<CharacterStats>();
             return stats != null && stats.currentSoulPower >= ability.soulPowerCost;
         }
 
@@ -166,7 +174,7 @@ namespace JRogue.Manager.Essence
             if (essence == null || abilityIndex >= essence.activeAbilities.Count) return false;
 
             AbilityAction ability = essence.activeAbilities[abilityIndex];
-            var stats = GetComponent<JRogue.Stats.CharacterStats>();
+            var stats = GetComponent<CharacterStats>();
 
             // 1. Resource check
             if (stats == null || stats.currentSoulPower < ability.soulPowerCost)
@@ -193,6 +201,25 @@ namespace JRogue.Manager.Essence
                 return true;
             }
             return false;
+        }
+
+        static string BodyContributionKey(int slotIndex) => $"EssenceSlot:{slotIndex}";
+
+        void RegisterEssenceBodyContribution(int slotIndex, EssenceData essence)
+        {
+            CharacterStats stats = GetComponent<CharacterStats>();
+            if (stats == null || essence == null)
+                return;
+            stats.RegisterBodyEquipmentContribution(
+                BodyContributionKey(slotIndex),
+                essence.bodyCapabilityOrWhileEquipped,
+                essence.bodyExclusionBypassMaskWhileEquipped);
+        }
+
+        void UnregisterEssenceBodyContribution(int slotIndex)
+        {
+            CharacterStats stats = GetComponent<CharacterStats>();
+            stats?.UnregisterBodyEquipmentContribution(BodyContributionKey(slotIndex));
         }
 
         private void OnDestroy()

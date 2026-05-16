@@ -15,7 +15,11 @@ namespace JRogue.Stats
 
         public HumanClass humanClass = HumanClass.None;
         public RacialSubsystemKind racialSubsystem = RacialSubsystemKind.None;
+        [Tooltip("Intrinsic anatomy / capability flags (saved with identity). Essences add OR-masks and exclusion-bypass masks at runtime — see GetEffectiveBodyCapabilities().")]
         public BodyCapabilityFlags bodyCapabilities = BodyCapabilityFlags.None;
+
+        /// <summary>Phase 4: runtime-only contributions (essence slot keys, etc.). Not serialized.</summary>
+        readonly Dictionary<string, BodyEquipmentContribution> _bodyEquipmentContributions = new Dictionary<string, BodyEquipmentContribution>();
 
         public Gender gender;
         public Alignment alignment;
@@ -93,6 +97,50 @@ namespace JRogue.Stats
         public void RemoveResistanceModifier(DamageType type, object source) => Resistances[type].RemoveModifiersFromSource(source);
 
         public int GetResistance(DamageType type) => Resistances.ContainsKey(type) ? Resistances[type].GetValue() : 0;
+
+        /// <summary>Phase 4 — intrinsic + essence OR-capability bits (for equipment rules).</summary>
+        public BodyCapabilityFlags GetEffectiveBodyCapabilities()
+        {
+            BodyCapabilityFlags f = bodyCapabilities;
+            foreach (BodyEquipmentContribution c in _bodyEquipmentContributions.Values)
+                f |= c.OrCapabilities;
+            return f;
+        }
+
+        /// <summary>Phase 4 — actor body bits that equipped essences ignore for item exclusion masks.</summary>
+        public BodyCapabilityFlags GetBodyExclusionBypassMask()
+        {
+            BodyCapabilityFlags m = BodyCapabilityFlags.None;
+            foreach (BodyEquipmentContribution c in _bodyEquipmentContributions.Values)
+                m |= c.ExclusionBypassMask;
+            return m;
+        }
+
+        public void RegisterBodyEquipmentContribution(string sourceKey, BodyCapabilityFlags orCapabilities, BodyCapabilityFlags exclusionBypassMask)
+        {
+            if (string.IsNullOrEmpty(sourceKey))
+                return;
+            _bodyEquipmentContributions[sourceKey] = new BodyEquipmentContribution(orCapabilities, exclusionBypassMask);
+        }
+
+        public void UnregisterBodyEquipmentContribution(string sourceKey)
+        {
+            if (string.IsNullOrEmpty(sourceKey))
+                return;
+            _bodyEquipmentContributions.Remove(sourceKey);
+        }
+
+        public readonly struct BodyEquipmentContribution
+        {
+            public BodyEquipmentContribution(BodyCapabilityFlags orCapabilities, BodyCapabilityFlags exclusionBypassMask)
+            {
+                OrCapabilities = orCapabilities;
+                ExclusionBypassMask = exclusionBypassMask;
+            }
+
+            public BodyCapabilityFlags OrCapabilities { get; }
+            public BodyCapabilityFlags ExclusionBypassMask { get; }
+        }
 
         // --- SYSTEM LOGIC ---
 

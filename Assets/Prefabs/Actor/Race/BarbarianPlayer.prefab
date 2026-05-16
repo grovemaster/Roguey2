@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: racialSubsystem
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: bodyCapabilities
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       propertyPath: m_Name
       value: BarbarianPlayer

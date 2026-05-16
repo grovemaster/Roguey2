@@ -25,6 +25,13 @@ namespace JRogue.Manager.Equipment
         {
             InventoryManager inv = GetComponent<InventoryManager>();
 
+            if (newItem?.Definition != null
+                && !EquipmentLegalityEvaluator.CanEquip(gameObject, newItem.Definition, slot, out string illegalReason))
+            {
+                Debug.LogWarning($"[Equip] Cannot equip {newItem.Definition.itemName}: {illegalReason}");
+                return;
+            }
+
             if (newItem != null && inv != null)
             {
                 bool inBag = false;

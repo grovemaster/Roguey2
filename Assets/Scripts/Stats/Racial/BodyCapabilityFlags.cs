@@ -15,6 +15,9 @@ namespace JRogue.Stats.Racial
         ReducedStature = 1 << 0,
 
         /// <summary>Example: horns absent or retracted; may allow helmets.</summary>
-        NoHorns = 1 << 1
+        NoHorns = 1 << 1,
+
+        /// <summary>Actor has horns (or similar) — conflicts with narrow headgear unless bypassed.</summary>
+        Horns = 1 << 2
     }
 }

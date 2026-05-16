@@ -1,5 +1,6 @@
 using UnityEngine;
 using JRogue.Stats;
+using JRogue.Stats.Racial;
 using System.Collections.Generic;
 using JRogue.Ability;
 using static JRogue.Item.Effect.StatModifierEffect;
@@ -21,6 +22,13 @@ namespace JRogue.Item.Essence
 
         [Header("3. Active Abilities")]
         public List<AbilityAction> activeAbilities;
+
+        [Header("Phase 4 — Anatomy while equipped")]
+        [Tooltip("OR-masked onto CharacterStats effective body capabilities while this essence is applied.")]
+        public BodyCapabilityFlags bodyCapabilityOrWhileEquipped = BodyCapabilityFlags.None;
+
+        [Tooltip("Actor body bits ignored when checking ItemData.equipExcludesActorFlags.")]
+        public BodyCapabilityFlags bodyExclusionBypassMaskWhileEquipped = BodyCapabilityFlags.None;
 
         // public void Apply(GameObject target)
         // {

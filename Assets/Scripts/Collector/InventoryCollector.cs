@@ -31,7 +31,9 @@ namespace JRogue.Stats
 
             if (equipment != null
                 && inst.Definition.damageModules != null
-                && inst.Definition.damageModules.Count > 0)
+                && inst.Definition.damageModules.Count > 0
+                && EquipmentLegalityEvaluator.CanEquip(gameObject, inst.Definition, EquipmentSlot.MainHand,
+                    out _))
             {
                 equipment.EquipItem(EquipmentSlot.MainHand, inst);
             }

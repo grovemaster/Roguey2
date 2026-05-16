@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Ability;
 using JRogue.Item.Effect;
 using JRogue.Stats;
+using JRogue.Stats.Racial;
 using UnityEngine;
 
 namespace JRogue.Item
@@ -62,6 +63,13 @@ namespace JRogue.Item
         public EquipmentSlot slotType; // Head, Body, Ring, etc.
         public float weight;
         public Sprite icon;
+
+        [Header("Phase 4 — Anatomy / equip rules")]
+        [Tooltip("Actor effective flags must include all these bits (after intrinsic + essence OR-masks).")]
+        public BodyCapabilityFlags equipRequiresAllFlags = BodyCapabilityFlags.None;
+
+        [Tooltip("Conflict when actor has any of these bits, unless masked by essence exclusion bypass.")]
+        public BodyCapabilityFlags equipExcludesActorFlags = BodyCapabilityFlags.None;
 
         [Header("Combat Modules")]
         // Support for multi-damage (e.g. 5 Blunt + 2 Fire)
