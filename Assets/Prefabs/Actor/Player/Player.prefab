@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 2061355635181889388}
   - component: {fileID: 7840245774233295368}
   - component: {fileID: 8840245774233295369}
+  - component: {fileID: 8840245774233295370}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -328,3 +329,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Racial.RacialLoadoutApplier
   loadout: {fileID: 11400000, guid: f9918a90eaa54cddb5a8ecb65128e4d8, type: 2}
+--- !u!114 &8840245774233295370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339168105576016893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9c3e8124b5f409d8e7c6b5a43210fed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JRogue.Racial.SpiritImprintRuntime
+  graph: {fileID: 0}
+  chosenPathNodeIds: []
+  requireSpiritImprintSubsystem: 1

@@ -45,3 +45,14 @@ MonoBehaviour:
     resistanceModifiers: []
     passiveEffects: []
     activeAbilities: []
+  - nodeId: tier2_constitution
+    displayName: Second Mark — Constitution
+    description: +1 Constitution; child of the Strength first mark (deepen after tier1_str).
+    parentNodeId: tier1_str
+    siblingExclusivityGroup: 0
+    statModifiers:
+    - attribute: 3
+      value: 1
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []

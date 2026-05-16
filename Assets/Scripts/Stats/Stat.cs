@@ -12,6 +12,9 @@ namespace JRogue.Stats
         // Changed from List<int> to List<StatModifier>
         [ShowInInspector] private List<StatModifier> modifiers = new List<StatModifier>();
 
+        [ShowInInspector, ReadOnly, PropertyOrder(-10), LabelText("Total (sum of mods + base)")]
+        private int EffectiveTotalForInspector => GetValue();
+
         public Stat(int value) => baseValue = value;
 
         public int GetValue()

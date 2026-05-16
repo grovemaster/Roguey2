@@ -3280,7 +3280,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       propertyPath: m_Name
-      value: Player_Warrior
+      value: Party_Warrior
+      objectReference: {fileID: 0}
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: race
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: racialSubsystem
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840245774233295369, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: loadout
+      value: 
+      objectReference: {fileID: 11400000, guid: d1e2f3a4b5c6789012345678abcdef01, type: 2}
+    - target: {fileID: 8840245774233295370, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: graph
+      value: 
+      objectReference: {fileID: 11400000, guid: a1b2c3d4e5f6789012345678abcdabcd, type: 2}
+    - target: {fileID: 8840245774233295370, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: chosenPathNodeIds.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840245774233295370, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: chosenPathNodeIds.Array.data[0]
+      value: imprint_root
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840245774233295370, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: chosenPathNodeIds.Array.data[1]
+      value: tier1_str
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840245774233295370, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: chosenPathNodeIds.Array.data[2]
+      value: tier2_constitution
       objectReference: {fileID: 0}
     - target: {fileID: 7471007482051096710, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       propertyPath: equippedEssences.Array.size
