@@ -60,22 +60,29 @@ Do **not** force Elf/Tiefling into the Spirit Imprint graph engine unless design
 
 ### D5.2 — Elf contracts (exemplar: sustained subsystem)
 
-Minimum contract elements (names illustrative):
+**Full spec:** [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md) (summon/upkeep Soul Power, per-spirit levels, toggle actives, preset v0).
+
+Summary for Phase 5 planning:
 
 | Element | Requirement |
 |--------|----------------|
-| **Contract instances** | discrete mechanical packages (buff + cost + restrictions). |
-| **Sustain resource** | documented cost channel (reuse soul power, HP, turns, etc.—pick one per contract in data). |
-| **Lifecycle** | hooks for **activate**, **tick / refresh**, **break conditions**, **clean teardown** on unequip death save-load. |
-| **Stacking** | explicit policy vs other buffs and vs Phase 4 tags (document per contract row). |
+| **Contract instances** | `ElementalSpiritDefinition` per spirit; roster on actor; abilities only while **summoned**. |
+| **Sustain resource** | **Soul Power** — summon cost + per-turn upkeep per summoned spirit; auto-dismiss if unpaid. |
+| **Lifecycle** | summon → apply passives / enable actives → upkeep each turn → dismiss (manual or failed upkeep) → full teardown. |
+| **Stacking** | stable source per `spiritId`; Phase 4 body contributions if needed. |
 
 ### D5.3 — Tiefling implants (exemplar: respec-capable subsystem)
 
+**Full spec:** [Tiefling — Cyborg implants](Tiefling-Cyborg-Implants-Requirements.md) (seven body slots, replace per slot, Fire resist + horns baseline, preset v0).
+
+Summary for Phase 5 planning:
+
 | Element | Requirement |
 |--------|----------------|
-| **Slots or tiers** | data-defined structure (ordered slots, categories, etc.). |
-| **Commitment policy** | **`RespecAllowed`** (name TBD) distinct from Barbarian **Permanent**; rules for **when** respec is legal (town only, consumable, cooldown—data or code boundary documented once). |
-| **Apply/remove** | all modifiers/passives keyed by **stable source ids** so teardown cannot orphan stats. |
+| **Slots** | Seven locations: arms, torso, heart, head (cyborg), legs — one implant each. |
+| **Commitment policy** | **`RespecAllowed`** — replace removes old implant effects before applying new. |
+| **Folk baseline** | Fire damage resistance + intrinsic **Horns** (helmets blocked via Phase 4). |
+| **Apply/remove** | stable source per **slot**; NPC install/swap later. |
 
 ### D5.4 — Persistence blobs
 
