@@ -24,6 +24,9 @@ Summoning applies spirit passives (and enables actives); dismissal or upkeep fai
 **G4 — NPC / preset parity**  
 Elves (player and NPC) use **preset contract loadouts** before play, analogous to Phase 3 **preset `chosenPathNodeIds`** for Barbarians.
 
+**G6 — Playable Elf prefab**  
+A dedicated **`ElfPlayer`** actor prefab exists (same family as `HumanPlayer` / `BarbarianPlayer`) so designers can place or spawn a correctly configured Elf without hand-wiring components.
+
 **G5 — Persistence (v0 minimum)**  
 Serialize which spirits are **contracted** (preset list + levels), which are **currently summoned**, and any **toggle state** required by repeatable actives; safe defaults on load.
 
@@ -131,11 +134,28 @@ On eligible actors (`Race.Elf`, subsystem `ElfElementalContracts`):
 ### D4.6 — Content assets (v0 minimum)
 
 - One **`RacialLoadoutDefinition`** for Elf baseline (may be empty except `requiredRace: Elf`).
-- At least **two** `ElementalSpiritDefinition` assets proving:
+- At least **two** **`ElementalSpiritDefinition`** ScriptableObject assets (see D4.7 — **not** GameObject prefabs) proving:
   - Same element, **different** abilities.
   - Different **`maxLevel`** or different per-level payloads.
 - At least one spirit with a **toggle-style** active (Fire weapon imbue pattern).
-- One **preset** Elf actor (prefab or test object) with **hard-coded** contract list + levels (e.g. two spirits at level 1).
+
+### D4.7 — Deliverables: actor prefab vs spirit data
+
+**Actor prefab (required)**
+
+- Create **`Assets/Prefabs/Actor/Race/ElfPlayer.prefab`** as a **variant** of the shared **`Player`** prefab (same pattern as `HumanPlayer` / `BarbarianPlayer`).
+- Minimum configuration on the prefab:
+  - `CharacterStats.race` = `Elf`
+  - `CharacterStats.racialSubsystem` = `ElfElementalContracts`
+  - `RacialLoadoutApplier` → Elf baseline `RacialLoadoutDefinition`
+  - **Elemental spirit runtime** component with **preset** `contractedSpirits` (and levels), referencing spirit **data assets** below
+  - Other standard player components inherited from the base prefab (inventory, equipment, party hooks, etc.)
+
+**Elemental Spirit “prefab”? (resolved: data assets, not GameObject prefabs)**
+
+- **v0 does not require** a **GameObject prefab** per Elemental Spirit. Spirits are **data** (`ElementalSpiritDefinition` ScriptableObjects), like `EssenceData` or Spirit Imprint **graph nodes** — not world actors.
+- **Required:** at least two spirit **data assets** under a sensible folder (e.g. `Assets/Data/Racial/Elf/ElementalSpirits/`).
+- **Optional (later):** a **visual prefab** (VFX, companion mesh) referenced from spirit data if summoned spirits need an in-world representation; out of v0 unless you explicitly add presentation scope.
 
 ---
 
@@ -241,6 +261,7 @@ If a spirit passive grants body capabilities or equip bypass, use **`CharacterSt
 - Given two spirits summoned, **upkeep** deducts **both** costs at turn start; if only enough Soul Power for one, policy dismisses **insufficient** spirits (document whether all-or-nothing vs partial—recommend **per-spirit** check in roster order).
 - Given **manual dismiss**, all modifiers from that spirit are gone and actives fail `CanExecute`.
 - Given preset NPC Elf with one contracted spirit level 1, load/play matches preset without contract UI.
+- **`ElfPlayer.prefab`** exists under `Assets/Prefabs/Actor/Race/`, drops into a scene, and enters play with Elf race, subsystem, baseline loadout, and preset contracted spirits as authored.
 
 ---
 

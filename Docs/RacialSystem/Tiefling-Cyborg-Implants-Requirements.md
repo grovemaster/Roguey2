@@ -26,6 +26,9 @@ Swapping an implant in one slot **fully removes** the previous implant’s stats
 **G4 — NPC / preset parity**  
 v0: implants come from **prefab / serialized preset** (like Barbarian imprint path and Elf contract roster). **Later:** special NPC installs or offers swaps from an authored catalog.
 
+**G6 — Playable Tiefling prefab**  
+A dedicated **`TieflingPlayer`** actor prefab exists (same family as `HumanPlayer` / `BarbarianPlayer`) so designers can place or spawn a correctly configured Tiefling without hand-wiring components.
+
 **G5 — Persistence (v0 minimum)**  
 Serialize **implant id per slot** (or empty slot); safe defaults on load; replace operations update save state.
 
@@ -142,9 +145,27 @@ Use a **stable source per slot**, e.g. `TieflingImplant:{slot}` or the `CyborgIm
 ### D6.5 — Content assets (v0 minimum)
 
 - **`RacialLoadoutDefinition`** for Tiefling baseline: Fire resistance + any folk passives; `requiredRace: Tiefling`.
-- At least **two** `CyborgImplantDefinition` assets (different slots or different payloads).
-- One **preset** Tiefling actor with multiple slots filled (e.g. arm + torso).
-- Tiefling prefab (or archetype): **`bodyCapabilities`** includes **`Horns`**; sample helmet asset excludes horns (Phase 4 content check).
+- At least **two** **`CyborgImplantDefinition`** ScriptableObject assets (see D6.6 — **not** GameObject prefabs), covering different slots or different payloads.
+- Sample helmet **`ItemData`** (or existing asset) with `equipExcludesActorFlags` including **`Horns`** for Phase 4 validation.
+
+### D6.6 — Deliverables: actor prefab vs implant data
+
+**Actor prefab (required)**
+
+- Create **`Assets/Prefabs/Actor/Race/TieflingPlayer.prefab`** as a **variant** of the shared **`Player`** prefab (same pattern as `HumanPlayer` / `BarbarianPlayer`).
+- Minimum configuration on the prefab:
+  - `CharacterStats.race` = `Tiefling`
+  - `CharacterStats.racialSubsystem` = `TieflingImplants`
+  - `CharacterStats.bodyCapabilities` includes **`Horns`**
+  - `RacialLoadoutApplier` → Tiefling baseline `RacialLoadoutDefinition` (Fire resistance)
+  - **Tiefling implants runtime** component with **preset** `installedImplants` map referencing implant **data assets** below
+  - Other standard player components inherited from the base prefab
+
+**Cyborg implant “prefab”? (resolved: data assets, not GameObject prefabs)**
+
+- **v0 does not require** a **GameObject prefab** per cyborg implant. Implants are **data** (`CyborgImplantDefinition` ScriptableObjects), like essences or racial loadout rows — not world pickups or body meshes.
+- **Required:** at least two implant **data assets** under a sensible folder (e.g. `Assets/Data/Racial/Tiefling/Implants/`).
+- **Optional (later):** cosmetic or UI prefabs (slot icons, surgery VFX) referenced from implant data or the future NPC flow; out of v0 unless presentation is in scope.
 
 ---
 
@@ -228,6 +249,7 @@ Implants that change anatomy use `RegisterBodyEquipmentContribution` with keys s
 - Given implants in **LeftArm** and **Torso**, replacing **LeftArm** leaves **Torso** unchanged.
 - Given an implant valid only for **Heart**, install into **Torso** fails.
 - Given preset NPC Tiefling, load/play matches serialized slot map without NPC.
+- **`TieflingPlayer.prefab`** exists under `Assets/Prefabs/Actor/Race/`, drops into a scene, and enters play with Tiefling race, horns, Fire resistance, subsystem, and preset implants as authored.
 
 ---
 
