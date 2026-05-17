@@ -11,12 +11,14 @@ namespace JRogue.Racial
         {
             actor.GetComponent<RacialLoadoutApplier>()?.RefreshPassives();
             actor.GetComponent<SpiritImprintRuntime>()?.RefreshPassives();
+            actor.GetComponent<ElementalSpiritContractsRuntime>()?.RefreshPassives();
         }
 
         public static void NotifyTurnStart(GameObject actor)
         {
             actor.GetComponent<RacialLoadoutApplier>()?.NotifyPassivesTurnStart();
             actor.GetComponent<SpiritImprintRuntime>()?.NotifyPassivesTurnStart();
+            actor.GetComponent<ElementalSpiritContractsRuntime>()?.NotifyTurnStart();
         }
     }
 }

@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e4f5a6478990ab1c2d3e4f5a62, type: 3}
+  m_Name: EmberWarden
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.ElementalSpiritDefinition
+  spiritId: ember_warden
+  displayName: Ember Warden
+  description: Fire spirit that can imbue weapons with flame.
+  element: 0
+  maxLevel: 3
+  summonSoulPowerCost: 2
+  upkeepSoulPowerPerTurn: 1
+  levels:
+  - statModifiers:
+    - attribute: 1
+      value: 1
+    resistanceModifiers: []
+    passiveEffects:
+    - {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a02, type: 2}
+    activeEntries:
+    - ability: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a04, type: 2}
+      consumesTurn: 0
+      repeatableSameTurn: 1
+      kind: 1
+  - statModifiers:
+    - attribute: 1
+      value: 1
+    resistanceModifiers: []
+    passiveEffects:
+    - {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a02, type: 2}
+    activeEntries:
+    - ability: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a04, type: 2}
+      consumesTurn: 0
+      repeatableSameTurn: 1
+      kind: 1
+  - statModifiers:
+    - attribute: 0
+      value: 1
+    resistanceModifiers: []
+    passiveEffects:
+    - {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a02, type: 2}
+    activeEntries:
+    - ability: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a04, type: 2}
+      consumesTurn: 0
+      repeatableSameTurn: 1
+      kind: 1

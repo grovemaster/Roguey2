@@ -3,6 +3,7 @@ using System.Linq;
 using JRogue.Ability;
 using JRogue.Item;
 using JRogue.Manager.Inventory;
+using JRogue.Racial;
 using JRogue.Stats;
 using UnityEngine;
 
@@ -134,6 +135,10 @@ namespace JRogue.Manager.Equipment
                 int weaponDamage = weapon.Definition.damageModules.Sum(m => m.value);
                 total += weaponDamage;
             }
+
+            var spiritContracts = GetComponent<ElementalSpiritContractsRuntime>();
+            if (spiritContracts != null)
+                total += spiritContracts.WeaponFireImbueBonus;
 
             return total;
         }

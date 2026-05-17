@@ -50,21 +50,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintDevActiveInvoker.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritActiveEntry.cs" />
     <Compile Include="Assets/Data/Item/ItemData.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintRuntime.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritContractsRuntime.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/FireWeaponImbueAbility.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalElement.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintNodeData.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintGraph.cs" />
     <Compile Include="Assets/Data/Racial/RacialLoadoutDefinition.cs" />
     <Compile Include="Assets/Data/Inventory/DestructiveInventoryActionConfig.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritContractPreset.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryHotkeyProfile.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritDefinition.cs" />
     <Compile Include="Assets/Data/Item/ItemEffect.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritModifierSource.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryAccessibilitySettings.cs" />
     <Compile Include="Assets/Data/Racial/RacialPassiveHooks.cs" />
     <Compile Include="Assets/Data/Racial/RacialLoadoutApplier.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritLevelData.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />
     <Compile Include="Assets/Data/Ability/PassiveEffect.cs" />
     <Compile Include="Assets/Data/Item/Essence/EssenceData.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritActiveKind.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Data/JRogue.Data.asmdef" />

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e4f5a6478990ab1c2d3e4f5a62, type: 3}
+  m_Name: TideShard
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.ElementalSpiritDefinition
+  spiritId: tide_shard
+  displayName: Tide Shard
+  description: Water spirit offering restorative tide magic.
+  element: 1
+  maxLevel: 2
+  summonSoulPowerCost: 2
+  upkeepSoulPowerPerTurn: 1
+  levels:
+  - statModifiers:
+    - attribute: 5
+      value: 1
+    resistanceModifiers: []
+    passiveEffects:
+    - {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a03, type: 2}
+    activeEntries:
+    - ability: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a05, type: 2}
+      consumesTurn: 1
+      repeatableSameTurn: 0
+      kind: 0
+  - statModifiers:
+    - attribute: 5
+      value: 1
+    resistanceModifiers: []
+    passiveEffects:
+    - {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a03, type: 2}
+    activeEntries:
+    - ability: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a05, type: 2}
+      consumesTurn: 0
+      repeatableSameTurn: 0
+      kind: 0

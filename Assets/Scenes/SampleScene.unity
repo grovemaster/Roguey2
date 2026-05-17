@@ -1905,43 +1905,83 @@ PrefabInstance:
       propertyPath: 'equippedEssences.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 312847299b396cd2ca47f8815fd406fd, type: 2}
-    - target: {fileID: 2799704845566391739, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+    - target: {fileID: -8296096646264870731, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: contractedSpirits.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8296096646264870731, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: contractedSpirits.Array.data[0].spirit
+      value: 
+      objectReference: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a10, type: 2}
+    - target: {fileID: -8296096646264870731, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: contractedSpirits.Array.data[0].contractLevel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2799704845566391737, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5
       objectReference: {fileID: 0}
-    - target: {fileID: 2799704845566391739, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+    - target: {fileID: 2799704845566391737, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 3218558407117122556, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
-      propertyPath: m_Name
-      value: Party_Human_Rogue
+    - target: {fileID: 2799704845566391739, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.5
       objectReference: {fileID: 0}
-    - target: {fileID: 6513522772388398365, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+    - target: {fileID: 2799704845566391739, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2799704845566391739, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3218558407117122558, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: m_Name
+      value: Party_Elf_Rogue
+      objectReference: {fileID: 0}
+    - target: {fileID: 4218558407117122560, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: m_Name
+      value: Party_Elf_Rogue
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398365, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6513522772388398365, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+    - target: {fileID: 6513522772388398365, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
       propertyPath: m_Color.g
       value: 0.3778567
       objectReference: {fileID: 0}
-    - target: {fileID: 6513522772388398365, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+    - target: {fileID: 6513522772388398365, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
       propertyPath: m_Color.r
       value: 0.32976258
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398367, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: m_Color.b
+      value: 0.920052
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398367, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: m_Color.g
+      value: 0.57538366
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398367, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: m_Color.r
+      value: 0.5291354
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
 --- !u!4 &1974283754 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 2799704845566391739, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2799704845566391737, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
   m_PrefabInstance: {fileID: 1974283753}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1974283755 stripped
+--- !u!114 &1974283766 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7483120031603996221, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7483120031603996223, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
   m_PrefabInstance: {fileID: 1974283753}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -2935,7 +2975,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Manager.PartyManager.PartyManager
   partyMembers:
   - {fileID: 5090137359705028452}
-  - {fileID: 1974283755}
+  - {fileID: 1974283766}
   - {fileID: 2120655062}
   activeShopperMemberIndex: 0
   isFormationActive: 1
@@ -3164,12 +3204,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6513522772388398365, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6513522772388398365, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
       propertyPath: m_Color.r
       value: 0.96016306
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398365, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+      propertyPath: m_Color.g
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

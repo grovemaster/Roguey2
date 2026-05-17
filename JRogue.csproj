@@ -99,6 +99,7 @@
     <Compile Include="Assets/Scripts/Item/ItemUserMark.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/SenseSightService.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInstance.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Passive/ElementalSpiritStatPassive.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPresentationModel.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/RadarPassive.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
