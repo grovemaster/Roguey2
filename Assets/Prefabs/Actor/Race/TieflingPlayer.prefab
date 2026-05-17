@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &7400000000000000004
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: race
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: humanClass
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: racialSubsystem
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: bodyCapabilities
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: m_Name
+      value: TieflingPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840245774233295369, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: loadout
+      value: 
+      objectReference: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a91, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8296096646264870732}
+  m_SourcePrefab: {fileID: 100100000, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+--- !u!1 &5218558407117122561 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+  m_PrefabInstance: {fileID: 7400000000000000004}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-8296096646264870732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5218558407117122561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1a2b3c4d5e6478990ab1c2d3e4f5a72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.TieflingImplantsRuntime
+  presetImplants:
+  - slot: 0
+    implant: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a92, type: 2}
+  - slot: 2
+    implant: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a93, type: 2}
+  requireTieflingImplantSubsystem: 1

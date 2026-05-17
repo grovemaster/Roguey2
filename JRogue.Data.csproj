@@ -49,10 +49,13 @@
     <Analyzer Include="/home/jonathan/Unity/Hub/Editor/6000.4.0f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Data/Racial/Tiefling/TieflingImplantsRuntime.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintDevActiveInvoker.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritActiveEntry.cs" />
+    <Compile Include="Assets/Data/Racial/Tiefling/CyborgImplantDefinition.cs" />
     <Compile Include="Assets/Data/Item/ItemData.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintRuntime.cs" />
+    <Compile Include="Assets/Data/Racial/Tiefling/TieflingImplantSlotModifierSource.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritContractsRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Elf/FireWeaponImbueAbility.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalElement.cs" />
@@ -66,8 +69,10 @@
     <Compile Include="Assets/Data/Item/ItemEffect.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritModifierSource.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryAccessibilitySettings.cs" />
+    <Compile Include="Assets/Data/Racial/Tiefling/ImplantSlot.cs" />
     <Compile Include="Assets/Data/Racial/RacialPassiveHooks.cs" />
     <Compile Include="Assets/Data/Racial/RacialLoadoutApplier.cs" />
+    <Compile Include="Assets/Data/Racial/Tiefling/ImplantSlotPreset.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritLevelData.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />

@@ -12,6 +12,7 @@ namespace JRogue.Racial
             actor.GetComponent<RacialLoadoutApplier>()?.RefreshPassives();
             actor.GetComponent<SpiritImprintRuntime>()?.RefreshPassives();
             actor.GetComponent<ElementalSpiritContractsRuntime>()?.RefreshPassives();
+            actor.GetComponent<TieflingImplantsRuntime>()?.RefreshPassives();
         }
 
         public static void NotifyTurnStart(GameObject actor)
@@ -19,6 +20,7 @@ namespace JRogue.Racial
             actor.GetComponent<RacialLoadoutApplier>()?.NotifyPassivesTurnStart();
             actor.GetComponent<SpiritImprintRuntime>()?.NotifyPassivesTurnStart();
             actor.GetComponent<ElementalSpiritContractsRuntime>()?.NotifyTurnStart();
+            actor.GetComponent<TieflingImplantsRuntime>()?.NotifyPassivesTurnStart();
         }
     }
 }

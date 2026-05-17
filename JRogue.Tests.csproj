@@ -52,6 +52,7 @@
     <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryValueDisplayTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputTestSceneBuilder.cs" />
     <Compile Include="Assets/Tests/JRogueTestsRootSetupFixture.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantsRuntimeTests.cs" />
     <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/PlayerCommandProcessorTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTest.cs" />

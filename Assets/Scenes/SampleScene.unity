@@ -3187,43 +3187,67 @@ PrefabInstance:
       propertyPath: 'equippedEssences.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 312847299b396cd2ca47f8815fd406fd, type: 2}
-    - target: {fileID: 2799704845566391739, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+    - target: {fileID: 2799704845566391739, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5
       objectReference: {fileID: 0}
-    - target: {fileID: 2799704845566391739, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+    - target: {fileID: 2799704845566391739, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
       propertyPath: m_LocalPosition.y
       value: -1.5
       objectReference: {fileID: 0}
-    - target: {fileID: 3218558407117122556, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
-      propertyPath: m_Name
-      value: Party_Human_Mage
+    - target: {fileID: 2799704845566391739, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6513522772388398365, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+    - target: {fileID: 2799704845566391742, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2799704845566391742, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5218558407117122561, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
+      propertyPath: m_Name
+      value: Party_Tiefling_Mage
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398360, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
+      propertyPath: m_Color.b
+      value: 0.17582306
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398360, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
+      propertyPath: m_Color.g
+      value: 0.85534
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398360, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
+      propertyPath: m_Color.r
+      value: 0.98080677
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398365, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
       propertyPath: m_Color.b
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6513522772388398365, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
-      propertyPath: m_Color.r
-      value: 0.96016306
-      objectReference: {fileID: 0}
-    - target: {fileID: 6513522772388398365, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+    - target: {fileID: 6513522772388398365, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
       propertyPath: m_Color.g
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6513522772388398365, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
+      propertyPath: m_Color.r
+      value: 0.96016306
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
 --- !u!4 &2120655061 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 2799704845566391739, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2799704845566391742, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
   m_PrefabInstance: {fileID: 2120655060}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &2120655062 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7483120031603996221, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7483120031603996216, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
   m_PrefabInstance: {fileID: 2120655060}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
