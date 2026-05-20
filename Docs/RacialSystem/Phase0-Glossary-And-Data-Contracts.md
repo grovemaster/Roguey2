@@ -27,4 +27,5 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 
 - Spirit Imprint graph data and save blob for chosen nodes.
 - Dwarf patron Ancestor trees and common ability slots — see **Dwarf-Ancestor-And-Common-Abilities-Requirements.md**.
+- Beastman Soul Beast bond and linear ability chains — see **Beastman-Soul-Beast-Requirements.md**.
 - Equipment legality hooks and body-capability overrides.
