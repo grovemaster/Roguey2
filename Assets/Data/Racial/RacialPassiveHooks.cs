@@ -13,6 +13,8 @@ namespace JRogue.Racial
             actor.GetComponent<SpiritImprintRuntime>()?.RefreshPassives();
             actor.GetComponent<ElementalSpiritContractsRuntime>()?.RefreshPassives();
             actor.GetComponent<TieflingImplantsRuntime>()?.RefreshPassives();
+            actor.GetComponent<DwarfCommonAbilitiesRuntime>()?.RefreshPassives();
+            actor.GetComponent<DwarfAncestorPathRuntime>()?.RefreshPassives();
         }
 
         public static void NotifyTurnStart(GameObject actor)
@@ -21,6 +23,8 @@ namespace JRogue.Racial
             actor.GetComponent<SpiritImprintRuntime>()?.NotifyPassivesTurnStart();
             actor.GetComponent<ElementalSpiritContractsRuntime>()?.NotifyTurnStart();
             actor.GetComponent<TieflingImplantsRuntime>()?.NotifyPassivesTurnStart();
+            actor.GetComponent<DwarfCommonAbilitiesRuntime>()?.NotifyPassivesTurnStart();
+            actor.GetComponent<DwarfAncestorPathRuntime>()?.NotifyPassivesTurnStart();
         }
     }
 }

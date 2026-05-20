@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4b29a01f3e42d892e6b5a4c3d2e1f0, type: 3}
+  m_Name: ForgeFatherTree
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.SpiritImprintGraph
+  rootNodeId: ancestor_root
+  nodes:
+  - nodeId: ancestor_root
+    displayName: Patron acknowledged (dormant)
+    description: Rank 0 — no gameplay payload.
+    parentNodeId: 
+    siblingExclusivityGroup: 0
+    statModifiers: []
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []
+  - nodeId: forge_blessing
+    displayName: Forge Blessing
+    description: +1 Strength from the Forge-Father's mark.
+    parentNodeId: ancestor_root
+    siblingExclusivityGroup: 0
+    statModifiers:
+    - attribute: 0
+      value: 1
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []
+  - nodeId: stone_endurance
+    displayName: Stone Endurance
+    description: +1 Constitution from ancestral endurance.
+    parentNodeId: forge_blessing
+    siblingExclusivityGroup: 0
+    statModifiers:
+    - attribute: 3
+      value: 1
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []

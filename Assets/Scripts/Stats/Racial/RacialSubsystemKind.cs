@@ -18,6 +18,9 @@ namespace JRogue.Stats.Racial
         TieflingImplants = 3,
 
         /// <summary>Elf elemental contracts / sustained spirits (design TBD).</summary>
-        ElfElementalContracts = 4
+        ElfElementalContracts = 4,
+
+        /// <summary>Dwarf patron Ancestor path + common racial ability slots.</summary>
+        DwarfAncestry = 5
     }
 }

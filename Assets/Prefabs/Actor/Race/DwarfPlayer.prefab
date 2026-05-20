@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &7400000000000000005
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: race
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: humanClass
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: racialSubsystem
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4103421022157404430, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: bodyCapabilities
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: m_Name
+      value: DwarfPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840245774233295369, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: loadout
+      value: 
+      objectReference: {fileID: 11400000, guid: d4a0f1a2b3c6478990ab1c2d3e4f5d01, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7296096646264870740}
+    - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7296096646264870741}
+  m_SourcePrefab: {fileID: 100100000, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+--- !u!1 &6218558407117122571 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+  m_PrefabInstance: {fileID: 7400000000000000005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-7296096646264870740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6218558407117122571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 175a728cc8f7402e91332492c1d6d2ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.DwarfCommonAbilitiesRuntime
+  presetCommonAbilities:
+  - slotIndex: 0
+    ability: {fileID: 11400000, guid: 322dd7887b9d489b90996d253cb8c82b, type: 2}
+  - slotIndex: 1
+    ability: {fileID: 11400000, guid: 5ccf9ebd3d684cbab4309b3955ced0bd, type: 2}
+  requireDwarfAncestrySubsystem: 1
+--- !u!114 &-7296096646264870741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6218558407117122571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d550272af404b84a2bbc2c944f1401a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.DwarfAncestorPathRuntime
+  patronAncestor: {fileID: 11400000, guid: b2816eeba70c4442a7f0694d2197f628, type: 2}
+  chosenPathNodeIds:
+  - ancestor_root
+  - forge_blessing
+  - stone_endurance
+  requireDwarfAncestrySubsystem: 1

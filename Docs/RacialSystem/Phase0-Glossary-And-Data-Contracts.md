@@ -9,7 +9,7 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 | **Race** | Ancestry / people: Human, Elf, Barbarian, etc. Stored as `Race : byte` in `StatTypes` with explicit numeric values for saves. |
 | **Human class** | Optional specialization for `Race.Human` only (e.g. Summoner). `HumanClass.None` = random civilian / default party human. |
 | **Racial loadout** | `RacialLoadoutDefinition` (ScriptableObject): stat/resistance modifiers, passives, and (later) actives. Applied by `RacialLoadoutApplier`. See **Phase1-Implementation.md**. |
-| **Racial subsystem** | Progression framework keyed off race: Spirit Imprint (Barbarian), Human specialization, Tiefling implants, Elf contracts, etc. |
+| **Racial subsystem** | Progression framework keyed off race: Spirit Imprint (Barbarian), Human specialization, Tiefling implants, Elf contracts, Dwarf patron Ancestor + common abilities, etc. |
 | **Commitment policy** | Whether subsystem choices are permanent or respec-able (`RacialCommitmentPolicy`). |
 | **Body capabilities** | Mutable flags (horns, stature, …) combined with race rules when resolving equipment; essences/curses/artifacts change these. |
 
@@ -26,4 +26,5 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 ## Later phases
 
 - Spirit Imprint graph data and save blob for chosen nodes.
+- Dwarf patron Ancestor trees and common ability slots — see **Dwarf-Ancestor-And-Common-Abilities-Requirements.md**.
 - Equipment legality hooks and body-capability overrides.
