@@ -1,0 +1,175 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 420b5ffd4f9445d8b603c9fc1a2d134e, type: 3}
+  m_Name: UndeadSkillTree_Sample
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.UndeadSkillTreeDefinition
+  clusters:
+  - clusterId: basic
+    displayName: Basic
+    pointsRequiredToUnlock: 0
+  - clusterId: core
+    displayName: Core
+    pointsRequiredToUnlock: 2
+  - clusterId: class
+    displayName: Class
+    pointsRequiredToUnlock: 6
+  nodes:
+  - nodeId: grave_touch
+    displayName: Grave Touch
+    description: Necrotic strike (active, data-only in shipping).
+    clusterId: basic
+    nodeKind: 0
+    maxRanks: 5
+    requiredParentNodeId: 
+    requiredParentMinRank: 1
+    mutualExclusivityGroup: 0
+    racialRestrictions: []
+    racialBenefits: []
+    statModifiers: []
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities:
+    - {fileID: 11400000, guid: fb2ab1510a01414b9eff4287f6c65dfb, type: 2}
+  - nodeId: calcified_hide
+    displayName: Calcified Hide
+    description: Hardened dead flesh.
+    clusterId: basic
+    nodeKind: 2
+    maxRanks: 3
+    requiredParentNodeId: 
+    requiredParentMinRank: 1
+    mutualExclusivityGroup: 0
+    racialRestrictions: []
+    racialBenefits: []
+    statModifiers:
+    - attribute: 3
+      value: 1
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []
+  - nodeId: pale_consumption
+    displayName: Pale Consumption
+    description: Necrotic sustenance channel (racial benefit).
+    clusterId: basic
+    nodeKind: 0
+    maxRanks: 1
+    requiredParentNodeId: 
+    requiredParentMinRank: 1
+    mutualExclusivityGroup: 0
+    racialRestrictions: []
+    racialBenefits:
+    - {fileID: 11400000, guid: f60a9e112f2946d7b0d9f06476cff0d0, type: 2}
+    statModifiers: []
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []
+  - nodeId: grave_touch_linger
+    displayName: Grave Touch — Linger
+    description: Lingering grave energy.
+    clusterId: core
+    nodeKind: 1
+    maxRanks: 1
+    requiredParentNodeId: grave_touch
+    requiredParentMinRank: 1
+    mutualExclusivityGroup: 0
+    racialRestrictions: []
+    racialBenefits: []
+    statModifiers: []
+    resistanceModifiers: []
+    passiveEffects:
+    - {fileID: 11400000, guid: ed7113ff4b3f40ec83fb3c20c627bde4, type: 2}
+    activeAbilities: []
+  - nodeId: embrace_the_dark
+    displayName: Embrace the Dark
+    description: Necrotic resilience.
+    clusterId: core
+    nodeKind: 2
+    maxRanks: 3
+    requiredParentNodeId: 
+    requiredParentMinRank: 1
+    mutualExclusivityGroup: 0
+    racialRestrictions: []
+    racialBenefits: []
+    statModifiers: []
+    resistanceModifiers:
+    - type: 5
+      value: 10
+    passiveEffects: []
+    activeAbilities: []
+  - nodeId: sun_scorched
+    displayName: Sun-scorched
+    description: Extra radiant vulnerability while ranked.
+    clusterId: core
+    nodeKind: 2
+    maxRanks: 1
+    requiredParentNodeId: 
+    requiredParentMinRank: 1
+    mutualExclusivityGroup: 0
+    racialRestrictions:
+    - {fileID: 11400000, guid: 5c1fe518a8c841a3a692069276b926c8, type: 2}
+    racialBenefits: []
+    statModifiers: []
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []
+  - nodeId: bone_mend
+    displayName: Bone Mend
+    description: Constitution and wisdom from ossified renewal.
+    clusterId: core
+    nodeKind: 2
+    maxRanks: 1
+    requiredParentNodeId: 
+    requiredParentMinRank: 1
+    mutualExclusivityGroup: 0
+    racialRestrictions: []
+    racialBenefits: []
+    statModifiers:
+    - attribute: 3
+      value: 1
+    resistanceModifiers: []
+    passiveEffects:
+    - {fileID: 11400000, guid: d94d1986f5524a3f914396e49b3b1228, type: 2}
+    activeAbilities: []
+  - nodeId: lichs_bargain
+    displayName: Lich's Bargain
+    description: Power for a price (exclusivity group 1).
+    clusterId: class
+    nodeKind: 0
+    maxRanks: 1
+    requiredParentNodeId: 
+    requiredParentMinRank: 1
+    mutualExclusivityGroup: 1
+    racialRestrictions:
+    - {fileID: 11400000, guid: 84c6b839e3824ce6b183a4e1f9aa997d, type: 2}
+    racialBenefits:
+    - {fileID: 11400000, guid: d3382343c1654b3ca5618117b25ca34c, type: 2}
+    statModifiers: []
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []
+  - nodeId: death_knell
+    displayName: Death Knell
+    description: Alternative ultimate (exclusivity group 1).
+    clusterId: class
+    nodeKind: 0
+    maxRanks: 1
+    requiredParentNodeId: 
+    requiredParentMinRank: 1
+    mutualExclusivityGroup: 1
+    racialRestrictions: []
+    racialBenefits: []
+    statModifiers:
+    - attribute: 0
+      value: 1
+    resistanceModifiers: []
+    passiveEffects: []
+    activeAbilities: []

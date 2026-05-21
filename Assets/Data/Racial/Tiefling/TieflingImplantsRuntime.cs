@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using JRogue.Item.Essence;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
 using UnityEngine;
@@ -135,26 +134,7 @@ namespace JRogue.Racial
                 _sources[slot] = src;
             }
 
-            if (implant.statModifiers != null)
-            {
-                foreach (AttributeModifier mod in implant.statModifiers)
-                {
-                    Stat targetStat = _stats.GetStatByType(mod.attribute);
-                    targetStat?.AddModifier(mod.value, src);
-                }
-            }
-
-            if (implant.resistanceModifiers != null)
-            {
-                foreach (DamageResistanceModifier res in implant.resistanceModifiers)
-                    _stats.AddResistanceModifier(res.type, res.value, src);
-            }
-
-            if (implant.passiveEffects != null)
-            {
-                foreach (PassiveEffect passive in implant.passiveEffects)
-                    passive?.OnApply(gameObject);
-            }
+            RacialProgressionPayloadApplicator.Apply(gameObject, _stats, src, implant);
         }
 
         void RemoveImplantInternal(ImplantSlot slot)
@@ -163,28 +143,7 @@ namespace JRogue.Racial
                 return;
 
             if (_sources.TryGetValue(slot, out TieflingImplantSlotModifierSource src))
-            {
-                if (implant.statModifiers != null)
-                {
-                    foreach (AttributeModifier mod in implant.statModifiers)
-                    {
-                        Stat targetStat = _stats.GetStatByType(mod.attribute);
-                        targetStat?.RemoveModifiersFromSource(src);
-                    }
-                }
-
-                if (implant.resistanceModifiers != null)
-                {
-                    foreach (DamageResistanceModifier res in implant.resistanceModifiers)
-                        _stats.RemoveResistanceModifier(res.type, src);
-                }
-            }
-
-            if (implant.passiveEffects != null)
-            {
-                for (int i = implant.passiveEffects.Count - 1; i >= 0; i--)
-                    implant.passiveEffects[i]?.OnRemove(gameObject);
-            }
+                RacialProgressionPayloadApplicator.Remove(gameObject, _stats, src, implant);
 
             _stats.UnregisterBodyEquipmentContribution(BodyContributionKey(slot));
             _installedBySlot.Remove(slot);
@@ -192,21 +151,11 @@ namespace JRogue.Racial
 
         static string BodyContributionKey(ImplantSlot slot) => $"TieflingImplant:{slot}";
 
-        void RefreshPassivesForImplant(CyborgImplantDefinition implant)
-        {
-            if (implant.passiveEffects == null)
-                return;
-            foreach (PassiveEffect passive in implant.passiveEffects)
-                passive?.Refresh(gameObject);
-        }
+        void RefreshPassivesForImplant(CyborgImplantDefinition implant) =>
+            RacialProgressionPayloadApplicator.RefreshPassives(gameObject, implant);
 
-        void NotifyPassivesTurnStartForImplant(CyborgImplantDefinition implant)
-        {
-            if (implant.passiveEffects == null)
-                return;
-            foreach (PassiveEffect passive in implant.passiveEffects)
-                passive?.OnTurnStart(gameObject);
-        }
+        void NotifyPassivesTurnStartForImplant(CyborgImplantDefinition implant) =>
+            RacialProgressionPayloadApplicator.NotifyPassivesTurnStart(gameObject, implant);
 
         bool ValidateTieflingActor(out string failureReason)
         {

@@ -1,5 +1,6 @@
-using JRogue.Manager.Inventory;
 using JRogue.Item;
+using JRogue.Manager.Inventory;
+using JRogue.Stats;
 
 namespace JRogue.UI.Inventory
 {
@@ -17,6 +18,13 @@ namespace JRogue.UI.Inventory
             switch (item.category)
             {
                 case ItemCategory.Potion:
+                    if (row.IsEquipped)
+                        return false;
+                    if (row.Owner != null &&
+                        row.Owner.TryGetComponent(out CharacterStats stats) &&
+                        stats.race == Race.Undead)
+                        return false;
+                    goto case ItemCategory.Scroll;
                 case ItemCategory.Scroll:
                     if (row.IsEquipped)
                         return false;

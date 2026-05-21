@@ -1953,7 +1953,16 @@ namespace JRogue.UI.Inventory
 
             if (!InventoryUsability.AppearsUsableNow(row, InCombatContext))
             {
-                Debug.Log($"[Use] Cannot use <b>{row.Item.itemName}</b> right now.");
+                if (!JRogue.Manager.Inventory.InventoryConsumePolicy.CanConsume(row, out string consumeReason))
+                    Debug.Log($"[Use] {consumeReason}");
+                else
+                    Debug.Log($"[Use] Cannot use <b>{row.Item.itemName}</b> right now.");
+                return;
+            }
+
+            if (!JRogue.Manager.Inventory.InventoryConsumePolicy.CanConsume(row, out string blockedReason))
+            {
+                Debug.Log($"[Use] {blockedReason}");
                 return;
             }
 

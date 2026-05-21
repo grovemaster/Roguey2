@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JRogue.Ability;
 using JRogue.Item.Essence;
@@ -5,24 +6,29 @@ using UnityEngine;
 
 namespace JRogue.Racial
 {
-    [CreateAssetMenu(fileName = "CyborgImplant", menuName = "JRogue/Racial/Cyborg Implant")]
-    public class CyborgImplantDefinition : ScriptableObject, IRacialProgressionPayload
+    [Serializable]
+    public class UndeadSkillTreeNodeData : IRacialProgressionPayload
     {
-        public string implantId;
+        public string nodeId;
         public string displayName;
         [TextArea] public string description;
 
-        public List<ImplantSlot> allowedSlots = new List<ImplantSlot>();
+        public string clusterId;
+        public UndeadSkillNodeKind nodeKind = UndeadSkillNodeKind.Skill;
+        public int maxRanks = 1;
 
-        [Header("Racial benefits & restrictions (progression node)")]
+        [Tooltip("Optional. Parent must be at least requiredParentMinRank (default 1).")]
+        public string requiredParentNodeId;
+
+        public int requiredParentMinRank = 1;
+
+        [Tooltip("0 = none. At most one node per group may have rank > 0.")]
+        public int mutualExclusivityGroup;
+
         public List<RacialRestrictionDefinition> racialRestrictions = new List<RacialRestrictionDefinition>();
         public List<RacialBenefitDefinition> racialBenefits = new List<RacialBenefitDefinition>();
-
-        [Header("Stat modifications")]
         public List<AttributeModifier> statModifiers = new List<AttributeModifier>();
         public List<DamageResistanceModifier> resistanceModifiers = new List<DamageResistanceModifier>();
-
-        [Header("Passive & active abilities")]
         public List<PassiveEffect> passiveEffects = new List<PassiveEffect>();
         public List<AbilityAction> activeAbilities = new List<AbilityAction>();
 
@@ -33,7 +39,15 @@ namespace JRogue.Racial
         public IReadOnlyList<PassiveEffect> PassiveEffects => passiveEffects;
         public IReadOnlyList<AbilityAction> ActiveAbilities => activeAbilities;
 
-        public bool IsAllowedInSlot(ImplantSlot slot) =>
-            allowedSlots != null && allowedSlots.Contains(slot);
+        public bool HasAnyPayload()
+        {
+            if (racialRestrictions is { Count: > 0 }) return true;
+            if (racialBenefits is { Count: > 0 }) return true;
+            if (statModifiers is { Count: > 0 }) return true;
+            if (resistanceModifiers is { Count: > 0 }) return true;
+            if (passiveEffects is { Count: > 0 }) return true;
+            if (activeAbilities is { Count: > 0 }) return true;
+            return false;
+        }
     }
 }

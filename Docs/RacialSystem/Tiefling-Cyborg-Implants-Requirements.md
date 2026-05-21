@@ -8,7 +8,9 @@ Tieflings use a racial subsystem distinct from **Barbarian Spirit Imprint** and 
 
 **Depends on:** Phase 1–2 (`RacialLoadoutDefinition` / `RacialLoadoutApplier`), Phase 4 (`BodyCapabilityFlags.Horns`, `EquipmentLegalityEvaluator`, helmet `equipExcludesActorFlags`).
 
-**Contrast:** [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md) (summon/upkeep, abilities only while summoned). [Phase 3 — Barbarian Spirit Imprint](Phase3-Requirements.md) (single forward-only tree).
+**Contrast:** [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md) (summon/upkeep, abilities only while summoned). [Phase 3 — Barbarian Spirit Imprint](Phase3-Requirements.md) (single forward-only tree; no benefit/restriction lists on nodes). [Undead — Race](Undead-Race-Requirements.md) (D4 skill tree; **same `IRacialProgressionPayload`** on nodes as Tiefling implants).
+
+**Shared code:** `IRacialProgressionPayload`, `RacialBenefitDefinition`, `RacialRestrictionDefinition`, `RacialProgressionPayloadApplicator` in `Assets/Data/Racial/`. **`CyborgImplantDefinition`** implements the interface; Undead skill nodes will use the same contract.
 
 ---
 
@@ -108,9 +110,15 @@ Per implant (stable **`implantId`** for saves):
 | **`implantId`** | Stable string (or int) for saves and UI. |
 | **Display** | Name, description, icon optional. |
 | **`allowedSlots`** | Which `ImplantSlot` values may host this implant (usually one; allow list if an implant is valid in multiple locations). |
-| **Stat modifications** | List, same shape as `RacialLoadoutDefinition` / `EssenceData` attribute modifiers. |
+| **`racialRestrictions`** | List, **zero or more** `RacialRestrictionDefinition` assets — **Tiefling + Undead only** (progression payload) |
+| **`racialBenefits`** | List, **zero or more** `RacialBenefitDefinition` assets — **Tiefling + Undead only** |
+| **Stat modifications** | `statModifiers` + `resistanceModifiers`, same shape as `RacialLoadoutDefinition` / `EssenceData` |
 | **Passive abilities** | List, **zero or more** `PassiveEffect` references. |
 | **Active abilities** | List, **zero or more** `AbilityAction` references. |
+
+**Interface:** `CyborgImplantDefinition` implements **`IRacialProgressionPayload`**. Install/replace/remove/refresh uses **`RacialProgressionPayloadApplicator`** with per-slot source (`TieflingImplant:{slot}`).
+
+**Not on folk baseline:** `DefaultTieflingRacialLoadout` keeps stats/resistances/passives only (e.g. Fire resist, horns via `bodyCapabilities`)—no `racialBenefits` / `racialRestrictions` lists on `RacialLoadoutDefinition`.
 
 **Content rules:**
 

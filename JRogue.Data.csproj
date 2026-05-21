@@ -50,21 +50,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Data/Racial/Tiefling/TieflingImplantsRuntime.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadLichBargainBenefit.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintDevActiveInvoker.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritActiveEntry.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/CyborgImplantDefinition.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadNecroticSustenanceBenefit.cs" />
     <Compile Include="Assets/Data/Item/ItemData.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/RacialAbilityPayloadApplicator.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeKind.cs" />
+    <Compile Include="Assets/Data/Racial/RacialProgressionPayload.cs" />
+    <Compile Include="Assets/Data/Racial/RacialBenefitDefinition.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/TieflingImplantSlotModifierSource.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeDefinition.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeModifierSource.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritContractsRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Elf/FireWeaponImbueAbility.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalElement.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintNodeData.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintGraph.cs" />
     <Compile Include="Assets/Data/Racial/RacialLoadoutDefinition.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeRuntime.cs" />
     <Compile Include="Assets/Data/Inventory/DestructiveInventoryActionConfig.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritContractPreset.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeRankEntry.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonSlotPreset.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryHotkeyProfile.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritDefinition.cs" />
@@ -73,18 +82,26 @@
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfAncestorPathRuntime.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryAccessibilitySettings.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/ImplantSlot.cs" />
+    <Compile Include="Assets/Data/Racial/IRacialProgressionPayload.cs" />
     <Compile Include="Assets/Data/Racial/RacialPassiveHooks.cs" />
     <Compile Include="Assets/Data/Racial/RacialLoadoutApplier.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonAbilityDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/ImplantSlotPreset.cs" />
+    <Compile Include="Assets/Data/Racial/RacialProgressionPayloadApplicator.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonAbilitiesRuntime.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeClusterData.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/AncestorDefinition.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/UndeadRacialEffectTracker.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeNodeData.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritLevelData.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadLichBargainRestriction.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />
     <Compile Include="Assets/Data/Ability/PassiveEffect.cs" />
     <Compile Include="Assets/Data/Item/Essence/EssenceData.cs" />
+    <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadExtraRadiantWeaknessRestriction.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritActiveKind.cs" />
+    <Compile Include="Assets/Data/Racial/RacialRestrictionDefinition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Data/JRogue.Data.asmdef" />

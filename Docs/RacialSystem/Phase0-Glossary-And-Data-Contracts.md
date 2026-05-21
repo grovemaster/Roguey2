@@ -8,7 +8,8 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 |------|--------|
 | **Race** | Ancestry / people: Human, Elf, Barbarian, etc. Stored as `Race : byte` in `StatTypes` with explicit numeric values for saves. |
 | **Human class** | Optional specialization for `Race.Human` only (e.g. Summoner). `HumanClass.None` = random civilian / default party human. |
-| **Racial loadout** | `RacialLoadoutDefinition` (ScriptableObject): stat/resistance modifiers, passives, and (later) actives. Applied by `RacialLoadoutApplier`. See **Phase1-Implementation.md**. |
+| **Racial loadout** | `RacialLoadoutDefinition` (ScriptableObject): stat/resistance modifiers, passives, and (later) actives. Applied by `RacialLoadoutApplier`. See **Phase1-Implementation.md**. No `racialBenefits` / `racialRestrictions` lists. |
+| **Racial progression payload** | `IRacialProgressionPayload`: restrictions, benefits, stats, passives, actives (zero or more each). Used by **Tiefling** `CyborgImplantDefinition` and **Undead** skill-tree nodes only. See **Tiefling-Cyborg-Implants-Requirements.md**, **Undead-Race-Requirements.md**. |
 | **Racial subsystem** | Progression framework keyed off race: Spirit Imprint (Barbarian), Human specialization, Tiefling implants, Elf contracts, Dwarf patron Ancestor + common abilities, etc. |
 | **Commitment policy** | Whether subsystem choices are permanent or respec-able (`RacialCommitmentPolicy`). |
 | **Body capabilities** | Mutable flags (horns, stature, …) combined with race rules when resolving equipment; essences/curses/artifacts change these. |
@@ -28,4 +29,5 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 - Spirit Imprint graph data and save blob for chosen nodes.
 - Dwarf patron Ancestor trees and common ability slots — see **Dwarf-Ancestor-And-Common-Abilities-Requirements.md**.
 - Beastman Soul Beast bond and linear ability chains — see **Beastman-Soul-Beast-Requirements.md**.
+- Undead skill tree and shared progression payload with Tiefling implants — see **Undead-Race-Requirements.md**.
 - Equipment legality hooks and body-capability overrides.

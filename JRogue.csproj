@@ -56,6 +56,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/ItemCategoryRegistry.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInterfaces.cs" />
     <Compile Include="Assets/Scripts/Item/ItemStorageLocation.cs" />
+    <Compile Include="Assets/Scripts/Manager/Inventory/InventoryConsumePolicy.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/HearingUtility.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySortMode.cs" />
     <Compile Include="Assets/Scripts/Controller/Player/PlayerController.cs" />
@@ -74,14 +75,18 @@
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryTelemetry.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
+    <Compile Include="Assets/Scripts/Abilities/UndeadGraveTouchAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryPolicy.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentLegalityEvaluator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySessionPersistence.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Passive/UndeadGraveTouchLingerPassive.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
     <Compile Include="Assets/Scripts/Controller/BaseActor.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Passive/UndeadNecroticSustenancePassive.cs" />
     <Compile Include="Assets/Scripts/Abilities/Teleport/TeleportAbility.cs" />
     <Compile Include="Assets/Scripts/Core/Targeting/TargetingResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Turn/TurnManager.cs" />

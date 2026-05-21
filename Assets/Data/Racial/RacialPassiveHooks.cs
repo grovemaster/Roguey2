@@ -15,6 +15,7 @@ namespace JRogue.Racial
             actor.GetComponent<TieflingImplantsRuntime>()?.RefreshPassives();
             actor.GetComponent<DwarfCommonAbilitiesRuntime>()?.RefreshPassives();
             actor.GetComponent<DwarfAncestorPathRuntime>()?.RefreshPassives();
+            actor.GetComponent<UndeadSkillTreeRuntime>()?.RefreshPassives();
         }
 
         public static void NotifyTurnStart(GameObject actor)
@@ -25,6 +26,7 @@ namespace JRogue.Racial
             actor.GetComponent<TieflingImplantsRuntime>()?.NotifyPassivesTurnStart();
             actor.GetComponent<DwarfCommonAbilitiesRuntime>()?.NotifyPassivesTurnStart();
             actor.GetComponent<DwarfAncestorPathRuntime>()?.NotifyPassivesTurnStart();
+            actor.GetComponent<UndeadSkillTreeRuntime>()?.NotifyPassivesTurnStart();
         }
     }
 }

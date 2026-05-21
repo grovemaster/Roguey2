@@ -21,6 +21,9 @@ namespace JRogue.Stats.Racial
         ElfElementalContracts = 4,
 
         /// <summary>Dwarf patron Ancestor path + common racial ability slots.</summary>
-        DwarfAncestry = 5
+        DwarfAncestry = 5,
+
+        /// <summary>Undead Diablo-style skill tree (respec allowed).</summary>
+        UndeadSkillTree = 6
     }
 }

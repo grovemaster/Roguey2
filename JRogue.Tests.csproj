@@ -61,6 +61,7 @@
     <Compile Include="Assets/Tests/Controller/BaseActorTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Pathfinding/GridAStarPathfinderTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/MockMonoBehavior/TestQuietEssenceSlotManager.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Racial/UndeadSkillTreeRuntimeTests.cs" />
     <Compile Include="Assets/Tests/Mocks/DummyTargetAbility.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Party/PartyManagerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/ElementalSpiritContractsRuntimeTests.cs" />
