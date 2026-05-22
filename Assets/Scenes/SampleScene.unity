@@ -3130,6 +3130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acee4552cf22808cbaa17c314fded305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Manager.PartyManager.PartyManager
+  experienceCurve: {fileID: 11400000, guid: 0b49393c954047d9abbfa4758341ed42, type: 2}
   partyMembers:
   - {fileID: 5090137359705028452}
   - {fileID: 1974283766}

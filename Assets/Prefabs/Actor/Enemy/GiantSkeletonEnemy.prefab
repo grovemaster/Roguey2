@@ -13,6 +13,10 @@ PrefabInstance:
       value: GiantSkeletonEnemy
       objectReference: {fileID: 0}
     - target: {fileID: 5257779920492708037, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: species
+      value: 
+      objectReference: {fileID: 11400000, guid: a4ceb143636a4249a0871ab2156f27c8, type: 2}
+    - target: {fileID: 5257779920492708037, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
       propertyPath: hp
       value: 20
       objectReference: {fileID: 0}

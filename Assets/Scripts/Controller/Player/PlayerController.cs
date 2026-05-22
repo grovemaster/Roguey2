@@ -40,7 +40,7 @@ namespace JRogue.Controller.Player
             int damage = equipment.GetTotalAttack(baseAttack);
 
             // Default to Slash for melee — could later be driven by equipped weapon
-            enemy.TakeDamage(damage, DamageType.Slash);
+            enemy.TakeDamage(damage, DamageType.Slash, gameObject);
 
             Debug.Log($"Player attacked {enemy.name} for {damage} damage!");
 

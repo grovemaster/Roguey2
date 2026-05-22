@@ -98,6 +98,7 @@
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryDetailFormatter.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryCarriedSorter.cs" />
+    <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
     <Compile Include="Assets/Scripts/Collector/InventoryCollector.cs" />
@@ -109,12 +110,15 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPresentationModel.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/RadarPassive.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
+    <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Progression/GrantPartyExperienceAbility.cs" />
     <Compile Include="Assets/Scripts/Abilities/Fireball/FIreballAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentManager.cs" />
     <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
+    <Compile Include="Assets/Scripts/Manager/Progression/PartyExperienceService.cs" />
     <Compile Include="Assets/Scripts/Manager/Map/MapManager.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommand.cs" />
     <Compile Include="Assets/Scripts/Testing/Essence/EssenceTestHarness.cs" />

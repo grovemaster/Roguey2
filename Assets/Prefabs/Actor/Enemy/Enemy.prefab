@@ -117,6 +117,7 @@ MonoBehaviour:
   footprintLayout: 0
   footprintWidth: 1
   footprintHeight: 1
+  species: {fileID: 11400000, guid: fbd4895624ed4822b147fd6901a4c1e7, type: 2}
   attackProfiles: 
   meleeNoiseVolume: 5
   visionRange: 2

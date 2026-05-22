@@ -43,6 +43,13 @@ namespace JRogue.Stats
         public Stat Charisma = new Stat(10);
         public Stat Luck = new Stat(10);
 
+        [Header("Progression")]
+        [Min(1)] public int level = 1;
+        [Min(0)] public int experience;
+
+        [Tooltip("Flat Max Soul Power bonus from level-ups.")]
+        [Min(0)] public int levelSoulPowerBonus;
+
         [Header("Current Status")]
         public int currentHP;
         public int currentSoulPower;
@@ -162,8 +169,9 @@ namespace JRogue.Stats
         public int MaxHP => Constitution.GetValue() * 10;
         public int EncumbranceLimit => Constitution.GetValue() * 5;
 
-        // Intellect & Wisdom govern Soul Power
-        public int MaxSoulPower => (Intelligence.GetValue() * 5) + (Wisdom.GetValue() * 5);
+        // Intellect & Wisdom govern Soul Power; levelSoulPowerBonus from level-ups
+        public int MaxSoulPower =>
+            (Intelligence.GetValue() * 5) + (Wisdom.GetValue() * 5) + levelSoulPowerBonus;
 
         // Dexterity governs Armor Class (Base 10 + Dex bonus)
         public int ArmorClass => 10 + (Dexterity.GetValue() / 4);

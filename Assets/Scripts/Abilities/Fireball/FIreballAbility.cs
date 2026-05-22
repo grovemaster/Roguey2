@@ -44,7 +44,7 @@ namespace JRogue.Ability.Fireball
                 // Note: We cast back to BaseActor if we want to use specific DamageTypes
                 if (target is JRogue.Actors.BaseActor actor)
                 {
-                    actor.TakeDamage(fireDamage, DamageType.Fire);
+                    actor.TakeDamage(fireDamage, DamageType.Fire, user);
                 }
                 else
                 {

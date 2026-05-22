@@ -92,13 +92,12 @@ namespace JRogue.Actors
 
         public void TakeDamage(int amount, GameObject source)
         {
-            // Defaulting to Blunt for generic IBattleTarget calls
-            health.TakeDamage(amount, DamageType.Blunt);
+            health.TakeDamage(amount, DamageType.Blunt, source);
         }
 
-        public virtual void TakeDamage(int rawDamage, DamageType type)
+        public virtual void TakeDamage(int rawDamage, DamageType type, GameObject damageSource = null)
         {
-            health.TakeDamage(rawDamage, type);
+            health.TakeDamage(rawDamage, type, damageSource);
         }
 
         static readonly List<Vector3Int> FootprintCellsBuffer = new List<Vector3Int>(16);

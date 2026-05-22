@@ -22,14 +22,20 @@ namespace JRogue.Actors.Components
         public event Action<int, DamageType> Damaged;
         public event Action Died;
 
+        /// <summary>Last GameObject that dealt damage (for kill credit).</summary>
+        public GameObject LastDamageSource { get; private set; }
+
         private void Awake()
         {
             stats = GetComponent<CharacterStats>();
             essenceManager = GetComponent<EssenceSlotManager>();
         }
 
-        public void TakeDamage(int rawDamage, DamageType type)
+        public void TakeDamage(int rawDamage, DamageType type, GameObject damageSource = null)
         {
+            if (damageSource != null)
+                LastDamageSource = damageSource;
+
             int resistanceValue = stats.GetResistance(type);
             int damage = Mathf.Max(1, rawDamage - resistanceValue);
 

@@ -68,6 +68,7 @@
     <Compile Include="Assets/Tests/UnitTests/Combat/GridFootprintUtilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Party/PartyManagerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/ElementalSpiritContractsRuntimeTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Progression/PartyExperienceServiceTests.cs" />
     <Compile Include="Assets/Tests/Mocks/MockBattleTarget.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/SpiritImprintRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputHandlerTest.cs" />

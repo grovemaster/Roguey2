@@ -13,6 +13,9 @@ namespace JRogue.UI.Inventory
             if (item == null)
                 return false;
 
+            if (row.Instance != null && row.Instance.StorageLocation == ItemStorageLocation.OnGround)
+                return false;
+
             bool hasActiveAbility = item.activeAbilities != null && item.activeAbilities.Count > 0;
 
             switch (item.category)

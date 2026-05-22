@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Actors;
+using JRogue.Data.Progression;
+using JRogue.Manager.Progression;
 using JRogue.View;
 using UnityEngine;
 
@@ -8,6 +10,9 @@ namespace JRogue.Manager.Party
     public class PartyManager : MonoBehaviour
     {
         public static PartyManager Instance;
+
+        [Header("Progression")]
+        [SerializeField] ExperienceCurve experienceCurve;
 
         [Header("Party Members")]
         // The list of all your JRPG party members
@@ -62,6 +67,14 @@ namespace JRogue.Manager.Party
         {
             if (Instance == null) Instance = this;
             else Destroy(gameObject);
+
+            if (experienceCurve == null)
+                experienceCurve = Resources.Load<ExperienceCurve>("Progression/DefaultExperienceCurve");
+
+            PartyExperienceService xp = GetComponent<PartyExperienceService>();
+            if (xp == null)
+                xp = gameObject.AddComponent<PartyExperienceService>();
+            xp.Configure(this, experienceCurve);
         }
 
         void Start()

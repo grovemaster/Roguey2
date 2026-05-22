@@ -3,8 +3,10 @@ using JRogue.Actors;
 using JRogue.Actors.Components;
 using JRogue.Controller.Player;
 using JRogue.Core.Actor;
+using JRogue.Data.Enemy;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
+using JRogue.Manager.Progression;
 using JRogue.Racial;
 using Roguey2.Sensing;
 using UnityEngine;
@@ -21,6 +23,11 @@ namespace JRogue.Controller.Enemy
         public FootprintLayout footprintLayout = FootprintLayout.Rectangle;
         [Min(1)] public int footprintWidth = 1;
         [Min(1)] public int footprintHeight = 1;
+
+        [Header("Species & XP")]
+        [SerializeField] EnemySpeciesDefinition species;
+
+        public EnemySpeciesDefinition Species => species;
 
         [Header("Melee profiles")]
         public List<EnemyAttackProfileKind> attackProfiles = new List<EnemyAttackProfileKind>();
@@ -137,6 +144,10 @@ namespace JRogue.Controller.Enemy
 
         protected override void Die()
         {
+            PartyManager party = PartyManager.Instance ?? partyManager;
+            GameObject killer = PartyExperienceService.ResolveKillCredit(health, party);
+            PartyExperienceService.Instance?.HandleEnemyDeath(this, killer);
+
             if (gridManager != null)
                 gridManager.UnregisterFootprint(this);
             Debug.Log($"{gameObject.name} was defeated!");

@@ -967,9 +967,8 @@ MonoBehaviour:
     m_SceneHandles: []
     m_ShowAllHits: 0
     m_SkipHidden: 0
-    m_SearchArea: 1
-    m_Folders:
-    - Assets/Scripts/Item/Weapon
+    m_SearchArea: 0
+    m_Folders: []
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -979,7 +978,7 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/Item/Weapon
+  - Assets
   m_LastFoldersGridSize: -1
   m_LastProjectPath: /home/jonathan/UnityProjects/Roguey2
   m_LockTracker:

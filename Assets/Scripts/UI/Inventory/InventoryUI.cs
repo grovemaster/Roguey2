@@ -1951,25 +1951,13 @@ namespace JRogue.UI.Inventory
             if (row.Owner == null || row.Item == null)
                 return;
 
-            if (!InventoryUsability.AppearsUsableNow(row, InCombatContext))
-            {
-                if (!JRogue.Manager.Inventory.InventoryConsumePolicy.CanConsume(row, out string consumeReason))
-                    Debug.Log($"[Use] {consumeReason}");
-                else
-                    Debug.Log($"[Use] Cannot use <b>{row.Item.itemName}</b> right now.");
-                return;
-            }
-
-            if (!JRogue.Manager.Inventory.InventoryConsumePolicy.CanConsume(row, out string blockedReason))
-            {
-                Debug.Log($"[Use] {blockedReason}");
-                return;
-            }
-
             if (row.Instance != null && row.Instance.Quantity > 1)
                 Debug.Log($"[Inventory Phase2 stub] Partial consume qty UI not wired ({row.Instance.Quantity}).");
 
-            Debug.Log($"[Use stub] Consume/activate pathway for <b>{row.Item.itemName}</b> ({row.Owner.DisplayName}).");
+            if (!JRogue.Manager.Inventory.InventoryItemUse.TryUseCarriedItem(row, InCombatContext, out string failureReason))
+                Debug.Log($"[Use] {failureReason}");
+            else
+                RefreshInventoryDisplay();
         }
 
         void GiveToStub()
