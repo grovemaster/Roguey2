@@ -319,7 +319,7 @@ Enemies may enable one or both profiles. **Giant Skeleton** enables **both**; ru
 
 ## 11. Sensing, threat, and visibility
 
-- **LOS / cone sight (v0):** Origin remains **anchor** (or footprint center — pick anchor for consistency); body does **not** block LOS for other actors in v0.
+- **LOS / cone sight (v0):** **Multi-origin union** — shadow LOS is cast from **every** footprint cell and unioned; cone/range to a target uses the **nearest** occupied cell to that target. Body does **not** block LOS for other actors in v0.
 - **Combat threat:** Party tension uses nearest footprint cell vs party for distance/LOS buckets.
 - **Fog / revealed tiles:** When an enemy is seen, reveal **all** footprint cells.
 

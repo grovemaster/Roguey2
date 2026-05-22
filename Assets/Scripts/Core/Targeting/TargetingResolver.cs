@@ -18,18 +18,22 @@ namespace JRogue.Core.Targeting
         {
             List<IBattleTarget> results = new List<IBattleTarget>();
 
-            // We only loop through ACTORS, not every tile in the world
-            foreach (var actor in GridManager.Instance.GetAllActors())
+            foreach (IBattleTarget actor in GridManager.Instance.GetAllActors())
             {
-                // Manhattan distance is often better for grid games, 
-                // but Vector3Int.Distance works for Euclidean circles
-                if (Vector3Int.Distance(actor.GridPosition, center) <= radius)
-                // if (Vector3Int.Distance(actor.GridPosition, center) <= radius)
-                {
+                int dist = NearestFootprintDistance(center, actor);
+                if (dist <= radius)
                     results.Add(actor);
-                }
             }
+
             return results;
+        }
+
+        static int NearestFootprintDistance(Vector3Int from, IBattleTarget target)
+        {
+            if (target is IGridFootprint footprint)
+                return GridFootprintUtility.ManhattanDistanceToFootprint(from, footprint);
+
+            return Mathf.Abs(from.x - target.GridPosition.x) + Mathf.Abs(from.y - target.GridPosition.y);
         }
     }
 }

@@ -45,6 +45,13 @@ namespace JRogue.Pathfinding
             if (seeker == null || mapManager == null || gridManager == null)
                 return false;
 
+            IGridFootprint footprint = seeker.GetComponent<IGridFootprint>();
+            if (footprint != null && !GridFootprintUtility.IsSingleCell(footprint))
+            {
+                return TryGetFirstStepTowardsFootprint(
+                    start, goal, seeker, footprint, mapManager, gridManager, out firstStep);
+            }
+
             bool CanEnter(Vector3Int c)
             {
                 if (c == goal)
@@ -69,6 +76,65 @@ namespace JRogue.Pathfinding
             }
 
             return TryGetFirstStepInternal(start, goal, CanEnter, CornerClearForDiagonal, out firstStep);
+        }
+
+        static readonly List<Vector3Int> PathFootprintBuffer = new List<Vector3Int>(16);
+
+        static bool TryGetFirstStepTowardsFootprint(
+            Vector3Int start,
+            Vector3Int goal,
+            GameObject seeker,
+            IGridFootprint footprint,
+            MapManager mapManager,
+            GridManager gridManager,
+            out Vector3Int firstStep)
+        {
+            firstStep = default;
+
+            bool CanEnterAnchor(Vector3Int anchor)
+            {
+                GridFootprintUtility.GetOccupiedCells(
+                    anchor,
+                    footprint.Layout,
+                    footprint.FootprintWidth,
+                    footprint.FootprintHeight,
+                    footprint.Facing,
+                    PathFootprintBuffer);
+
+                for (int i = 0; i < PathFootprintBuffer.Count; i++)
+                {
+                    Vector3Int cell = PathFootprintBuffer[i];
+                    if (!mapManager.IsWalkable(cell))
+                        return false;
+
+                    IBattleTarget occupant = gridManager.GetActorAt(cell);
+                    if (occupant == null || occupant.Owner == seeker)
+                        continue;
+
+                    if (cell == goal)
+                        continue;
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            bool CornerClearForDiagonal(Vector3Int from, Vector3Int to)
+            {
+                Vector3Int d = to - from;
+                if (d.x == 0 || d.y == 0)
+                    return true;
+
+                Vector3Int orthA = from + new Vector3Int(d.x, 0, 0);
+                Vector3Int orthB = from + new Vector3Int(0, d.y, 0);
+                if (!CanEnterAnchor(orthA) || !CanEnterAnchor(orthB))
+                    return false;
+
+                return mapManager.IsWalkable(orthA) && mapManager.IsWalkable(orthB);
+            }
+
+            return TryGetFirstStepInternal(start, goal, CanEnterAnchor, CornerClearForDiagonal, out firstStep);
         }
 
         /// <summary>

@@ -70,6 +70,7 @@
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
+    <Compile Include="Assets/Scripts/Controller/Enemy/EnemyMeleeCombat.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />

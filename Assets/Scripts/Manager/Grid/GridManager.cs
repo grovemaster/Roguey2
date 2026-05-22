@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UnityEngine;
 using JRogue.Core.Actor;
+using UnityEngine;
 
 namespace JRogue.Manager.Grid
 {
@@ -64,6 +64,62 @@ namespace JRogue.Manager.Grid
         public void UnregisterActor(Vector3Int pos) => actorMap.Remove(pos);
 
         /// <summary>
+        /// Registers <paramref name="actor"/> on every cell in <paramref name="cells"/>.
+        /// Fails without partial registration if any cell is held by another owner.
+        /// </summary>
+        public bool TryRegisterFootprint(IBattleTarget actor, IReadOnlyList<Vector3Int> cells)
+        {
+            if (actor == null || cells == null || cells.Count == 0)
+                return false;
+
+            for (int i = 0; i < cells.Count; i++)
+            {
+                IBattleTarget at = GetActorAt(cells[i]);
+                if (at != null && !IsSameBattleTarget(at, actor))
+                    return false;
+            }
+
+            RemoveBattleTargetFromAllCells(actor);
+            for (int i = 0; i < cells.Count; i++)
+                actorMap[cells[i]] = actor;
+            return true;
+        }
+
+        public void UnregisterFootprint(IBattleTarget actor) => RemoveBattleTargetFromAllCells(actor);
+
+        /// <summary>
+        /// Atomically moves footprint from old cells to new cells.
+        /// </summary>
+        public bool TryMoveFootprint(IBattleTarget mover, IReadOnlyList<Vector3Int> oldCells, IReadOnlyList<Vector3Int> newCells)
+        {
+            if (mover == null || newCells == null || newCells.Count == 0)
+                return false;
+
+            for (int i = 0; i < newCells.Count; i++)
+            {
+                IBattleTarget at = GetActorAt(newCells[i]);
+                if (at != null && !IsSameBattleTarget(at, mover))
+                    return false;
+            }
+
+            RemoveBattleTargetFromAllCells(mover);
+            for (int i = 0; i < newCells.Count; i++)
+                actorMap[newCells[i]] = mover;
+
+            for (int i = 0; i < newCells.Count; i++)
+            {
+                if (!IsSameBattleTarget(GetActorAt(newCells[i]), mover))
+                {
+                    if (oldCells != null && oldCells.Count > 0)
+                        TryRegisterFootprint(mover, oldCells);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Atomically moves <paramref name="mover"/>'s registration from <paramref name="from"/> to <paramref name="to"/>.
         /// Clears every cell that currently maps to the same combatant (same reference or same <see cref="IBattleTarget.Owner"/>),
         /// so duplicate hash entries cannot survive a move. Returns false if <paramref name="to"/> is held by someone else.
@@ -117,8 +173,18 @@ namespace JRogue.Manager.Grid
             return actorMap.ContainsKey(pos);
         }
 
-        // Used for AOE like Fireball
-        public IEnumerable<IBattleTarget> GetAllActors() => actorMap.Values;
+        /// <summary>Unique battle targets (one per <see cref="IBattleTarget.Owner"/>).</summary>
+        public IEnumerable<IBattleTarget> GetAllActors()
+        {
+            var seen = new HashSet<GameObject>();
+            foreach (IBattleTarget actor in actorMap.Values)
+            {
+                if (actor?.Owner == null)
+                    continue;
+                if (seen.Add(actor.Owner))
+                    yield return actor;
+            }
+        }
 
         /// <summary>
         /// Yields the eight neighboring grid cells (including diagonals) around <paramref name="origin"/>.

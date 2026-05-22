@@ -133,35 +133,19 @@ public class VisibilityManager : MonoBehaviour
         if (enemies == null || enemies.Length == 0 || MapManager.Instance == null) return;
 
         HashSet<Vector3Int> enemyVisibleTiles = new HashSet<Vector3Int>();
+        enemyVisibleTiles.Clear();
 
         foreach (EnemyController enemy in enemies)
         {
             if (enemy == null) continue;
 
-            foreach (Tilemap tm in tilemaps)
-            {
-                if (tm == null) continue;
-
-                foreach (Vector3Int pos in tm.cellBounds.allPositionsWithin)
-                {
-                    if (!tm.HasTile(pos)) continue;
-
-                    Vector3Int cell = new Vector3Int(pos.x, pos.y, 0);
-                    bool seen = Roguey2.Sensing.ConeSightUtility.TrySenseTarget(
-                        enemy,
-                        cell,
-                        MapManager.Instance,
-                        enemy.VisionRange,
-                        enemy.PrimaryConeAngle,
-                        enemy.PeripheralRangeMultiplier,
-                        out _);
-
-                    if (seen)
-                    {
-                        enemyVisibleTiles.Add(cell);
-                    }
-                }
-            }
+            Roguey2.Sensing.ConeSightUtility.CollectVisibleTiles(
+                enemy,
+                MapManager.Instance,
+                enemy.VisionRange,
+                enemy.PrimaryConeAngle,
+                enemy.PeripheralRangeMultiplier,
+                enemyVisibleTiles);
         }
 
         foreach (Vector3Int pos in enemyVisibleTiles)
@@ -175,7 +159,7 @@ public class VisibilityManager : MonoBehaviour
             }
         }
 
-        Debug.Log($"[SIGHT-DEBUG] Enemy FOV overlay tinted {enemyVisibleTiles.Count} tiles.");
+        Debug.Log($"[SIGHT-DEBUG] Enemy FOV overlay: {enemies.Length} enemies, {enemyVisibleTiles.Count} tiles tinted.");
     }
 
     // Temporary Test Logic

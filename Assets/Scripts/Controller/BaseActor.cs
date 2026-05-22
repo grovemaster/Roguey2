@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using JRogue.Actors.Components;
 using JRogue.Core.Actor;
+using JRogue.Controller.Enemy;
 using JRogue.Manager.Essence;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
@@ -11,18 +13,6 @@ using UnityEngine;
 
 namespace JRogue.Actors
 {
-    public enum FacingDirection
-    {
-        North,
-        NorthEast,
-        East,
-        SouthEast,
-        South,
-        SouthWest,
-        West,
-        NorthWest
-    }
-
     // Forces Unity to add the components if they are missing
     [RequireComponent(typeof(CharacterStats))]
     [RequireComponent(typeof(EssenceSlotManager))]
@@ -84,8 +74,11 @@ namespace JRogue.Actors
 
         protected void EnsureManagers()
         {
-            // Always refresh GridManager from the live singleton (tests can recreate it).
             gridManager = GridManager.Instance;
+            if (mapManager == null)
+                mapManager = MapManager.Instance != null
+                    ? MapManager.Instance
+                    : FindAnyObjectByType<MapManager>();
             if (turnManager == null) turnManager = TurnManager.Instance;
             if (partyManager == null) partyManager = PartyManager.Instance;
         }
@@ -108,16 +101,15 @@ namespace JRogue.Actors
             health.TakeDamage(rawDamage, type);
         }
 
+        static readonly List<Vector3Int> FootprintCellsBuffer = new List<Vector3Int>(16);
+
         public bool TryMove(Vector3Int direction)
         {
             EnsureManagers();
 
             if (direction != Vector3Int.zero)
-            {
                 UpdateFacingFromDirection(direction);
-            }
 
-            // Source-of-truth check: don't let the player act twice in one turn
             if (gameObject.CompareTag("Player")
                 && turnManager != null
                 && !turnManager.CanActorTakeAction(this.gameObject))
@@ -126,43 +118,95 @@ namespace JRogue.Actors
                 return false;
             }
 
-            Vector3Int targetPos = GridPosition + direction;
+            Vector3Int newAnchor = GridPosition + direction;
+            IGridFootprint selfFootprint = this as IGridFootprint;
 
-            // 1. Check Map Collision
-            if (!mapManager.IsWalkable(targetPos)) return false;
+            if (selfFootprint != null)
+            {
+                GridFootprintUtility.GetOccupiedCells(
+                    newAnchor,
+                    selfFootprint.Layout,
+                    selfFootprint.FootprintWidth,
+                    selfFootprint.FootprintHeight,
+                    selfFootprint.Facing,
+                    FootprintCellsBuffer);
 
-            // 2. Check for Actors at the target cell
+                for (int i = 0; i < FootprintCellsBuffer.Count; i++)
+                {
+                    Vector3Int cell = FootprintCellsBuffer[i];
+                    if (!mapManager.IsWalkable(cell))
+                        return false;
+                }
+
+                BaseActor bumpTarget = FindBumpTargetForFootprint(FootprintCellsBuffer);
+                if (bumpTarget != null)
+                {
+                    OnBump(bumpTarget);
+                    bool isPartyMember = partyManager != null
+                        && partyManager.partyMembers.Contains(bumpTarget);
+                    if (!isPartyMember)
+                    {
+                        turnManager?.OnPlayerActionComplete(this.gameObject);
+                        return true;
+                    }
+                }
+
+                for (int i = 0; i < FootprintCellsBuffer.Count; i++)
+                {
+                    Vector3Int cell = FootprintCellsBuffer[i];
+                    IBattleTarget occupant = gridManager != null ? gridManager.GetActorAt(cell) : null;
+                    if (occupant != null && occupant.Owner != gameObject)
+                        return false;
+                }
+
+                return mover.ApplyPositionChange(newAnchor);
+            }
+
+            Vector3Int targetPos = newAnchor;
+
+            if (!mapManager.IsWalkable(targetPos))
+                return false;
+
             IBattleTarget target = gridManager != null ? gridManager.GetActorAt(targetPos) : null;
 
-            if (target != null && target.Owner != this.gameObject)
+            if (target != null && target.Owner != gameObject)
             {
                 if (target is BaseActor targetActor)
                 {
                     OnBump(targetActor);
 
-                    // Swap allowed when target is a party member; otherwise the
-                    // bump itself replaces the move (combat consumes the action).
                     bool isPartyMember = partyManager != null
                         && partyManager.partyMembers.Contains(targetActor);
                     if (!isPartyMember)
                     {
-                        // Combat ended the turn — notify the TurnManager so
-                        // the player turn doesn't hang.
                         turnManager?.OnPlayerActionComplete(this.gameObject);
                         return true;
                     }
                 }
             }
 
-            // 3. Defensive re-check: another actor may have appeared
-            IBattleTarget occupant = gridManager != null ? gridManager.GetActorAt(targetPos) : null;
-            if (occupant != null && occupant.Owner != this.gameObject)
-            {
+            IBattleTarget occupantSingle = gridManager != null ? gridManager.GetActorAt(targetPos) : null;
+            if (occupantSingle != null && occupantSingle.Owner != gameObject)
                 return false;
+
+            return mover.ApplyPositionChange(targetPos);
+        }
+
+        BaseActor FindBumpTargetForFootprint(List<Vector3Int> destinationCells)
+        {
+            if (gridManager == null)
+                return null;
+
+            for (int i = 0; i < destinationCells.Count; i++)
+            {
+                IBattleTarget at = gridManager.GetActorAt(destinationCells[i]);
+                if (at == null || at.Owner == gameObject)
+                    continue;
+                if (at is BaseActor actor)
+                    return actor;
             }
 
-            // 4. Perform the actual move via GridMover
-            return mover.ApplyPositionChange(targetPos);
+            return null;
         }
 
         public void ApplyPositionChange(Vector3Int newPosition)

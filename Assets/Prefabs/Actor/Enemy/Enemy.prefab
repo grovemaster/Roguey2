@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5257779920492708037}
   - component: {fileID: 3209509922205570442}
   - component: {fileID: 3148838389820078228}
+  - component: {fileID: 4487183159315133079}
+  - component: {fileID: 4118223904020428948}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -105,10 +107,21 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83f58fd76dfaad06e8dc7b135c95a85b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  m_EditorClassIdentifier: JRogue::JRogue.Controller.Enemy.EnemyController
   stats: {fileID: 0}
+  currentFacing: 0
+  displayName: 
+  essenceType: 1
   hp: 10
   attackPower: 1
+  footprintLayout: 0
+  footprintWidth: 1
+  footprintHeight: 1
+  attackProfiles: 
+  meleeNoiseVolume: 5
+  visionRange: 2
+  primaryConeAngle: 135
+  peripheralRangeMultiplier: 0.5
 --- !u!114 &3209509922205570442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,37 +146,26 @@ MonoBehaviour:
   renown: 0
   sight:
     baseValue: 8
-    modifiers: 
   hearing:
     baseValue: 10
-    modifiers: 
   smell:
     baseValue: 5
-    modifiers: 
   Strength:
     baseValue: 10
-    modifiers: 
   Dexterity:
     baseValue: 10
-    modifiers: 
   Agility:
     baseValue: 10
-    modifiers: 
   Constitution:
     baseValue: 10
-    modifiers: 
   Intelligence:
     baseValue: 10
-    modifiers: 
   Wisdom:
     baseValue: 10
-    modifiers: 
   Charisma:
     baseValue: 10
-    modifiers: 
   Luck:
     baseValue: 10
-    modifiers: 
   currentHP: 0
   currentSoulPower: 0
 --- !u!114 &3148838389820078228
@@ -180,3 +182,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Manager.Essence.EssenceSlotManager
   totalSlots: 3
   equippedEssences: []
+--- !u!114 &4487183159315133079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4177042056790637932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d36b32a08221baadbe029f23f0347d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Actors.Components.HealthComponent
+--- !u!114 &4118223904020428948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4177042056790637932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50e40c737cfecffe4bf3b5c5347aeb79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Actors.Components.GridMover

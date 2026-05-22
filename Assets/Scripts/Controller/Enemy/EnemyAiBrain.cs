@@ -240,15 +240,14 @@ namespace JRogue.Controller.Enemy
             if (TrySeeAnyPartyMember(player, out _))
                 _pursuitRefreshThisEnemyWave = true;
 
-            Vector3Int playerPos = player.GridPosition;
-            Vector3Int diff = playerPos - _owner.GridPosition;
-            int cheb = Mathf.Max(Mathf.Abs(diff.x), Mathf.Abs(diff.y));
-            if (cheb <= 1)
+            if (IsAnyPartyMemberInMeleeRange())
             {
                 _pursuitRefreshThisEnemyWave = true;
                 _owner.BrainAttackPlayer();
                 return;
             }
+
+            Vector3Int playerPos = player.GridPosition;
 
             if (_owner.BrainMapManager != null
                 && GridManager.Instance != null
@@ -460,6 +459,24 @@ namespace JRogue.Controller.Enemy
         private Vector3Int GetFallbackCardinalStep(Vector3Int target)
         {
             return GetFallbackCardinalStep(_owner.GridPosition, target);
+        }
+
+        bool IsAnyPartyMemberInMeleeRange()
+        {
+            PartyManager party = PartyManager.Instance;
+            if (party == null || party.partyMembers == null)
+                return false;
+
+            for (int i = 0; i < party.partyMembers.Count; i++)
+            {
+                BaseActor member = party.partyMembers[i];
+                if (member == null || !member.gameObject.activeInHierarchy)
+                    continue;
+                if (EnemyMeleeCombat.IsInMeleeRange(member.GridPosition, _owner))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JRogue.Core.Actor;
 using JRogue.Manager.Grid;
 using UnityEngine;
@@ -12,9 +13,14 @@ namespace JRogue.Actors.Components
     /// live on the actor that drives this component.
     /// </summary>
     [DisallowMultipleComponent]
+    [DefaultExecutionOrder(100)]
     public class GridMover : MonoBehaviour
     {
+        private static readonly List<Vector3Int> CellBufferA = new List<Vector3Int>(16);
+        private static readonly List<Vector3Int> CellBufferB = new List<Vector3Int>(16);
+
         private IBattleTarget self;
+        private IGridFootprint footprint;
         private GridManager gridManager;
         private Vector3Int gridPosition;
 
@@ -25,44 +31,78 @@ namespace JRogue.Actors.Components
         private void Awake()
         {
             self = GetComponent<IBattleTarget>();
+            footprint = GetComponent<IGridFootprint>();
         }
 
         private void Start()
         {
             EnsureGridManager();
-            gridPosition = Vector3Int.FloorToInt(transform.position);
-            gridManager?.RegisterActor(gridPosition, self);
-            SyncPosition();
+            if (footprint == null)
+                footprint = GetComponent<IGridFootprint>();
+
+            gridPosition = footprint != null
+                ? GridFootprintUtility.ResolvePlacementAnchor(transform.position, footprint)
+                : Vector3Int.FloorToInt(transform.position - new Vector3(0.5f, 0.5f, 0f));
+
+            RegisterAtCurrentAnchor();
+            SyncFootprintPose();
         }
 
         private void OnDestroy()
         {
-            // Re-read Instance instead of using the cached field: GridManager
-            // may already have been destroyed during scene teardown, in which
-            // case GridManager.Instance is null but the cached ref isn't.
-            GridManager.Instance?.UnregisterActor(gridPosition);
+            GridManager grid = GridManager.Instance;
+            if (grid == null || self == null)
+                return;
+
+            if (footprint != null)
+                grid.UnregisterFootprint(self);
+            else
+                grid.UnregisterActor(gridPosition);
         }
 
         public void SetGridPosition(Vector3Int newPos) => gridPosition = newPos;
 
         /// <summary>
-        /// Attempts to move the actor to <paramref name="newPosition"/> and
+        /// Attempts to move the actor to <paramref name="newPosition"/> (anchor) and
         /// keeps <see cref="GridManager"/> consistent. If registration is
-        /// rejected (e.g., another actor already occupies the cell) the move
-        /// is aborted and the old registration is restored.
+        /// rejected the move is aborted and the old registration is restored.
         /// </summary>
         public bool ApplyPositionChange(Vector3Int newPosition)
         {
-            // Always use the live singleton so tests and scene reloads never update a stale GridManager.
             GridManager grid = GridManager.Instance;
             if (grid == null) return false;
 
             if (self == null) self = GetComponent<IBattleTarget>();
+            if (footprint == null) footprint = GetComponent<IGridFootprint>();
 
             Vector3Int oldPosition = gridPosition;
             if (oldPosition == newPosition) return true;
 
-            if (!grid.TryMoveRegistration(self, oldPosition, newPosition))
+            if (footprint != null)
+            {
+                GridFootprintUtility.GetOccupiedCells(
+                    oldPosition,
+                    footprint.Layout,
+                    footprint.FootprintWidth,
+                    footprint.FootprintHeight,
+                    footprint.Facing,
+                    CellBufferA);
+                GridFootprintUtility.GetOccupiedCells(
+                    newPosition,
+                    footprint.Layout,
+                    footprint.FootprintWidth,
+                    footprint.FootprintHeight,
+                    footprint.Facing,
+                    CellBufferB);
+
+                if (!grid.TryMoveFootprint(self, CellBufferA, CellBufferB))
+                {
+                    Debug.LogWarning(
+                        $"[MOVE-ABORTED] {name} footprint could not claim anchor {newPosition}. Reverting to {oldPosition}.");
+                    return false;
+                }
+            }
+            else if (!grid.TryMoveRegistration(self, oldPosition, newPosition))
             {
                 Debug.LogWarning($"[MOVE-ABORTED] {name} could not claim {newPosition}. Reverting to {oldPosition}.");
                 return false;
@@ -70,25 +110,65 @@ namespace JRogue.Actors.Components
 
             gridManager = grid;
             gridPosition = newPosition;
-            SyncPosition();
+            SyncFootprintPose();
 
             Debug.Log($"{gameObject.name} moved from {oldPosition} to {newPosition}");
             Moved?.Invoke(oldPosition, newPosition);
             return true;
         }
 
-        public void SyncPosition() =>
-            transform.position = new Vector3(gridPosition.x + 0.5f, gridPosition.y + 0.5f, 0);
+        public void SyncPosition()
+        {
+            if (footprint == null)
+                footprint = GetComponent<IGridFootprint>();
+
+            if (footprint != null && !GridFootprintUtility.IsSingleCell(footprint))
+                transform.position = GridFootprintUtility.GetFootprintAnchorWorldPosition(gridPosition);
+            else
+                transform.position = new Vector3(gridPosition.x + 0.5f, gridPosition.y + 0.5f, 0);
+        }
+
+        /// <summary>
+        /// Snaps the transform to the footprint anchor and aligns the <see cref="FootprintPoseUtility.VisualChildName"/> child.
+        /// </summary>
+        public void SyncFootprintPose()
+        {
+            if (footprint == null)
+                footprint = GetComponent<IGridFootprint>();
+
+            SyncPosition();
+            if (footprint != null)
+            {
+                FootprintPoseUtility.ApplyVisual(
+                    gridPosition,
+                    footprint.Layout,
+                    footprint.FootprintWidth,
+                    footprint.FootprintHeight,
+                    footprint.Facing,
+                    transform);
+            }
+        }
+
+        void RegisterAtCurrentAnchor()
+        {
+            if (gridManager == null || self == null)
+                return;
+
+            if (footprint != null)
+            {
+                GridFootprintUtility.GetOccupiedCells(footprint, CellBufferA);
+                gridManager.TryRegisterFootprint(self, CellBufferA);
+            }
+            else
+                gridManager.RegisterActor(gridPosition, self);
+        }
 
         /// <summary>
         /// Atomically swap the grid positions of <paramref name="a"/> and
         /// <paramref name="b"/> through the spatial hash, preserving the
         /// register/verify/revert invariants that <see cref="ApplyPositionChange"/>
         /// already enforces. Fires <see cref="Moved"/> on both actors.
-        ///
-        /// Use this for any "two actors trade tiles" operation (party swap,
-        /// future displacement effects, etc.) so listeners and registration
-        /// logic stay consistent with single-actor moves.
+        /// Party swap remains 1×1 only in v0.
         /// </summary>
         public static bool TrySwap(GridMover a, GridMover b)
         {
@@ -99,21 +179,22 @@ namespace JRogue.Actors.Components
 
             if (a.self == null) a.self = a.GetComponent<IBattleTarget>();
             if (b.self == null) b.self = b.GetComponent<IBattleTarget>();
+            if (a.footprint != null || b.footprint != null)
+            {
+                Debug.LogWarning("[SWAP-ABORTED] Multi-tile footprint actors cannot swap tiles in v0.");
+                return false;
+            }
 
             Vector3Int posA = a.gridPosition;
             Vector3Int posB = b.gridPosition;
             if (posA == posB) return false;
 
-            // 1. Lift both off the spatial hash so the swap doesn't transiently
-            //    fail RegisterActor's conflict check.
             if (IsSameBattleTarget(grid.GetActorAt(posA), a.self)) grid.UnregisterActor(posA);
             if (IsSameBattleTarget(grid.GetActorAt(posB), b.self)) grid.UnregisterActor(posB);
 
-            // 2. Place each at the other's old tile.
             grid.RegisterActor(posB, a.self);
             grid.RegisterActor(posA, b.self);
 
-            // 3. Verify both registrations took.
             if (!IsSameBattleTarget(grid.GetActorAt(posB), a.self) || !IsSameBattleTarget(grid.GetActorAt(posA), b.self))
             {
                 grid.UnregisterActor(posA);
@@ -124,11 +205,10 @@ namespace JRogue.Actors.Components
                 return false;
             }
 
-            // 4. Update internal state, sync visuals, fire Moved on both.
             a.gridPosition = posB;
             b.gridPosition = posA;
-            a.SyncPosition();
-            b.SyncPosition();
+            a.SyncFootprintPose();
+            b.SyncFootprintPose();
 
             Debug.Log($"[SWAP] {a.name} {posA} <-> {b.name} {posB}");
             a.Moved?.Invoke(posA, posB);
@@ -138,9 +218,6 @@ namespace JRogue.Actors.Components
 
         private void EnsureGridManager()
         {
-            // Always follow the live singleton. Tests (and scene loads) can replace or destroy the
-            // previous GridManager while this component still holds a stale reference; then spatial
-            // updates would hit the wrong map while callers use GridManager.Instance.
             gridManager = GridManager.Instance;
         }
 

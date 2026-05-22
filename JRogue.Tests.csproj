@@ -50,8 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryValueDisplayTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Combat/MultiTileEnemyGridTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputTestSceneBuilder.cs" />
     <Compile Include="Assets/Tests/JRogueTestsRootSetupFixture.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Combat/ConeSightFootprintTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantsRuntimeTests.cs" />
     <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DwarfAncestryRuntimeTests.cs" />
@@ -63,6 +65,7 @@
     <Compile Include="Assets/Tests/UnitTests/MockMonoBehavior/TestQuietEssenceSlotManager.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/UndeadSkillTreeRuntimeTests.cs" />
     <Compile Include="Assets/Tests/Mocks/DummyTargetAbility.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Combat/GridFootprintUtilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Party/PartyManagerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/ElementalSpiritContractsRuntimeTests.cs" />
     <Compile Include="Assets/Tests/Mocks/MockBattleTarget.cs" />
