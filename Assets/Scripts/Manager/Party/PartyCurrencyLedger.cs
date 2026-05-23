@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JRogue.Item;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace JRogue.Manager.Party
     public sealed class PartyCurrencyLedger : MonoBehaviour
     {
         public static PartyCurrencyLedger Instance { get; private set; }
+
+        public event Action Changed;
 
         readonly Dictionary<ItemData, int> _amounts = new Dictionary<ItemData, int>();
 
@@ -46,6 +49,8 @@ namespace JRogue.Manager.Party
                 _amounts[currencyDefinition] = cur + amount;
             else
                 _amounts[currencyDefinition] = amount;
+
+            Changed?.Invoke();
         }
 
         public int GetAmount(ItemData currencyDefinition)
@@ -69,7 +74,17 @@ namespace JRogue.Manager.Party
             else
                 _amounts[currencyDefinition] = next;
 
+            Changed?.Invoke();
             return true;
+        }
+
+        /// <summary>Sum of all pooled currency (gold coins, etc.). Mana stones use <see cref="PartyManaStoneLedger"/>.</summary>
+        public int GetTotalCount()
+        {
+            int sum = 0;
+            foreach (int v in _amounts.Values)
+                sum += v;
+            return sum;
         }
 
         /// <summary>A read-only view for UI iteration (small dict; currency types are few).</summary>

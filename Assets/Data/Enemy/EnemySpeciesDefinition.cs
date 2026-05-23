@@ -12,5 +12,8 @@ namespace JRogue.Data.Enemy
 
         [Min(0)]
         public int firstKillExperience = 25;
+
+        [Header("Death loot")]
+        public EnemyLootTable lootTable;
     }
 }

@@ -6,7 +6,7 @@ namespace JRogue.UI.Inventory
     /// <summary>Remembers inventory UI state between opens (PlayerPrefs + JsonUtility).</summary>
     public static class InventorySessionPersistence
     {
-        const string PrefsKey = "JRogue.Inventory.Session.v1";
+        const string PrefsKey = "JRogue.Inventory.Session.v2";
 
         [Serializable]
         sealed class Dto
@@ -75,7 +75,8 @@ namespace JRogue.UI.Inventory
                     : 0;
 
                 memberCarouselIndex = Mathf.Max(0, dto.memberCarouselIndex);
-                categoryCycleIndex = Mathf.Max(0, dto.categoryCycleIndex);
+                int maxCategoryIndex = ItemCategoryRegistry.CategoriesForFilterCycle().Count;
+                categoryCycleIndex = Mathf.Clamp(dto.categoryCycleIndex, 0, maxCategoryIndex);
                 usableOnly = dto.usableOnly != 0;
                 searchNeedle = dto.searchNeedle ?? string.Empty;
                 selection = Mathf.Max(0, dto.selection);

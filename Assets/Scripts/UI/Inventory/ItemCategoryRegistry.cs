@@ -89,11 +89,10 @@ namespace JRogue.UI.Inventory
             return enumName.Replace("_", " ");
         }
 
-        /// <summary>Iterate categories sorted for UI/filter cycling. Currency omitted (handled by ledger strip).</summary>
+        /// <summary>Iterate categories sorted for UI/filter cycling (includes Currency tab).</summary>
         public static IReadOnlyList<ItemCategory> CategoriesForFilterCycle()
         {
             return Enum.GetValues(typeof(ItemCategory)).Cast<ItemCategory>()
-                .Where(c => c != ItemCategory.Currency)
                 .OrderBy(c => Get(c).SortOrder)
                 .ThenBy(c => c.ToString())
                 .ToArray();

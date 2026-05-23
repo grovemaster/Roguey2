@@ -73,79 +73,13 @@ namespace JRogue.UI.Inventory
             if (partyMembers == null)
                 return new InventoryViewModel(raw);
 
-            for (int p = 0; p < partyMembers.Count; p++)
-            {
-                BaseActor member = partyMembers[p];
-                if (member == null || !member.gameObject.activeInHierarchy)
-                    continue;
-
-                string label = member.DisplayName;
-                EquipmentManager eq = member.GetComponent<EquipmentManager>();
-                InventoryManager inv = member.GetComponent<InventoryManager>();
-
-                if (eq != null)
-                {
-                    foreach (EquipmentSlot slot in (EquipmentSlot[])Enum.GetValues(typeof(EquipmentSlot)))
-                    {
-                        ItemInstance equipped = eq.GetEquippedInstance(slot);
-                        ItemData defEq = equipped?.Definition;
-                        if (defEq == null || defEq.category == ItemCategory.Currency)
-                            continue;
-
-                        raw.Add(new Row(
-                            '?',
-                            equipped,
-                            member,
-                            label,
-                            isEquipped: true,
-                            equippedSlot: slot,
-                            carriedListIndex: -1,
-                            stackedWeight: equipped.TotalWeight));
-                    }
-                }
-
-                if (inv != null)
-                {
-                    IReadOnlyList<ItemInstance> bag = inv.CarriedItems;
-                    for (int i = 0; i < bag.Count; i++)
-                    {
-                        ItemInstance it = bag[i];
-                        ItemData defBag = it?.Definition;
-                        if (defBag == null || defBag.category == ItemCategory.Currency)
-                            continue;
-
-                        raw.Add(new Row(
-                            '?',
-                            it,
-                            member,
-                            label,
-                            isEquipped: false,
-                            equippedSlot: null,
-                            carriedListIndex: i,
-                            stackedWeight: it.TotalWeight));
-                    }
-                }
-            }
-
-            for (int i = 0; i < raw.Count; i++)
-            {
-                Row r = raw[i];
-                raw[i] = new Row(
-                    LetterForIndex(i),
-                    r.Instance,
-                    r.Owner,
-                    r.OwnerDisplayName,
-                    r.IsEquipped,
-                    r.EquippedSlot,
-                    r.CarriedListIndex,
-                    r.StackedWeight);
-            }
-
+            AppendMemberRows(partyMembers, raw);
+            AssignLetters(raw);
             return new InventoryViewModel(raw);
         }
 
         /// <summary>
-        /// Equipped + carried for a single actor. Currency defs are omitted (shown only on the party ledger strip).
+        /// Equipped + carried for a single actor. Currency defs are omitted (Currency tab + party strip).
         /// </summary>
         public static InventoryViewModel BuildPartyMember(IReadOnlyList<BaseActor> partyMembers, BaseActor member)
         {
@@ -202,13 +136,74 @@ namespace JRogue.UI.Inventory
                 }
             }
 
-            for (int i = 0; i < filtered.Count; i++)
-            {
-                Row r = filtered[i];
-                filtered[i] = r.WithLetter(LetterForIndex(i));
-            }
-
+            AssignLetters(filtered);
             return new InventoryViewModel(filtered);
+        }
+
+        static void AppendMemberRows(IReadOnlyList<BaseActor> partyMembers, List<Row> raw)
+        {
+            for (int p = 0; p < partyMembers.Count; p++)
+            {
+                BaseActor member = partyMembers[p];
+                if (member == null || !member.gameObject.activeInHierarchy)
+                    continue;
+
+                string label = member.DisplayName;
+                EquipmentManager eq = member.GetComponent<EquipmentManager>();
+                InventoryManager inv = member.GetComponent<InventoryManager>();
+
+                if (eq != null)
+                {
+                    foreach (EquipmentSlot slot in (EquipmentSlot[])Enum.GetValues(typeof(EquipmentSlot)))
+                    {
+                        ItemInstance equipped = eq.GetEquippedInstance(slot);
+                        ItemData defEq = equipped?.Definition;
+                        if (defEq == null || defEq.category == ItemCategory.Currency)
+                            continue;
+
+                        raw.Add(new Row(
+                            '?',
+                            equipped,
+                            member,
+                            label,
+                            isEquipped: true,
+                            equippedSlot: slot,
+                            carriedListIndex: -1,
+                            stackedWeight: equipped.TotalWeight));
+                    }
+                }
+
+                if (inv != null)
+                {
+                    IReadOnlyList<ItemInstance> bag = inv.CarriedItems;
+                    for (int i = 0; i < bag.Count; i++)
+                    {
+                        ItemInstance it = bag[i];
+                        ItemData defBag = it?.Definition;
+                        if (defBag == null || defBag.category == ItemCategory.Currency)
+                            continue;
+
+                        raw.Add(new Row(
+                            '?',
+                            it,
+                            member,
+                            label,
+                            isEquipped: false,
+                            equippedSlot: null,
+                            carriedListIndex: i,
+                            stackedWeight: it.TotalWeight));
+                    }
+                }
+            }
+        }
+
+        static void AssignLetters(List<Row> rows)
+        {
+            for (int i = 0; i < rows.Count; i++)
+            {
+                Row r = rows[i];
+                rows[i] = r.WithLetter(LetterForIndex(i));
+            }
         }
 
         public static char LetterForIndex(int i)

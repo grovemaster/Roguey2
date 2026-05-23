@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ae948cd1d541f28b8252a4b8beb342, type: 3}
+  m_Name: ManaStone_Tier8
+  m_EditorClassIdentifier: JRogue::JRogue.Item.ManaStoneItemData
+  itemName: Mana Stone (Tier 8)
+  category: 5
+  inventoryRiskHints: 0
+  slotType: 0
+  weight: 0
+  icon: {fileID: 21300000, guid: 37616095ebf53744c950962f33663458, type: 3}
+  goldValue: 0
+  requiresAppraisal: 0
+  equipRequiresAllFlags: 0
+  equipExcludesActorFlags: 0
+  damageModules: []
+  statModifiers: []
+  passiveEffects: []
+  activeAbilities: []
+  tier: 8
+  autoPickupOnStep: 1

@@ -25,6 +25,8 @@ namespace JRogue.Item
 
         [SerializeField] bool isAppraised;
 
+        [SerializeField] string manaStoneSourceSpeciesId = string.Empty;
+
         public const int MaxInscriptionLength = 280;
 
         public ItemInstance(ItemData def, int qty = 1)
@@ -59,6 +61,22 @@ namespace JRogue.Item
         public float TotalWeight => definition != null ? definition.weight * quantity : 0f;
 
         public bool IsCurrency => definition != null && definition.category == ItemCategory.Currency;
+
+        public bool IsManaStone => definition is ManaStoneItemData;
+
+        public string ManaStoneSourceSpeciesId
+        {
+            get => manaStoneSourceSpeciesId ?? string.Empty;
+            set => manaStoneSourceSpeciesId = value ?? string.Empty;
+        }
+
+        public static ItemInstance CreateManaStone(ManaStoneItemData definition, string sourceSpeciesId, int qty = 1)
+        {
+            var inst = new ItemInstance(definition, qty);
+            inst.ManaStoneSourceSpeciesId = string.IsNullOrEmpty(sourceSpeciesId) ? "unknown" : sourceSpeciesId;
+            inst.StorageLocation = ItemStorageLocation.OnGround;
+            return inst;
+        }
 
         public ItemStorageLocation StorageLocation
         {

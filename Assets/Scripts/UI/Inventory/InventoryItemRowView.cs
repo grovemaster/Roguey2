@@ -189,8 +189,9 @@ namespace JRogue.UI.Inventory
             _titleText.fontSize = 14f * detailsFontScale;
             _titleText.text = $"{markPrefix}<color=#{nameHex}>{nameWithId}</color>";
 
+            var subParts = new System.Collections.Generic.List<string>();
             string slot = row.Item != null ? row.Item.slotType.ToString() : "?";
-            var subParts = new System.Collections.Generic.List<string> { slot };
+            subParts.Add(slot);
             if (showOwnerInSubtitle && !string.IsNullOrEmpty(row.OwnerDisplayName))
                 subParts.Add(row.OwnerDisplayName);
             if (row.IsEquipped && row.EquippedSlot.HasValue)

@@ -15,3 +15,4 @@ MonoBehaviour:
   speciesId: skeleton
   displayName: Skeleton
   firstKillExperience: 25
+  lootTable: {fileID: 11400000, guid: 31f2cd10485241afa3aa62989222a009, type: 2}

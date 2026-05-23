@@ -52,6 +52,18 @@ namespace JRogue.Manager.Inventory
                 return false;
             }
 
+            if (instance.IsManaStone && instance.Definition is ManaStoneItemData manaStone)
+            {
+                if (PartyManaStoneLedger.Instance != null)
+                    PartyManaStoneLedger.Instance.Add(
+                        manaStone.tier,
+                        instance.ManaStoneSourceSpeciesId,
+                        instance.Quantity);
+                else
+                    Debug.LogWarning("[Inventory] Mana stone pickup but no PartyManaStoneLedger in scene.");
+                return true;
+            }
+
             if (instance.IsCurrency)
             {
                 if (PartyCurrencyLedger.Instance != null)
@@ -88,7 +100,7 @@ namespace JRogue.Manager.Inventory
         {
             if (instance == null || instance.Definition == null)
                 return false;
-            if (instance.IsCurrency)
+            if (instance.IsManaStone || instance.IsCurrency)
                 return true;
 
             float potential = GetTotalWeight() + instance.TotalWeight;

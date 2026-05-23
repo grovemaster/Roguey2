@@ -54,7 +54,7 @@ namespace JRogue.UI.Inventory
         BrowseMode _browseMode = BrowseMode.FocusedMember;
         int _memberCarouselIndex;
 
-        readonly List<ItemCategory> _categoryCycle = ItemCategoryRegistry.CategoriesForFilterCycle().ToList();
+        readonly List<ItemCategory> _categoryCycle = new List<ItemCategory>();
         int _categoryCycleIndex;
 
         bool _usableOnlyFilter;
@@ -89,6 +89,12 @@ namespace JRogue.UI.Inventory
 
         InventoryPartyStripView _partyStrip;
         InventoryCategoryTabsView _categoryTabs;
+        InventoryCurrencyPanelView _currencyPanel;
+
+        readonly List<(int tier, int count)> _currencyTierTotals = new List<(int tier, int count)>();
+        readonly HashSet<int> _currencyExpandedTiers = new HashSet<int>();
+        int _currencySelectedTier;
+        string _currencySelectedSpeciesId = string.Empty;
         Transform _itemListPane;
         InventoryActionsBarView _actionsBar;
         InventoryInspectPaneView _inspectPane;
@@ -154,6 +160,8 @@ namespace JRogue.UI.Inventory
             }
 
             _instance = this;
+            RefreshCategoryCycle();
+            TrySubscribePartyLedgers();
 
             EnsurePlaceholderSprite();
             ApplyInventoryPanelFullScreenLayout();
@@ -279,7 +287,234 @@ namespace JRogue.UI.Inventory
         {
             _categoryCycleIndex = categoryCycleIndex;
             InventoryTelemetry.RecordAction("category_tab");
+            _currencyExpandedTiers.Clear();
             RefreshInventoryDisplay();
+        }
+
+        void OnCurrencyTierClicked(int tier)
+        {
+            if (_currencyExpandedTiers.Contains(tier))
+                _currencyExpandedTiers.Remove(tier);
+            else
+                _currencyExpandedTiers.Add(tier);
+
+            if (_currencyExpandedTiers.Contains(tier))
+            {
+                var sources = new List<(string speciesId, string displayName, int count)>();
+                InventoryCurrencyDisplay.CopyFilteredSourcesForTier(
+                    tier,
+                    _plainSearchNeedle,
+                    sources);
+                if (sources.Count > 0)
+                {
+                    _currencySelectedTier = tier;
+                    _currencySelectedSpeciesId = sources[0].speciesId;
+                }
+            }
+
+            RefreshCurrencyPanelOnly();
+            UpdateCurrencyDetailPane();
+        }
+
+        void OnCurrencySourceClicked(int tier, string speciesId)
+        {
+            _currencySelectedTier = tier;
+            _currencySelectedSpeciesId = speciesId ?? string.Empty;
+            _currencyExpandedTiers.Add(tier);
+            UpdateCurrencyDetailPane();
+            RefreshCurrencyPanelOnly();
+        }
+
+        void RefreshCurrencyPanelOnly()
+        {
+            if (!IsCurrencyTabActive() || itemContainer == null)
+                return;
+
+            EnsureCurrencySelection();
+            _currencyPanel = InventoryCurrencyPanelView.Ensure(itemContainer);
+            _currencyPanel.BindCallbacks(OnCurrencyTierClicked, OnCurrencySourceClicked);
+            _currencyPanel.Rebuild(
+                _currencyTierTotals,
+                _currencyExpandedTiers,
+                _currencySelectedTier,
+                _currencySelectedSpeciesId,
+                _plainSearchNeedle,
+                ListFontScale);
+
+            if (_itemScrollRect != null)
+            {
+                Canvas.ForceUpdateCanvases();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(_itemScrollRect.content);
+            }
+        }
+
+        void EnsureCurrencySelection()
+        {
+            PartyManaStoneLedger ledger = PartyManaStoneLedger.Instance;
+            _currencyTierTotals.Clear();
+            ledger?.CopyTierTotals(_currencyTierTotals);
+
+            PruneCurrencyExpandedTiers();
+
+            if (_currencyTierTotals.Count == 0)
+            {
+                _currencyExpandedTiers.Clear();
+                _currencySelectedSpeciesId = string.Empty;
+                return;
+            }
+
+            if (_currencyExpandedTiers.Count == 0)
+            {
+                for (int i = 0; i < _currencyTierTotals.Count; i++)
+                    _currencyExpandedTiers.Add(_currencyTierTotals[i].tier);
+            }
+
+            if (_currencyExpandedTiers.Count == 0)
+                return;
+
+            int focusTier = _currencyExpandedTiers.Contains(_currencySelectedTier)
+                ? _currencySelectedTier
+                : FirstExpandedTier();
+
+            var sources = new List<(string speciesId, string displayName, int count)>();
+            InventoryCurrencyDisplay.CopyFilteredSourcesForTier(
+                focusTier,
+                _plainSearchNeedle,
+                sources);
+
+            if (sources.Count == 0)
+                InventoryCurrencyDisplay.CopyFilteredSourcesForTier(focusTier, string.Empty, sources);
+
+            bool sourceValid = false;
+            for (int i = 0; i < sources.Count; i++)
+            {
+                if (sources[i].speciesId == _currencySelectedSpeciesId &&
+                    _currencySelectedTier == focusTier)
+                {
+                    sourceValid = true;
+                    break;
+                }
+            }
+
+            if (!sourceValid && sources.Count > 0)
+            {
+                _currencySelectedTier = focusTier;
+                _currencySelectedSpeciesId = sources[0].speciesId;
+            }
+        }
+
+        void PruneCurrencyExpandedTiers()
+        {
+            if (_currencyExpandedTiers.Count == 0)
+                return;
+
+            var valid = new HashSet<int>();
+            for (int i = 0; i < _currencyTierTotals.Count; i++)
+                valid.Add(_currencyTierTotals[i].tier);
+
+            _currencyExpandedTiers.RemoveWhere(t => !valid.Contains(t));
+        }
+
+        int FirstExpandedTier()
+        {
+            int best = int.MaxValue;
+            foreach (int tier in _currencyExpandedTiers)
+            {
+                if (tier < best)
+                    best = tier;
+            }
+
+            return best == int.MaxValue ? _currencyTierTotals[0].tier : best;
+        }
+
+        void RefreshCurrencyTabDisplay()
+        {
+            EnsureCurrencySelection();
+
+            _presentation = InventoryPresentationModel.BuildFiltered(
+                InventoryViewModel.BuildPartyAggregate(GatherPartyActors()),
+                ItemCategory.Currency,
+                string.Empty,
+                false,
+                InCombatContext,
+                _sortMode);
+
+            _currencyPanel = InventoryCurrencyPanelView.Ensure(itemContainer);
+            _currencyPanel.BindCallbacks(OnCurrencyTierClicked, OnCurrencySourceClicked);
+            _currencyPanel.Rebuild(
+                _currencyTierTotals,
+                _currencyExpandedTiers,
+                _currencySelectedTier,
+                _currencySelectedSpeciesId,
+                _plainSearchNeedle,
+                ListFontScale);
+
+            UpdateCurrencyDetailPane();
+
+            if (_itemScrollRect != null)
+            {
+                Canvas.ForceUpdateCanvases();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(_itemScrollRect.content);
+            }
+        }
+
+        void UpdateCurrencyDetailPane()
+        {
+            if (_inspectPane == null && _detailPane == null)
+                return;
+
+            PartyManaStoneLedger ledger = PartyManaStoneLedger.Instance;
+            if (ledger == null || string.IsNullOrEmpty(_currencySelectedSpeciesId))
+            {
+                SetDetailPlaceholder("Select a mana stone stack.");
+                return;
+            }
+
+            int count = ledger.GetAmount(_currencySelectedTier, _currencySelectedSpeciesId);
+            if (count <= 0)
+            {
+                SetDetailPlaceholder("Select a mana stone stack.");
+                return;
+            }
+
+            int tierTotal = 0;
+            for (int i = 0; i < _currencyTierTotals.Count; i++)
+            {
+                if (_currencyTierTotals[i].tier == _currencySelectedTier)
+                {
+                    tierTotal = _currencyTierTotals[i].count;
+                    break;
+                }
+            }
+
+            ManaStoneItemData def = InventoryCurrencyDisplay.GetManaStoneDefinition(_currencySelectedTier);
+            string display = InventoryCurrencyDisplay.FormatSpeciesDisplayName(_currencySelectedSpeciesId);
+            string hero =
+                $"Mana Stone T{_currencySelectedTier}\n" +
+                $"<color=#8a97a3>from {display}</color>";
+            string body = InventoryCurrencyDisplay.FormatManaStoneDetail(
+                _currencySelectedTier,
+                _currencySelectedSpeciesId,
+                count,
+                tierTotal);
+
+            if (_inspectPane != null)
+            {
+                _inspectPane.SetContent(def != null ? def.icon : null, hero, body, DetailFontScale);
+                return;
+            }
+
+            if (_detailPane != null)
+                _detailPane.text = hero + "\n\n" + body;
+        }
+
+        void SetDetailPlaceholder(string message)
+        {
+            string rich = $"<color=#6a7380>{message}</color>";
+            if (_inspectPane != null)
+                _inspectPane.SetContent(null, rich, string.Empty, DetailFontScale);
+            else if (_detailPane != null)
+                _detailPane.text = rich;
         }
 
         void EnsureCategoryTabs()
@@ -618,6 +853,11 @@ namespace JRogue.UI.Inventory
                 _searchFocusMode = false;
                 _inscriptionFocusMode = false;
                 _inscriptionDraft = string.Empty;
+
+                RefreshCategoryCycle();
+                ClampCategoryCycleIndex();
+                _currencyExpandedTiers.Clear();
+                _currencyPanel = null;
 
                 RefreshInventoryDisplay();
             }
@@ -1055,8 +1295,63 @@ namespace JRogue.UI.Inventory
             if (IsOpen)
                 SaveInventorySessionState();
 
+            UnsubscribePartyLedgers();
+
             if (_instance == this)
                 _instance = null;
+        }
+
+        void TrySubscribePartyLedgers()
+        {
+            if (PartyManaStoneLedger.Instance != null)
+            {
+                PartyManaStoneLedger.Instance.Changed -= OnPartyLedgersChanged;
+                PartyManaStoneLedger.Instance.Changed += OnPartyLedgersChanged;
+            }
+
+            if (PartyCurrencyLedger.Instance != null)
+            {
+                PartyCurrencyLedger.Instance.Changed -= OnPartyLedgersChanged;
+                PartyCurrencyLedger.Instance.Changed += OnPartyLedgersChanged;
+            }
+        }
+
+        void UnsubscribePartyLedgers()
+        {
+            if (PartyManaStoneLedger.Instance != null)
+                PartyManaStoneLedger.Instance.Changed -= OnPartyLedgersChanged;
+
+            if (PartyCurrencyLedger.Instance != null)
+                PartyCurrencyLedger.Instance.Changed -= OnPartyLedgersChanged;
+        }
+
+        void OnPartyLedgersChanged()
+        {
+            if (IsOpen)
+            {
+                RefreshInventoryDisplay();
+                return;
+            }
+
+            _currencyExpandedTiers.Clear();
+        }
+
+        void RefreshCategoryCycle()
+        {
+            _categoryCycle.Clear();
+            _categoryCycle.AddRange(ItemCategoryRegistry.CategoriesForFilterCycle());
+        }
+
+        void ClampCategoryCycleIndex()
+        {
+            int modeCount = Mathf.Max(1, _categoryCycle.Count + 1);
+            _categoryCycleIndex = Mathf.Clamp(_categoryCycleIndex, 0, modeCount - 1);
+        }
+
+        bool IsCurrencyTabActive()
+        {
+            ItemCategory? cat = CurrentCategoryFilter();
+            return cat.HasValue && cat.Value == ItemCategory.Currency;
         }
 
         void ApplyDarkPanelTheme()
@@ -1230,6 +1525,12 @@ namespace JRogue.UI.Inventory
         {
             if (_inspectPane == null && _detailPane == null)
                 return;
+
+            if (IsCurrencyTabActive())
+            {
+                UpdateCurrencyDetailPane();
+                return;
+            }
 
             if (_presentation == null || _presentation.ItemRows.Count == 0 ||
                 _selection < 0 || _selection >= _presentation.ItemRows.Count)
@@ -1979,6 +2280,10 @@ namespace JRogue.UI.Inventory
 
         public void RefreshInventoryDisplay()
         {
+            TrySubscribePartyLedgers();
+            RefreshCategoryCycle();
+            ClampCategoryCycleIndex();
+
             if (itemContainer == null || itemRowPrefab == null)
                 return;
 
@@ -1988,6 +2293,37 @@ namespace JRogue.UI.Inventory
 
             ClearItemListChildrenOnly();
             _selectableRowViews.Clear();
+
+            if (IsCurrencyTabActive())
+            {
+                RefreshCurrencyTabDisplay();
+
+                List<BaseActor> partyCurrency = GatherPartyActors();
+                _partyStrip?.Rebuild(
+                    partyCurrency,
+                    _memberCarouselIndex,
+                    _browseMode,
+                    InventoryCurrencyDisplay.GetPartyManaTotal(),
+                    InventoryCurrencyDisplay.GetPartyGoldTotal(),
+                    ListFontScale);
+                _categoryTabs?.Rebuild(_categoryCycle, _categoryCycleIndex, ListFontScale);
+                SyncCategoryTabs();
+
+                UpdateActionsBarState();
+                ApplyFooterCopy();
+                ApplyDarkPanelTheme();
+                ApplyAccessibilityToUiChrome();
+                BuildWeightAndCurrencyLine();
+
+                if (_itemScrollRect != null)
+                {
+                    Canvas.ForceUpdateCanvases();
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(_itemScrollRect.content);
+                    _itemScrollRect.verticalNormalizedPosition = 1f;
+                }
+
+                return;
+            }
 
             InventoryViewModel raw = AcquireRawViewModel();
 
@@ -2041,11 +2377,17 @@ namespace JRogue.UI.Inventory
             }
 
             List<BaseActor> party = GatherPartyActors();
-            _partyStrip?.Rebuild(party, _memberCarouselIndex, _browseMode, ListFontScale);
+            _partyStrip?.Rebuild(
+                party,
+                _memberCarouselIndex,
+                _browseMode,
+                InventoryCurrencyDisplay.GetPartyManaTotal(),
+                InventoryCurrencyDisplay.GetPartyGoldTotal(),
+                ListFontScale);
             _categoryTabs?.Rebuild(_categoryCycle, _categoryCycleIndex, ListFontScale);
             SyncCategoryTabs();
 
-            if (_itemListPane != null)
+            if (_itemListPane != null && !IsCurrencyTabActive())
                 InventoryListColumnHeaderView.Create(_itemListPane, ListFontScale);
 
             UpdateActionsBarState();
@@ -2119,15 +2461,6 @@ namespace JRogue.UI.Inventory
             }
 
             string line = $"Party weight: {sumW:0.#} / {sumCap:0.#}";
-            if (PartyCurrencyLedger.Instance != null)
-            {
-                foreach (var kv in PartyCurrencyLedger.Instance.Snapshot)
-                {
-                    if (kv.Key != null && kv.Value > 0)
-                        line += $"   ·   {kv.Key.itemName}: {kv.Value}";
-                }
-            }
-
             weightText.text = line;
             weightText.color = sumCap > 0 && sumW > sumCap
                 ? new Color(1f, 0.35f, 0.35f)
@@ -2147,9 +2480,18 @@ namespace JRogue.UI.Inventory
 
         void UpdateActionsBarState()
         {
-            if (_actionsBar == null || _presentation == null || _presentation.ItemRows.Count == 0)
+            if (_actionsBar == null)
+                return;
+
+            if (IsCurrencyTabActive())
             {
-                _actionsBar?.SetState(false, false, false, false, false, ListFontScale);
+                _actionsBar.SetState(false, false, false, false, false, ListFontScale);
+                return;
+            }
+
+            if (_presentation == null || _presentation.ItemRows.Count == 0)
+            {
+                _actionsBar.SetState(false, false, false, false, false, ListFontScale);
                 return;
             }
 

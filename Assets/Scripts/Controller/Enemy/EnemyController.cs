@@ -6,6 +6,7 @@ using JRogue.Core.Actor;
 using JRogue.Data.Enemy;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
+using JRogue.Manager.Loot;
 using JRogue.Manager.Progression;
 using JRogue.Racial;
 using Roguey2.Sensing;
@@ -147,6 +148,8 @@ namespace JRogue.Controller.Enemy
             PartyManager party = PartyManager.Instance ?? partyManager;
             GameObject killer = PartyExperienceService.ResolveKillCredit(health, party);
             PartyExperienceService.Instance?.HandleEnemyDeath(this, killer);
+
+            EnemyLootService.Instance?.SpawnDeathLoot(this);
 
             if (gridManager != null)
                 gridManager.UnregisterFootprint(this);

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Data.Progression;
+using JRogue.Manager.Floor;
+using JRogue.Manager.Loot;
 using JRogue.Manager.Progression;
 using JRogue.View;
 using UnityEngine;
@@ -75,6 +77,18 @@ namespace JRogue.Manager.Party
             if (xp == null)
                 xp = gameObject.AddComponent<PartyExperienceService>();
             xp.Configure(this, experienceCurve);
+
+            EnsureComponent<FloorItemPileService>();
+            EnsureComponent<EnemyLootService>();
+            EnsureComponent<PartyManaStoneLedger>();
+            EnsureComponent<PartyCurrencyLedger>();
+            EnsureComponent<ManaStoneAutoPickupService>();
+        }
+
+        void EnsureComponent<T>() where T : Component
+        {
+            if (GetComponent<T>() == null)
+                gameObject.AddComponent<T>();
         }
 
         void Start()
@@ -98,6 +112,7 @@ namespace JRogue.Manager.Party
             }
 
             SnapHistoryToCurrentPositions();
+            ManaStoneAutoPickupService.Instance?.SubscribePartyMembers();
         }
 
         public void RecordNewLeaderPosition(Vector3Int newPos)

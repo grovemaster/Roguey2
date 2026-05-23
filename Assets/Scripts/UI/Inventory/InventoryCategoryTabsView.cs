@@ -12,8 +12,10 @@ namespace JRogue.UI.Inventory
     {
         readonly List<Button> _tabButtons = new List<Button>();
         readonly List<TextMeshProUGUI> _tabLabels = new List<TextMeshProUGUI>();
+        readonly List<RectTransform> _tabRects = new List<RectTransform>();
         Action<int> _onSelected;
         int _activeIndex;
+        ScrollRect _scrollRect;
 
         public static InventoryCategoryTabsView Create(Transform parent, Action<int> onSelected)
         {
@@ -23,52 +25,14 @@ namespace JRogue.UI.Inventory
             {
                 view = existing.GetComponent<InventoryCategoryTabsView>() ??
                        existing.gameObject.AddComponent<InventoryCategoryTabsView>();
+                view.EnsureScrollLayout();
             }
             else
             {
                 var root = new GameObject("CategoryTabs", typeof(RectTransform));
                 root.transform.SetParent(parent, false);
-
-                var le = root.AddComponent<LayoutElement>();
-                le.minHeight = 34f;
-                le.preferredHeight = 38f;
-                le.flexibleWidth = 1f;
-
-                var scroll = root.AddComponent<ScrollRect>();
-                scroll.horizontal = true;
-                scroll.vertical = false;
-                scroll.movementType = ScrollRect.MovementType.Clamped;
-
-                var viewport = new GameObject("Viewport", typeof(RectTransform), typeof(RectMask2D));
-                viewport.transform.SetParent(root.transform, false);
-                var vpRt = viewport.GetComponent<RectTransform>();
-                SetStretch(vpRt);
-
-                var content = new GameObject("Content", typeof(RectTransform), typeof(HorizontalLayoutGroup));
-                content.transform.SetParent(viewport.transform, false);
-                var contentRt = content.GetComponent<RectTransform>();
-                contentRt.anchorMin = new Vector2(0f, 0f);
-                contentRt.anchorMax = new Vector2(0f, 1f);
-                contentRt.pivot = new Vector2(0f, 0.5f);
-                contentRt.anchoredPosition = Vector2.zero;
-                contentRt.sizeDelta = new Vector2(0f, 0f);
-
-                var hlg = content.GetComponent<HorizontalLayoutGroup>();
-                hlg.spacing = 6;
-                hlg.padding = new RectOffset(4, 4, 4, 4);
-                hlg.childAlignment = TextAnchor.MiddleLeft;
-                hlg.childControlWidth = true;
-                hlg.childForceExpandWidth = false;
-
-                var csf = content.AddComponent<ContentSizeFitter>();
-                csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-                csf.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
-
-                scroll.viewport = vpRt;
-                scroll.content = contentRt;
-
                 view = root.AddComponent<InventoryCategoryTabsView>();
-                view._content = content.transform;
+                view.EnsureScrollLayout();
             }
 
             view._onSelected = onSelected;
@@ -77,8 +41,112 @@ namespace JRogue.UI.Inventory
 
         Transform _content;
 
+        void EnsureScrollLayout()
+        {
+            var rootLe = GetComponent<LayoutElement>() ?? gameObject.AddComponent<LayoutElement>();
+            rootLe.minHeight = 34f;
+            rootLe.preferredHeight = 38f;
+            rootLe.flexibleWidth = 1f;
+            rootLe.minWidth = 120f;
+
+            _scrollRect = GetComponent<ScrollRect>();
+            if (_scrollRect == null)
+            {
+                for (int i = transform.childCount - 1; i >= 0; i--)
+                    Destroy(transform.GetChild(i).gameObject);
+
+                _scrollRect = gameObject.AddComponent<ScrollRect>();
+            }
+
+            _scrollRect.horizontal = true;
+            _scrollRect.vertical = false;
+            _scrollRect.movementType = ScrollRect.MovementType.Clamped;
+            _scrollRect.scrollSensitivity = 30f;
+            _scrollRect.inertia = true;
+            _scrollRect.decelerationRate = 0.135f;
+
+            Transform viewport = transform.Find("Viewport");
+            if (viewport == null)
+            {
+                var viewportGo = new GameObject("Viewport", typeof(RectTransform), typeof(RectMask2D), typeof(Image));
+                viewportGo.transform.SetParent(transform, false);
+                viewport = viewportGo.transform;
+                var vpImg = viewportGo.GetComponent<Image>();
+                vpImg.color = new Color(0f, 0f, 0f, 0.01f);
+            }
+
+            var vpRt = viewport.GetComponent<RectTransform>();
+            SetStretch(vpRt);
+            _scrollRect.viewport = vpRt;
+
+            Transform content = viewport.Find("Content");
+            if (content == null)
+            {
+                var contentGo = new GameObject("Content", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+                contentGo.transform.SetParent(viewport, false);
+                content = contentGo.transform;
+            }
+
+            var contentRt = content.GetComponent<RectTransform>();
+            contentRt.anchorMin = new Vector2(0f, 0f);
+            contentRt.anchorMax = new Vector2(0f, 1f);
+            contentRt.pivot = new Vector2(0f, 0.5f);
+            contentRt.anchoredPosition = Vector2.zero;
+            contentRt.sizeDelta = new Vector2(0f, 0f);
+
+            var hlg = content.GetComponent<HorizontalLayoutGroup>() ?? content.gameObject.AddComponent<HorizontalLayoutGroup>();
+            hlg.spacing = 6;
+            hlg.padding = new RectOffset(4, 4, 4, 4);
+            hlg.childAlignment = TextAnchor.MiddleLeft;
+            hlg.childControlWidth = true;
+            hlg.childForceExpandWidth = false;
+
+            var csf = content.GetComponent<ContentSizeFitter>() ?? content.gameObject.AddComponent<ContentSizeFitter>();
+            csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            csf.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+
+            _scrollRect.content = contentRt;
+            _content = content;
+
+            Scrollbar existingBar = transform.Find("HorizontalScrollbar")?.GetComponent<Scrollbar>();
+            if (existingBar == null)
+            {
+                var barGo = new GameObject("HorizontalScrollbar", typeof(RectTransform), typeof(Scrollbar), typeof(Image));
+                barGo.transform.SetParent(transform, false);
+                var barRt = barGo.GetComponent<RectTransform>();
+                barRt.anchorMin = new Vector2(0f, 0f);
+                barRt.anchorMax = new Vector2(1f, 0f);
+                barRt.pivot = new Vector2(0.5f, 0f);
+                barRt.sizeDelta = new Vector2(0f, 10f);
+                barRt.anchoredPosition = new Vector2(0f, 0f);
+
+                barGo.GetComponent<Image>().color = new Color(0.12f, 0.125f, 0.14f, 0.95f);
+
+                var sliding = new GameObject("Sliding Area", typeof(RectTransform));
+                sliding.transform.SetParent(barGo.transform, false);
+                SetStretch(sliding.GetComponent<RectTransform>());
+
+                var handle = new GameObject("Handle", typeof(RectTransform), typeof(Image));
+                handle.transform.SetParent(sliding.transform, false);
+                var handleRt = handle.GetComponent<RectTransform>();
+                handleRt.sizeDelta = new Vector2(20f, 0f);
+                handle.GetComponent<Image>().color = new Color(0.35f, 0.4f, 0.46f, 0.95f);
+
+                var bar = barGo.GetComponent<Scrollbar>();
+                bar.handleRect = handleRt;
+                bar.targetGraphic = handle.GetComponent<Image>();
+                bar.direction = Scrollbar.Direction.LeftToRight;
+                existingBar = bar;
+            }
+
+            _scrollRect.horizontalScrollbar = existingBar;
+            _scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
+        }
+
         public void Rebuild(IReadOnlyList<ItemCategory> categories, int activeCategoryCycleIndex, float fontScale)
         {
+            EnsureScrollLayout();
+
             if (_content == null)
                 _content = transform.Find("Viewport/Content") ?? transform;
 
@@ -87,6 +155,7 @@ namespace JRogue.UI.Inventory
 
             _tabButtons.Clear();
             _tabLabels.Clear();
+            _tabRects.Clear();
             _activeIndex = activeCategoryCycleIndex;
 
             AddTab(0, "All", fontScale);
@@ -98,6 +167,9 @@ namespace JRogue.UI.Inventory
             }
 
             RefreshTabVisuals();
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_scrollRect.content);
+            ScrollActiveTabIntoView();
         }
 
         void AddTab(int cycleIndex, string label, float fontScale)
@@ -133,12 +205,39 @@ namespace JRogue.UI.Inventory
 
             _tabButtons.Add(btn);
             _tabLabels.Add(tmp);
+            _tabRects.Add(go.GetComponent<RectTransform>());
         }
 
         public void SetActiveIndex(int categoryCycleIndex)
         {
             _activeIndex = categoryCycleIndex;
             RefreshTabVisuals();
+            ScrollActiveTabIntoView();
+        }
+
+        void ScrollActiveTabIntoView()
+        {
+            if (_scrollRect == null || _activeIndex < 0 || _activeIndex >= _tabRects.Count)
+                return;
+
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_scrollRect.content);
+
+            RectTransform tab = _tabRects[_activeIndex];
+            RectTransform viewport = _scrollRect.viewport;
+            if (tab == null || viewport == null)
+                return;
+
+            Bounds tabBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, tab);
+            Bounds viewBounds = new Bounds(viewport.rect.center, viewport.rect.size);
+
+            Vector2 contentPos = _scrollRect.content.anchoredPosition;
+            if (tabBounds.min.x < viewBounds.min.x)
+                contentPos.x += viewBounds.min.x - tabBounds.min.x;
+            else if (tabBounds.max.x > viewBounds.max.x)
+                contentPos.x += viewBounds.max.x - tabBounds.max.x;
+
+            _scrollRect.content.anchoredPosition = contentPos;
         }
 
         void RefreshTabVisuals()

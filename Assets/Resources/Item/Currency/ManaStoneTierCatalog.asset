@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90d1a9d1f3cc4dd0a397de1e4f6fab79, type: 3}
+  m_Name: ManaStoneTierCatalog
+  m_EditorClassIdentifier: JRogue::JRogue.Data.Item.ManaStoneTierCatalog
+  tiersByNumber:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 8bf961b7bfa749718008132296cc38a4, type: 2}
+  - {fileID: 11400000, guid: 904dc91ae2c94001b1350b721a11343a, type: 2}

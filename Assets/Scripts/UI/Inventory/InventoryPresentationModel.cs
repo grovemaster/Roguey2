@@ -59,7 +59,8 @@ namespace JRogue.UI.Inventory
             if (source == null)
                 return new InventoryPresentationModel(lines, orderedItems);
 
-            IEnumerable<InventoryViewModel.Row> q = source.Rows.Where(r => r.Item != null);
+            List<InventoryViewModel.Row> allRows = source.Rows.Where(r => r.Item != null).ToList();
+            IEnumerable<InventoryViewModel.Row> q = allRows;
 
             if (categoryFilter.HasValue)
                 q = q.Where(r => r.Item.category == categoryFilter.Value);
@@ -67,12 +68,11 @@ namespace JRogue.UI.Inventory
             if (!string.IsNullOrWhiteSpace(searchNeedle))
             {
                 string n = searchNeedle.Trim();
-                q = q.Where(r =>
-                    r.Item.itemName.IndexOf(n, StringComparison.OrdinalIgnoreCase) >= 0);
+                q = q.Where(r => RowMatchesSearch(r, n));
             }
 
             if (usableOnly)
-                q = q.Where(r => InventoryUsability.AppearsUsableNow(r, inCombat));
+                q = q.Where(r => r.IsEquipped || InventoryUsability.AppearsUsableNow(r, inCombat));
 
             List<InventoryViewModel.Row> pool = q.ToList();
 
@@ -170,5 +170,16 @@ namespace JRogue.UI.Inventory
 
         static bool IsFavorite(InventoryViewModel.Row r) =>
             r.Instance != null && (r.Instance.UserMarks & ItemUserMark.Favorite) != 0;
+
+        static bool RowMatchesSearch(InventoryViewModel.Row r, string needle)
+        {
+            if (r.Item == null)
+                return false;
+
+            if (r.Item.itemName.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+
+            return false;
+        }
     }
 }
