@@ -26,17 +26,26 @@ namespace JRogue.Stats
             if (!other.TryGetComponent(out WorldItem groundItem))
                 return;
 
-            TryCollectWorldItem(groundItem, gameObject);
+            TryCollectWorldItem(groundItem, gameObject, allowConfirmGated: false);
         }
 
         /// <summary>Grid movement may not always fire triggers; called from tile-enter pickup as well.</summary>
-        internal static bool TryCollectWorldItem(WorldItem groundItem, GameObject picker)
+        internal static bool TryCollectWorldItem(WorldItem groundItem, GameObject picker, bool allowConfirmGated = false)
         {
             if (groundItem == null || picker == null)
                 return false;
 
             if (groundItem.data is ManaStoneItemData)
                 return false;
+
+            if (groundItem.data != null)
+            {
+                if (!groundItem.data.autoPickupOnStep)
+                    return false;
+
+                if (groundItem.data.RequiresConfirmBeforeAutoPickupOnStep && !allowConfirmGated)
+                    return false;
+            }
 
             ItemInstance inst = groundItem.CollectInstance();
             if (inst == null || inst.Definition == null)

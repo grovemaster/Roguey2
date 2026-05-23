@@ -51,7 +51,16 @@ namespace JRogue.Manager.Floor
             return Array.Empty<FloorItemEntry>();
         }
 
-        public IReadOnlyList<FloorItemEntry> GetManaStoneAutoPickupEntries(Vector3Int tile)
+        public IReadOnlyList<FloorItemEntry> GetManaStoneAutoPickupEntries(Vector3Int tile) =>
+            GetSilentAutoPickupEntries(tile);
+
+        public IReadOnlyList<FloorItemEntry> GetConfirmGatedAutoPickupEntries(Vector3Int tile) =>
+            GetEntriesMatching(tile, def => def.RequiresConfirmBeforeAutoPickupOnStep);
+
+        public IReadOnlyList<FloorItemEntry> GetSilentAutoPickupEntries(Vector3Int tile) =>
+            GetEntriesMatching(tile, def => def.ParticipatesInSilentAutoPickupOnStep);
+
+        IReadOnlyList<FloorItemEntry> GetEntriesMatching(Vector3Int tile, System.Func<ItemData, bool> predicate)
         {
             if (!_piles.TryGetValue(tile, out List<FloorItemEntry> list))
                 return Array.Empty<FloorItemEntry>();
@@ -60,7 +69,8 @@ namespace JRogue.Manager.Floor
             for (int i = 0; i < list.Count; i++)
             {
                 FloorItemEntry entry = list[i];
-                if (entry?.instance?.Definition is ManaStoneItemData ms && ms.autoPickupOnStep)
+                ItemData def = entry?.instance?.Definition;
+                if (def != null && predicate(def))
                     matches.Add(entry);
             }
 

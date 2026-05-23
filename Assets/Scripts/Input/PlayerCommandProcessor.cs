@@ -6,6 +6,7 @@ using JRogue.Core.Actor;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Essence;
 using JRogue.Manager.Grid;
+using JRogue.Manager.Floor;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
@@ -118,6 +119,9 @@ namespace JRogue.Input
                 if (isEnemyBump
                     || FormationRushService.IsValidMove(mapManager, gridManager, targetTile, new Dictionary<BaseActor, Vector3Int>(), allowAllies: true))
                 {
+                    if (TryConfirmGatedMove(activeMember, direction, targetTile, isEnemyBump, formationActive: true, oldPosition))
+                        return true;
+
                     if (activeMember.TryMove(direction))
                     {
                         if (activeMember.GridPosition != oldPosition)
@@ -152,12 +156,58 @@ namespace JRogue.Input
                 return true;
             }
 
+            if (TryConfirmGatedMove(activeMember, direction, targetTile, isEnemyBump, formationActive: false, oldPosition))
+                return true;
+
             if (activeMember.TryMove(direction))
             {
                 turnManager.OnPlayerActionComplete(activeMember.gameObject);
             }
 
             return true;
+        }
+
+        bool TryConfirmGatedMove(
+            BaseActor activeMember,
+            Vector3Int direction,
+            Vector3Int targetTile,
+            bool isEnemyBump,
+            bool formationActive,
+            Vector3Int oldPosition)
+        {
+            return AutoPickupMoveGate.TryInterceptMove(
+                activeMember,
+                targetTile,
+                isEnemyBump,
+                () => CompleteConfirmedMove(activeMember, direction, formationActive, oldPosition));
+        }
+
+        void CompleteConfirmedMove(
+            BaseActor activeMember,
+            Vector3Int direction,
+            bool formationActive,
+            Vector3Int oldPosition)
+        {
+            if (!activeMember.TryMove(direction))
+                return;
+
+            Vector3Int dest = activeMember.GridPosition;
+            FloorPickupService.PickupConfirmGatedAt(dest, activeMember.gameObject);
+            FloorPickupService.PickupSilentAt(dest, activeMember.gameObject);
+
+            if (formationActive)
+            {
+                if (activeMember.GridPosition != oldPosition)
+                    partyManager.RecordNewLeaderPosition(activeMember.GridPosition);
+                else
+                    partyManager.SnapHistoryToCurrentPositions();
+
+                ProcessFollowerRush();
+            }
+            else
+            {
+                turnManager.OnPlayerActionComplete(activeMember.gameObject);
+            }
         }
 
         private bool ApplyWait(bool partyWait)

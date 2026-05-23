@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Giants_Blade
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Item.ItemData
   itemName: Giant's Blade
+  category: 18
+  autoPickupOnStep: 1
+  requiresAutoPickupConfirmation: 1
   slotType: 0
   weight: 20
   icon: {fileID: 0}

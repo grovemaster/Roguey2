@@ -77,6 +77,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryTelemetry.cs" />
+    <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupService.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
     <Compile Include="Assets/Scripts/Abilities/UndeadGraveTouchAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryPolicy.cs" />
@@ -106,8 +107,11 @@
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/AutoPickupConfirmDialogUI.cs" />
+    <Compile Include="Assets/Scripts/Input/AutoPickupMoveGate.cs" />
     <Compile Include="Assets/Scripts/Collector/InventoryCollector.cs" />
     <Compile Include="Assets/Scripts/Abilities/Heal/HealAbility.cs" />
+    <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupQuery.cs" />
     <Compile Include="Assets/Scripts/Item/ItemUserMark.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/SenseSightService.cs" />
     <Compile Include="Assets/Scripts/Item/World/FloorItemWorldView.cs" />

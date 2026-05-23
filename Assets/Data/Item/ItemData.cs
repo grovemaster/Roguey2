@@ -71,6 +71,21 @@ namespace JRogue.Item
         [Tooltip("When true, list/inspect show ? until ItemInstance.IsAppraised.")]
         public bool requiresAppraisal = true;
 
+        [Header("Floor pickup")]
+        [Tooltip("When true, party members auto-collect this item on tile entry.")]
+        public bool autoPickupOnStep;
+
+        [Tooltip("When true with autoPickupOnStep, entering the tile requires confirmation before pickup.")]
+        public bool requiresAutoPickupConfirmation;
+
+        /// <summary>Walk-over auto-pickup without a confirmation dialog (e.g. mana stones).</summary>
+        public bool ParticipatesInSilentAutoPickupOnStep =>
+            autoPickupOnStep && !requiresAutoPickupConfirmation;
+
+        /// <summary>Walk-over auto-pickup that must be confirmed before the move resolves.</summary>
+        public bool RequiresConfirmBeforeAutoPickupOnStep =>
+            autoPickupOnStep && requiresAutoPickupConfirmation;
+
         /// <summary>Item participates in value column (worth showing gold or ?).</summary>
         public bool HasMonetaryValue => goldValue > 0 || requiresAppraisal;
 
@@ -98,6 +113,18 @@ namespace JRogue.Item
             passiveEffects ??= new List<PassiveEffect>();
             activeAbilities ??= new List<AbilityAction>();
         }
+
+#if UNITY_EDITOR
+        void OnValidate()
+        {
+            if (requiresAutoPickupConfirmation && !autoPickupOnStep)
+            {
+                Debug.LogWarning(
+                    $"{name}: requiresAutoPickupConfirmation is ignored without autoPickupOnStep.",
+                    this);
+            }
+        }
+#endif
 
         public void OnEquip(GameObject target)
         {

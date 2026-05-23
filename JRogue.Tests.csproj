@@ -62,6 +62,7 @@
     <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/EquipmentLegalityEvaluatorTests.cs" />
     <Compile Include="Assets/Tests/Controller/BaseActorTest.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Loot/AutoPickupConfirmationTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Pathfinding/GridAStarPathfinderTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/MockMonoBehavior/TestQuietEssenceSlotManager.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/UndeadSkillTreeRuntimeTests.cs" />
