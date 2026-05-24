@@ -19,8 +19,13 @@ namespace JRogue.UI.Gameplay
     public sealed class FloorPickupMenuUI : MonoBehaviour
     {
         const int PickupMenuThreshold = 1;
+        const float UiScale = 1.35f;
+        const int ModalLayoutVersion = 2;
 
         static FloorPickupMenuUI _instance;
+        static TMP_FontAsset _uiFont;
+
+        int _modalLayoutVersion;
 
         GameObject _modalRoot;
         TextMeshProUGUI _titleText;
@@ -136,6 +141,10 @@ namespace JRogue.UI.Gameplay
             RefreshSummary();
             RefreshInspectPane();
 
+            Canvas.ForceUpdateCanvases();
+            if (_listContent != null)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(_listContent);
+
             _modalRoot.SetActive(true);
             _modalRoot.transform.SetAsLastSibling();
         }
@@ -151,6 +160,7 @@ namespace JRogue.UI.Gameplay
             float max = stats != null ? stats.EncumbranceLimit : 0f;
             _pickerLineText.text =
                 $"Picking up as:  <b>{_picker.DisplayName}</b>          Encumbrance:  {current:0.#} / {max}";
+            _pickerLineText.fontSize = 18f * UiScale;
         }
 
         void RebuildList()
@@ -195,6 +205,10 @@ namespace JRogue.UI.Gameplay
                 _rows.Add(row);
             }
 
+            if (_targets.Count > 0 && _rows.Count == 0)
+                Debug.LogWarning(
+                    $"[Pickup] Menu has {_targets.Count} floor target(s) but no list rows were built — check item definitions.");
+
             RefreshRowFocus();
         }
 
@@ -216,15 +230,18 @@ namespace JRogue.UI.Gameplay
             root.transform.SetParent(parent, false);
 
             LayoutElement le = root.GetComponent<LayoutElement>();
-            le.minHeight = 36f;
-            le.preferredHeight = 36f;
+            le.minHeight = 48f * UiScale;
+            le.preferredHeight = 48f * UiScale;
+            le.minWidth = 320f;
 
             HorizontalLayoutGroup h = root.GetComponent<HorizontalLayoutGroup>();
-            h.padding = new RectOffset(6, 6, 4, 4);
-            h.spacing = 8f;
+            h.padding = new RectOffset(8, 8, 6, 6);
+            h.spacing = 12f;
             h.childAlignment = TextAnchor.MiddleLeft;
             h.childControlWidth = true;
-            h.childForceExpandWidth = false;
+            h.childControlHeight = true;
+            h.childForceExpandWidth = true;
+            h.childForceExpandHeight = true;
 
             Image bg = root.GetComponent<Image>();
             bg.color = new Color(0.14f, 0.16f, 0.2f, 0.6f);
@@ -232,56 +249,63 @@ namespace JRogue.UI.Gameplay
             var toggleGo = new GameObject("Toggle", typeof(RectTransform), typeof(Toggle), typeof(Image));
             toggleGo.transform.SetParent(root.transform, false);
             LayoutElement toggleLe = toggleGo.AddComponent<LayoutElement>();
-            toggleLe.minWidth = toggleLe.preferredWidth = 28f;
+            toggleLe.minWidth = toggleLe.preferredWidth = 36f;
+            toggleLe.minHeight = toggleLe.preferredHeight = 36f;
 
             Toggle toggle = toggleGo.GetComponent<Toggle>();
             toggle.interactable = carryable;
             Image toggleBg = toggleGo.GetComponent<Image>();
             toggleBg.color = new Color(0.2f, 0.22f, 0.28f, 1f);
 
-            var check = new GameObject("Check", typeof(RectTransform), typeof(TextMeshProUGUI));
-            check.transform.SetParent(toggleGo.transform, false);
-            TextMeshProUGUI checkTmp = check.GetComponent<TextMeshProUGUI>();
-            checkTmp.text = "☑";
-            checkTmp.fontSize = 16f;
-            checkTmp.alignment = TextAlignmentOptions.Center;
-            toggle.graphic = checkTmp;
+            var checkGo = new GameObject("Check", typeof(RectTransform), typeof(Image));
+            checkGo.transform.SetParent(toggleGo.transform, false);
+            Stretch((RectTransform)checkGo.transform);
+            Image checkImg = checkGo.GetComponent<Image>();
+            checkImg.color = new Color(0.45f, 0.85f, 0.55f, 1f);
+            toggle.graphic = checkImg;
 
             var iconGo = new GameObject("Icon", typeof(RectTransform), typeof(Image));
             iconGo.transform.SetParent(root.transform, false);
             LayoutElement iconLe = iconGo.AddComponent<LayoutElement>();
-            iconLe.minWidth = iconLe.preferredWidth = 28f;
+            iconLe.minWidth = iconLe.preferredWidth = 40f;
+            iconLe.minHeight = iconLe.preferredHeight = 40f;
             Image icon = iconGo.GetComponent<Image>();
             icon.sprite = def.icon != null ? def.icon : _placeholderSprite;
+            icon.preserveAspect = true;
             icon.color = icon.sprite != null ? Color.white : new Color(0.45f, 0.45f, 0.48f, 0.9f);
 
-            var nameGo = new GameObject("Name", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+            var nameGo = new GameObject("Name", typeof(RectTransform), typeof(TextMeshProUGUI));
             nameGo.transform.SetParent(root.transform, false);
-            LayoutElement nameLe = nameGo.GetComponent<LayoutElement>();
+            LayoutElement nameLe = nameGo.AddComponent<LayoutElement>();
             nameLe.flexibleWidth = 1f;
+            nameLe.minWidth = 120f;
             TextMeshProUGUI nameTmp = nameGo.GetComponent<TextMeshProUGUI>();
-            nameTmp.fontSize = 14f;
+            ApplyUiFont(nameTmp);
+            nameTmp.fontSize = 17f * UiScale;
             nameTmp.alignment = TextAlignmentOptions.MidlineLeft;
+            nameTmp.textWrappingMode = TextWrappingModes.NoWrap;
+            nameTmp.overflowMode = TextOverflowModes.Ellipsis;
             string heavy = carryable ? string.Empty : " <color=#9a6a6a>(too heavy)</color>";
             nameTmp.text = def.itemName + heavy;
 
-            var qtyGo = new GameObject("Qty", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+            var qtyGo = new GameObject("Qty", typeof(RectTransform), typeof(TextMeshProUGUI));
             qtyGo.transform.SetParent(root.transform, false);
             LayoutElement qtyLe = qtyGo.AddComponent<LayoutElement>();
-            qtyLe.minWidth = qtyLe.preferredWidth = 44f;
+            qtyLe.minWidth = qtyLe.preferredWidth = 52f;
             TextMeshProUGUI qtyTmp = qtyGo.GetComponent<TextMeshProUGUI>();
-            qtyTmp.fontSize = 13f;
+            ApplyUiFont(qtyTmp);
+            qtyTmp.fontSize = 16f * UiScale;
             qtyTmp.alignment = TextAlignmentOptions.MidlineRight;
             int q = inst != null ? inst.Quantity : 1;
             qtyTmp.text = $"×{q}";
 
-            var weightGo = new GameObject("Weight", typeof(RectTransform), typeof(TextMeshProUGUI),
-                typeof(LayoutElement));
+            var weightGo = new GameObject("Weight", typeof(RectTransform), typeof(TextMeshProUGUI));
             weightGo.transform.SetParent(root.transform, false);
             LayoutElement weightLe = weightGo.AddComponent<LayoutElement>();
-            weightLe.minWidth = weightLe.preferredWidth = 64f;
+            weightLe.minWidth = weightLe.preferredWidth = 80f;
             TextMeshProUGUI weightTmp = weightGo.GetComponent<TextMeshProUGUI>();
-            weightTmp.fontSize = 13f;
+            ApplyUiFont(weightTmp);
+            weightTmp.fontSize = 16f * UiScale;
             weightTmp.alignment = TextAlignmentOptions.MidlineRight;
             if (def.category == ItemCategory.Currency)
                 weightTmp.text = "—";
@@ -462,11 +486,28 @@ namespace JRogue.UI.Gameplay
             string hero = InventoryDetailFormatter.FormatHeroTitle(def, inst) + "\n" +
                           $"<color=#8a97a3>{InventoryDetailFormatter.FormatHeroSubtitle(def, row)}</color>";
 
-            _inspectPane.SetContent(def.icon, hero, sb.ToString(), 1f);
+            _inspectPane.SetContent(def.icon, hero, sb.ToString(), UiScale);
         }
 
-        static bool CanCarryTarget(InventoryManager inv, ManualPickupTarget t, ItemInstance inst) =>
-            FloorPickupCoordinator.CanPickupTarget(inv, t);
+        static void ApplyUiFont(TextMeshProUGUI tmp)
+        {
+            if (tmp == null)
+                return;
+
+            if (_uiFont == null)
+            {
+                _uiFont = TMP_Settings.defaultFontAsset;
+                if (_uiFont == null)
+                {
+                    TextMeshProUGUI existing = UnityEngine.Object.FindAnyObjectByType<TextMeshProUGUI>();
+                    if (existing != null)
+                        _uiFont = existing.font;
+                }
+            }
+
+            if (_uiFont != null)
+                tmp.font = _uiFont;
+        }
 
         void EnsurePlaceholderSprite()
         {
@@ -479,10 +520,33 @@ namespace JRogue.UI.Gameplay
             _placeholderSprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
         }
 
+        void TearDownModal()
+        {
+            if (_modalRoot == null)
+                return;
+
+            Transform canvas = _modalRoot.transform.parent;
+            if (canvas != null)
+                Destroy(canvas.gameObject);
+            else
+                Destroy(_modalRoot);
+
+            _modalRoot = null;
+            _listContent = null;
+            _titleText = null;
+            _pickerLineText = null;
+            _summaryText = null;
+            _controlsHintText = null;
+            _inspectPane = null;
+            _modalLayoutVersion = 0;
+        }
+
         void EnsureModalBuilt()
         {
-            if (_modalRoot != null)
+            if (_modalRoot != null && _modalLayoutVersion == ModalLayoutVersion)
                 return;
+
+            TearDownModal();
 
             var canvasGo = new GameObject("FloorPickupMenuCanvas",
                 typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -508,13 +572,15 @@ namespace JRogue.UI.Gameplay
             var panel = new GameObject("Panel", typeof(RectTransform), typeof(Image), typeof(VerticalLayoutGroup));
             panel.transform.SetParent(_modalRoot.transform, false);
             RectTransform panelRt = (RectTransform)panel.transform;
-            panelRt.anchorMin = panelRt.anchorMax = new Vector2(0.5f, 0.5f);
-            panelRt.sizeDelta = new Vector2(1100f, 640f);
+            panelRt.anchorMin = new Vector2(0.06f, 0.06f);
+            panelRt.anchorMax = new Vector2(0.94f, 0.94f);
+            panelRt.offsetMin = Vector2.zero;
+            panelRt.offsetMax = Vector2.zero;
             panel.GetComponent<Image>().color = new Color(0.1f, 0.11f, 0.14f, 0.98f);
 
             VerticalLayoutGroup panelV = panel.GetComponent<VerticalLayoutGroup>();
-            panelV.padding = new RectOffset(20, 20, 16, 16);
-            panelV.spacing = 10f;
+            panelV.padding = new RectOffset(28, 28, 22, 22);
+            panelV.spacing = 14f;
             panelV.childControlWidth = true;
             panelV.childForceExpandWidth = true;
 
@@ -525,19 +591,19 @@ namespace JRogue.UI.Gameplay
             titleH.childControlWidth = true;
             titleH.childForceExpandWidth = true;
 
-            _titleText = CreateLine(titleRow.transform, 20, FontStyles.Bold);
+            _titleText = CreateLine(titleRow.transform, 26f * UiScale, FontStyles.Bold);
             LayoutElement titleLe = _titleText.gameObject.AddComponent<LayoutElement>();
             titleLe.flexibleWidth = 1f;
 
             CreateTitleCloseButton(titleRow.transform);
 
-            _pickerLineText = CreateLine(panel.transform, 15, FontStyles.Normal);
+            _pickerLineText = CreateLine(panel.transform, 18f * UiScale, FontStyles.Normal);
 
             var body = new GameObject("Body", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
             body.transform.SetParent(panel.transform, false);
             LayoutElement bodyLe = body.GetComponent<LayoutElement>();
             bodyLe.flexibleHeight = 1f;
-            bodyLe.minHeight = 380f;
+            bodyLe.minHeight = 480f;
 
             HorizontalLayoutGroup bodyH = body.GetComponent<HorizontalLayoutGroup>();
             bodyH.spacing = 12f;
@@ -550,49 +616,65 @@ namespace JRogue.UI.Gameplay
             listCol.transform.SetParent(body.transform, false);
             LayoutElement listLe = listCol.GetComponent<LayoutElement>();
             listLe.flexibleWidth = 1f;
+            listLe.minWidth = 420f;
 
             VerticalLayoutGroup listV = listCol.GetComponent<VerticalLayoutGroup>();
             listV.spacing = 6f;
             listV.childControlWidth = true;
 
-            CreateLine(listCol.transform, 13, FontStyles.Bold, "PICKUP LIST");
+            CreateLine(listCol.transform, 16f * UiScale, FontStyles.Bold, "PICKUP LIST");
 
             var scrollGo = new GameObject("Scroll", typeof(RectTransform), typeof(ScrollRect), typeof(Image),
                 typeof(LayoutElement));
             scrollGo.transform.SetParent(listCol.transform, false);
             LayoutElement scrollLe = scrollGo.GetComponent<LayoutElement>();
             scrollLe.flexibleHeight = 1f;
-            scrollLe.minHeight = 280f;
+            scrollLe.flexibleWidth = 1f;
+            scrollLe.minHeight = 360f;
 
             ScrollRect scroll = scrollGo.GetComponent<ScrollRect>();
             scroll.horizontal = false;
+            scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
             scrollGo.GetComponent<Image>().color = new Color(0.06f, 0.07f, 0.09f, 0.95f);
 
-            var viewport = new GameObject("Viewport", typeof(RectTransform), typeof(Image), typeof(Mask));
+            var viewport = new GameObject("Viewport", typeof(RectTransform), typeof(RectMask2D));
             viewport.transform.SetParent(scrollGo.transform, false);
             RectTransform vpRt = (RectTransform)viewport.transform;
             Stretch(vpRt);
-            viewport.GetComponent<Image>().color = Color.clear;
-            viewport.GetComponent<Mask>().showMaskGraphic = false;
 
             var content = new GameObject("Content", typeof(RectTransform), typeof(VerticalLayoutGroup),
                 typeof(ContentSizeFitter));
             content.transform.SetParent(viewport.transform, false);
             _listContent = content.GetComponent<RectTransform>();
+            _listContent.anchorMin = new Vector2(0f, 1f);
+            _listContent.anchorMax = new Vector2(1f, 1f);
+            _listContent.pivot = new Vector2(0.5f, 1f);
+            _listContent.anchoredPosition = Vector2.zero;
+            _listContent.sizeDelta = new Vector2(0f, 0f);
+
             VerticalLayoutGroup contentV = content.GetComponent<VerticalLayoutGroup>();
+            contentV.padding = new RectOffset(4, 4, 4, 4);
+            contentV.spacing = 6f;
             contentV.childControlWidth = true;
+            contentV.childControlHeight = true;
             contentV.childForceExpandWidth = true;
-            content.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            contentV.childForceExpandHeight = false;
+
+            ContentSizeFitter contentCsf = content.GetComponent<ContentSizeFitter>();
+            contentCsf.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            contentCsf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             scroll.viewport = vpRt;
             scroll.content = _listContent;
 
-            _summaryText = CreateLine(listCol.transform, 13, FontStyles.Italic);
+            _summaryText = CreateLine(listCol.transform, 15f * UiScale, FontStyles.Italic);
 
             var examineCol = new GameObject("ExamineColumn", typeof(RectTransform), typeof(LayoutElement));
             examineCol.transform.SetParent(body.transform, false);
             LayoutElement examineLe = examineCol.GetComponent<LayoutElement>();
             examineLe.flexibleWidth = 1f;
+            examineLe.minWidth = 380f;
             _inspectPane = InventoryInspectPaneView.Create(examineCol.transform, _placeholderSprite);
 
             var footer = new GameObject("Footer", typeof(RectTransform), typeof(HorizontalLayoutGroup));
@@ -606,12 +688,13 @@ namespace JRogue.UI.Gameplay
             CreateFooterButton(footer.transform, "Select All (A)", SelectAllCarryable);
             CreateFooterButton(footer.transform, "Cancel (Esc)", Cancel);
 
-            _controlsHintText = CreateLine(panel.transform, 12, FontStyles.Normal);
+            _controlsHintText = CreateLine(panel.transform, 14f * UiScale, FontStyles.Normal);
             _controlsHintText.color = new Color(0.65f, 0.72f, 0.8f, 1f);
-            _controlsHintText.lineSpacing = -4f;
+            _controlsHintText.lineSpacing = 2f;
             _controlsHintText.text = BuildControlsHintText();
 
             _modalRoot.SetActive(false);
+            _modalLayoutVersion = ModalLayoutVersion;
         }
 
         static string BuildControlsHintText() =>
@@ -629,10 +712,12 @@ namespace JRogue.UI.Gameplay
             var go = new GameObject("Line", typeof(RectTransform), typeof(TextMeshProUGUI));
             go.transform.SetParent(parent, false);
             TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>();
+            ApplyUiFont(tmp);
             tmp.fontSize = size;
             tmp.fontStyle = style;
             tmp.color = Color.white;
             tmp.alignment = TextAlignmentOptions.Left;
+            tmp.textWrappingMode = TextWrappingModes.Normal;
             if (!string.IsNullOrEmpty(text))
                 tmp.text = text;
             return tmp;
@@ -644,14 +729,15 @@ namespace JRogue.UI.Gameplay
             go.transform.SetParent(parent, false);
             go.GetComponent<Image>().color = new Color(0.22f, 0.24f, 0.3f, 1f);
             LayoutElement le = go.GetComponent<LayoutElement>();
-            le.minWidth = le.preferredWidth = 36f;
-            le.minHeight = le.preferredHeight = 36f;
+            le.minWidth = le.preferredWidth = 44f;
+            le.minHeight = le.preferredHeight = 44f;
 
             var textGo = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
             textGo.transform.SetParent(go.transform, false);
             TextMeshProUGUI tmp = textGo.GetComponent<TextMeshProUGUI>();
+            ApplyUiFont(tmp);
             tmp.text = "×";
-            tmp.fontSize = 22f;
+            tmp.fontSize = 28f * UiScale;
             tmp.alignment = TextAlignmentOptions.Center;
             Stretch((RectTransform)textGo.transform);
 
@@ -664,14 +750,15 @@ namespace JRogue.UI.Gameplay
             go.transform.SetParent(parent, false);
             go.GetComponent<Image>().color = new Color(0.18f, 0.22f, 0.3f, 1f);
             LayoutElement le = go.GetComponent<LayoutElement>();
-            le.minWidth = 140f;
-            le.preferredHeight = 36f;
+            le.minWidth = 180f;
+            le.preferredHeight = 44f;
 
             var textGo = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
             textGo.transform.SetParent(go.transform, false);
             TextMeshProUGUI tmp = textGo.GetComponent<TextMeshProUGUI>();
+            ApplyUiFont(tmp);
             tmp.text = label;
-            tmp.fontSize = 14f;
+            tmp.fontSize = 16f * UiScale;
             tmp.alignment = TextAlignmentOptions.Center;
             RectTransform textRt = (RectTransform)textGo.transform;
             Stretch(textRt);

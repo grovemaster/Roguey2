@@ -25,7 +25,7 @@ namespace JRogue.UI.Inventory
             var rootLe = root.AddComponent<LayoutElement>();
             rootLe.flexibleWidth = 1f;
             rootLe.flexibleHeight = 1f;
-            rootLe.minWidth = 120f;
+            rootLe.minWidth = 280f;
 
             var v = root.AddComponent<VerticalLayoutGroup>();
             v.padding = new RectOffset(10, 10, 12, 10);
@@ -47,6 +47,8 @@ namespace JRogue.UI.Inventory
             heroH.spacing = 12;
             heroH.childAlignment = TextAnchor.UpperLeft;
             heroH.childControlWidth = true;
+            heroH.childControlHeight = true;
+            heroH.childForceExpandWidth = true;
             heroH.childForceExpandHeight = true;
 
             var iconGo = new GameObject("Icon", typeof(RectTransform), typeof(Image));
@@ -66,11 +68,13 @@ namespace JRogue.UI.Inventory
             var heroTextLe = heroTextGo.AddComponent<LayoutElement>();
             heroTextLe.flexibleWidth = 1f;
             heroTextLe.flexibleHeight = 1f;
+            heroTextLe.minWidth = 220f;
             var heroTmp = heroTextGo.AddComponent<TextMeshProUGUI>();
             heroTmp.richText = true;
             heroTmp.fontSize = 14f;
             heroTmp.alignment = TextAlignmentOptions.TopLeft;
             heroTmp.textWrappingMode = TextWrappingModes.Normal;
+            heroTmp.overflowMode = TextOverflowModes.Ellipsis;
 
             // Scroll body
             var scrollGo = new GameObject("BodyScroll", typeof(RectTransform), typeof(ScrollRect));
@@ -101,6 +105,10 @@ namespace JRogue.UI.Inventory
             var csf = content.GetComponent<ContentSizeFitter>();
             csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             csf.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+
+            var bodyLe = content.AddComponent<LayoutElement>();
+            bodyLe.flexibleWidth = 1f;
+            bodyLe.minWidth = 200f;
 
             var bodyTmp = content.AddComponent<TextMeshProUGUI>();
             bodyTmp.richText = true;
