@@ -49,6 +49,7 @@
     <Analyzer Include="/home/jonathan/Unity/Hub/Editor/6000.4.0f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Tests/UnitTests/Loot/FloorPickupManualTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Loot/EnemyLootRollerTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryValueDisplayTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/MultiTileEnemyGridTests.cs" />

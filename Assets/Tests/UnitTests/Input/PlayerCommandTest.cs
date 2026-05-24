@@ -51,6 +51,7 @@ namespace JRogue.Tests.UnitTests.Input
         [TestCase(PlayerCommandKind.AbilitySlot)]
         [TestCase(PlayerCommandKind.ToggleFormation)]
         [TestCase(PlayerCommandKind.SwapPartyMember)]
+        [TestCase(PlayerCommandKind.PickupFloorItems)]
         public void FactoryCommands_ReportStableKind(PlayerCommandKind expected)
         {
             PlayerCommand cmd = expected switch
@@ -62,6 +63,7 @@ namespace JRogue.Tests.UnitTests.Input
                 PlayerCommandKind.AbilitySlot => PlayerCommand.AbilitySlot(0, false, false),
                 PlayerCommandKind.ToggleFormation => PlayerCommand.ToggleFormation(),
                 PlayerCommandKind.SwapPartyMember => PlayerCommand.SwapPartyMember(0),
+                PlayerCommandKind.PickupFloorItems => PlayerCommand.PickupFloorItems(),
                 _ => throw new System.InvalidOperationException(),
             };
 

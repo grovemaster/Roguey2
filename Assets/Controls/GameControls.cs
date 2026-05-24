@@ -190,6 +190,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PickupFloorItems"",
+                    ""type"": ""Button"",
+                    ""id"": ""f8a2c1d4-9e3b-4a7f-b2d1-8c5e6f0a1b2c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1226,6 +1235,39 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""path"": ""<Keyboard>/comma"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickupFloorItems"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b2c3d4e5-f6a7-8901-bcde-f12345678901"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickupFloorItems"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c3d4e5f6-a7b8-9012-cdef-123456789012"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickupFloorItems"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1245,6 +1287,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_SelectPartyMember = m_Player.FindAction("SelectPartyMember", throwIfNotFound: true);
         m_Player_ToggleFormation = m_Player.FindAction("ToggleFormation", throwIfNotFound: true);
         m_Player_ToggleInventory = m_Player.FindAction("ToggleInventory", throwIfNotFound: true);
+        m_Player_PickupFloorItems = m_Player.FindAction("PickupFloorItems", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -1336,6 +1379,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SelectPartyMember;
     private readonly InputAction m_Player_ToggleFormation;
     private readonly InputAction m_Player_ToggleInventory;
+    private readonly InputAction m_Player_PickupFloorItems;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1391,6 +1435,10 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/ToggleInventory".
         /// </summary>
         public InputAction @ToggleInventory => m_Wrapper.m_Player_ToggleInventory;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/PickupFloorItems".
+        /// </summary>
+        public InputAction @PickupFloorItems => m_Wrapper.m_Player_PickupFloorItems;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1450,6 +1498,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ToggleInventory.started += instance.OnToggleInventory;
             @ToggleInventory.performed += instance.OnToggleInventory;
             @ToggleInventory.canceled += instance.OnToggleInventory;
+            @PickupFloorItems.started += instance.OnPickupFloorItems;
+            @PickupFloorItems.performed += instance.OnPickupFloorItems;
+            @PickupFloorItems.canceled += instance.OnPickupFloorItems;
         }
 
         /// <summary>
@@ -1494,6 +1545,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ToggleInventory.started -= instance.OnToggleInventory;
             @ToggleInventory.performed -= instance.OnToggleInventory;
             @ToggleInventory.canceled -= instance.OnToggleInventory;
+            @PickupFloorItems.started -= instance.OnPickupFloorItems;
+            @PickupFloorItems.performed -= instance.OnPickupFloorItems;
+            @PickupFloorItems.canceled -= instance.OnPickupFloorItems;
         }
 
         /// <summary>
@@ -1611,5 +1665,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleInventory(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PickupFloorItems" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPickupFloorItems(InputAction.CallbackContext context);
     }
 }

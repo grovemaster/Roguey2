@@ -6,6 +6,7 @@ using JRogue.Actors;
 using JRogue.Item;
 using JRogue.Manager.Combat;
 using JRogue.Manager.Equipment;
+using JRogue.Manager.Floor;
 using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
 using JRogue.Stats;
@@ -2231,11 +2232,27 @@ namespace JRogue.UI.Inventory
                     Debug.Log(
                         $"[Inventory Phase2 stub] Partial drop / qty prompt not wired — removing full stack (qty={snapshot.Instance.Quantity}) for {snapshot.Item?.itemName}.");
 
+                ItemInstance inst = snapshot.Instance;
+                BaseActor owner = snapshot.Owner;
+                if (inst == null || owner == null)
+                    return;
+
                 if (!inv.TryRemoveCarriedAt(snapshot.CarriedListIndex))
                     return;
 
-                Debug.Log(
-                    $"[Drop] Removed {snapshot.Item?.itemName} from {snapshot.OwnerDisplayName}'s bag (world drop Phase 3).");
+                FloorItemPileService pile = FloorItemPileService.Instance;
+                if (pile != null)
+                {
+                    inst.StorageLocation = ItemStorageLocation.OnGround;
+                    pile.AddEntry(owner.GridPosition, inst);
+                    Debug.Log(
+                        $"[Drop] Placed {snapshot.Item?.itemName} at ({owner.GridPosition.x}, {owner.GridPosition.y}).");
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        $"[Drop] Removed {snapshot.Item?.itemName} from bag; no {nameof(FloorItemPileService)} in scene.");
+                }
 
                 RefreshInventoryDisplay();
             }

@@ -22,6 +22,26 @@ namespace JRogue.Manager.Floor
             return matches;
         }
 
+        /// <summary>All scene <see cref="WorldItem"/> on a tile (manual pickup, any auto-pickup flags).</summary>
+        public static IReadOnlyList<WorldItem> GetAllWorldItemsOnTile(Vector3Int tile)
+        {
+            var matches = new List<WorldItem>();
+            WorldItem[] worldItems = Object.FindObjectsByType<WorldItem>();
+            for (int i = 0; i < worldItems.Length; i++)
+            {
+                WorldItem item = worldItems[i];
+                if (item == null || item.data == null)
+                    continue;
+
+                if (WorldItemTile(item) != tile)
+                    continue;
+
+                matches.Add(item);
+            }
+
+            return matches;
+        }
+
         static void CollectWorldItems(Vector3Int tile, System.Func<ItemData, bool> predicate, List<WorldItem> matches)
         {
             WorldItem[] worldItems = Object.FindObjectsByType<WorldItem>();

@@ -6,6 +6,10 @@ using UnityEngine;
 
 namespace JRogue.Manager.Loot
 {
+    /// <summary>
+    /// Runs <see cref="FloorPickupService.PickupSilentAt"/> whenever a party member enters a new tile
+    /// (silent auto-pickup items: mana stones, etc.). Confirm-gated items use <see cref="AutoPickupMoveGate"/> instead.
+    /// </summary>
     public sealed class ManaStoneAutoPickupService : MonoBehaviour
     {
         public static ManaStoneAutoPickupService Instance { get; private set; }

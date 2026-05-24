@@ -8,6 +8,9 @@ namespace JRogue.Item.World
     {
         const string EntitiesSortingLayer = "Entities";
         const string DiamondResourcePath = "Item/Currency/ManaStone_Tier9";
+        const string WeaponIconResourcePath = "Item/Weapon/Giants_Blade";
+
+        static Sprite _placeholderSprite;
 
         public string EntryId { get; private set; }
 
@@ -47,24 +50,86 @@ namespace JRogue.Item.World
 
         void ApplySprite(ItemInstance instance)
         {
-            Sprite sprite = instance?.Definition?.icon;
-            if (sprite == null && instance?.Definition is ManaStoneItemData)
-                sprite = LoadManaStoneFallbackIcon();
+            ItemData def = instance?.Definition;
+            Sprite sprite = ResolveSprite(def);
 
-            if (sprite != null)
+            if (sprite == null)
             {
-                _spriteRenderer.sprite = sprite;
-                return;
+                sprite = GetPlaceholderSprite();
+                _spriteRenderer.color = PlaceholderTint(def);
+                if (def != null && def.icon == null)
+                    Debug.LogWarning(
+                        $"[LOOT] Floor item '{def.itemName}' has no ItemData.icon; showing placeholder on tile.");
+            }
+            else
+            {
+                _spriteRenderer.color = Color.white;
             }
 
-            Debug.LogWarning(
-                $"[LOOT] Floor item view has no sprite for '{instance?.Definition?.itemName ?? "unknown"}'.");
+            _spriteRenderer.sprite = sprite;
+        }
+
+        static Sprite ResolveSprite(ItemData def)
+        {
+            if (def == null)
+                return null;
+
+            if (def.icon != null)
+                return def.icon;
+
+            if (def is ManaStoneItemData)
+                return LoadManaStoneFallbackIcon();
+
+            if (def.category == ItemCategory.Weapon)
+                return LoadItemDataIcon(WeaponIconResourcePath);
+
+            if (def.category == ItemCategory.Potion)
+                return LoadItemDataIcon("Item/Potion/PotionOfExperience");
+
+            return null;
+        }
+
+        static Sprite LoadItemDataIcon(string resourcesPath)
+        {
+            var data = Resources.Load<ItemData>(resourcesPath);
+            return data != null ? data.icon : null;
         }
 
         static Sprite LoadManaStoneFallbackIcon()
         {
             var tier9 = Resources.Load<ManaStoneItemData>(DiamondResourcePath);
             return tier9 != null ? tier9.icon : null;
+        }
+
+        static Sprite GetPlaceholderSprite()
+        {
+            if (_placeholderSprite != null)
+                return _placeholderSprite;
+
+            var tex = new Texture2D(8, 8, TextureFormat.RGBA32, false);
+            tex.filterMode = FilterMode.Point;
+            Color c = new Color(0.85f, 0.75f, 0.35f, 1f);
+            for (int y = 0; y < 8; y++)
+            for (int x = 0; x < 8; x++)
+                tex.SetPixel(x, y, c);
+            tex.Apply();
+
+            _placeholderSprite = Sprite.Create(tex, new Rect(0, 0, 8, 8), new Vector2(0.5f, 0.5f), 8f);
+            return _placeholderSprite;
+        }
+
+        static Color PlaceholderTint(ItemData def)
+        {
+            if (def == null)
+                return new Color(0.7f, 0.7f, 0.75f, 1f);
+
+            return def.category switch
+            {
+                ItemCategory.Weapon => new Color(0.9f, 0.85f, 0.55f, 1f),
+                ItemCategory.Potion => new Color(0.55f, 0.75f, 0.95f, 1f),
+                ItemCategory.Currency => new Color(0.75f, 0.9f, 0.7f, 1f),
+                _ => new Color(0.75f, 0.78f, 0.85f, 1f)
+            };
         }
 
         static string BuildName(ItemInstance instance)

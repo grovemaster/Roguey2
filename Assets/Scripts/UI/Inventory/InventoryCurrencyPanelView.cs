@@ -193,7 +193,7 @@ namespace JRogue.UI.Inventory
 
       AddFlexLabel(go.transform, $"Tier {tier}", 13f, fontScale, TextAlignmentOptions.MidlineLeft);
       AddFixedLabel(go.transform, count.ToString(), 72f, 13f, fontScale, TextAlignmentOptions.MidlineRight);
-      AddFixedLabel(go.transform, expanded ? "▾" : "▸", 24f, 11f, fontScale, TextAlignmentOptions.Center);
+      AddFixedLabel(go.transform, expanded ? "v" : ">", 24f, 11f, fontScale, TextAlignmentOptions.Center);
 
       int captured = tier;
       btn.onClick.AddListener(() => _onTierClicked?.Invoke(captured));

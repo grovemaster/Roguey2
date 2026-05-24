@@ -208,8 +208,8 @@ namespace JRogue.UI.Inventory
             {
                 _modeLabel.fontSize = 12f * fontScale;
                 _modeLabel.text = mode == InventoryUI.BrowseMode.FocusedMember
-                    ? "Mode: Member ▾"
-                    : "Mode: Party ▾";
+                    ? "Mode: Member v"
+                    : "Mode: Party v";
             }
         }
 

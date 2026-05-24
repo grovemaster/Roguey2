@@ -43,28 +43,35 @@ namespace JRogue.Manager.Floor
                 TryAutoPickup(worldItems[i], picker, allowConfirmGated: false);
         }
 
-        public static bool TryAutoPickup(FloorItemPileService pile, FloorItemEntry entry, GameObject picker)
+        public static bool TryAutoPickup(FloorItemPileService pile, FloorItemEntry entry, GameObject picker) =>
+            TryPickupPileEntry(pile, entry, picker, logPrefix: "[LOOT]");
+
+        static bool TryPickupPileEntry(
+            FloorItemPileService pile,
+            FloorItemEntry entry,
+            GameObject picker,
+            string logPrefix)
         {
             if (pile == null || entry?.instance == null)
                 return false;
 
-            ItemData def = entry.instance.Definition;
+            ItemInstance inst = entry.instance;
+            ItemData def = inst.Definition;
             if (def == null)
                 return false;
 
-            if (def is ManaStoneItemData ms)
+            if (inst.IsManaStone && def is ManaStoneItemData ms)
             {
                 PartyManaStoneLedger ledger = PartyManaStoneLedger.Instance;
                 if (ledger == null)
                 {
-                    Debug.LogWarning("[LOOT] Mana stone pickup failed: no PartyManaStoneLedger.");
+                    Debug.LogWarning($"{logPrefix} Mana stone pickup failed: no PartyManaStoneLedger.");
                     return false;
                 }
 
-                ledger.Add(ms.tier, entry.instance.ManaStoneSourceSpeciesId, entry.instance.Quantity);
+                ledger.Add(ms.tier, inst.ManaStoneSourceSpeciesId, inst.Quantity);
                 pile.RemoveEntry(entry.entryId);
-                Debug.Log(
-                    $"[LOOT] Auto-picked Mana Stone T{ms.tier} ({entry.instance.ManaStoneSourceSpeciesId}).");
+                Debug.Log($"{logPrefix} Picked up Mana Stone T{ms.tier} ({inst.ManaStoneSourceSpeciesId}).");
                 return true;
             }
 
@@ -72,15 +79,22 @@ namespace JRogue.Manager.Floor
                 return false;
 
             InventoryManager inventory = picker.GetComponent<InventoryManager>();
-            if (inventory == null || !inventory.AddItem(entry.instance))
+            if (inventory == null || !inventory.AddItem(inst))
                 return false;
 
             pile.RemoveEntry(entry.entryId);
-            Debug.Log($"[LOOT] Auto-picked {def.itemName}.");
+            Debug.Log($"{logPrefix} Picked up {def.itemName}.");
             return true;
         }
 
         public static bool TryAutoPickup(WorldItem worldItem, GameObject picker, bool allowConfirmGated) =>
             InventoryCollector.TryCollectWorldItem(worldItem, picker, allowConfirmGated);
+
+        /// <summary>Manual floor pickup (`,` / menu) — ignores <see cref="ItemData.autoPickupOnStep"/>.</summary>
+        public static bool TryManualPickup(FloorItemPileService pile, FloorItemEntry entry, GameObject picker) =>
+            TryPickupPileEntry(pile, entry, picker, logPrefix: "[Pickup]");
+
+        public static bool TryManualPickup(WorldItem worldItem, GameObject picker) =>
+            InventoryCollector.TryCollectWorldItem(worldItem, picker, allowConfirmGated: true, manualPickup: true);
     }
 }

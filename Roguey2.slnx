@@ -1,8 +1,8 @@
 ﻿<Solution>
   <Project Path="JRogue.Data.csproj" />
   <Project Path="JRogue.csproj" />
-  <Project Path="JRogue.Core.csproj" />
   <Project Path="JRogue.Tests.csproj" />
+  <Project Path="JRogue.Core.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="JRogue.Stats.csproj" />
   <Project Path="JRogue.Controls.csproj" />

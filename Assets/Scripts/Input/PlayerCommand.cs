@@ -22,6 +22,7 @@ namespace JRogue.Input
         AbilitySlot,
         ToggleFormation,
         SwapPartyMember,
+        PickupFloorItems,
     }
 
     /// <summary>
@@ -73,5 +74,8 @@ namespace JRogue.Input
                 Kind = PlayerCommandKind.SwapPartyMember,
                 PartyMemberIndex = zeroBasedPartyIndex,
             };
+
+        public static PlayerCommand PickupFloorItems() =>
+            new PlayerCommand { Kind = PlayerCommandKind.PickupFloorItems };
     }
 }

@@ -11,6 +11,7 @@ namespace JRogue.Input
     {
         private GameControls controls;
         private InputAction toggleInventoryAction;
+        private InputAction pickupFloorItemsAction;
         private readonly PlayerCommandProcessor commandProcessor = new PlayerCommandProcessor();
 
         [Header("Targeting Visuals")]
@@ -57,6 +58,23 @@ namespace JRogue.Input
             {
                 toggleInventoryAction.performed += OnToggleInventoryPerformed;
             }
+
+            pickupFloorItemsAction = playerInput != null
+                ? playerInput.actions.FindAction("PickupFloorItems", throwIfNotFound: false)
+                : null;
+
+            if (pickupFloorItemsAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>PickupFloorItems</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (bindings: comma, g).");
+            }
+            else
+            {
+                pickupFloorItemsAction.performed += OnPickupFloorItemsPerformed;
+            }
+
+            FloorPickupHudButton.EnsureInstance();
         }
 
         private void OnEnable() => controls.Player.Enable();
@@ -70,7 +88,25 @@ namespace JRogue.Input
                 toggleInventoryAction = null;
             }
 
+            if (pickupFloorItemsAction != null)
+            {
+                pickupFloorItemsAction.performed -= OnPickupFloorItemsPerformed;
+                pickupFloorItemsAction = null;
+            }
+
             controls?.Dispose();
+        }
+
+        void OnPickupFloorItemsPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
+                || FloorPickupMenuUI.BlocksGameplay)
+                return;
+
+            commandProcessor.TryApply(PlayerCommand.PickupFloorItems());
         }
 
         void OnToggleInventoryPerformed(InputAction.CallbackContext context)
@@ -92,7 +128,7 @@ namespace JRogue.Input
 
         public void OnMove(InputAction.CallbackContext context)
         {
-            if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay) return;
+            if (BlocksFloorGameplay()) return;
             if (IsContextInvalid(context)) return;
 
             Vector2 input = context.ReadValue<Vector2>();
@@ -102,7 +138,7 @@ namespace JRogue.Input
 
         public void OnWait(InputAction.CallbackContext context)
         {
-            if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay) return;
+            if (BlocksFloorGameplay()) return;
             if (IsContextInvalid(context)) return;
 
             bool partyWait = Keyboard.current != null && Keyboard.current.shiftKey.isPressed;
@@ -123,14 +159,14 @@ namespace JRogue.Input
 
         public void OnToggleFormation(InputAction.CallbackContext context)
         {
-            if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay) return;
+            if (BlocksFloorGameplay()) return;
             if (IsContextInvalid(context)) return;
             commandProcessor.TryApply(PlayerCommand.ToggleFormation());
         }
 
         private void OnAbilityPerformed(InputAction.CallbackContext context, bool isShift, bool isCtrl)
         {
-            if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay) return;
+            if (BlocksFloorGameplay()) return;
             if (IsContextInvalid(context)) return;
 
             string keyName = context.control.name;
@@ -143,7 +179,7 @@ namespace JRogue.Input
         private void SwapTo(InputAction.CallbackContext context)
         {
             if (!context.performed) return;
-            if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay) return;
+            if (BlocksFloorGameplay()) return;
 
             string keyName = context.control.name;
             string suffix = keyName.Replace("F", "").Replace("f", "");
@@ -163,6 +199,10 @@ namespace JRogue.Input
         {
             commandProcessor.ProcessFollowerRush();
         }
+
+        static bool BlocksFloorGameplay() =>
+            InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
+            || FloorPickupMenuUI.BlocksGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: PotionOfExperience
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Potion of Experience
+  autoPickupOnStep: 0
+  requiresAutoPickupConfirmation: 0
   category: 10
   inventoryRiskHints: 0
   slotType: 0

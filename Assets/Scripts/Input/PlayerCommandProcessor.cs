@@ -65,6 +65,8 @@ namespace JRogue.Input
                     return ApplyToggleFormation();
                 case PlayerCommandKind.SwapPartyMember:
                     return ApplySwapPartyMember(command.PartyMemberIndex);
+                case PlayerCommandKind.PickupFloorItems:
+                    return ApplyPickupFloorItems();
                 default:
                     return false;
             }
@@ -125,9 +127,7 @@ namespace JRogue.Input
                     if (activeMember.TryMove(direction))
                     {
                         if (activeMember.GridPosition != oldPosition)
-                        {
                             partyManager.RecordNewLeaderPosition(activeMember.GridPosition);
-                        }
                         else
                         {
                             Debug.Log($"[FORMATION-BUMP] Leader attacked at {targetTile}. Position stayed {oldPosition}.");
@@ -160,11 +160,22 @@ namespace JRogue.Input
                 return true;
 
             if (activeMember.TryMove(direction))
-            {
                 turnManager.OnPlayerActionComplete(activeMember.gameObject);
-            }
 
             return true;
+        }
+
+        bool ApplyPickupFloorItems()
+        {
+            if (currentState == InputState.Targeting)
+                return false;
+
+            EnsureManagers();
+            BaseActor activeMember = partyManager.GetActiveMember();
+            if (activeMember == null)
+                return false;
+
+            return FloorPickupCoordinator.TryBeginManualPickup(activeMember);
         }
 
         bool TryConfirmGatedMove(
@@ -192,8 +203,8 @@ namespace JRogue.Input
                 return;
 
             Vector3Int dest = activeMember.GridPosition;
+            // Silent auto-pickup already ran via GridMover.Moved → ManaStoneAutoPickupService.
             FloorPickupService.PickupConfirmGatedAt(dest, activeMember.gameObject);
-            FloorPickupService.PickupSilentAt(dest, activeMember.gameObject);
 
             if (formationActive)
             {

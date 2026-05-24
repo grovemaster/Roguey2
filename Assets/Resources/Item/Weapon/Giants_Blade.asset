@@ -14,11 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Item.ItemData
   itemName: Giant's Blade
   category: 18
-  autoPickupOnStep: 1
-  requiresAutoPickupConfirmation: 1
+  inventoryRiskHints: 0
   slotType: 0
   weight: 20
-  icon: {fileID: 0}
+  icon: {fileID: -3753825769889500098, guid: f59b6f1cccc714c4d867407a30f8b974, type: 3}
+  goldValue: 0
+  requiresAppraisal: 1
+  autoPickupOnStep: 1
+  requiresAutoPickupConfirmation: 0
+  equipRequiresAllFlags: 0
+  equipExcludesActorFlags: 0
   damageModules:
   - type: 0
     value: 10

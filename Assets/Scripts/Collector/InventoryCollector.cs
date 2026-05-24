@@ -23,22 +23,27 @@ namespace JRogue.Stats
 
         void OnTriggerEnter2D(Collider2D other)
         {
-            if (!other.TryGetComponent(out WorldItem groundItem))
-                return;
-
-            TryCollectWorldItem(groundItem, gameObject, allowConfirmGated: false);
+            // Tile-enter pickup is handled by GridMover.Moved → FloorPickupService (see ManaStoneAutoPickupService).
+            // Trigger overlap duplicated pickups in the same frame as grid movement.
         }
 
         /// <summary>Grid movement may not always fire triggers; called from tile-enter pickup as well.</summary>
-        internal static bool TryCollectWorldItem(WorldItem groundItem, GameObject picker, bool allowConfirmGated = false)
+        internal static bool TryCollectWorldItem(
+            WorldItem groundItem,
+            GameObject picker,
+            bool allowConfirmGated = false,
+            bool manualPickup = false)
         {
             if (groundItem == null || picker == null)
+                return false;
+
+            if (!groundItem.isActiveAndEnabled)
                 return false;
 
             if (groundItem.data is ManaStoneItemData)
                 return false;
 
-            if (groundItem.data != null)
+            if (!manualPickup && groundItem.data != null)
             {
                 if (!groundItem.data.autoPickupOnStep)
                     return false;
@@ -65,6 +70,8 @@ namespace JRogue.Stats
                 equipment.EquipItem(EquipmentSlot.MainHand, inst);
             }
 
+            // Hide immediately so a second PickupSilentAt in the same frame cannot re-collect before Destroy runs.
+            groundItem.gameObject.SetActive(false);
             Object.Destroy(groundItem.gameObject);
             return true;
         }
