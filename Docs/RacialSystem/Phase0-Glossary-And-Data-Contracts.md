@@ -7,7 +7,7 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 | Term | Meaning |
 |------|--------|
 | **Race** | Ancestry / people: Human, Elf, Barbarian, etc. Stored as `Race : byte` in `StatTypes` with explicit numeric values for saves. |
-| **Human class** | Optional specialization for `Race.Human` only (e.g. Summoner). `HumanClass.None` = random civilian / default party human. |
+| **Human class** | Optional specialization for `Race.Human` only: `None` (civilian), then **Knight**, **Mage**, or **Priest** (one-way). See [Human — Class powers](Human-Class-Powers-Requirements.md). |
 | **Racial loadout** | `RacialLoadoutDefinition` (ScriptableObject): stat/resistance modifiers, passives, and (later) actives. Applied by `RacialLoadoutApplier`. See **Phase1-Implementation.md**. No `racialBenefits` / `racialRestrictions` lists. |
 | **Racial progression payload** | `IRacialProgressionPayload`: restrictions, benefits, stats, passives, actives (zero or more each). Used by **Tiefling** `CyborgImplantDefinition` and **Undead** skill-tree nodes only. See **Tiefling-Cyborg-Implants-Requirements.md**, **Undead-Race-Requirements.md**. |
 | **Racial subsystem** | Progression framework keyed off race: Spirit Imprint (Barbarian), Human specialization, Tiefling implants, Elf contracts, Dwarf patron Ancestor + common abilities, etc. |
@@ -30,4 +30,5 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 - Dwarf patron Ancestor trees and common ability slots — see **Dwarf-Ancestor-And-Common-Abilities-Requirements.md**.
 - Beastman Soul Beast bond and linear ability chains — see **Beastman-Soul-Beast-Requirements.md**.
 - Undead skill tree and shared progression payload with Tiefling implants — see **Undead-Race-Requirements.md**.
+- Human class commitment (Knight / Mage / Priest) — see **Human-Class-Powers-Requirements.md**.
 - Equipment legality hooks and body-capability overrides.

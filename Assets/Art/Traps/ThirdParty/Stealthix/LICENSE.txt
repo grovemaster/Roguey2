@@ -1,0 +1,12 @@
+Stealthix — Animated Traps
+
+Source: https://opengameart.org/content/animated-traps
+Author: Stealthix (stealthix.itch.io)
+License: Creative Commons Zero (CC0) 1.0 Universal
+         https://creativecommons.org/publicdomain/zero/1.0/
+
+You may use, modify, and distribute these assets for any purpose including
+commercial projects. Attribution is appreciated but not required.
+
+Imported for Roguey2 trap content (Spike, Bear, Dart) per Docs/Combat/Traps-Requirements.md.
+Product approval: Option A, 2026-05-25.

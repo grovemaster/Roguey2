@@ -1,0 +1,16 @@
+Dungeon Crawl 32x32 tiles (subset)
+
+Source: https://opengameart.org/content/dungeon-crawl-32x32-tiles
+Archive: crawl-tiles Oct-5-2010.zip
+
+Tiles used in Roguey2 (environmental hazards):
+  dc-dngn/floor/lava0.png, lava1.png
+  effect/cloud_poison0.png, cloud_poison1.png, cloud_miasma.png
+
+Original game: Dungeon Crawl Stone Soup — http://crawl.develz.org/
+
+License: Free to use in your program; attribution not required. As a courtesy,
+include a link to the OpenGameArt page above or see rltiles.sourceforge.net.
+
+Product approval: Option A, STR 50 for Lava — 2026-05-25.
+See Docs/Combat/Environmental-Hazards-Requirements.md.
