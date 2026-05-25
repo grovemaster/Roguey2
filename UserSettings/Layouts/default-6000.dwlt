@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1859
     height: 1416
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Project
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: ProjectBrowser
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -245,14 +245,14 @@ MonoBehaviour:
     y: 857
     width: 1332
     height: 503
-  m_MinSize: {x: 101, y: 126}
-  m_MaxSize: {x: 4001, y: 4026}
-  m_ActualView: {fileID: 17}
+  m_MinSize: {x: 231, y: 276}
+  m_MaxSize: {x: 10001, y: 10026}
+  m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
   - {fileID: 17}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -693,7 +693,6 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -5732
       - m_Data: -1344
       m_RenameOverlay:
         m_UserAcceptedRename: 0
@@ -1328,10 +1327,10 @@ MonoBehaviour:
     m_TextWithWhitespace: "Project\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1357
-    y: 973
-    width: 1426
-    height: 385
+    x: 0
+    y: 881
+    width: 1331
+    height: 477
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1346,7 +1345,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
     m_DynamicPanelBehavior: 0
   m_SearchFilter:
-    m_NameFilter: 
+    m_NameFilter: potion
     m_ClassNames: []
     m_AssetLabels: []
     m_AssetBundleNames: []
@@ -1360,7 +1359,7 @@ MonoBehaviour:
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
-    m_OriginalText: 
+    m_OriginalText: potion
     m_ImportLogFlags: 0
     m_FilterByTypeIntersection: 0
   m_ViewMode: 1
@@ -1375,20 +1374,11 @@ MonoBehaviour:
   m_FolderTreeState:
     scrollPos: {x: 0, y: 175}
     m_SelectedIDs:
-    - m_Data: 54068
+    - m_Data: 53720
     m_LastClickedID:
-      m_Data: 54068
+      m_Data: 53720
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 53414
-    - m_Data: 53416
-    - m_Data: 53418
-    - m_Data: 53420
-    - m_Data: 53422
-    - m_Data: 53424
-    - m_Data: 53426
-    - m_Data: 53428
-    - m_Data: 53430
     - m_Data: 53432
     - m_Data: 53434
     - m_Data: 53436
@@ -1404,6 +1394,15 @@ MonoBehaviour:
     - m_Data: 53456
     - m_Data: 53458
     - m_Data: 53460
+    - m_Data: 53462
+    - m_Data: 53464
+    - m_Data: 53466
+    - m_Data: 53468
+    - m_Data: 53470
+    - m_Data: 53472
+    - m_Data: 53474
+    - m_Data: 53476
+    - m_Data: 53478
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1438,15 +1437,6 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 53414
-    - m_Data: 53416
-    - m_Data: 53418
-    - m_Data: 53420
-    - m_Data: 53422
-    - m_Data: 53424
-    - m_Data: 53426
-    - m_Data: 53428
-    - m_Data: 53430
     - m_Data: 53432
     - m_Data: 53434
     - m_Data: 53436
@@ -1462,6 +1452,15 @@ MonoBehaviour:
     - m_Data: 53456
     - m_Data: 53458
     - m_Data: 53460
+    - m_Data: 53462
+    - m_Data: 53464
+    - m_Data: 53466
+    - m_Data: 53468
+    - m_Data: 53470
+    - m_Data: 53472
+    - m_Data: 53474
+    - m_Data: 53476
+    - m_Data: 53478
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1549,8 +1548,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Console\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 0
-    y: 881
+    x: 1357
+    y: 1128
     width: 1331
     height: 477
   m_SerializedDataModeController:

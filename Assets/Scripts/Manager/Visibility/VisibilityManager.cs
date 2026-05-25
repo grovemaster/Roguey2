@@ -79,37 +79,48 @@ public class VisibilityManager : MonoBehaviour
     // Call this every time the player moves
     public void RefreshVision()
     {
-        // Use the controlled party member's logical grid cell (authoritative for gameplay).
         // Tilemap cells in this project use z = 0 (see MapManager floor/wall checks); mixing in
         // transform Z or a stale tagged object gives a cell key that HasTile never matches, so
         // the tile under the actor stays fog after step 1 of UpdateVisibility.
-        Vector3Int playerGridPos;
-        BaseActor active = PartyManager.Instance != null ? PartyManager.Instance.GetActiveMember() : null;
-        if (active != null)
+        ShadowCaster.IsOpaque isOpaque = pos => MapManager.Instance != null && !MapManager.Instance.IsWalkable(pos);
+
+        HashSet<Vector3Int> visible = new HashSet<Vector3Int>();
+        PartyManager party = PartyManager.Instance;
+
+        if (party != null && party.partyMembers != null && party.partyMembers.Count > 0)
         {
-            Vector3Int gp = active.GridPosition;
-            playerGridPos = new Vector3Int(gp.x, gp.y, 0);
+            for (int i = 0; i < party.partyMembers.Count; i++)
+            {
+                BaseActor member = party.partyMembers[i];
+                if (member == null || !member.gameObject.activeInHierarchy)
+                    continue;
+
+                Vector3Int gp = member.GridPosition;
+                Vector3Int origin = new Vector3Int(gp.x, gp.y, 0);
+
+                List<Vector3Int> memberVisible = ShadowCaster.GetVisibleTiles(origin, viewRange, isOpaque);
+                for (int j = 0; j < memberVisible.Count; j++)
+                    visible.Add(memberVisible[j]);
+            }
         }
         else if (playerTransform != null)
         {
             Vector3Int fp = Vector3Int.FloorToInt(playerTransform.position);
-            playerGridPos = new Vector3Int(fp.x, fp.y, 0);
+            Vector3Int origin = new Vector3Int(fp.x, fp.y, 0);
+
+            List<Vector3Int> fallbackVisible = ShadowCaster.GetVisibleTiles(origin, viewRange, isOpaque);
+            for (int i = 0; i < fallbackVisible.Count; i++)
+                visible.Add(fallbackVisible[i]);
         }
         else
         {
             return;
         }
 
-        // Run the algorithm
-        // We pass MapManager.Instance.IsWalkable as the "IsOpaque" check
-        // Note: You might need to flip the logic (IsOpaque = !IsWalkable)
-        List<Vector3Int> visible = ShadowCaster.GetVisibleTiles(
-            playerGridPos,
-            viewRange,
-            pos => MapManager.Instance != null && !MapManager.Instance.IsWalkable(pos)
-        );
+        if (visible.Count == 0)
+            return;
 
-        UpdateVisibility(visible);
+        UpdateVisibility(new List<Vector3Int>(visible));
     }
 
     void Update()
