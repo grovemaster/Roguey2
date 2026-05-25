@@ -202,12 +202,23 @@ namespace JRogue.Stats
         {
             return new RacialIdentitySnapshot
             {
-                snapshotVersion = 1,
+                snapshotVersion = RacialStackingContract.CurrentIdentitySnapshotVersion,
                 race = race,
                 humanClass = humanClass,
                 subsystemKind = racialSubsystem,
                 bodyCapabilities = bodyCapabilities
             };
+        }
+
+        /// <summary>Applies intrinsic identity fields only (folk, class, subsystem flag, body capabilities).</summary>
+        public bool TryApplyRacialIdentitySnapshot(RacialIdentitySnapshot snapshot, out string error)
+        {
+            if (!RacialIdentityRules.TryValidate(snapshot, out error))
+                return false;
+
+            snapshot.ApplyTo(this);
+            error = null;
+            return true;
         }
 
         public void PrintCharacterSheet()

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Ability;
 using JRogue.Item.Essence;
 using JRogue.Stats;
+using JRogue.Stats.Racial;
 using UnityEngine;
 
 namespace JRogue.Racial
@@ -18,7 +19,8 @@ namespace JRogue.Racial
             object source,
             IReadOnlyList<AttributeModifier> statModifiers,
             IReadOnlyList<DamageResistanceModifier> resistanceModifiers,
-            IReadOnlyList<PassiveEffect> passiveEffects)
+            IReadOnlyList<PassiveEffect> passiveEffects,
+            ModifierSourceLayer statLayer = ModifierSourceLayer.RacialProgression)
         {
             if (stats == null || source == null)
                 return;
@@ -28,7 +30,7 @@ namespace JRogue.Racial
                 foreach (AttributeModifier mod in statModifiers)
                 {
                     Stat targetStat = stats.GetStatByType(mod.attribute);
-                    targetStat?.AddModifier(mod.value, source);
+                    targetStat?.AddModifier(mod.value, source, statLayer);
                 }
             }
 

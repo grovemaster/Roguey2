@@ -18,7 +18,23 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 
 - **Cross-source:** Racial passives **stack** with modifiers from items, essences, buffs, and other systems, using the same `Stat` modifier pipeline with **distinct source objects** (e.g. passive asset instance, item instance id).
 - **Same source, duplicate effect:** Whether two copies of the *same* item/essence stack is **out of scope** for the racial system; racial does not add a special exception — follow global item/essence rules when those exist.
-- **Ordering:** When implementation lands, document a single evaluation order (e.g. base → race → equipment → temporary) or priority integers on modifiers.
+- **Ordering:** Implemented in `RacialStackingContract.ModifierEvaluationOrder` and `ModifierSourceLayer` on `StatModifier`. Folk loadouts tag `RacialLoadout`; progression nodes tag `RacialProgression`. Values still sum additively in `Stat.GetValue()`.
+
+## Code contracts (implemented)
+
+| Contract | Location |
+|----------|----------|
+| `Race` numeric values | `StatTypes.cs` — locked by `Phase0RacialContractTests` |
+| `HumanClass` | `HumanClass.cs` — `None`, `Knight`, `Mage`, `Priest` |
+| `RacialSubsystemKind` | `RacialSubsystemKind.cs` — includes `BeastmanSoulBeast` |
+| `RacialCommitmentPolicy` | `RacialCommitmentPolicy.cs` |
+| Subsystem → policy | `RacialSubsystemKind.cs` (`RacialSubsystemCatalog`) |
+| Identity snapshot | `RacialIdentitySnapshot.cs` — `From`, `ApplyTo`, `CommitmentPolicy`, `RacialIdentityRules` |
+| Live stats apply | `CharacterStats.TryApplyRacialIdentitySnapshot` |
+| Stacking layers | `RacialCommitmentPolicy.cs` (`ModifierSourceLayer`, `RacialStackingContract`), `Stat` / `StatModifier` |
+| Folk loadout (no benefit/restriction lists) | `RacialLoadoutDefinition` |
+| Progression payload (Tiefling / Undead) | `IRacialProgressionPayload`, `Assets/Data/Racial/` |
+| Tests | `Assets/Tests/UnitTests/Racial/Phase0RacialContractTests.cs` |
 
 ## `Race` numeric values
 

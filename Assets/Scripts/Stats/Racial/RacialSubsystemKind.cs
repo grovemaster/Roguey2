@@ -24,6 +24,59 @@ namespace JRogue.Stats.Racial
         DwarfAncestry = 5,
 
         /// <summary>Undead Diablo-style skill tree (respec allowed).</summary>
-        UndeadSkillTree = 6
+        UndeadSkillTree = 6,
+
+        /// <summary>Beastman Soul Beast bond and linear ability chain (permanent).</summary>
+        BeastmanSoulBeast = 7
+    }
+
+    /// <summary>
+    /// Maps <see cref="RacialSubsystemKind"/> to Phase 0 commitment policy and folk eligibility hints.
+    /// </summary>
+    public static class RacialSubsystemCatalog
+    {
+        public static RacialCommitmentPolicy GetCommitmentPolicy(RacialSubsystemKind kind)
+        {
+            switch (kind)
+            {
+                case RacialSubsystemKind.SpiritImprintBarbarian:
+                case RacialSubsystemKind.HumanSpecialization:
+                case RacialSubsystemKind.ElfElementalContracts:
+                case RacialSubsystemKind.DwarfAncestry:
+                case RacialSubsystemKind.BeastmanSoulBeast:
+                    return RacialCommitmentPolicy.Permanent;
+                case RacialSubsystemKind.TieflingImplants:
+                case RacialSubsystemKind.UndeadSkillTree:
+                    return RacialCommitmentPolicy.RespecAllowed;
+                default:
+                    return RacialCommitmentPolicy.NotApplicable;
+            }
+        }
+
+        public static bool IsSubsystemValidForRace(RacialSubsystemKind subsystem, Race race)
+        {
+            if (subsystem == RacialSubsystemKind.None)
+                return true;
+
+            switch (subsystem)
+            {
+                case RacialSubsystemKind.SpiritImprintBarbarian:
+                    return race == Race.Barbarian;
+                case RacialSubsystemKind.HumanSpecialization:
+                    return race == Race.Human;
+                case RacialSubsystemKind.TieflingImplants:
+                    return race == Race.Tiefling;
+                case RacialSubsystemKind.ElfElementalContracts:
+                    return race == Race.Elf;
+                case RacialSubsystemKind.DwarfAncestry:
+                    return race == Race.Dwarf;
+                case RacialSubsystemKind.UndeadSkillTree:
+                    return race == Race.Undead;
+                case RacialSubsystemKind.BeastmanSoulBeast:
+                    return race == Race.Beastman;
+                default:
+                    return false;
+            }
+        }
     }
 }

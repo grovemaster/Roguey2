@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using JRogue.Stats.Racial;
 
 namespace JRogue.Stats
 {
@@ -31,9 +32,9 @@ namespace JRogue.Stats
             return finalValue;
         }
 
-        public void AddModifier(int value, object source)
+        public void AddModifier(int value, object source, ModifierSourceLayer layer = ModifierSourceLayer.Temporary)
         {
-            modifiers.Add(new StatModifier(value, source));
+            modifiers.Add(new StatModifier(value, source, layer));
         }
 
         public void RemoveModifiersFromSource(object source)

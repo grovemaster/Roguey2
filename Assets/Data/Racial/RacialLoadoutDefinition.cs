@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Ability;
 using JRogue.Item.Essence;
 using JRogue.Stats;
+using JRogue.Stats.Racial;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -51,7 +52,7 @@ namespace JRogue.Racial
             foreach (var mod in statModifiers)
             {
                 Stat targetStat = stats.GetStatByType(mod.attribute);
-                targetStat?.AddModifier(mod.value, this);
+                targetStat?.AddModifier(mod.value, this, ModifierSourceLayer.RacialLoadout);
             }
 
             foreach (var res in resistanceModifiers)
