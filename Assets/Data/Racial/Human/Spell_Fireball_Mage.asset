@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6d7c8b9a0f142658970fedcba098764, type: 3}
+  m_Name: Spell_Fireball_Mage
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.MageSpellDefinition
+  spellId: mage_spell_fireball
+  displayName: Fireball
+  description: Targeted fire burst (Mage spell).
+  tier: 3
+  ability: {fileID: 11400000, guid: ccbdd8aa50ddf7c8b91ce85b5ca98601, type: 2}
+  magicPowerCost: 5

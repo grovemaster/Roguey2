@@ -10,6 +10,7 @@ namespace JRogue.Input
     {
         Essence = 0,
         EquipmentItem = 1,
+        HumanMageSpell = 2,
     }
 
     /// <summary>Discriminant for <see cref="PlayerCommand"/>; stable for serialization.</summary>

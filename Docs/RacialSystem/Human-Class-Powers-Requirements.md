@@ -432,7 +432,23 @@ Same hard rules as Mage (§M8.1): **zero** essence slots, **zero** Soul Power, c
 
 ---
 
-## 16. Related documents
+## 16. Implementation status
+
+| Item | Status |
+|------|--------|
+| `HumanClass` enum (`Knight`, `Mage`, `Priest`) | Done |
+| `HumanClassRules` + `CharacterStats` Magic/Divine pools | Done |
+| `HumanClassCommitment` + essence slot gating | Done |
+| Knight/Priest D2 skill tree data + `HumanClassSkillTreeRuntime` | Done |
+| Mage `MageSpellDefinition` + `HumanMageSpellsRuntime` + command routing | Done |
+| `HumanClassAbilityResources` (Soul / Magic / Divine on abilities) | Done |
+| Sample assets (`KnightSkillTree_Sample`, `PriestSkillTree_Sample`, `Spell_*_Mage`) | Done |
+| Unit tests (`HumanClassPowersTests`) | Done |
+| NPC class-change gates, training events, spell learning, UI | Later (§11) |
+
+---
+
+## 17. Related documents
 
 - [Phase 0 — Glossary and data contracts](Phase0-Glossary-And-Data-Contracts.md)
 - [Phase 5 — Additional folk & subsystem shapes](Phase5-Requirements.md) (§R5.4 Human class stretch)

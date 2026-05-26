@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7e8d9c0b1a243658970fedcba098765, type: 3}
+  m_Name: PriestSkillTree_Sample
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.HumanClassSkillTreeDefinition
+  humanClass: 3
+  nodes:
+  - nodeId: priest_passive_might
+    displayName: Might
+    description: +2 Strength per rank.
+    maxRanks: 5
+    requiredCharacterLevel: 1
+    requiredParentNodeId: 
+    requiredParentMinRank: 1
+    perRankStatModifiers:
+    - attribute: 0
+      valuePerRank: 2
+    activeAbilities: []
+  - nodeId: priest_passive_finesse
+    displayName: Finesse
+    description: +2 Dexterity per rank. Requires Might rank 1.
+    maxRanks: 5
+    requiredCharacterLevel: 1
+    requiredParentNodeId: priest_passive_might
+    requiredParentMinRank: 1
+    perRankStatModifiers:
+    - attribute: 1
+      valuePerRank: 2
+    activeAbilities: []

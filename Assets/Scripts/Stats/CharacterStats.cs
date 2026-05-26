@@ -50,9 +50,17 @@ namespace JRogue.Stats
         [Tooltip("Flat Max Soul Power bonus from level-ups.")]
         [Min(0)] public int levelSoulPowerBonus;
 
+        [Tooltip("Flat Max Magic Power bonus from level-ups (Mage only).")]
+        [Min(0)] public int levelMagicPowerBonus;
+
+        [Tooltip("Flat Max Divine Power bonus from level-ups (Priest only).")]
+        [Min(0)] public int levelDivinePowerBonus;
+
         [Header("Current Status")]
         public int currentHP;
         public int currentSoulPower;
+        public int currentMagicPower;
+        public int currentDivinePower;
 
         // [Header("Inspector View (Debug Only)")]
         // // This list will show up in your Inspector!
@@ -79,7 +87,22 @@ namespace JRogue.Stats
             // Set current pools (moved from 7a)
             // Set current pools to max at the start of the game
             currentHP = MaxHP;
-            currentSoulPower = MaxSoulPower;
+            RefreshResourcePoolsToMax();
+        }
+
+        /// <summary>Clamps current pools to class-appropriate maximums.</summary>
+        public void RefreshResourcePoolsToMax()
+        {
+            currentSoulPower = Mathf.Min(currentSoulPower, MaxSoulPower);
+            if (humanClass == HumanClass.Mage)
+                currentMagicPower = MaxMagicPower;
+            else
+                currentMagicPower = 0;
+
+            if (humanClass == HumanClass.Priest)
+                currentDivinePower = MaxDivinePower;
+            else
+                currentDivinePower = 0;
         }
 
         private void InitializeDictionaries()
@@ -169,9 +192,9 @@ namespace JRogue.Stats
         public int MaxHP => Constitution.GetValue() * 10;
         public int EncumbranceLimit => Constitution.GetValue() * 5;
 
-        // Intellect & Wisdom govern Soul Power; levelSoulPowerBonus from level-ups
-        public int MaxSoulPower =>
-            (Intelligence.GetValue() * 5) + (Wisdom.GetValue() * 5) + levelSoulPowerBonus;
+        public int MaxSoulPower => HumanClassRules.ComputeMaxSoulPower(this);
+        public int MaxMagicPower => HumanClassRules.ComputeMaxMagicPower(this);
+        public int MaxDivinePower => HumanClassRules.ComputeMaxDivinePower(this);
 
         // Dexterity governs Armor Class (Base 10 + Dex bonus)
         public int ArmorClass => 10 + (Dexterity.GetValue() / 4);
@@ -214,6 +237,9 @@ namespace JRogue.Stats
         public bool TryApplyRacialIdentitySnapshot(RacialIdentitySnapshot snapshot, out string error)
         {
             if (!RacialIdentityRules.TryValidate(snapshot, out error))
+                return false;
+
+            if (!HumanClassRules.CanApplyHumanClassFromSnapshot(humanClass, snapshot.humanClass, out error))
                 return false;
 
             snapshot.ApplyTo(this);

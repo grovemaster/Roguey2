@@ -8,6 +8,8 @@ namespace JRogue.Ability
         public string abilityName;
         [TextArea] public string description;
         public int soulPowerCost;
+        public int magicPowerCost;
+        public int divinePowerCost;
         public int cooldownTurns;
 
         [Header("Targeting Settings")]

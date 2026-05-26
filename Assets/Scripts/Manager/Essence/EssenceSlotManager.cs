@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using JRogue.Item.Essence;
 using JRogue.Ability;
 using JRogue.Stats;
+using JRogue.Racial;
+using JRogue.Stats.Racial;
 
 namespace JRogue.Manager.Essence
 {
@@ -14,11 +16,13 @@ namespace JRogue.Manager.Essence
         // This array holds the actual ScriptableObjects currently equipped
         [SerializeField] private EssenceData[] equippedEssences;
 
+        CharacterStats _stats;
+
         private void Awake()
         {
-            // Don't do this: equippedEssences = new List<EssenceData>(); 
+            _stats = GetComponent<CharacterStats>();
+            ApplyMaxSlotsFromClass();
 
-            // Instead, do this:
             if (equippedEssences == null)
                 return;
 
@@ -33,9 +37,43 @@ namespace JRogue.Manager.Essence
             }
         }
 
+        public void ApplyMaxSlotsFromClass()
+        {
+            if (_stats == null)
+                _stats = GetComponent<CharacterStats>();
+
+            int max = _stats != null
+                ? HumanClassRules.GetMaxEssenceSlots(_stats.humanClass)
+                : HumanClassRules.DefaultEssenceSlotCount;
+
+            if (max < totalSlots && equippedEssences != null)
+            {
+                for (int i = max; i < totalSlots; i++)
+                    UnequipEssence(i);
+            }
+
+            totalSlots = max;
+            EnsureEquippedArraySize();
+        }
+
         public bool EquipEssence(EssenceData newEssence, int slotIndex)
         {
-            if (slotIndex < 0 || slotIndex >= totalSlots || slotIndex >= equippedEssences.Length) return false;
+            if (_stats == null)
+                _stats = GetComponent<CharacterStats>();
+
+            if (_stats != null && newEssence != null && !HumanClassRules.CanGainEssences(_stats.humanClass))
+            {
+                Debug.LogWarning(
+                    $"[{gameObject.name}] Cannot equip essences as {_stats.humanClass}.");
+                return false;
+            }
+
+            if (totalSlots <= 0 || slotIndex < 0 || slotIndex >= totalSlots)
+                return false;
+
+            EnsureEquippedArraySize();
+            if (slotIndex >= equippedEssences.Length)
+                return false;
 
             // 1. Remove bonuses from the old essence if one exists in this slot
             if (equippedEssences[slotIndex] != null)
@@ -91,11 +129,11 @@ namespace JRogue.Manager.Essence
             AbilityAction ability = essence.activeAbilities[abilityIndex];
             var stats = GetComponent<CharacterStats>();
 
-            if (stats.currentSoulPower >= ability.soulPowerCost)
+            if (HumanClassAbilityResources.CanAfford(stats, ability))
             {
                 if (ability.Execute(gameObject))
                 {
-                    stats.currentSoulPower -= ability.soulPowerCost;
+                    HumanClassAbilityResources.TrySpend(stats, ability);
                     Debug.Log($"Executed {ability.abilityName} from {essence.essenceName}");
                 }
             }
@@ -149,7 +187,7 @@ namespace JRogue.Manager.Essence
             if (ability == null) return false;
 
             var stats = GetComponent<CharacterStats>();
-            return stats != null && stats.currentSoulPower >= ability.soulPowerCost;
+            return stats != null && HumanClassAbilityResources.CanAfford(stats, ability);
         }
 
         /// <summary>
@@ -179,9 +217,9 @@ namespace JRogue.Manager.Essence
             var stats = GetComponent<CharacterStats>();
 
             // 1. Resource check
-            if (stats == null || stats.currentSoulPower < ability.soulPowerCost)
+            if (stats == null || !HumanClassAbilityResources.CanAfford(stats, ability))
             {
-                Debug.Log("Not enough Soul Power!");
+                Debug.Log(HumanClassAbilityResources.InsufficientResourceMessage(stats?.humanClass ?? HumanClass.None));
                 return false;
             }
 
@@ -199,7 +237,7 @@ namespace JRogue.Manager.Essence
 
             if (executed)
             {
-                stats.currentSoulPower -= ability.soulPowerCost;
+                HumanClassAbilityResources.TrySpend(stats, ability);
                 return true;
             }
             return false;
@@ -224,15 +262,30 @@ namespace JRogue.Manager.Essence
             stats?.UnregisterBodyEquipmentContribution(BodyContributionKey(slotIndex));
         }
 
+        void EnsureEquippedArraySize()
+        {
+            int size = Mathf.Max(totalSlots, HumanClassRules.DefaultEssenceSlotCount);
+            if (equippedEssences == null || equippedEssences.Length != size)
+            {
+                var next = new EssenceData[size];
+                if (equippedEssences != null)
+                {
+                    int copy = Mathf.Min(equippedEssences.Length, next.Length);
+                    for (int i = 0; i < copy; i++)
+                        next[i] = equippedEssences[i];
+                }
+
+                equippedEssences = next;
+            }
+        }
+
         private void OnDestroy()
         {
-            // If the actor is destroyed (e.g., they die), 
-            // we should cleanly remove all essence modifiers 
-            // to prevent any static reference leaks.
-            for (int i = 0; i < totalSlots; i++)
-            {
+            if (equippedEssences == null)
+                return;
+
+            for (int i = 0; i < equippedEssences.Length; i++)
                 UnequipEssence(i);
-            }
         }
     }
 }

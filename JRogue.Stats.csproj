@@ -58,6 +58,7 @@
     <Compile Include="Assets/Scripts/Stats/CharacterStats.cs" />
     <Compile Include="Assets/Scripts/Stats/Racial/RacialCommitmentPolicy.cs" />
     <Compile Include="Assets/Scripts/Stats/StatTypes.cs" />
+    <Compile Include="Assets/Scripts/Stats/Racial/HumanClassRules.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Scripts/Stats/JRogue.Stats.asmdef" />

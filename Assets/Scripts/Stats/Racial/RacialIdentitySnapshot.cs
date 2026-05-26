@@ -91,6 +91,23 @@ namespace JRogue.Stats.Racial
             return true;
         }
 
+        public static bool TryValidateClassChange(CharacterStats stats, HumanClass newClass, out string error)
+        {
+            if (stats == null)
+            {
+                error = "CharacterStats is null.";
+                return false;
+            }
+
+            if (stats.race != Race.Human)
+            {
+                error = "humanClass is only valid when race is Human.";
+                return false;
+            }
+
+            return HumanClassRules.CanApplyHumanClassFromSnapshot(stats.humanClass, newClass, out error);
+        }
+
         public static bool TryValidate(CharacterStats stats, out string error)
         {
             if (stats == null)

@@ -10,7 +10,10 @@ using JRogue.Manager.Floor;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
+using JRogue.Racial;
 using JRogue.Service.Formation;
+using JRogue.Stats;
+using JRogue.Stats.Racial;
 using JRogue.UI.Targeting;
 using UnityEngine;
 
@@ -274,6 +277,8 @@ namespace JRogue.Input
             EquipmentManager equipManager = activeMember.GetComponent<EquipmentManager>();
 
             Vector3Int target = reticleView.Position;
+            HumanMageSpellsRuntime mageSpells = activeMember.GetComponent<HumanMageSpellsRuntime>();
+
             bool ok = pending.Source switch
             {
                 PlayerAbilitySource.Essence =>
@@ -282,6 +287,9 @@ namespace JRogue.Input
                 PlayerAbilitySource.EquipmentItem =>
                     equipManager != null
                     && equipManager.TryExecuteItemAbility(pending.SlotIndex, pending.AbilityIndex, target),
+                PlayerAbilitySource.HumanMageSpell =>
+                    mageSpells != null
+                    && mageSpells.TryExecuteEquipped(pending.SlotIndex, activeMember.gameObject, target),
                 _ => false,
             };
 
@@ -333,32 +341,61 @@ namespace JRogue.Input
         {
             EssenceSlotManager actorEssence = actor.GetComponent<EssenceSlotManager>();
             EquipmentManager equipManager = actor.GetComponent<EquipmentManager>();
+            HumanMageSpellsRuntime mageSpells = actor.GetComponent<HumanMageSpellsRuntime>();
+            CharacterStats stats = actor.stats;
 
-            AbilityAction abilityToTry = fromEquipment
-                ? equipManager?.GetItemAbility(slotIndex, abilityIndex)
-                : actorEssence?.GetAbility(slotIndex, abilityIndex);
+            bool isMage = stats != null && stats.humanClass == HumanClass.Mage;
+
+            AbilityAction abilityToTry;
+            PlayerAbilitySource source;
+
+            if (fromEquipment)
+            {
+                abilityToTry = equipManager?.GetItemAbility(slotIndex, abilityIndex);
+                source = PlayerAbilitySource.EquipmentItem;
+            }
+            else if (isMage && mageSpells != null)
+            {
+                abilityToTry = mageSpells.GetEquippedAbility(abilityIndex);
+                source = PlayerAbilitySource.HumanMageSpell;
+                slotIndex = abilityIndex;
+            }
+            else
+            {
+                abilityToTry = actorEssence?.GetAbility(slotIndex, abilityIndex);
+                source = PlayerAbilitySource.Essence;
+            }
 
             if (abilityToTry == null) return false;
 
             if (abilityToTry.requiresTarget)
             {
-                if (!fromEquipment && actorEssence != null && !actorEssence.CanAfford(slotIndex, abilityIndex))
+                if (source == PlayerAbilitySource.HumanMageSpell)
+                {
+                    if (mageSpells == null || !mageSpells.CanAffordCast(abilityIndex))
+                    {
+                        Debug.Log("Not enough Magic Power!");
+                        return false;
+                    }
+                }
+                else if (!fromEquipment && actorEssence != null && !actorEssence.CanAfford(slotIndex, abilityIndex))
                 {
                     Debug.Log("Not enough Soul Power!");
                     return false;
                 }
 
-                PlayerAbilitySource source = fromEquipment
-                    ? PlayerAbilitySource.EquipmentItem
-                    : PlayerAbilitySource.Essence;
-
                 EnterTargetingMode(actor, abilityToTry, source, slotIndex, abilityIndex);
                 return true;
             }
 
-            bool success = fromEquipment
-                ? equipManager != null && equipManager.TryExecuteItemAbility(slotIndex, abilityIndex)
-                : actorEssence != null && actorEssence.TryExecuteAbility(slotIndex, abilityIndex);
+            bool success = source switch
+            {
+                PlayerAbilitySource.EquipmentItem =>
+                    equipManager != null && equipManager.TryExecuteItemAbility(slotIndex, abilityIndex),
+                PlayerAbilitySource.HumanMageSpell =>
+                    mageSpells != null && mageSpells.TryExecuteEquipped(abilityIndex, actor.gameObject),
+                _ => actorEssence != null && actorEssence.TryExecuteAbility(slotIndex, abilityIndex),
+            };
 
             if (success)
             {
