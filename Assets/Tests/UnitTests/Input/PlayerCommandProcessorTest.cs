@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JRogue.Ability.SuddenStrength;
 using JRogue.Ability.Telekinesis;
 using JRogue.Actors;
 using JRogue.Input;
@@ -173,6 +174,49 @@ namespace JRogue.Tests.UnitTests.Input
 
             Assert.IsTrue(processor.TryApply(PlayerCommand.CancelTarget()));
             Assert.AreEqual(InputState.Normal, processor.CurrentState);
+        }
+
+        [Test]
+        public void UntargetedAbility_InFormation_EndsPlayerTurnViaRush()
+        {
+            SetupPartyWithSuddenStrengthOnLeader(out PartyManager party, out PlayerCommandProcessor processor);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
+            Assert.IsTrue(party.IsFormationActive);
+
+            BaseActor leader = party.partyMembers[0];
+            Assert.IsTrue(processor.TryApply(PlayerCommand.AbilitySlot(0, false, false)));
+
+            Assert.IsFalse(TurnManager.Instance.CanActorTakeAction(leader.gameObject));
+            Assert.IsFalse(processor.TryApply(PlayerCommand.MoveGrid(Vector3Int.down)));
+            Assert.AreEqual(GameState.ENEMY_TURN, TurnManager.Instance.currentState);
+        }
+
+        void SetupPartyWithSuddenStrengthOnLeader(out PartyManager party, out PlayerCommandProcessor processor)
+        {
+            InputTestSceneBuilder.SetupMapAndManagers(_createdObjects);
+            party = InputTestSceneBuilder.CreatePartyWithTestActors(2, _createdObjects);
+            BaseActor leader = party.partyMembers[0];
+
+            var ability = ScriptableObject.CreateInstance<SuddenStrengthAbility>();
+            ability.abilityName = "Sudden Strength";
+            ability.soulPowerCost = 1;
+            ability.requiresTarget = false;
+            ability.strengthBonus = 100;
+            ability.durationTurns = 10;
+
+            var essence = ScriptableObject.CreateInstance<EssenceData>();
+            essence.statModifiers = new List<AttributeModifier>();
+            essence.resistanceModifiers = new List<DamageResistanceModifier>();
+            essence.complexPassives = new List<PassiveEffect>();
+            essence.activeAbilities = new List<JRogue.Ability.AbilityAction> { ability };
+
+            leader.GetComponent<EssenceSlotManager>().EquipEssence(essence, 0);
+            leader.stats.currentSoulPower = 10;
+
+            _scriptableCleanup.Add(ability);
+            _scriptableCleanup.Add(essence);
+
+            processor = NewProcessorWithReticle();
         }
 
         void SetupPartyWithTelekinesisOnLeader(out PartyManager party, out PlayerCommandProcessor processor)

@@ -103,7 +103,11 @@ namespace JRogue.Input
 
             BaseActor activeMember = partyManager.GetActiveMember();
             if (activeMember == null) return false;
-            if (!turnManager.CanActorTakeAction(activeMember.gameObject)) return false;
+            if (!turnManager.CanActorTakeAction(activeMember.gameObject))
+            {
+                Debug.Log($"{activeMember.name} has already moved! Switch characters or end turn.");
+                return false;
+            }
 
             Vector3Int targetTile = activeMember.GridPosition + direction;
             Vector3Int oldPosition = activeMember.GridPosition;
@@ -358,7 +362,15 @@ namespace JRogue.Input
 
             if (success)
             {
-                turnManager.OnPlayerActionComplete(actor.gameObject);
+                if (partyManager.IsFormationActive)
+                {
+                    partyManager.RecordNewLeaderPosition(actor.GridPosition);
+                    ProcessFollowerRush();
+                }
+                else
+                {
+                    turnManager.OnPlayerActionComplete(actor.gameObject);
+                }
             }
 
             return true;

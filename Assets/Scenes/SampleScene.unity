@@ -3545,7 +3545,7 @@ PrefabInstance:
     - target: {fileID: 80024052925001860, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: 'equippedEssences.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: 3a6c6d8ff70f446ca0c4a805d59a690a, type: 2}
+      objectReference: {fileID: 11400000, guid: f5d586846138423f9b6a019fad300072, type: 2}
     - target: {fileID: 3218558407117122559, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: m_Name
       value: Party_Barbarian_Warrior

@@ -84,6 +84,7 @@
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupService.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
     <Compile Include="Assets/Scripts/Abilities/UndeadGraveTouchAbility.cs" />
+    <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthBuffRuntime.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryPolicy.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentLegalityEvaluator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySessionPersistence.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPresentationModel.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/RadarPassive.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManaStoneLedger.cs" />
+    <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />

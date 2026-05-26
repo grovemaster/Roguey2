@@ -237,11 +237,12 @@ Given two party members, A casts Sudden Strength: only A gets +100; B can still 
 
 | Asset / type | Purpose | Status |
 |--------------|---------|--------|
-| `SuddenStrength.asset` | `EssenceData` | **Not created** |
-| `SuddenStrength_Standard.asset` | `SuddenStrengthAbility` | **Not created** |
-| `SuddenStrengthAbility.cs` | Active logic | **Not created** |
-| `SuddenStrengthBuffRuntime.cs` | Duration + tick + cleanup | **Not created** |
-| Turn tick hook (§7) | Phase countdown | **Not created** |
+| `SuddenStrength.asset` | `EssenceData` | **Created** — `Assets/Resources/Item/Essence/SuddenStrength.asset` |
+| `SuddenStrength_Standard.asset` | `SuddenStrengthAbility` | **Created** — `Assets/Resources/Item/Ability/SuddenStrength_Standard.asset` |
+| `SuddenStrengthAbility.cs` | Active logic | **Created** — `Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs` |
+| `SuddenStrengthBuffRuntime.cs` | Duration + tick + cleanup | **Created** — `Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthBuffRuntime.cs` |
+| Turn tick hook (§7) | Phase countdown | **Created** — `EssenceSlotManager.NotifyTurnStart()` ticks `SuddenStrengthBuffRuntime` |
+| `SuddenStrengthAbilityTests.cs` | Unit tests | **Created** |
 
 ---
 
