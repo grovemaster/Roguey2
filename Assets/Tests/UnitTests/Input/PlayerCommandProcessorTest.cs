@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using JRogue.Ability.Telekinesis;
 using JRogue.Actors;
 using JRogue.Input;
 using JRogue.Item.Essence;
 using JRogue.Manager.Essence;
+using JRogue.Manager.Floor;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.Tests.Mocks;
@@ -142,6 +144,68 @@ namespace JRogue.Tests.UnitTests.Input
             SetupTwoMemberParty(out PartyManager _, out PlayerCommandProcessor processor);
 
             Assert.IsFalse(processor.TryApply(PlayerCommand.ConfirmTarget()));
+        }
+
+        [Test]
+        public void Telekinesis_InvalidConfirm_KeepsTargetingAndSoulPower()
+        {
+            SetupPartyWithTelekinesisOnLeader(out PartyManager party, out PlayerCommandProcessor processor);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
+            InputTestSceneBuilder.SetPrivateField(party, "isFormationActive", false);
+
+            BaseActor leader = party.partyMembers[0];
+            Vector3Int emptyTile = leader.GridPosition + Vector3Int.right;
+            int spBefore = leader.stats.currentSoulPower;
+
+            LogAssert.Expect(
+                LogType.Log,
+                $"[Telekinesis] Invalid target at tile ({emptyTile.x}, {emptyTile.y}, {emptyTile.z}).");
+
+            Assert.IsTrue(processor.TryApply(PlayerCommand.AbilitySlot(0, false, false)));
+            Assert.AreEqual(InputState.Targeting, processor.CurrentState);
+
+            Assert.IsTrue(processor.TryApply(PlayerCommand.MoveGrid(Vector3Int.right)));
+            Assert.IsFalse(processor.TryApply(PlayerCommand.ConfirmTarget()));
+
+            Assert.AreEqual(InputState.Targeting, processor.CurrentState);
+            Assert.AreEqual(spBefore, leader.stats.currentSoulPower);
+            Assert.IsTrue(TurnManager.Instance.CanActorTakeAction(leader.gameObject));
+
+            Assert.IsTrue(processor.TryApply(PlayerCommand.CancelTarget()));
+            Assert.AreEqual(InputState.Normal, processor.CurrentState);
+        }
+
+        void SetupPartyWithTelekinesisOnLeader(out PartyManager party, out PlayerCommandProcessor processor)
+        {
+            InputTestSceneBuilder.SetupMapAndManagers(_createdObjects);
+            if (FloorItemPileService.Instance == null)
+            {
+                var pileGo = new GameObject("FloorItemPileService");
+                _createdObjects.Add(pileGo);
+                pileGo.AddComponent<FloorItemPileService>();
+            }
+
+            party = InputTestSceneBuilder.CreatePartyWithTestActors(1, _createdObjects);
+            BaseActor leader = party.partyMembers[0];
+
+            var ability = ScriptableObject.CreateInstance<TelekinesisAbility>();
+            ability.requiresTarget = true;
+            ability.soulPowerCost = 1;
+            ability.range = 7;
+
+            var essence = ScriptableObject.CreateInstance<EssenceData>();
+            essence.statModifiers = new List<AttributeModifier>();
+            essence.resistanceModifiers = new List<DamageResistanceModifier>();
+            essence.complexPassives = new List<PassiveEffect>();
+            essence.activeAbilities = new List<JRogue.Ability.AbilityAction> { ability };
+
+            leader.GetComponent<EssenceSlotManager>().EquipEssence(essence, 0);
+            leader.stats.currentSoulPower = 10;
+
+            _scriptableCleanup.Add(ability);
+            _scriptableCleanup.Add(essence);
+
+            processor = NewProcessorWithReticle();
         }
 
         [Test]

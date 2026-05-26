@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1859
     height: 1416
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Hierarchy
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 109
+  controlID: 18
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -693,8 +693,7 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -1344
-      - m_Data: 53024
+      - m_Data: -2062
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1375,35 +1374,35 @@ MonoBehaviour:
   m_FolderTreeState:
     scrollPos: {x: 0, y: 175}
     m_SelectedIDs:
-    - m_Data: 53716
+    - m_Data: 54154
     m_LastClickedID:
-      m_Data: 53716
+      m_Data: 54154
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 53870
-    - m_Data: 53872
-    - m_Data: 53874
-    - m_Data: 53876
-    - m_Data: 53878
-    - m_Data: 53880
-    - m_Data: 53882
-    - m_Data: 53884
-    - m_Data: 53886
-    - m_Data: 53888
-    - m_Data: 53890
-    - m_Data: 53892
-    - m_Data: 53894
-    - m_Data: 53896
-    - m_Data: 53898
-    - m_Data: 53900
-    - m_Data: 53902
-    - m_Data: 53904
-    - m_Data: 53906
-    - m_Data: 53908
-    - m_Data: 53910
-    - m_Data: 53912
-    - m_Data: 53914
-    - m_Data: 53916
+    - m_Data: 53464
+    - m_Data: 53466
+    - m_Data: 53468
+    - m_Data: 53470
+    - m_Data: 53472
+    - m_Data: 53474
+    - m_Data: 53476
+    - m_Data: 53478
+    - m_Data: 53480
+    - m_Data: 53482
+    - m_Data: 53484
+    - m_Data: 53486
+    - m_Data: 53488
+    - m_Data: 53490
+    - m_Data: 53492
+    - m_Data: 53494
+    - m_Data: 53496
+    - m_Data: 53498
+    - m_Data: 53500
+    - m_Data: 53502
+    - m_Data: 53504
+    - m_Data: 53506
+    - m_Data: 53508
+    - m_Data: 53510
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1438,30 +1437,30 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 53870
-    - m_Data: 53872
-    - m_Data: 53874
-    - m_Data: 53876
-    - m_Data: 53878
-    - m_Data: 53880
-    - m_Data: 53882
-    - m_Data: 53884
-    - m_Data: 53886
-    - m_Data: 53888
-    - m_Data: 53890
-    - m_Data: 53892
-    - m_Data: 53894
-    - m_Data: 53896
-    - m_Data: 53898
-    - m_Data: 53900
-    - m_Data: 53902
-    - m_Data: 53904
-    - m_Data: 53906
-    - m_Data: 53908
-    - m_Data: 53910
-    - m_Data: 53912
-    - m_Data: 53914
-    - m_Data: 53916
+    - m_Data: 53464
+    - m_Data: 53466
+    - m_Data: 53468
+    - m_Data: 53470
+    - m_Data: 53472
+    - m_Data: 53474
+    - m_Data: 53476
+    - m_Data: 53478
+    - m_Data: 53480
+    - m_Data: 53482
+    - m_Data: 53484
+    - m_Data: 53486
+    - m_Data: 53488
+    - m_Data: 53490
+    - m_Data: 53492
+    - m_Data: 53494
+    - m_Data: 53496
+    - m_Data: 53498
+    - m_Data: 53500
+    - m_Data: 53502
+    - m_Data: 53504
+    - m_Data: 53506
+    - m_Data: 53508
+    - m_Data: 53510
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1489,10 +1488,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs:
-    - m_Data: 53106
+    m_SelectedInstanceIDs: []
     m_LastClickedEntityId:
-      m_Data: 53106
+      m_Data: 0
     m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs:
     - m_Data: 52882

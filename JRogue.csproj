@@ -60,12 +60,14 @@
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryConsumePolicy.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupCoordinator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyDisplay.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Telekinesis/TelekinesisAbility.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/HearingUtility.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySortMode.cs" />
     <Compile Include="Assets/Scripts/Controller/Player/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridManager.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/Algorithm/ShadowCaster.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryItemRowView.cs" />
+    <Compile Include="Assets/Scripts/Manager/Floor/TelekinesisFloorQuery.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCategoryTabsView.cs" />
     <Compile Include="Assets/Scripts/Service/Formation/FormationRushService.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />

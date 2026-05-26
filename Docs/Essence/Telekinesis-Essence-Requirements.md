@@ -257,9 +257,12 @@ Cancel exits targeting without SP or turn cost.
 
 | Asset / type | Purpose | Status |
 |--------------|---------|--------|
-| `Telekinesis.asset` | `EssenceData` | **Not created** |
-| `Telekinesis_Standard.asset` | `TelekinesisAbility` | **Not created** |
-| `TelekinesisAbility.cs` | Execute logic | **Not created** |
+| `Telekinesis.asset` | `EssenceData` | **Created** — `Assets/Resources/Item/Essence/Telekinesis.asset` |
+| `Telekinesis_Standard.asset` | `TelekinesisAbility` | **Created** — `Assets/Resources/Item/Ability/Telekinesis_Standard.asset` |
+| `TelekinesisAbility.cs` | Execute logic | **Created** — `Assets/Scripts/Abilities/Telekinesis/TelekinesisAbility.cs` |
+| `TelekinesisFloorQuery.cs` | Single pickable resolution | **Created** — `Assets/Scripts/Manager/Floor/TelekinesisFloorQuery.cs` |
+| `TelekinesisAbilityTests.cs` | Unit tests | **Created** |
+| `PlayerCommandProcessorTest` | Invalid confirm keeps targeting | **Extended** |
 
 ---
 
