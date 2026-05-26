@@ -1,4 +1,5 @@
 using JRogue.Stats;
+using JRogue.Stats.Racial;
 using UnityEngine;
 
 namespace JRogue.Ability.SuddenStrength
@@ -24,7 +25,7 @@ namespace JRogue.Ability.SuddenStrength
             durationTurns = duration;
             turnsRemaining = duration;
             _stats = GetComponent<CharacterStats>();
-            _stats?.Strength.AddModifier(strengthBonus, this);
+            _stats?.Strength.AddModifier(strengthBonus, this, ModifierSourceLayer.Temporary);
         }
 
         public void OnPlayerPhaseStart()

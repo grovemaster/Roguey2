@@ -43,16 +43,16 @@ One `EssenceData` + one `SuddenStrengthAbility` asset; duration and bonus are au
 
 ---
 
-## 3. Current baseline (as-is)
+## 3. Current baseline (as implemented)
 
 | Area | Today |
 |------|--------|
-| **Temporary stat mods** | `Stat.AddModifier(value, source)` / `RemoveModifiersFromSource(source)` / `HasModifierFromSource(source)`. |
-| **Turn boundaries** | `TurnManager.NotifyPartyTurnStart()` → per-member `EssenceSlotManager.NotifyTurnStart()` and racial hooks. |
-| **Untargeted essence actives** | `requiresTarget = false` → `TryExecuteAbility(slot, index)` → `OnPlayerActionComplete` on success. |
+| **Temporary stat mods** | `Stat.AddModifier(value, source, ModifierSourceLayer.Temporary)` / `RemoveModifiersFromSource(source)` / `HasModifierFromSource(source)`. |
+| **Turn boundaries** | `TurnManager.NotifyPartyTurnStart()` → per-member `RacialPassiveHooks.NotifyTurnStart` then `EssenceSlotManager.NotifyTurnStart()`. |
+| **Untargeted essence actives** | `requiresTarget = false` → `TryExecuteAbility(slot, index)` → on success: **formation off** → `OnPlayerActionComplete(caster)`; **formation on** → `RecordNewLeaderPosition` + `ProcessFollowerRush()` (same squad boundary as targeted abilities). |
 | **CanExecute gate** | `EssenceSlotManager` checks `ability.CanExecute` before execute; logs `{abilityName} conditions not met!` on failure. |
-| **Timed buff runtime** | **No** global buff system; **no** existing turn-counted `AbilityAction` buff. |
-| **Sudden Strength** | **Not implemented**. |
+| **Timed buff runtime** | `SuddenStrengthBuffRuntime` on caster; phase ticks via `EssenceSlotManager.NotifyTurnStart()` (§7 Option B). |
+| **Sudden Strength** | **Implemented** — `SuddenStrengthAbility`, `SuddenStrengthBuffRuntime`, assets under `Assets/Resources/Item/`, tests in `SuddenStrengthAbilityTests.cs`. |
 
 ---
 
@@ -99,7 +99,7 @@ One `EssenceData` + one `SuddenStrengthAbility` asset; duration and bonus are au
    - `TurnManager.CanActorTakeAction(caster)`.
    - `currentSoulPower >= 1`.
    - **`CanExecute(caster) == true`** (§6.1 — buff not already active).
-3. On success: `ExecuteCore` applies buff (§6.2), deduct **1** Soul Power, **`OnPlayerActionComplete(caster)`** (same as `HealAbility` / untargeted essences).
+3. On success: `ExecuteCore` applies buff (§6.2), deduct **1** Soul Power, then consume the squad action: **`OnPlayerActionComplete(caster)`** when party formation is **off**; when formation is **on**, `RecordNewLeaderPosition` + follower rush + end player turn (same completion path as other formation actions).
 
 ### F5.2 — Failure (already buffed)
 
@@ -194,7 +194,9 @@ Today `TurnManager.NotifyPartyTurnStart()` calls `EssenceSlotManager.NotifyTurnS
 | Option | Description |
 |--------|-------------|
 | **A (preferred)** | `SuddenStrengthBuffRuntime` registers with a small **`TurnStartBuffRegistry`** (or static list) ticked from `TurnManager.NotifyPartyTurnStart()` before or after essence passives. |
-| **B** | `EssenceSlotManager.NotifyTurnStart()` also calls `GetComponents<SuddenStrengthBuffRuntime>()` and ticks each. |
+| **B** | `EssenceSlotManager.NotifyTurnStart()` also ticks `SuddenStrengthBuffRuntime` on that actor. |
+
+**Shipped:** **Option B** — `EssenceSlotManager.NotifyTurnStart()` invokes `GetComponent<SuddenStrengthBuffRuntime>()?.OnPlayerPhaseStart()` after passive `OnTurnStart` hooks. Enemy turns that call `EssenceSlotManager.NotifyTurnStart()` (e.g. `EnemyController`) will tick the buff if an enemy ever has the runtime.
 
 **R7.2** Ticks run for **all party members** that have the component, not only the active member.
 

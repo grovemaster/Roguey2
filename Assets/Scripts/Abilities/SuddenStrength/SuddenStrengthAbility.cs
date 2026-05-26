@@ -23,7 +23,10 @@ namespace JRogue.Ability.SuddenStrength
             {
                 if (!stats.Strength.HasModifierFromSource(existing))
                 {
-                    Object.DestroyImmediate(existing);
+                    if (Application.isPlaying)
+                        Object.Destroy(existing);
+                    else
+                        Object.DestroyImmediate(existing);
                 }
                 else
                 {
