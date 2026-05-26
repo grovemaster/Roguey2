@@ -73,6 +73,7 @@
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/GridMover.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupMenuUI.cs" />
+    <Compile Include="Assets/Scripts/Effects/Timed/TimedStatModifierRuntime.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
+    <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />

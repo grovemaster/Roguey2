@@ -1,3 +1,4 @@
+using JRogue.Effects.Timed;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
 using UnityEngine;
@@ -5,53 +6,21 @@ using UnityEngine;
 namespace JRogue.Ability.SuddenStrength
 {
     /// <summary>
-    /// Tracks Sudden Strength duration in player phases. Stat modifier source is this component instance.
+    /// Sudden Strength specialization using the shared timed stat-modifier runtime.
     /// </summary>
-    public sealed class SuddenStrengthBuffRuntime : MonoBehaviour
+    public sealed class SuddenStrengthBuffRuntime : ActorTimedStatModifierRuntime
     {
-        [SerializeField] int strengthBonus;
-        [SerializeField] int durationTurns;
-        [SerializeField] int turnsRemaining;
-
-        CharacterStats _stats;
-
-        public int StrengthBonus => strengthBonus;
-        public int DurationTurns => durationTurns;
-        public int TurnsRemaining => turnsRemaining;
+        public int StrengthBonus => ModifierAmount;
 
         public void Apply(int bonus, int duration)
         {
-            strengthBonus = bonus;
-            durationTurns = duration;
-            turnsRemaining = duration;
-            _stats = GetComponent<CharacterStats>();
-            _stats?.Strength.AddModifier(strengthBonus, this, ModifierSourceLayer.Temporary);
+            Configure(StatType.Strength, bonus, ModifierSourceLayer.Temporary);
+            Initialize(duration);
         }
 
-        public void OnPlayerPhaseStart()
+        protected override void OnEffectExpired()
         {
-            if (turnsRemaining <= 0)
-                return;
-
-            turnsRemaining--;
-            if (turnsRemaining <= 0)
-                Expire();
-        }
-
-        void Expire()
-        {
-            RemoveModifier();
             Debug.Log($"[Sudden Strength] Expired on {gameObject.name}.");
-            Destroy(this);
-        }
-
-        void OnDestroy() => RemoveModifier();
-
-        void RemoveModifier()
-        {
-            if (_stats == null)
-                _stats = GetComponent<CharacterStats>();
-            _stats?.Strength.RemoveModifiersFromSource(this);
         }
     }
 }

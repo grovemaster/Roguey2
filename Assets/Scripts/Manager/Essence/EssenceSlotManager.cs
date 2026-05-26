@@ -1,4 +1,3 @@
-using JRogue.Ability.SuddenStrength;
 using UnityEngine;
 using System.Collections.Generic;
 using JRogue.Item.Essence;
@@ -136,7 +135,7 @@ namespace JRogue.Manager.Essence
                 }
             }
 
-            GetComponent<SuddenStrengthBuffRuntime>()?.OnPlayerPhaseStart();
+            gameObject.SendMessage("OnPlayerPhaseStart", SendMessageOptions.DontRequireReceiver);
         }
 
         /// <summary>
