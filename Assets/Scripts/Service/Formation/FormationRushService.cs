@@ -5,6 +5,7 @@ using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
+using JRogue.Hazards;
 using UnityEngine;
 
 namespace JRogue.Service.Formation
@@ -87,7 +88,7 @@ namespace JRogue.Service.Formation
                         (Vector3)follower.GridPosition + (direction * MaxRushDistance));
                 }
 
-                if (IsValidMove(map, grid, finalTarget, plannedMoves))
+                if (IsValidMove(map, grid, finalTarget, plannedMoves, follower: follower))
                 {
                     plannedMoves.Add(follower, finalTarget);
                     Debug.Log($"[RUSH-PLAN] {follower.name} accepted target {finalTarget}");
@@ -112,7 +113,7 @@ namespace JRogue.Service.Formation
                                 continue;
                             }
 
-                            if (IsValidMove(map, grid, neighbor, plannedMoves))
+                            if (IsValidMove(map, grid, neighbor, plannedMoves, follower: follower))
                             {
                                 float d = Vector3Int.Distance(neighbor, historicalTarget);
                                 if (d < bestDistToBreadcrumb)
@@ -138,6 +139,7 @@ namespace JRogue.Service.Formation
                 {
                     Debug.Log($"[RUSH-LAND] {actor.name} moving {actor.GridPosition} -> {dest}");
                     actor.ApplyPositionChange(dest);
+                    HazardService.Instance?.NotifyActorMovedOntoCell(actor);
                 }
                 else
                 {
@@ -163,10 +165,17 @@ namespace JRogue.Service.Formation
             GridManager grid,
             Vector3Int tile,
             Dictionary<BaseActor, Vector3Int> plannedMoves,
-            bool allowAllies = false)
+            bool allowAllies = false,
+            BaseActor follower = null)
         {
             if (map == null || grid == null) return false;
             if (!map.IsWalkable(tile)) return false;
+
+            if (follower != null && HazardService.Instance != null
+                && !HazardService.Instance.CanEnter(tile, follower))
+            {
+                return false;
+            }
 
             IBattleTarget occupant = grid.GetActorAt(tile);
             if (occupant != null)

@@ -5,6 +5,7 @@ using JRogue.Actors;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
+using JRogue.Hazards;
 using JRogue.Manager.Turn;
 using JRogue.Tests.UnitTests.MockMonoBehavior;
 using NSubstitute;
@@ -60,6 +61,10 @@ namespace JRogue.Tests.UnitTests.Input
             TurnManager turnManager = turnManagerObject.AddComponent<TurnManager>();
             turnManager.currentState = GameState.PLAYER_TURN;
 
+            GameObject hazardServiceObject = new GameObject("HazardService_Test");
+            createdObjects.Add(hazardServiceObject);
+            hazardServiceObject.AddComponent<HazardService>();
+
             Assert.IsNotNull(mapManager);
             Assert.IsNotNull(GridManager.Instance);
             Assert.IsNotNull(TurnManager.Instance);
@@ -101,6 +106,7 @@ namespace JRogue.Tests.UnitTests.Input
             TurnManager.Instance = null;
             ClearPrivateStaticInstanceProperty(typeof(GridManager));
             ClearPrivateStaticInstanceProperty(typeof(MapManager));
+            ClearPrivateStaticInstanceProperty(typeof(HazardService));
         }
 
         private static void ClearPrivateStaticInstanceProperty(Type managerType)

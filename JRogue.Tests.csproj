@@ -79,6 +79,7 @@
     <Compile Include="Assets/Tests/Mocks/MockBattleTarget.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/SpiritImprintRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputHandlerTest.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Combat/EnvironmentalHazardTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/PlayerCommandTest.cs" />
   </ItemGroup>
   <ItemGroup>

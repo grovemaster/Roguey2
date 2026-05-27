@@ -103,6 +103,7 @@ namespace JRogue.Input
                 return;
 
             if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
+                || HazardConfirmDialogUI.BlocksGameplay
                 || FloorPickupMenuUI.BlocksGameplay)
                 return;
 
@@ -202,6 +203,7 @@ namespace JRogue.Input
 
         static bool BlocksFloorGameplay() =>
             InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
+            || HazardConfirmDialogUI.BlocksGameplay
             || FloorPickupMenuUI.BlocksGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>

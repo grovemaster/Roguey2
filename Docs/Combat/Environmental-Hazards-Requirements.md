@@ -341,12 +341,13 @@ Unity: **PPU 32**, **Point** filter — see `ThirdParty/DungeonCrawl32/README.md
 
 | Deliverable | Status |
 |-------------|--------|
-| `EnvironmentalHazardDefinition` | **Not created** |
-| `HazardService` / passage evaluator | **Not created** |
-| `HazardMoveGate` (gas confirm) | **Not created** |
-| `EnvironmentalHazard_Lava` / `_PoisonGas` assets | **Not created** |
-| SampleScene placements | **Not created** |
+| `EnvironmentalHazardDefinition` | **Done** — `Assets/Scripts/Hazards/` |
+| `HazardService` / passage evaluator | **Done** |
+| `HazardMoveGate` + `HazardConfirmDialogUI` (gas confirm) | **Done** |
+| `EnvironmentalHazard_Lava` / `_PoisonGas` assets | **Done** — `Assets/Resources/Hazards/` |
+| SampleScene placements | **Done** — add `SampleSceneHazardPlacements` to scene (see [Environmental-Hazards-SampleScene.md](Environmental-Hazards-SampleScene.md)) |
 | Hazard sprites (DCSS Option A) | **Imported** — §10 |
+| Unit tests | **Done** — `EnvironmentalHazardTests` |
 | Lava `requiredStrength` | **50** (locked) |
 | Fly / Swim conditions | **Future** |
 | Poison Gas → Poisoned status | **Future** ([status spec](Status-Effects-Requirements.md)) |

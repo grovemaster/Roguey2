@@ -11,7 +11,9 @@ using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.Racial;
+using JRogue.Hazards;
 using JRogue.Service.Formation;
+using JRogue.UI.Gameplay;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
 using JRogue.UI.Targeting;
@@ -126,7 +128,13 @@ namespace JRogue.Input
             if (partyManager.IsFormationActive)
             {
                 if (isEnemyBump
-                    || FormationRushService.IsValidMove(mapManager, gridManager, targetTile, new Dictionary<BaseActor, Vector3Int>(), allowAllies: true))
+                    || FormationRushService.IsValidMove(
+                        mapManager,
+                        gridManager,
+                        targetTile,
+                        new Dictionary<BaseActor, Vector3Int>(),
+                        allowAllies: true,
+                        follower: activeMember))
                 {
                     if (TryConfirmGatedMove(activeMember, direction, targetTile, isEnemyBump, formationActive: true, oldPosition))
                         return true;
@@ -150,7 +158,13 @@ namespace JRogue.Input
 
             if (isAllySwap
                 && swappableAlly != null
-                && FormationRushService.IsValidMove(mapManager, gridManager, targetTile, new Dictionary<BaseActor, Vector3Int>(), allowAllies: true))
+                && FormationRushService.IsValidMove(
+                    mapManager,
+                    gridManager,
+                    targetTile,
+                    new Dictionary<BaseActor, Vector3Int>(),
+                    allowAllies: true,
+                    follower: activeMember))
             {
                 GridMover leaderMover = activeMember.GetComponent<GridMover>();
                 GridMover allyMover = swappableAlly.GetComponent<GridMover>();
@@ -193,6 +207,15 @@ namespace JRogue.Input
             bool formationActive,
             Vector3Int oldPosition)
         {
+            if (HazardMoveGate.TryInterceptMove(
+                    activeMember,
+                    targetTile,
+                    isEnemyBump,
+                    () => CompleteConfirmedMove(activeMember, direction, formationActive, oldPosition)))
+            {
+                return true;
+            }
+
             return AutoPickupMoveGate.TryInterceptMove(
                 activeMember,
                 targetTile,
@@ -250,6 +273,8 @@ namespace JRogue.Input
             }
 
             Debug.Log($"{activeMember.name} is skipping turn...");
+            HazardService.Instance?.OnActorWaitOnCell(activeMember);
+
             if (partyManager.IsFormationActive)
             {
                 ProcessFollowerRush();

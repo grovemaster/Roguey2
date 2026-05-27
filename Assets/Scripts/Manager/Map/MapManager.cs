@@ -10,6 +10,11 @@ namespace JRogue.Manager.Map
 
         [SerializeField] private Tilemap floorMap;
         [SerializeField] private Tilemap wallMap;
+        [SerializeField] private Tilemap hazardOverlayMap;
+
+        public Tilemap FloorMap => floorMap;
+        public Tilemap WallMap => wallMap;
+        public Tilemap HazardOverlayMap => hazardOverlayMap;
 
         private void Awake()
         {

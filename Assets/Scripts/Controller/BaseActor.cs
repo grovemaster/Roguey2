@@ -7,6 +7,7 @@ using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
+using JRogue.Hazards;
 using JRogue.Service.Sensing;
 using JRogue.Stats;
 using UnityEngine;
@@ -133,7 +134,7 @@ namespace JRogue.Actors
                 for (int i = 0; i < FootprintCellsBuffer.Count; i++)
                 {
                     Vector3Int cell = FootprintCellsBuffer[i];
-                    if (!mapManager.IsWalkable(cell))
+                    if (!mapManager.IsWalkable(cell) || !CanEnterHazardCell(cell))
                         return false;
                 }
 
@@ -158,12 +159,16 @@ namespace JRogue.Actors
                         return false;
                 }
 
-                return mover.ApplyPositionChange(newAnchor);
+                if (!mover.ApplyPositionChange(newAnchor))
+                    return false;
+
+                HazardService.Instance?.NotifyActorMovedOntoCell(this);
+                return true;
             }
 
             Vector3Int targetPos = newAnchor;
 
-            if (!mapManager.IsWalkable(targetPos))
+            if (!mapManager.IsWalkable(targetPos) || !CanEnterHazardCell(targetPos))
                 return false;
 
             IBattleTarget target = gridManager != null ? gridManager.GetActorAt(targetPos) : null;
@@ -188,7 +193,17 @@ namespace JRogue.Actors
             if (occupantSingle != null && occupantSingle.Owner != gameObject)
                 return false;
 
-            return mover.ApplyPositionChange(targetPos);
+            if (!mover.ApplyPositionChange(targetPos))
+                return false;
+
+            HazardService.Instance?.NotifyActorMovedOntoCell(this);
+            return true;
+        }
+
+        bool CanEnterHazardCell(Vector3Int cell)
+        {
+            HazardService hazards = HazardService.Instance;
+            return hazards == null || hazards.CanEnter(cell, this);
         }
 
         BaseActor FindBumpTargetForFootprint(List<Vector3Int> destinationCells)
