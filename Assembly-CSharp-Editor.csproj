@@ -50,7 +50,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />
+    <Compile Include="Assets/Editor/Lighting/LightingScenarioQaPack.cs" />
     <Compile Include="Assets/Editor/Traps/TrapAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/Lighting/LightingScenarioSampleSceneBootstrap.cs" />
+    <Compile Include="Assets/Editor/Lighting/LightingScenarioAssetPackCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

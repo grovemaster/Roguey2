@@ -134,6 +134,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapPlacementEntry.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TrapConfirmDialogUI.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightingScenarioController.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardBootstrap.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileService.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorItemPileService.cs" />

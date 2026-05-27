@@ -105,6 +105,7 @@
     <Compile Include="Assets/Data/Status/StatusEffectId.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/ImplantSlotPreset.cs" />
     <Compile Include="Assets/Data/Racial/RacialProgressionPayloadApplicator.cs" />
+    <Compile Include="Assets/Data/Lighting/LightingScenarioDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonAbilitiesRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeClusterData.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/AncestorDefinition.cs" />

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2ad21bd721d9dc88e2bdb14eab37ee, type: 3}
+  m_Name: LightingScenario_Phase2_FogMemory
+  m_EditorClassIdentifier: JRogue.Data::JRogue.World.Lighting.LightingScenarioDefinition
+  scenarioId: Phase2_FogMemory
+  displayName: Phase 2 - Fog + Lighting Snapshot
+  description: Validate that explored memory freezes lighting until cells are seen
+    again.
+  activeRootNames:
+  - LightingPhase_Phase2_FogMemory
+  validationChecklist:
+  - Seen lit cell turns explored after leaving LOS.
+  - Off-screen emission change does not update explored memory.
+  - Re-entering LOS refreshes memory from live lighting.

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2ad21bd721d9dc88e2bdb14eab37ee, type: 3}
+  m_Name: LightingScenario_Phase5_DayNight
+  m_EditorClassIdentifier: JRogue.Data::JRogue.World.Lighting.LightingScenarioDefinition
+  scenarioId: Phase5_DayNight
+  displayName: Phase 5 - Day/Night Ambient Cycle
+  description: Validate ambient region phase changes over turn boundaries.
+  activeRootNames:
+  - LightingPhase_Phase5_DayNight
+  validationChecklist:
+  - Ambient transitions occur on configured turn cadence.
+  - Dark/bright presentation changes with ambient phase.
+  - Cycle logging and recompute triggers fire as expected.
