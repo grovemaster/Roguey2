@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9252c848d9d0bf83a958156bd76e13ba, type: 3}
+  m_Name: SampleScene_Traps
+  m_EditorClassIdentifier: JRogue::JRogue.Traps.TrapPlacementSet
+  placements:
+  - cell: {x: -3, y: -2, z: 0}
+    definition: {fileID: 11400000, guid: 68220db961ef11f9285660299efa3bd8, type: 2}
+  - cell: {x: -2, y: -3, z: 0}
+    definition: {fileID: 11400000, guid: 926a1b3bf9fb222f4bac781ed765de82, type: 2}
+  - cell: {x: -1, y: -2, z: 0}
+    definition: {fileID: 11400000, guid: bd88c3562f61968e5bba0e7cb109babe, type: 2}
+  - cell: {x: -6, y: -3, z: 0}
+    definition: {fileID: 11400000, guid: b78cb805749d0e3b6aae8e04f36ad049, type: 2}

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d35114093574666db2a7e122faf0164, type: 3}
+  m_Name: TrapDefinition_Bear
+  m_EditorClassIdentifier: JRogue::JRogue.Traps.TrapDefinition
+  trapId: 2
+  displayName: Bear Trap
+  placement: 0
+  initialVisibility: 0
+  detectionThreshold: 12
+  triggerLimit: 0
+  finiteCharges: 0
+  triggerRange: 1
+  piercingDamage: 15
+  disguiseFloorTile: {fileID: 0}
+  disguiseWallTile: {fileID: 0}
+  revealedSprite: {fileID: -8184931606732374380, guid: b4305c5309e3f50d08b7b9973ff9da62, type: 3}
+  futureEffects: []

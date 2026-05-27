@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JRogue.Actors;
+using JRogue.GridFeatures;
 using JRogue.Manager.Map;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -199,13 +200,11 @@ namespace JRogue.Interactables
 
             if (sprite == null)
             {
-                interactableOverlayMap.SetTile(instance.Cell, null);
+                GridOverlayPainter.Clear(interactableOverlayMap, instance.Cell);
                 return;
             }
 
-            var runtimeTile = ScriptableObject.CreateInstance<Tile>();
-            runtimeTile.sprite = sprite;
-            interactableOverlayMap.SetTile(instance.Cell, runtimeTile);
+            GridOverlayPainter.Paint(interactableOverlayMap, instance.Cell, tile: null, sprite: sprite);
         }
 
         void EnsureOverlayMap()

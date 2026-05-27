@@ -12,6 +12,7 @@ using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.Racial;
 using JRogue.Hazards;
+using JRogue.Traps;
 using JRogue.Interactables;
 using JRogue.Service.Formation;
 using JRogue.UI.Gameplay;
@@ -131,38 +132,6 @@ namespace JRogue.Input
                     activeMember.GridPosition,
                     targetTile);
 
-            if (partyManager.IsFormationActive)
-            {
-                if (isEnemyBump
-                    || isInteractableBump
-                    || FormationRushService.IsValidMove(
-                        mapManager,
-                        gridManager,
-                        targetTile,
-                        new Dictionary<BaseActor, Vector3Int>(),
-                        allowAllies: true,
-                        follower: activeMember))
-                {
-                    if (TryConfirmGatedMove(activeMember, direction, targetTile, isEnemyBump, formationActive: true, oldPosition))
-                        return true;
-
-                    if (activeMember.TryMove(direction))
-                    {
-                        if (activeMember.GridPosition != oldPosition)
-                            partyManager.RecordNewLeaderPosition(activeMember.GridPosition);
-                        else
-                        {
-                            Debug.Log($"[FORMATION-BUMP] Leader attacked at {targetTile}. Position stayed {oldPosition}.");
-                            partyManager.SnapHistoryToCurrentPositions();
-                        }
-
-                        ProcessFollowerRush();
-                    }
-                }
-
-                return true;
-            }
-
             if (isAllySwap
                 && swappableAlly != null
                 && FormationRushService.IsValidMove(
@@ -184,8 +153,46 @@ namespace JRogue.Input
                 return true;
             }
 
-            if (TryConfirmGatedMove(activeMember, direction, targetTile, isEnemyBump, formationActive: false, oldPosition))
+            bool formationActive = partyManager.IsFormationActive;
+            if (TryConfirmGatedMove(
+                    activeMember,
+                    direction,
+                    targetTile,
+                    isEnemyBump,
+                    formationActive,
+                    oldPosition))
+            {
                 return true;
+            }
+
+            if (formationActive)
+            {
+                if (isEnemyBump
+                    || isInteractableBump
+                    || FormationRushService.IsValidMove(
+                        mapManager,
+                        gridManager,
+                        targetTile,
+                        new Dictionary<BaseActor, Vector3Int>(),
+                        allowAllies: true,
+                        follower: activeMember))
+                {
+                    if (activeMember.TryMove(direction))
+                    {
+                        if (activeMember.GridPosition != oldPosition)
+                            partyManager.RecordNewLeaderPosition(activeMember.GridPosition);
+                        else
+                        {
+                            Debug.Log($"[FORMATION-BUMP] Leader attacked at {targetTile}. Position stayed {oldPosition}.");
+                            partyManager.SnapHistoryToCurrentPositions();
+                        }
+
+                        ProcessFollowerRush();
+                    }
+                }
+
+                return true;
+            }
 
             if (activeMember.TryMove(direction))
                 turnManager.OnPlayerActionComplete(activeMember.gameObject);
@@ -214,6 +221,15 @@ namespace JRogue.Input
             bool formationActive,
             Vector3Int oldPosition)
         {
+            if (TrapMoveGate.TryInterceptMove(
+                    activeMember,
+                    targetTile,
+                    isEnemyBump,
+                    () => CompleteConfirmedMove(activeMember, direction, formationActive, oldPosition)))
+            {
+                return true;
+            }
+
             if (HazardMoveGate.TryInterceptMove(
                     activeMember,
                     targetTile,

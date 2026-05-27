@@ -12,11 +12,13 @@ namespace JRogue.Manager.Map
         [SerializeField] private Tilemap wallMap;
         [SerializeField] private Tilemap hazardOverlayMap;
         [SerializeField] private Tilemap interactableOverlayMap;
+        [SerializeField] private Tilemap trapOverlayMap;
 
         public Tilemap FloorMap => floorMap;
         public Tilemap WallMap => wallMap;
         public Tilemap HazardOverlayMap => hazardOverlayMap;
         public Tilemap InteractableOverlayMap => interactableOverlayMap;
+        public Tilemap TrapOverlayMap => trapOverlayMap;
 
         private void Awake()
         {

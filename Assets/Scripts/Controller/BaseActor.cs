@@ -263,7 +263,10 @@ namespace JRogue.Actors
             Vector3Int oldPos = GridPosition;
             mover.ApplyPositionChange(newPosition);
             if (oldPos != newPosition)
+            {
                 HazardService.Instance?.NotifyActorMovedOntoCell(this);
+                Traps.TrapService.Instance?.NotifyActorEntered(this);
+            }
         }
 
         public virtual void ProduceNoise(int volume)

@@ -1757,6 +1757,8 @@ GameObject:
   - component: {fileID: 1529000337}
   - component: {fileID: 1529000338}
   - component: {fileID: 1529000339}
+  - component: {fileID: 1529000340}
+  - component: {fileID: 1529000341}
   m_Layer: 0
   m_Name: GameSystems
   m_TagString: Untagged
@@ -1795,6 +1797,7 @@ MonoBehaviour:
   wallMap: {fileID: 1255627955}
   hazardOverlayMap: {fileID: 1351202632}
   interactableOverlayMap: {fileID: 0}
+  trapOverlayMap: {fileID: 0}
 --- !u!114 &1529000335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1862,7 +1865,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcab0f504a39215e2ac5c875f4c4a851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: JRogue::JRogue.Interactables.InteractableTileBootstrap
-  placementSet: {fileID: 11400000, guid: 2ebf04b1de20427787c340e4fc7d9aca, type: 2}
+  placementSet: {fileID: 0}
+  placements: []
+--- !u!114 &1529000340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529000332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa11bb22cc3344556677889900aabbcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Traps.TrapService
+  trapOverlayMap: {fileID: 0}
+--- !u!114 &1529000341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529000332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb22cc33dd44556677889900aabbccdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Traps.TrapBootstrap
+  placementSet: {fileID: 11400000, guid: 39d401818fa4952e893bf4f46b901ae1, type: 2}
   placements: []
 --- !u!1 &1623672201
 GameObject:

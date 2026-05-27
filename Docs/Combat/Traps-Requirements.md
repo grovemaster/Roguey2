@@ -381,12 +381,13 @@ Wire these on `TrapDefinition_*` assets when trap code is implemented (§11).
 
 | Deliverable | Status |
 |-------------|--------|
-| `TrapDefinition` / `TrapService` / `TrapInstance` | **Not created** |
-| Move gate + confirm UI | **Not created** |
-| Formation `IsValidMove` trap check | **Not created** |
-| Perception detection pass | **Not created** |
-| Spike / Bear / Dart assets | **Not created** |
-| SampleScene placements | **Not created** |
+| `TrapDefinition` / `TrapService` / bootstrap | **Done** — `Assets/Scripts/Traps/` |
+| Move gate + confirm UI | **Done** — `TrapMoveGate`, `TrapConfirmDialogUI` |
+| Formation `IsValidMove` trap check | **Done** — visible floor traps blocked for followers |
+| Perception detection pass | **Done** — `TrapService.EvaluateDetection` on move + player phase |
+| Spike / Bear / Dart assets | **Menu** — `JRogue/Traps/Create QA Trap Asset Pack` |
+| SampleScene placements | **Asset** — `PlacementSets/SampleScene_Traps` + wire `TrapBootstrap` |
+| Shared grid utilities | **Done** — `GridOverlayPainter`, `PartySkillDetection` |
 | Third-party sprites (Stealthix CC0) | **Imported** — §13 |
 | Sliced sprites in `Assets/Art/Traps/Sprites/` | **Done** |
 

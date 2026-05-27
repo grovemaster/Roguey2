@@ -3,6 +3,7 @@ using JRogue.Actors;
 using JRogue.Core.Actor;
 using JRogue.Hazards;
 using JRogue.Interactables;
+using JRogue.Traps;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
@@ -169,6 +170,10 @@ namespace JRogue.Service.Formation
             if (interactables != null && interactables.BlocksOccupancy(tile))
                 return false;
 
+            TrapService traps = TrapService.Instance;
+            if (traps != null && !allowAllies && traps.IsPathingAvoidCell(tile))
+                return false;
+
             if (!allowAllies && IsTileClaimedByAnotherFollower(plannedMoves, tile, follower))
                 return false;
 
@@ -267,7 +272,10 @@ namespace JRogue.Service.Formation
             Dictionary<BaseActor, Vector3Int> plannedMoves)
         {
             HazardService hazards = HazardService.Instance;
-            if (hazards == null || !hazards.IsPathingAvoidCell(breadcrumb))
+            TrapService traps = TrapService.Instance;
+            bool avoidBreadcrumb = (hazards != null && hazards.IsPathingAvoidCell(breadcrumb))
+                || (traps != null && traps.IsPathingAvoidCell(breadcrumb));
+            if (!avoidBreadcrumb)
                 return breadcrumb;
 
             Vector3Int safe = FindBestBurstTile(
@@ -553,6 +561,10 @@ namespace JRogue.Service.Formation
                     return false;
             }
 
+            TrapService traps = TrapService.Instance;
+            if (traps != null && traps.IsPathingAvoidCell(cell))
+                return false;
+
             return true;
         }
 
@@ -626,6 +638,10 @@ namespace JRogue.Service.Formation
                 if (hazards.IsPathingAvoidCell(cell))
                     return false;
             }
+
+            TrapService traps = TrapService.Instance;
+            if (traps != null && traps.IsPathingAvoidCell(cell))
+                return false;
 
             if (IsBlockedByPlannedMove(cell, plannedMoves, goal))
                 return false;

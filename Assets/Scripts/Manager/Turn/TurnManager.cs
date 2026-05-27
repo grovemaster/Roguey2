@@ -5,6 +5,7 @@ using JRogue.Manager.Combat;
 using JRogue.Manager.Essence;
 using JRogue.Manager.Party;
 using JRogue.Hazards;
+using JRogue.Traps;
 using JRogue.Racial;
 using UnityEngine;
 public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY }
@@ -103,6 +104,7 @@ namespace JRogue.Manager.Turn
         private void NotifyPartyTurnStart()
         {
             HazardService.Instance?.TickOccupancyOnPlayerPhaseStart();
+            TrapService.Instance?.EvaluateDetection();
 
             if (PartyManager.Instance == null) return;
             foreach (var member in PartyManager.Instance.partyMembers)

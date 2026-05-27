@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Actors.Components;
+using JRogue.GridFeatures;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Stats;
@@ -296,30 +297,12 @@ namespace JRogue.Hazards
 
             if (!state.IsRevealed)
             {
-                hazardOverlayMap.SetTile(cell, null);
+                GridOverlayPainter.Clear(hazardOverlayMap, cell);
                 return;
             }
 
-            PaintOverlay(cell, state.Definition);
-        }
-
-        void PaintOverlay(Vector3Int cell, EnvironmentalHazardDefinition definition)
-        {
-            if (hazardOverlayMap == null)
-                return;
-
-            if (definition.overlayTile != null)
-            {
-                hazardOverlayMap.SetTile(cell, definition.overlayTile);
-                return;
-            }
-
-            if (definition.overlaySprite != null)
-            {
-                var runtimeTile = ScriptableObject.CreateInstance<Tile>();
-                runtimeTile.sprite = definition.overlaySprite;
-                hazardOverlayMap.SetTile(cell, runtimeTile);
-            }
+            EnvironmentalHazardDefinition def = state.Definition;
+            GridOverlayPainter.Paint(hazardOverlayMap, cell, def?.overlayTile, def?.overlaySprite);
         }
 
         void Start()

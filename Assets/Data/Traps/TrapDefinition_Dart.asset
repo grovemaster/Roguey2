@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d35114093574666db2a7e122faf0164, type: 3}
+  m_Name: TrapDefinition_Dart
+  m_EditorClassIdentifier: JRogue::JRogue.Traps.TrapDefinition
+  trapId: 3
+  displayName: Dart Trap
+  placement: 1
+  initialVisibility: 0
+  detectionThreshold: 12
+  triggerLimit: 1
+  finiteCharges: 3
+  triggerRange: 1
+  piercingDamage: 10
+  disguiseFloorTile: {fileID: 0}
+  disguiseWallTile: {fileID: 0}
+  revealedSprite: {fileID: 358927199954632231, guid: db457c9b5506b33c8875c52276094bb4, type: 3}
+  revealedTriggeredSprite: {fileID: -4044558275548177751, guid: 63f1f6b357d0de213913a00b662721af, type: 3}
+  futureEffects: []

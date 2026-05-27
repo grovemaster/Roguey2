@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/Traps/TrapAssetPackCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
