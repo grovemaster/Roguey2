@@ -134,7 +134,7 @@ namespace JRogue.Actors
                 for (int i = 0; i < FootprintCellsBuffer.Count; i++)
                 {
                     Vector3Int cell = FootprintCellsBuffer[i];
-                    if (!mapManager.IsWalkable(cell) || !CanEnterHazardCell(cell))
+                    if (!CanExitHazardCell(GridPosition) || !mapManager.IsWalkable(cell) || !CanEnterHazardCell(cell))
                         return false;
                 }
 
@@ -165,7 +165,7 @@ namespace JRogue.Actors
 
             Vector3Int targetPos = newAnchor;
 
-            if (!mapManager.IsWalkable(targetPos) || !CanEnterHazardCell(targetPos))
+            if (!CanExitHazardCell(GridPosition) || !mapManager.IsWalkable(targetPos) || !CanEnterHazardCell(targetPos))
                 return false;
 
             IBattleTarget target = gridManager != null ? gridManager.GetActorAt(targetPos) : null;
@@ -198,6 +198,12 @@ namespace JRogue.Actors
         {
             HazardService hazards = HazardService.Instance;
             return hazards == null || hazards.CanEnter(cell, this);
+        }
+
+        bool CanExitHazardCell(Vector3Int cell)
+        {
+            HazardService hazards = HazardService.Instance;
+            return hazards == null || hazards.CanExit(cell, this);
         }
 
         BaseActor FindBumpTargetForFootprint(List<Vector3Int> destinationCells)

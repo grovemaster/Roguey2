@@ -6,6 +6,7 @@ namespace JRogue.Hazards
     public sealed class EnvironmentalHazardMarker : MonoBehaviour
     {
         [SerializeField] EnvironmentalHazardDefinition definition;
+        [SerializeField] bool startHidden;
 
         void Start()
         {
@@ -13,7 +14,7 @@ namespace JRogue.Hazards
                 return;
 
             Vector3Int cell = Vector3Int.FloorToInt(transform.position);
-            HazardService.Instance.Register(cell, definition);
+            HazardService.Instance.Register(cell, definition, startHidden);
         }
     }
 }

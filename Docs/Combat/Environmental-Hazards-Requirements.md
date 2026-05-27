@@ -70,6 +70,7 @@ Do **not** use a single tilemap cell that is *only* poison gas with no underlyin
 | Term | Meaning |
 |------|--------|
 | **Hazard definition** | `EnvironmentalHazardDefinition` ScriptableObject. |
+| **Hidden hazard** | Starts with no overlay; revealed by sight (§6.7) or enter. |
 | **Passage hazard** | Blocks entry unless condition met (Lava v0). |
 | **Persistent hazard** | Passable; effect while occupying (Poison Gas v0). |
 | **Passage condition** | v0: `MinimumStrength(50)`; future: `Fly`, `Swim`, … |
@@ -236,6 +237,20 @@ Poison damage uses `HealthComponent` + `GetResistance(Poison)`; Undead high resi
 | Asset | Fields |
 |-------|--------|
 | `EnvironmentalHazard_PoisonGas.asset` | `kind = Persistent`, `persistentDamagePerTrigger = 1`, `persistentDamageType = Poison`, `underlyingFloorPreserves = true` |
+
+### F6.7 — Hidden hazards (optional placement)
+
+Some cells may **`startHidden`** (marker, bootstrap placement, or `EnvironmentalHazardTile.startHidden`).
+
+| Rule | Detail |
+|------|--------|
+| **Default look** | No overlay; underlying floor shows. Hazard logic still active. |
+| **Passive reveal** | `hiddenDetection` on the definition: `HazardDetectionMethod` (**None**, **PartyStatInRange**, **PartySkill**), thresholds, LOS, range. Example: sight ≥ 100 with LOS in sight range — not hard-coded. |
+| **Reveal — enter** | When `hiddenDetection.revealOnEnter` (default **true**), stepping on the cell reveals it. |
+| **Confirm** | **Hidden** persistent hazards: **no** move confirm; **revealed** persistent hazards: **yes**. |
+| **Hidden passage (lava)** | While hidden, **any** actor may **enter** (passage check ignored). Once **revealed**, normal passage rules apply. |
+| **Revealed passage occupancy** | On a **revealed** passage hazard, an occupant who **fails** the passage condition takes `failedPassageOccupancyDamagePerTurn` each occupancy tick (enter after hidden reveal skips that enter tick; wait / phase-start apply). |
+| **Exit** | `exitCondition` (v0: **Always** — occupant may leave freely; future snare traps will add conditions). |
 
 ---
 

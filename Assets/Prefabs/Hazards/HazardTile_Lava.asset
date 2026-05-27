@@ -35,3 +35,4 @@ MonoBehaviour:
   m_Flags: 1
   m_ColliderType: 1
   hazardDefinition: {fileID: 11400000, guid: b1c2d3e4f5a6478990abcdef12345001, type: 2}
+  startHidden: 1

@@ -6,6 +6,7 @@ Add **`SampleSceneHazardPlacements`** to the **GameSystems** object in `Assets/S
 |--------|----------------|------|
 | **Lava** | `(6,1)`, `(7,1)`, `(6,2)`, `(7,2)` | STR &lt; 50 cannot enter; STR ≥ 50 can walk through |
 | **Poison gas** | `(3,4)` … `(8,4)` | Confirm on enter; 1 poison damage on enter, wait, and each new player phase while standing |
+| **Poison gas (hidden)** | `(1,-4)` when using `SampleSceneHazardPlacements` | No overlay until **sight ≥ 100** + LOS or **enter**; `(0,-4)` stays visible |
 
 Optional: add a **`Hazard_Overlay`** tilemap under **Grid**, assign it on `MapManager.hazardOverlayMap` and `HazardService` for visible lava/gas sprites (definitions reference sprites in `Assets/Art/Hazards/Sprites/`).
 

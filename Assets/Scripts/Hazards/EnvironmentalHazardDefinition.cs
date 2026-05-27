@@ -26,5 +26,18 @@ namespace JRogue.Hazards
         public int persistentDamagePerTrigger = 1;
 
         public DamageType persistentDamageType = DamageType.Poison;
+
+        [Header("Hidden / reveal")]
+        public HazardDetectionSettings hiddenDetection = new HazardDetectionSettings();
+
+        [Header("Passage — revealed occupancy")]
+        [Tooltip("Damage per turn while on a revealed passage hazard without meeting its entry condition.")]
+        [Min(0)]
+        public int failedPassageOccupancyDamagePerTurn = 1;
+
+        public DamageType failedPassageOccupancyDamageType = DamageType.Fire;
+
+        [Header("Exit (future snare traps)")]
+        public HazardExitCondition exitCondition = HazardExitCondition.Always;
     }
 }

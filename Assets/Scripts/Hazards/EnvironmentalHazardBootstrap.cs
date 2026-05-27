@@ -11,6 +11,8 @@ namespace JRogue.Hazards
         {
             public Vector3Int cell;
             public EnvironmentalHazardDefinition definition;
+            [Tooltip("Overlay hidden until sight detection or a creature enters the cell.")]
+            public bool startHidden;
         }
 
         [SerializeField] Placement[] placements = Array.Empty<Placement>();
@@ -24,7 +26,7 @@ namespace JRogue.Hazards
             {
                 Placement p = placements[i];
                 if (p.definition != null)
-                    HazardService.Instance.Register(p.cell, p.definition);
+                    HazardService.Instance.Register(p.cell, p.definition, p.startHidden);
             }
         }
     }

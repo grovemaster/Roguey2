@@ -5,7 +5,7 @@ namespace JRogue.Hazards
 {
     public static class HazardPassageEvaluator
     {
-        public static bool CanEnter(EnvironmentalHazardDefinition definition, BaseActor actor)
+        public static bool MeetsPassageCondition(EnvironmentalHazardDefinition definition, BaseActor actor)
         {
             if (definition == null || actor == null)
                 return true;
@@ -22,6 +22,9 @@ namespace JRogue.Hazards
                 _ => true,
             };
         }
+
+        public static bool CanEnter(EnvironmentalHazardDefinition definition, BaseActor actor) =>
+            MeetsPassageCondition(definition, actor);
 
         static bool MeetsStrength(BaseActor actor, int required)
         {

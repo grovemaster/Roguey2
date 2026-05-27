@@ -85,6 +85,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryTelemetry.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupService.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardMoveGate.cs" />
+    <Compile Include="Assets/Scripts/Hazards/HazardDetectionSettings.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
     <Compile Include="Assets/Scripts/Abilities/UndeadGraveTouchAbility.cs" />
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthBuffRuntime.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Assets/Scripts/Core/Targeting/TargetingResolver.cs" />
     <Compile Include="Assets/Scripts/Hazards/SampleSceneHazardPlacements.cs" />
     <Compile Include="Assets/Scripts/Manager/Turn/TurnManager.cs" />
+    <Compile Include="Assets/Scripts/Hazards/HazardDetectionEvaluator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryHotkeyRuntimeOverrides.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
+    <Compile Include="Assets/Scripts/Hazards/HazardExitEvaluator.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AutoPickupConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/Input/AutoPickupMoveGate.cs" />
     <Compile Include="Assets/Scripts/Collector/InventoryCollector.cs" />
@@ -157,6 +160,7 @@
     <Compile Include="Assets/Scripts/Input/PlayerCommand.cs" />
     <Compile Include="Assets/Scripts/Testing/Essence/EssenceTestHarness.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryListColumnHeaderView.cs" />
+    <Compile Include="Assets/Scripts/Hazards/HazardCellState.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInscriptionGuards.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyCurrencyLedger.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyAiBrain.cs" />

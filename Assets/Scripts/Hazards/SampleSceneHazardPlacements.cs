@@ -40,8 +40,13 @@ namespace JRogue.Hazards
 
             if (poisonGas != null)
             {
+                // Visible corridor gas (y = 4).
                 for (int x = 3; x <= 8; x++)
                     HazardService.Instance.Register(new Vector3Int(x, 4, 0), poisonGas);
+
+                // SampleScene poison pair: (0,-4) visible, (1,-4) hidden until sight 100 + LOS or enter.
+                HazardService.Instance.Register(new Vector3Int(0, -4, 0), poisonGas);
+                HazardService.Instance.Register(new Vector3Int(1, -4, 0), poisonGas, startHidden: true);
             }
         }
     }

@@ -7,5 +7,7 @@ namespace JRogue.Hazards
     public class EnvironmentalHazardTile : Tile
     {
         public EnvironmentalHazardDefinition hazardDefinition;
+        [Tooltip("When true, overlay is hidden until detected by sight or entered.")]
+        public bool startHidden;
     }
 }

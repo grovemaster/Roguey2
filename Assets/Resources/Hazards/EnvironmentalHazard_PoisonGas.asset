@@ -22,3 +22,15 @@ MonoBehaviour:
   underlyingFloorPreserves: 1
   persistentDamagePerTrigger: 1
   persistentDamageType: 7
+  hiddenDetection:
+    method: 1
+    revealOnEnter: 1
+    statType: 8
+    skillType: 3
+    minimumValue: 100
+    requireLineOfSight: 1
+    useStatValueAsRange: 1
+    fixedRange: 8
+  failedPassageOccupancyDamagePerTurn: 1
+  failedPassageOccupancyDamageType: 3
+  exitCondition: 0
