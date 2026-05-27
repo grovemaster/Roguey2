@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using JRogue.Actors;
+using JRogue.Hazards;
 using JRogue.Core.Actor;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
@@ -44,6 +46,8 @@ namespace JRogue.Pathfinding
             firstStep = default;
             if (seeker == null || mapManager == null || gridManager == null)
                 return false;
+            BaseActor seekerActor = seeker.GetComponent<BaseActor>();
+            HazardService hazards = HazardService.Instance;
 
             IGridFootprint footprint = seeker.GetComponent<IGridFootprint>();
             if (footprint != null && !GridFootprintUtility.IsSingleCell(footprint))
@@ -55,13 +59,23 @@ namespace JRogue.Pathfinding
             bool CanEnter(Vector3Int c)
             {
                 if (c == goal)
-                    return mapManager.IsWalkable(c);
+                    return mapManager.IsWalkable(c) && CanEnterHazard(c);
 
                 if (!mapManager.IsWalkable(c))
                     return false;
 
+                if (!CanEnterHazard(c))
+                    return false;
+
                 IBattleTarget occupant = gridManager.GetActorAt(c);
                 return occupant == null || occupant.Owner == seeker;
+            }
+
+            bool CanEnterHazard(Vector3Int c)
+            {
+                if (hazards == null || seekerActor == null)
+                    return true;
+                return hazards.CanEnter(c, seekerActor);
             }
 
             bool CornerClearForDiagonal(Vector3Int from, Vector3Int to)
@@ -90,6 +104,8 @@ namespace JRogue.Pathfinding
             out Vector3Int firstStep)
         {
             firstStep = default;
+            BaseActor seekerActor = seeker.GetComponent<BaseActor>();
+            HazardService hazards = HazardService.Instance;
 
             bool CanEnterAnchor(Vector3Int anchor)
             {
@@ -105,6 +121,9 @@ namespace JRogue.Pathfinding
                 {
                     Vector3Int cell = PathFootprintBuffer[i];
                     if (!mapManager.IsWalkable(cell))
+                        return false;
+
+                    if (hazards != null && seekerActor != null && !hazards.CanEnter(cell, seekerActor))
                         return false;
 
                     IBattleTarget occupant = gridManager.GetActorAt(cell);

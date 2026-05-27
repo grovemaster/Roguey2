@@ -19,6 +19,8 @@ namespace JRogue.Hazards
         public Tile overlayTile;
         public Sprite overlaySprite;
         public bool underlyingFloorPreserves;
+        [Tooltip("When true, enemies treat this hazard as undesirable and avoid it if another route exists.")]
+        public bool avoidForEnemyPathing = true;
 
         [Min(0)]
         public int persistentDamagePerTrigger = 1;

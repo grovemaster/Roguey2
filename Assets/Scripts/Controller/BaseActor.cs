@@ -159,10 +159,7 @@ namespace JRogue.Actors
                         return false;
                 }
 
-                if (!mover.ApplyPositionChange(newAnchor))
-                    return false;
-
-                HazardService.Instance?.NotifyActorMovedOntoCell(this);
+                ApplyPositionChange(newAnchor);
                 return true;
             }
 
@@ -193,10 +190,7 @@ namespace JRogue.Actors
             if (occupantSingle != null && occupantSingle.Owner != gameObject)
                 return false;
 
-            if (!mover.ApplyPositionChange(targetPos))
-                return false;
-
-            HazardService.Instance?.NotifyActorMovedOntoCell(this);
+            ApplyPositionChange(targetPos);
             return true;
         }
 
@@ -225,7 +219,10 @@ namespace JRogue.Actors
 
         public void ApplyPositionChange(Vector3Int newPosition)
         {
+            Vector3Int oldPos = GridPosition;
             mover.ApplyPositionChange(newPosition);
+            if (oldPos != newPosition)
+                HazardService.Instance?.NotifyActorMovedOntoCell(this);
         }
 
         public virtual void ProduceNoise(int volume)

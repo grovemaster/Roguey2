@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Controller.Player;
+using JRogue.Core.Actor;
+using JRogue.Hazards;
 using JRogue.Manager.Party;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
@@ -260,6 +262,7 @@ namespace JRogue.Controller.Enemy
                     out Vector3Int firstStep))
             {
                 Vector3Int step = firstStep - _owner.GridPosition;
+                step = PreferSaferStep(step, playerPos);
                 if (_owner.TryMove(step))
                 {
                     _pursuitRefreshThisEnemyWave = true;
@@ -438,6 +441,7 @@ namespace JRogue.Controller.Enemy
                     out Vector3Int firstStep))
             {
                 Vector3Int step = firstStep - _owner.GridPosition;
+                step = PreferSaferStep(step, goal);
                 if (_owner.TryMove(step) && verboseLogging)
                     Debug.Log($"[AI-BRAIN] {_owner.name}: Move ({context}) toward ({goal.x},{goal.y}).");
                 return;
@@ -459,6 +463,53 @@ namespace JRogue.Controller.Enemy
         private Vector3Int GetFallbackCardinalStep(Vector3Int target)
         {
             return GetFallbackCardinalStep(_owner.GridPosition, target);
+        }
+
+        Vector3Int PreferSaferStep(Vector3Int plannedStep, Vector3Int goal)
+        {
+            HazardService hazards = HazardService.Instance;
+            if (_owner == null || hazards == null || _owner.BrainMapManager == null || GridManager.Instance == null)
+                return plannedStep;
+
+            Vector3Int current = _owner.GridPosition;
+            Vector3Int plannedDest = current + plannedStep;
+            if (!hazards.IsEnemyAvoidCell(plannedDest))
+                return plannedStep;
+
+            Vector3Int bestStep = plannedStep;
+            int bestDist = Mathf.Abs(goal.x - plannedDest.x) + Mathf.Abs(goal.y - plannedDest.y);
+
+            Vector3Int[] cardinalDirs =
+            {
+                Vector3Int.up,
+                Vector3Int.down,
+                Vector3Int.left,
+                Vector3Int.right
+            };
+
+            foreach (Vector3Int dir in cardinalDirs)
+            {
+                Vector3Int candidate = current + dir;
+                if (!_owner.BrainMapManager.IsWalkable(candidate))
+                    continue;
+                if (hazards.IsEnemyAvoidCell(candidate))
+                    continue;
+                if (!hazards.CanEnter(candidate, _owner))
+                    continue;
+
+                IBattleTarget occupant = GridManager.Instance.GetActorAt(candidate);
+                if (occupant != null && occupant.Owner != _owner.gameObject)
+                    continue;
+
+                int dist = Mathf.Abs(goal.x - candidate.x) + Mathf.Abs(goal.y - candidate.y);
+                if (dist < bestDist)
+                {
+                    bestDist = dist;
+                    bestStep = dir;
+                }
+            }
+
+            return bestStep;
         }
 
         bool IsAnyPartyMemberInMeleeRange()

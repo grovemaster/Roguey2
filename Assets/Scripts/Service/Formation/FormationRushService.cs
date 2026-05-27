@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Core.Actor;
+using JRogue.Hazards;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
-using JRogue.Hazards;
+using JRogue.Pathfinding;
 using UnityEngine;
 
 namespace JRogue.Service.Formation
@@ -72,21 +73,12 @@ namespace JRogue.Service.Formation
                     ? history[i]
                     : follower.GridPosition;
 
-                Vector3Int finalTarget = follower.GridPosition;
-                float dist = Vector3Int.Distance(follower.GridPosition, historicalTarget);
-
-                if (dist <= MaxRushDistance)
-                {
-                    finalTarget = historicalTarget;
-                }
-                else
-                {
-                    // Burst-step toward the breadcrumb, capped at MaxRushDistance.
-                    Vector3 direction =
-                        ((Vector3)(historicalTarget - follower.GridPosition)).normalized;
-                    finalTarget = Vector3Int.RoundToInt(
-                        (Vector3)follower.GridPosition + (direction * MaxRushDistance));
-                }
+                Vector3Int finalTarget = ComputeRushTarget(
+                    follower,
+                    historicalTarget,
+                    map,
+                    grid,
+                    plannedMoves);
 
                 if (IsValidMove(map, grid, finalTarget, plannedMoves, follower: follower))
                 {
@@ -95,37 +87,13 @@ namespace JRogue.Service.Formation
                 }
                 else
                 {
-                    // Couldn't take the ideal slot — search neighbors for the
-                    // best alternative within burst range.
-                    Vector3Int bestSmartTile = follower.GridPosition;
-                    float bestDistToBreadcrumb = float.MaxValue;
-                    bool foundSpot = false;
-
-                    for (int x = -1; x <= 1; x++)
-                    {
-                        for (int y = -1; y <= 1; y++)
-                        {
-                            if (x == 0 && y == 0) continue;
-                            Vector3Int neighbor = finalTarget + new Vector3Int(x, y, 0);
-                            if (Vector3Int.Distance(follower.GridPosition, neighbor)
-                                > MaxRushDistance + 0.5f)
-                            {
-                                continue;
-                            }
-
-                            if (IsValidMove(map, grid, neighbor, plannedMoves, follower: follower))
-                            {
-                                float d = Vector3Int.Distance(neighbor, historicalTarget);
-                                if (d < bestDistToBreadcrumb)
-                                {
-                                    bestDistToBreadcrumb = d;
-                                    bestSmartTile = neighbor;
-                                    foundSpot = true;
-                                }
-                            }
-                        }
-                    }
-                    plannedMoves.Add(follower, foundSpot ? bestSmartTile : follower.GridPosition);
+                    Vector3Int bestSmartTile = FindBestBurstTile(
+                        follower,
+                        historicalTarget,
+                        map,
+                        grid,
+                        plannedMoves);
+                    plannedMoves.Add(follower, bestSmartTile);
                 }
             }
 
@@ -139,7 +107,6 @@ namespace JRogue.Service.Formation
                 {
                     Debug.Log($"[RUSH-LAND] {actor.name} moving {actor.GridPosition} -> {dest}");
                     actor.ApplyPositionChange(dest);
-                    HazardService.Instance?.NotifyActorMovedOntoCell(actor);
                 }
                 else
                 {
@@ -171,6 +138,12 @@ namespace JRogue.Service.Formation
             if (map == null || grid == null) return false;
             if (!map.IsWalkable(tile)) return false;
 
+            if (follower != null
+                && !HasLegalRushPath(map, grid, follower, tile, plannedMoves))
+            {
+                return false;
+            }
+
             if (follower != null && HazardService.Instance != null
                 && !HazardService.Instance.CanEnter(tile, follower))
             {
@@ -187,6 +160,187 @@ namespace JRogue.Service.Formation
 
             if (plannedMoves != null && plannedMoves.ContainsValue(tile)) return false;
             return true;
+        }
+
+        /// <summary>
+        /// Advances up to <see cref="MaxRushDistance"/> steps toward
+        /// <paramref name="goal"/> using A* (hazards, allies, planned tiles).
+        /// </summary>
+        static Vector3Int ComputeRushTarget(
+            BaseActor follower,
+            Vector3Int goal,
+            MapManager map,
+            GridManager grid,
+            Dictionary<BaseActor, Vector3Int> plannedMoves)
+        {
+            Vector3Int current = follower.GridPosition;
+            if (current == goal)
+                return current;
+
+            int steps = 0;
+            while (steps < MaxRushDistance && current != goal)
+            {
+                if (!TryGetRushFirstStep(
+                        current,
+                        goal,
+                        follower,
+                        map,
+                        grid,
+                        plannedMoves,
+                        out Vector3Int next))
+                {
+                    break;
+                }
+
+                current = next;
+                steps++;
+            }
+
+            return current;
+        }
+
+        static bool TryGetRushFirstStep(
+            Vector3Int start,
+            Vector3Int goal,
+            BaseActor follower,
+            MapManager map,
+            GridManager grid,
+            Dictionary<BaseActor, Vector3Int> plannedMoves,
+            out Vector3Int firstStep)
+        {
+            firstStep = default;
+            if (follower == null || map == null || grid == null || start == goal)
+                return false;
+
+            HazardService hazards = HazardService.Instance;
+
+            bool CanEnter(Vector3Int cell)
+            {
+                if (cell == goal)
+                {
+                    if (!map.IsWalkable(cell))
+                        return false;
+
+                    if (hazards != null && !hazards.CanEnter(cell, follower))
+                        return false;
+
+                    return !IsBlockedByPlannedMove(cell, plannedMoves, goal);
+                }
+
+                return IsTraversableForRush(cell, follower, map, grid, plannedMoves, goal);
+            }
+
+            bool CornerClear(Vector3Int from, Vector3Int to)
+            {
+                Vector3Int d = to - from;
+                if (d.x == 0 || d.y == 0)
+                    return true;
+
+                Vector3Int orthA = from + new Vector3Int(d.x, 0, 0);
+                Vector3Int orthB = from + new Vector3Int(0, d.y, 0);
+                return CanEnter(orthA) && CanEnter(orthB);
+            }
+
+            return GridAStarPathfinder.TryGetFirstStepInternal(
+                start,
+                goal,
+                CanEnter,
+                CornerClear,
+                out firstStep);
+        }
+
+        static Vector3Int FindBestBurstTile(
+            BaseActor follower,
+            Vector3Int breadcrumb,
+            MapManager map,
+            GridManager grid,
+            Dictionary<BaseActor, Vector3Int> plannedMoves)
+        {
+            Vector3Int best = follower.GridPosition;
+            float bestDist = float.MaxValue;
+            bool found = false;
+
+            var frontier = new Queue<Vector3Int>();
+            var visited = new HashSet<Vector3Int> { follower.GridPosition };
+            frontier.Enqueue(follower.GridPosition);
+
+            while (frontier.Count > 0)
+            {
+                Vector3Int cell = frontier.Dequeue();
+                int stepsFromStart = Mathf.Max(
+                    Mathf.Abs(cell.x - follower.GridPosition.x),
+                    Mathf.Abs(cell.y - follower.GridPosition.y));
+
+                if (cell != follower.GridPosition
+                    && IsValidMove(map, grid, cell, plannedMoves, follower: follower))
+                {
+                    float d = Vector3Int.Distance(cell, breadcrumb);
+                    if (d < bestDist)
+                    {
+                        bestDist = d;
+                        best = cell;
+                        found = true;
+                    }
+                }
+
+                if (stepsFromStart >= MaxRushDistance)
+                    continue;
+
+                foreach (Vector3Int offset in GridManager.EightDirectionOffsets)
+                {
+                    Vector3Int neighbor = cell + offset;
+                    if (!visited.Add(neighbor))
+                        continue;
+
+                    if (!map.IsWalkable(neighbor))
+                        continue;
+
+                    frontier.Enqueue(neighbor);
+                }
+            }
+
+            return found ? best : follower.GridPosition;
+        }
+
+        static bool IsTraversableForRush(
+            Vector3Int cell,
+            BaseActor follower,
+            MapManager map,
+            GridManager grid,
+            Dictionary<BaseActor, Vector3Int> plannedMoves,
+            Vector3Int goal)
+        {
+            if (!map.IsWalkable(cell))
+                return false;
+
+            if (HazardService.Instance != null && !HazardService.Instance.CanEnter(cell, follower))
+                return false;
+
+            if (IsBlockedByPlannedMove(cell, plannedMoves, goal))
+                return false;
+
+            IBattleTarget occupant = grid.GetActorAt(cell);
+            return occupant == null || occupant.Owner == follower.gameObject;
+        }
+
+        static bool IsBlockedByPlannedMove(
+            Vector3Int cell,
+            Dictionary<BaseActor, Vector3Int> plannedMoves,
+            Vector3Int goal)
+        {
+            return plannedMoves != null
+                && plannedMoves.ContainsValue(cell)
+                && cell != goal;
+        }
+
+        static bool HasLegalRushPath(
+            MapManager map,
+            GridManager grid,
+            BaseActor follower,
+            Vector3Int destination,
+            Dictionary<BaseActor, Vector3Int> plannedMoves)
+        {
+            return ComputeRushTarget(follower, destination, map, grid, plannedMoves) == destination;
         }
     }
 }

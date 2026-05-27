@@ -90,6 +90,12 @@ namespace JRogue.Hazards
             return def != null && def.kind == EnvironmentalHazardKind.Persistent;
         }
 
+        public bool IsEnemyAvoidCell(Vector3Int cell)
+        {
+            EnvironmentalHazardDefinition def = GetHazardAt(cell);
+            return def != null && def.avoidForEnemyPathing;
+        }
+
         public void OnActorEntered(Vector3Int cell, BaseActor actor)
         {
             EnvironmentalHazardDefinition def = GetHazardAt(cell);
