@@ -147,6 +147,7 @@ namespace JRogue.Manager.Floor
                 : FloorItemWorldView.CreateDefault(_viewRoot);
 
             view.Bind(entry.entryId, entry.instance);
+            view.SetGridCell(tile);
             view.transform.position = TileCenterWorld(tile);
             _views[entry.entryId] = view;
             Debug.Log($"[LOOT] Spawned floor view '{view.name}' at {view.transform.position}.");
@@ -164,5 +165,19 @@ namespace JRogue.Manager.Floor
 
         public static Vector3 TileCenterWorld(Vector3Int tile) =>
             new Vector3(tile.x + 0.5f, tile.y + 0.5f, 0f);
+
+        public void ApplyVisibility(VisibilityManager visibility)
+        {
+            if (visibility == null)
+                return;
+
+            foreach (KeyValuePair<string, FloorItemWorldView> kv in _views)
+            {
+                FloorItemWorldView view = kv.Value;
+                if (view == null)
+                    continue;
+                view.SetVisible(visibility.IsVisible(view.GridCell));
+            }
+        }
     }
 }

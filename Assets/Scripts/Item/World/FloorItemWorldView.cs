@@ -13,6 +13,7 @@ namespace JRogue.Item.World
         static Sprite _placeholderSprite;
 
         public string EntryId { get; private set; }
+        public Vector3Int GridCell { get; private set; }
 
         SpriteRenderer _spriteRenderer;
 
@@ -27,6 +28,16 @@ namespace JRogue.Item.World
             ApplySorting();
             ApplySprite(instance);
             name = BuildName(instance);
+        }
+
+        public void SetGridCell(Vector3Int cell) => GridCell = new Vector3Int(cell.x, cell.y, 0);
+
+        public void SetVisible(bool visible)
+        {
+            if (_spriteRenderer == null)
+                _spriteRenderer = GetComponent<SpriteRenderer>();
+            if (_spriteRenderer != null)
+                _spriteRenderer.enabled = visible;
         }
 
         public static FloorItemWorldView CreateDefault(Transform parent)

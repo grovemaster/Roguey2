@@ -34,7 +34,7 @@ namespace JRogue.Manager.Combat
         [Tooltip(
             "Chebyshev distance wall-piercing \"scrying\": any party member this close senses hostile enemies for InCombat LOS.")]
         [SerializeField, Min(0)]
-        int remoteSenseChebyshevRadius = 16;
+        int remoteSenseChebyshevRadius = 0;
 
         [Tooltip("Fallback shadow-cast range per party member if no VisibilityManager is present.")]
         [SerializeField, Min(1)]

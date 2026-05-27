@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
 namespace JRogue.Manager.Map
@@ -24,20 +23,6 @@ namespace JRogue.Manager.Map
         {
             if (Instance == null) Instance = this;
             else Destroy(gameObject);
-        }
-
-
-        // Update is called once per frame
-        void Update()
-        {// Test logic: Left click to check cell status
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-                Vector3Int gridPos = floorMap.WorldToCell(mousePos);
-
-                string status = IsWalkable(gridPos) ? "WALKABLE" : "BLOCKED";
-                Debug.Log($"Cell {gridPos} is {status}");
-            }
         }
 
         public bool IsCellBlocked(Vector3Int gridPos)

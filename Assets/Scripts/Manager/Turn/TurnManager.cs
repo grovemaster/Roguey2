@@ -55,6 +55,7 @@ namespace JRogue.Manager.Turn
             // Mark this specific character as done
             charactersWhoActed.Add(actor);
 
+            FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
             CombatThreatCoordinator.Instance?.EvaluateThreat();
 
             // Check if the WHOLE party is done
@@ -117,6 +118,8 @@ namespace JRogue.Manager.Turn
                 var statuses = member.GetComponent<StatusEffectController>();
                 if (statuses != null) statuses.TickStatuses();
             }
+
+            FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
         }
 
         private bool IsPartyDone()
