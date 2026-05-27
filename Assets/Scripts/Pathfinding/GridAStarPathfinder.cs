@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Hazards;
 using JRogue.Core.Actor;
+using JRogue.Interactables;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using UnityEngine;
@@ -58,6 +59,10 @@ namespace JRogue.Pathfinding
 
             bool CanEnter(Vector3Int c)
             {
+                InteractableTileService interactables = InteractableTileService.Instance;
+                if (interactables != null && interactables.BlocksOccupancy(c))
+                    return false;
+
                 if (c == goal)
                     return mapManager.IsWalkable(c) && CanEnterHazard(c);
 
@@ -120,6 +125,10 @@ namespace JRogue.Pathfinding
                 for (int i = 0; i < PathFootprintBuffer.Count; i++)
                 {
                     Vector3Int cell = PathFootprintBuffer[i];
+                    InteractableTileService interactables = InteractableTileService.Instance;
+                    if (interactables != null && interactables.BlocksOccupancy(cell))
+                        return false;
+
                     if (!mapManager.IsWalkable(cell))
                         return false;
 

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f5a6b7c8d94e0f1a2b3c4d5e6f7081, type: 3}
+  m_Name: SampleScene_Levers
+  m_EditorClassIdentifier: JRogue::JRogue.Interactables.InteractablePlacementSet
+  placements:
+  - cell: {x: -4, y: -2, z: 0}
+    definition: {fileID: 11400000, guid: 2c19d8f630fa4d5ea3a8d7c22427cc4d, type: 2}
+  - cell: {x: -4, y: -3, z: 0}
+    definition: {fileID: 11400000, guid: ba01fd3641794f90868095667ef352fe, type: 2}
+  - cell: {x: -3, y: -4, z: 0}
+    definition: {fileID: 11400000, guid: 1f9515d879c34939aa6744531d10b1d1, type: 2}
+  - cell: {x: -2, y: -4, z: 0}
+    definition: {fileID: 11400000, guid: 4c4f1969cf5246db80879a9f8de5bfac, type: 2}

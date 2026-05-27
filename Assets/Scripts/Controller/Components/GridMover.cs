@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JRogue.Core.Actor;
+using JRogue.Interactables;
 using JRogue.Manager.Grid;
 using UnityEngine;
 
@@ -95,12 +96,19 @@ namespace JRogue.Actors.Components
                     footprint.Facing,
                     CellBufferB);
 
+                if (BlocksInteractableOccupancy(CellBufferB))
+                    return false;
+
                 if (!grid.TryMoveFootprint(self, CellBufferA, CellBufferB))
                 {
                     Debug.LogWarning(
                         $"[MOVE-ABORTED] {name} footprint could not claim anchor {newPosition}. Reverting to {oldPosition}.");
                     return false;
                 }
+            }
+            else if (BlocksInteractableOccupancy(newPosition))
+            {
+                return false;
             }
             else if (!grid.TryMoveRegistration(self, oldPosition, newPosition))
             {
@@ -228,6 +236,23 @@ namespace JRogue.Actors.Components
             GameObject ownerA = a.Owner;
             GameObject ownerB = b.Owner;
             return ownerA != null && ownerB != null && ownerA == ownerB;
+        }
+
+        static bool BlocksInteractableOccupancy(Vector3Int cell)
+        {
+            InteractableTileService interactables = InteractableTileService.Instance;
+            return interactables != null && interactables.BlocksOccupancy(cell);
+        }
+
+        static bool BlocksInteractableOccupancy(List<Vector3Int> cells)
+        {
+            for (int i = 0; i < cells.Count; i++)
+            {
+                if (BlocksInteractableOccupancy(cells[i]))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

@@ -1526,65 +1526,25 @@ Tilemap:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1351202629}
   m_Enabled: 1
-  m_Tiles:
-  - first: {x: 1, y: -3, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 1
-      m_TileSpriteIndex: 0
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
-  - first: {x: 2, y: -3, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 1
-      m_TileSpriteIndex: 0
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
-  - first: {x: 1, y: 1, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 0
-      m_TileSpriteIndex: 1
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
-  - first: {x: 2, y: 1, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 0
-      m_TileSpriteIndex: 1
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
+  m_Tiles: {}
   m_AnimatedTiles: {}
   m_TileAssetArray:
   - serializedVersion: 2
-    m_RefCount: 2
+    m_RefCount: 0
     m_Data: {fileID: 11400000, guid: 0770f4d2135439038aff0fc1276aac82, type: 2}
   - serializedVersion: 2
-    m_RefCount: 2
+    m_RefCount: 0
     m_Data: {fileID: 11400000, guid: 40a1913e7bc2d06159089529f3c67ac0, type: 2}
   m_TileSpriteArray:
   - serializedVersion: 2
-    m_RefCount: 2
+    m_RefCount: 0
     m_Data: {fileID: -7873082473234008901, guid: 5840544bd4be844f685b45457f242c30, type: 3}
   - serializedVersion: 2
-    m_RefCount: 2
+    m_RefCount: 0
     m_Data: {fileID: 4382351924650665434, guid: a94bfc6b4f41ae01ebc0bd8778405ef7, type: 3}
   m_TileMatrixArray:
   - serializedVersion: 2
-    m_RefCount: 4
+    m_RefCount: 0
     m_Data:
       e00: 1
       e01: 0
@@ -1604,7 +1564,7 @@ Tilemap:
       e33: 1
   m_TileColorArray:
   - serializedVersion: 2
-    m_RefCount: 4
+    m_RefCount: 0
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
@@ -1795,6 +1755,8 @@ GameObject:
   - component: {fileID: 1529000335}
   - component: {fileID: 1529000336}
   - component: {fileID: 1529000337}
+  - component: {fileID: 1529000338}
+  - component: {fileID: 1529000339}
   m_Layer: 0
   m_Name: GameSystems
   m_TagString: Untagged
@@ -1832,6 +1794,7 @@ MonoBehaviour:
   floorMap: {fileID: 2014373863}
   wallMap: {fileID: 1255627955}
   hazardOverlayMap: {fileID: 1351202632}
+  interactableOverlayMap: {fileID: 0}
 --- !u!114 &1529000335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1874,6 +1837,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: JRogue::JRogue.Hazards.HazardService
   hazardOverlayMap: {fileID: 1351202632}
+--- !u!114 &1529000338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529000332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb3c823df0114f67875e13eedfb9f458, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Interactables.InteractableTileService
+  interactableOverlayMap: {fileID: 0}
+--- !u!114 &1529000339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529000332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcab0f504a39215e2ac5c875f4c4a851, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Interactables.InteractableTileBootstrap
+  placementSet: {fileID: 11400000, guid: 2ebf04b1de20427787c340e4fc7d9aca, type: 2}
+  placements: []
 --- !u!1 &1623672201
 GameObject:
   m_ObjectHideFlags: 0

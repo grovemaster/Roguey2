@@ -12,6 +12,7 @@ using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.Racial;
 using JRogue.Hazards;
+using JRogue.Interactables;
 using JRogue.Service.Formation;
 using JRogue.UI.Gameplay;
 using JRogue.Stats;
@@ -125,9 +126,15 @@ namespace JRogue.Input
 
             bool isEnemyBump = occupant != null && !isAllySwap;
 
+            bool isInteractableBump = InteractableTileService.Instance != null
+                && InteractableTileService.Instance.ShouldAttemptPlayerBump(
+                    activeMember.GridPosition,
+                    targetTile);
+
             if (partyManager.IsFormationActive)
             {
                 if (isEnemyBump
+                    || isInteractableBump
                     || FormationRushService.IsValidMove(
                         mapManager,
                         gridManager,

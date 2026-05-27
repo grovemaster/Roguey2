@@ -337,12 +337,12 @@ Author four assets + instances at assigned cells (designer-placed).
 
 | Deliverable | Status |
 |-------------|--------|
-| `InteractableTileService` + framework | **Not created** |
-| Precondition / effect SO types | **Not created** |
-| Lever 1–4 definitions + SampleScene | **Not created** |
-| `TryMove` bump integration | **Not created** |
-| Lever sprites | **Awaiting approval** (§12) |
-| Door open effect | **Stub** |
+| `InteractableTileService` + framework | **Done** (`Assets/Scripts/Interactables/`) |
+| Precondition / effect SO types | **Done** |
+| Lever 1–4 definitions + SampleScene | **Done** — assets under `Assets/Data/Interactables/` + `PlacementSets/SampleScene_Levers.asset` |
+| `TryMove` bump integration | **Done** — `BaseActor`, `PlayerCommandProcessor`, `FormationRushService` |
+| Lever sprites | **Placeholder** (colored 32×32); §12 art **awaiting approval** |
+| Door open effect | **Stub** (`DoorService`) |
 | Status / stat buff effects | **Future** |
 
 ---

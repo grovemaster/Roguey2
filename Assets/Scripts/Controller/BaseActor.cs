@@ -8,6 +8,7 @@ using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.Hazards;
+using JRogue.Interactables;
 using JRogue.Service.Sensing;
 using JRogue.Stats;
 using UnityEngine;
@@ -120,6 +121,7 @@ namespace JRogue.Actors
 
             Vector3Int newAnchor = GridPosition + direction;
             IGridFootprint selfFootprint = this as IGridFootprint;
+            InteractableTileService interactables = InteractableTileService.Instance;
 
             if (selfFootprint != null)
             {
@@ -134,6 +136,9 @@ namespace JRogue.Actors
                 for (int i = 0; i < FootprintCellsBuffer.Count; i++)
                 {
                     Vector3Int cell = FootprintCellsBuffer[i];
+                    if (interactables != null && interactables.BlocksOccupancy(cell))
+                        return false;
+
                     if (!CanExitHazardCell(GridPosition) || !mapManager.IsWalkable(cell) || !CanEnterHazardCell(cell))
                         return false;
                 }
@@ -164,6 +169,12 @@ namespace JRogue.Actors
             }
 
             Vector3Int targetPos = newAnchor;
+
+            if (TryInteractableBump(targetPos))
+                return true;
+
+            if (interactables != null && interactables.BlocksOccupancy(targetPos))
+                return false;
 
             if (!CanExitHazardCell(GridPosition) || !mapManager.IsWalkable(targetPos) || !CanEnterHazardCell(targetPos))
                 return false;
@@ -204,6 +215,30 @@ namespace JRogue.Actors
         {
             HazardService hazards = HazardService.Instance;
             return hazards == null || hazards.CanExit(cell, this);
+        }
+
+        bool TryInteractableBump(Vector3Int targetCell)
+        {
+            InteractableTileService interactables = InteractableTileService.Instance;
+            if (interactables == null
+                || !interactables.ShouldAttemptPlayerBump(GridPosition, targetCell))
+            {
+                return false;
+            }
+
+            InteractableBumpResult result = interactables.TryBumpActivate(targetCell, this);
+            switch (result)
+            {
+                case InteractableBumpResult.Activated:
+                    if (gameObject.CompareTag("Player"))
+                        turnManager?.OnPlayerActionComplete(gameObject);
+                    return true;
+                case InteractableBumpResult.AlreadyOn:
+                case InteractableBumpResult.PreconditionFailed:
+                case InteractableBumpResult.Failed:
+                default:
+                    return false;
+            }
         }
 
         BaseActor FindBumpTargetForFootprint(List<Vector3Int> destinationCells)

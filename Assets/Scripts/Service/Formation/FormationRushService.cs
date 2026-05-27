@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Core.Actor;
 using JRogue.Hazards;
+using JRogue.Interactables;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
@@ -163,6 +164,10 @@ namespace JRogue.Service.Formation
         {
             if (map == null || grid == null) return false;
             if (!map.IsWalkable(tile)) return false;
+
+            InteractableTileService interactables = InteractableTileService.Instance;
+            if (interactables != null && interactables.BlocksOccupancy(tile))
+                return false;
 
             if (!allowAllies && IsTileClaimedByAnotherFollower(plannedMoves, tile, follower))
                 return false;
