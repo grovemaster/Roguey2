@@ -326,11 +326,11 @@ Reapply while Poisoned resets to 10 turns; damage per tick still 1.
 
 | Deliverable | Status |
 |-------------|--------|
-| `StatusEffectId` | **Not created** |
-| `StatusEffectDefinition` / `PoisonStatusEffectDefinition` | **Not created** |
-| `Status_Poisoned.asset` | **Not created** |
-| `StatusEffectController` / `StatusEffectService` | **Not created** |
-| Turn hooks (party + enemy) | **Not created** |
+| `StatusEffectId` | **Done** |
+| `StatusEffectDefinition` / `PoisonStatusEffectDefinition` | **Done** |
+| `Status_Poisoned.asset` | **Pending authoring** (create via `JRogue/Status/Poison Definition`) |
+| `StatusEffectController` / `StatusEffectService` | **Done** |
+| Turn hooks (party + enemy) | **Done** |
 | Might / Drained / Slow / Haste | **Placeholder only** (§4.5) |
 
 ---

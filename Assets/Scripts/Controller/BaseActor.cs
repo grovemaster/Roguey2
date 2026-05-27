@@ -10,6 +10,7 @@ using JRogue.Manager.Turn;
 using JRogue.Hazards;
 using JRogue.Interactables;
 using JRogue.Service.Sensing;
+using JRogue.Status;
 using JRogue.Stats;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ namespace JRogue.Actors
     [RequireComponent(typeof(EssenceSlotManager))]
     [RequireComponent(typeof(HealthComponent))]
     [RequireComponent(typeof(GridMover))]
+    [RequireComponent(typeof(StatusEffectController))]
     public abstract class BaseActor : MonoBehaviour, IBattleTarget, INoiseProducer
     {
         [Header("References")]

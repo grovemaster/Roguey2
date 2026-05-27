@@ -65,6 +65,7 @@
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeKind.cs" />
     <Compile Include="Assets/Data/Racial/RacialProgressionPayload.cs" />
     <Compile Include="Assets/Data/Racial/RacialBenefitDefinition.cs" />
+    <Compile Include="Assets/Data/Status/PoisonStatusEffectDefinition.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/TieflingImplantSlotModifierSource.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeDefinition.cs" />
@@ -101,11 +102,13 @@
     <Compile Include="Assets/Data/Racial/RacialLoadoutApplier.cs" />
     <Compile Include="Assets/Data/Enemy/LootTableEntry.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonAbilityDefinition.cs" />
+    <Compile Include="Assets/Data/Status/StatusEffectId.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/ImplantSlotPreset.cs" />
     <Compile Include="Assets/Data/Racial/RacialProgressionPayloadApplicator.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonAbilitiesRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeClusterData.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/AncestorDefinition.cs" />
+    <Compile Include="Assets/Data/Status/StatusEffectDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadRacialEffectTracker.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeNodeData.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritLevelData.cs" />

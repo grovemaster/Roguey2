@@ -106,6 +106,7 @@
     <Compile Include="Assets/Scripts/Hazards/HazardPassageEvaluator.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/GrantPartyExperienceEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
+    <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapBootstrap.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapTypes.cs" />
+    <Compile Include="Assets/Scripts/Status/StatusImmunity.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadGraveTouchLingerPassive.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Assets/Scripts/Manager/Floor/FloorItemPileService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlacement.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapInstanceMarker.cs" />
+    <Compile Include="Assets/Scripts/Status/StatusEffectController.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileId.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryManager.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileDefinition.cs" />
@@ -187,6 +190,7 @@
     <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableEffect.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableActivationSource.cs" />
+    <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/GridOverlayPainter.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyExperienceService.cs" />

@@ -165,9 +165,9 @@ namespace JRogue.Editor.Traps
                 return;
 
             bool dirty = false;
-            if (importer.spritePixelsToUnits != 32f)
+            if (importer.spritePixelsPerUnit != 32f)
             {
-                importer.spritePixelsToUnits = 32f;
+                importer.spritePixelsPerUnit = 32f;
                 dirty = true;
             }
 

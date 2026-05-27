@@ -10,6 +10,7 @@ using JRogue.Manager.Loot;
 using JRogue.Manager.Progression;
 using JRogue.Hazards;
 using JRogue.Racial;
+using JRogue.Status;
 using Roguey2.Sensing;
 using UnityEngine;
 
@@ -114,6 +115,7 @@ namespace JRogue.Controller.Enemy
             HazardService.Instance?.TickOccupancyOnEnemyTurnStart(this);
             RacialPassiveHooks.NotifyTurnStart(gameObject);
             essenceManager?.NotifyTurnStart();
+            GetComponent<StatusEffectController>()?.TickStatuses();
             brain.ExecuteTurn(player);
         }
 

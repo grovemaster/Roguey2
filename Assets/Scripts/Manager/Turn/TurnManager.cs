@@ -7,6 +7,7 @@ using JRogue.Manager.Party;
 using JRogue.Hazards;
 using JRogue.Traps;
 using JRogue.Racial;
+using JRogue.Status;
 using UnityEngine;
 public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY }
 
@@ -113,6 +114,8 @@ namespace JRogue.Manager.Turn
                 RacialPassiveHooks.NotifyTurnStart(member.gameObject);
                 var slots = member.GetComponent<EssenceSlotManager>();
                 if (slots != null) slots.NotifyTurnStart();
+                var statuses = member.GetComponent<StatusEffectController>();
+                if (statuses != null) statuses.TickStatuses();
             }
         }
 
