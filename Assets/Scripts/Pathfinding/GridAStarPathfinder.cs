@@ -6,6 +6,7 @@ using JRogue.Core.Actor;
 using JRogue.Interactables;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
+using JRogue.Traps;
 using UnityEngine;
 
 namespace JRogue.Pathfinding
@@ -49,6 +50,8 @@ namespace JRogue.Pathfinding
                 return false;
             BaseActor seekerActor = seeker.GetComponent<BaseActor>();
             HazardService hazards = HazardService.Instance;
+            TrapService traps = TrapService.Instance;
+            bool seekerIsEnemy = seeker.CompareTag("Enemy");
 
             IGridFootprint footprint = seeker.GetComponent<IGridFootprint>();
             if (footprint != null && !GridFootprintUtility.IsSingleCell(footprint))
@@ -70,6 +73,9 @@ namespace JRogue.Pathfinding
                     return false;
 
                 if (!CanEnterHazard(c))
+                    return false;
+
+                if (seekerIsEnemy && c != goal && traps != null && traps.IsPathingAvoidCell(c))
                     return false;
 
                 IBattleTarget occupant = gridManager.GetActorAt(c);
@@ -111,6 +117,8 @@ namespace JRogue.Pathfinding
             firstStep = default;
             BaseActor seekerActor = seeker.GetComponent<BaseActor>();
             HazardService hazards = HazardService.Instance;
+            TrapService traps = TrapService.Instance;
+            bool seekerIsEnemy = seeker.CompareTag("Enemy");
 
             bool CanEnterAnchor(Vector3Int anchor)
             {
@@ -133,6 +141,9 @@ namespace JRogue.Pathfinding
                         return false;
 
                     if (hazards != null && seekerActor != null && !hazards.CanEnter(cell, seekerActor))
+                        return false;
+
+                    if (seekerIsEnemy && cell != goal && traps != null && traps.IsPathingAvoidCell(cell))
                         return false;
 
                     IBattleTarget occupant = gridManager.GetActorAt(cell);

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Actors.Components;
+using JRogue.Core.Actor;
 using JRogue.GridFeatures;
 using JRogue.Manager.Map;
 using JRogue.Stats;
@@ -26,6 +27,8 @@ namespace JRogue.Traps
 
         readonly List<TrapInstance> _allInstances = new List<TrapInstance>();
         readonly List<Vector3Int> _triggerTileBuffer = new List<Vector3Int>(4);
+        readonly List<Vector3Int> _occupiedCellsBuffer = new List<Vector3Int>(16);
+        readonly HashSet<TrapInstance> _pendingTriggeredInstances = new HashSet<TrapInstance>();
         VisibilityManager _visibility;
 
         void Awake()
@@ -266,9 +269,7 @@ namespace JRogue.Traps
                 return;
 
             EvaluateDetection();
-            Vector3Int cell = actor.GridPosition;
-            TryTriggerFloorTrap(actor, cell);
-            TryTriggerWallTraps(actor, cell);
+            CollectAndTriggerEnteredCellTraps(actor);
         }
 
         public void TryTriggerFloorTrap(BaseActor actor, Vector3Int cell)
@@ -286,6 +287,41 @@ namespace JRogue.Traps
 
             for (int i = 0; i < traps.Count; i++)
                 FireTrap(traps[i], actor, triggerCell);
+        }
+
+        void CollectAndTriggerEnteredCellTraps(BaseActor actor)
+        {
+            _pendingTriggeredInstances.Clear();
+
+            if (actor is IGridFootprint footprint && !GridFootprintUtility.IsSingleCell(footprint))
+            {
+                GridFootprintUtility.GetOccupiedCells(footprint, _occupiedCellsBuffer);
+                for (int i = 0; i < _occupiedCellsBuffer.Count; i++)
+                    CollectTriggersForCell(_occupiedCellsBuffer[i]);
+            }
+            else
+            {
+                CollectTriggersForCell(actor.GridPosition);
+            }
+
+            foreach (TrapInstance instance in _pendingTriggeredInstances)
+                FireTrap(instance, actor, actor.GridPosition);
+        }
+
+        void CollectTriggersForCell(Vector3Int cell)
+        {
+            if (_floorTrapsByCell.TryGetValue(cell, out TrapInstance floorTrap))
+                _pendingTriggeredInstances.Add(floorTrap);
+
+            if (!_wallTrapsByTriggerCell.TryGetValue(cell, out List<TrapInstance> wallTraps))
+                return;
+
+            for (int i = 0; i < wallTraps.Count; i++)
+            {
+                TrapInstance wallTrap = wallTraps[i];
+                if (wallTrap != null)
+                    _pendingTriggeredInstances.Add(wallTrap);
+            }
         }
 
         void FireTrap(TrapInstance instance, BaseActor actor, Vector3Int triggerCell)
