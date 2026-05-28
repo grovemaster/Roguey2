@@ -102,6 +102,7 @@
     <Compile Include="Assets/Data/Racial/RacialLoadoutApplier.cs" />
     <Compile Include="Assets/Data/Enemy/LootTableEntry.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonAbilityDefinition.cs" />
+    <Compile Include="Assets/Data/Lighting/LightEmitterDefinition.cs" />
     <Compile Include="Assets/Data/Status/StatusEffectId.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/ImplantSlotPreset.cs" />
     <Compile Include="Assets/Data/Racial/RacialProgressionPayloadApplicator.cs" />

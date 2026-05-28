@@ -85,16 +85,19 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightingService.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyMeleeCombat.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/AlwaysTruePrecondition.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableBumpResult.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/HazardConfirmDialogUI.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightLevel.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryTelemetry.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupService.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardMoveGate.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightingCellMarker.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionSettings.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlaceholderSprites.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
@@ -115,6 +118,7 @@
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapTypes.cs" />
     <Compile Include="Assets/Scripts/Status/StatusImmunity.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightingBootstrap.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadGraveTouchLingerPassive.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
@@ -144,6 +148,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileId.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryManager.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileDefinition.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightCellData.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInspectPaneView.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryDetailFormatter.cs" />
@@ -174,6 +179,7 @@
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementSet.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTile.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardDefinition.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
@@ -186,6 +192,7 @@
     <Compile Include="Assets/Scripts/Manager/Loot/EnemyLootService.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTypes.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupHudButton.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementEntry.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRoller.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentManager.cs" />
     <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
@@ -195,6 +202,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/GridOverlayPainter.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyExperienceService.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/AmbientRegion.cs" />
     <Compile Include="Assets/Scripts/Manager/Map/MapManager.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementSet.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/OpenDoorEffect.cs" />

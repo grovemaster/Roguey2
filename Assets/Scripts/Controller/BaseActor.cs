@@ -12,6 +12,7 @@ using JRogue.Interactables;
 using JRogue.Service.Sensing;
 using JRogue.Status;
 using JRogue.Stats;
+using JRogue.World.Lighting;
 using UnityEngine;
 
 namespace JRogue.Actors
@@ -268,6 +269,11 @@ namespace JRogue.Actors
             {
                 HazardService.Instance?.NotifyActorMovedOntoCell(this);
                 Traps.TrapService.Instance?.NotifyActorEntered(this);
+                if (PartyManager.Instance != null
+                    && PartyManager.Instance.partyMembers.Contains(this))
+                {
+                    LightingService.Instance?.OnPartyVisionActivity();
+                }
             }
         }
 

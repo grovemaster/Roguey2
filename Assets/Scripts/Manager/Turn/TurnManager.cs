@@ -8,6 +8,7 @@ using JRogue.Hazards;
 using JRogue.Traps;
 using JRogue.Racial;
 using JRogue.Status;
+using JRogue.World.Lighting;
 using UnityEngine;
 public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY }
 
@@ -56,6 +57,7 @@ namespace JRogue.Manager.Turn
             charactersWhoActed.Add(actor);
 
             FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
+            LightingService.Instance?.OnPartyVisionActivity();
             CombatThreatCoordinator.Instance?.EvaluateThreat();
 
             // Check if the WHOLE party is done
@@ -120,6 +122,7 @@ namespace JRogue.Manager.Turn
             }
 
             FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
+            LightingService.Instance?.OnPartyVisionActivity();
         }
 
         private bool IsPartyDone()

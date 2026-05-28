@@ -198,12 +198,11 @@ namespace JRogue.Tests.UnitTests.Combat
             Assert.IsFalse(service.IsPathingAvoidCell(triggerCell));
             Assert.IsFalse(service.RequiresEnterConfirm(triggerCell));
 
-            bool moved = false;
             Assert.IsFalse(TrapMoveGate.TryInterceptMove(
                 actor,
                 triggerCell,
                 isEnemyBump: false,
-                () => moved = true));
+                () => { }));
 
             GridManager grid = GridManager.Instance;
             BaseActor follower = CreateActor(Vector3Int.zero, perception: 5);

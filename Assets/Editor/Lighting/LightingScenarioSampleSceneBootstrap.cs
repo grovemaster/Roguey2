@@ -21,6 +21,7 @@ namespace JRogue.Editor.Lighting
         public static void BootstrapActiveSceneLightingHarness()
         {
             GameObject lightingSystem = FindOrCreateLightingSystem();
+            EnsureLightingService(lightingSystem);
             LightingScenarioController controller = EnsureController(lightingSystem);
 
             List<LightingScenarioDefinition> scenarios = LightingScenarioQaPack.EnsureQaScenarioPack();
@@ -57,6 +58,12 @@ namespace JRogue.Editor.Lighting
             Undo.RegisterCreatedObjectUndo(created, "Create LightingSystem");
             Debug.Log("[Lighting:Scenario] Created LightingSystem GameObject.");
             return created;
+        }
+
+        static void EnsureLightingService(GameObject host)
+        {
+            if (host.GetComponent<LightingService>() == null)
+                Undo.AddComponent<LightingService>(host);
         }
 
         static LightingScenarioController EnsureController(GameObject host)

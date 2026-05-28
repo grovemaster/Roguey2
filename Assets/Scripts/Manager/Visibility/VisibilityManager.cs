@@ -7,6 +7,7 @@ using JRogue.Manager.Floor;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Visibility.Algorithm;
+using JRogue.Traps;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -236,6 +237,8 @@ public class VisibilityManager : MonoBehaviour
         FloorItemPileService piles = FloorItemPileService.Instance;
         if (piles != null)
             piles.ApplyVisibility(this);
+
+        TrapService.Instance?.RefreshOverlayVisibility();
     }
 
     void ApplyEnemyVisibility(EnemyController enemy)

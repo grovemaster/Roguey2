@@ -26,6 +26,7 @@ namespace JRogue.Traps
 
         readonly List<TrapInstance> _allInstances = new List<TrapInstance>();
         readonly List<Vector3Int> _triggerTileBuffer = new List<Vector3Int>(4);
+        VisibilityManager _visibility;
 
         void Awake()
         {
@@ -334,7 +335,7 @@ namespace JRogue.Traps
             if (trapOverlayMap == null || instance?.Definition == null)
                 return;
 
-            if (!instance.IsRevealed)
+            if (!instance.IsRevealed || !IsCellCurrentlyVisible(instance.HostCell))
             {
                 GridOverlayPainter.Clear(trapOverlayMap, instance.HostCell);
                 return;
@@ -350,6 +351,15 @@ namespace JRogue.Traps
                 instance.HostCell,
                 tile: null,
                 sprite: sprite);
+        }
+
+        public void RefreshOverlayVisibility()
+        {
+            if (trapOverlayMap == null)
+                return;
+
+            for (int i = 0; i < _allInstances.Count; i++)
+                RefreshOverlayVisual(_allInstances[i]);
         }
 
         void EnsureOverlayMap()
@@ -384,6 +394,17 @@ namespace JRogue.Traps
             trapOverlayMap = overlayGo.AddComponent<Tilemap>();
             overlayGo.AddComponent<TilemapRenderer>();
             GridOverlayPainter.ConfigureRenderer(trapOverlayMap);
+        }
+
+        bool IsCellCurrentlyVisible(Vector3Int cell)
+        {
+            if (_visibility == null)
+                _visibility = FindAnyObjectByType<VisibilityManager>();
+
+            if (_visibility == null)
+                return true;
+
+            return _visibility.IsVisible(cell);
         }
     }
 }

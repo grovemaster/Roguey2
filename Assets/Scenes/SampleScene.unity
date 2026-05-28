@@ -2579,6 +2579,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1986568399}
   - component: {fileID: 1986568400}
+  - component: {fileID: 1986568401}
+  - component: {fileID: 1986568402}
   m_Layer: 0
   m_Name: LightingSystem
   m_TagString: Untagged
@@ -2629,6 +2631,42 @@ MonoBehaviour:
   scenarioRootPrefix: LightingPhase_
   activeScenarioIndex: 0
   refreshVisibilityAfterApply: 1
+--- !u!114 &1986568401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1986568398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3e2d1c0b9a8476251304f8e7d6c5b4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.World.Lighting.LightingService
+  defaultFloorAmbientRegionId: 0
+  defaultFloorAmbientLight: 10
+  verboseReceiveLogs: 1
+--- !u!114 &1986568402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1986568398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7d6c5b4a3928170645f3e2d1c0b9a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.World.Lighting.LightingBootstrap
+  placementSet: {fileID: 0}
+  placements:
+  - cell: {x: 3, y: -2, z: 0}
+    isEmitter: 1
+    emitterDefinition: {fileID: 11400000, guid: 95d4d3f90e3455d5584308f81cb90a04, type: 2}
+    initialEmission: 6
+    isReceiver: 0
+    ambientRegionId: 0
+  ambientRegions: []
 --- !u!1 &2014373860
 GameObject:
   m_ObjectHideFlags: 0
