@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 2061355635181889388}
   - component: {fileID: 7840245774233295368}
   - component: {fileID: 8840245774233295369}
+  - component: {fileID: 8630417011884420616}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -181,7 +182,7 @@ MonoBehaviour:
   weight: 80
   renown: 0
   sight:
-    baseValue: 8
+    baseValue: 3
   hearing:
     baseValue: 10
   smell:
@@ -202,8 +203,15 @@ MonoBehaviour:
     baseValue: 10
   Luck:
     baseValue: 10
+  level: 1
+  experience: 0
+  levelSoulPowerBonus: 0
+  levelMagicPowerBonus: 0
+  levelDivinePowerBonus: 0
   currentHP: 0
   currentSoulPower: 0
+  currentMagicPower: 0
+  currentDivinePower: 0
 --- !u!61 &14020384444482333
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -328,3 +336,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Racial.RacialLoadoutApplier
   loadout: {fileID: 11400000, guid: f9918a90eaa54cddb5a8ecb65128e4d8, type: 2}
+--- !u!114 &8630417011884420616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339168105576016893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b91b0734dfb3e5fba8338d65a5d5bf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Status.StatusEffectController

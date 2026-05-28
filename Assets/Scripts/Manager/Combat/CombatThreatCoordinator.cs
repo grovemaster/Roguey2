@@ -100,8 +100,6 @@ namespace JRogue.Manager.Combat
         {
             MapManager map = MapManager.Instance != null ? MapManager.Instance : FindAnyObjectByType<MapManager>();
             VisibilityManager vis = FindAnyObjectByType<VisibilityManager>();
-            int tileRange = vis != null ? vis.viewRange : tileSightRangeFallback;
-
             PartyManager party = PartyManager.Instance;
             _lastContributors.Clear();
 
@@ -117,7 +115,7 @@ namespace JRogue.Manager.Combat
                 EnemyAiBrain brain = enemy.GetComponent<EnemyAiBrain>();
                 bool pursuit = brain != null && brain.IsPursuingParty;
 
-                bool tileLos = PartyHasTileShadowLos(party, enemy.GridPosition, tileRange, map);
+                bool tileLos = PartyHasTileShadowLos(party, enemy.GridPosition, map, vis, tileSightRangeFallback);
                 bool remote = PartyHasRemoteSense(party, enemy.GridPosition, remoteSenseChebyshevRadius);
 
                 bool sightBucket = tileLos || remote;
@@ -148,9 +146,14 @@ namespace JRogue.Manager.Combat
             return true;
         }
 
-        static bool PartyHasTileShadowLos(PartyManager party, Vector3Int enemyCell, int range, MapManager map)
+        static bool PartyHasTileShadowLos(
+            PartyManager party,
+            Vector3Int enemyCell,
+            MapManager map,
+            VisibilityManager visibility,
+            int fallbackRange)
         {
-            if (party == null || map == null || range <= 0)
+            if (party == null || map == null)
                 return false;
 
             ShadowCaster.IsOpaque opaque = pos => !map.IsWalkable(pos);
@@ -163,6 +166,11 @@ namespace JRogue.Manager.Combat
 
                 Vector3Int origin = new Vector3Int(member.GridPosition.x, member.GridPosition.y, 0);
                 Vector3Int target = new Vector3Int(enemyCell.x, enemyCell.y, 0);
+                int range = visibility != null
+                    ? visibility.GetEffectiveSightRange(member, origin)
+                    : fallbackRange;
+                if (range <= 0)
+                    continue;
 
                 if (ShadowCaster.IsVisible(origin, target, range, opaque))
                     return true;

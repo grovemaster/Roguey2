@@ -176,7 +176,7 @@ namespace JRogue.Manager.Floor
                 FloorItemWorldView view = kv.Value;
                 if (view == null)
                     continue;
-                view.SetVisible(visibility.IsVisible(view.GridCell));
+                view.SetVisible(visibility.IsLitVisible(view.GridCell));
             }
         }
     }

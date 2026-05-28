@@ -338,7 +338,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &263439042
 Transform:
   m_ObjectHideFlags: 0
@@ -835,9 +835,13 @@ MonoBehaviour:
   - {fileID: 2014373863}
   - {fileID: 1255627955}
   visibleColor: {r: 1, g: 1, b: 1, a: 1}
+  darkTileColor: {r: 0.2, g: 0.22, b: 0.28, a: 1}
   unseenColor: {r: 0.15, g: 0.15, b: 0.2, a: 1}
   memColor: {r: 0.48, g: 0.48, b: 0.58, a: 1}
   viewRange: 3
+  baseVisibilityThreshold: 3
+  verboseSightLogs: 0
+  verboseDarkTileLogs: 0
 --- !u!4 &745011028
 Transform:
   m_ObjectHideFlags: 0
@@ -2032,7 +2036,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1598217591
 Transform:
   m_ObjectHideFlags: 0
@@ -2629,7 +2633,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 11c314a7a4fc04b40b4a28624003c43d, type: 2}
   - {fileID: 11400000, guid: 86682799f309ad1cdb38d7e82be9b56e, type: 2}
   scenarioRootPrefix: LightingPhase_
-  activeScenarioIndex: 0
+  activeScenarioIndex: 1
   refreshVisibilityAfterApply: 1
 --- !u!114 &1986568401
 MonoBehaviour:

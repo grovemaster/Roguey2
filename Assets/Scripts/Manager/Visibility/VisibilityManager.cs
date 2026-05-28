@@ -8,6 +8,7 @@ using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Visibility.Algorithm;
 using JRogue.Traps;
+using JRogue.World.Lighting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -34,15 +35,20 @@ public class VisibilityManager : MonoBehaviour
 
     public List<Tilemap> tilemaps;
     public Color visibleColor = Color.white;
+    public Color darkTileColor = new Color(0.2f, 0.22f, 0.28f, 1f);
     public Color unseenColor = new Color(0.15f, 0.15f, 0.2f, 1.0f);
     public Color memColor = new Color(0.48f, 0.48f, 0.58f, 1.0f);
 
     public int viewRange = 8;
+    [Min(0)] public int baseVisibilityThreshold = 3;
+    [SerializeField] bool verboseSightLogs;
+    [SerializeField] bool verboseDarkTileLogs;
 
     readonly Dictionary<Vector3Int, CellKnowledge> _knowledge =
         new Dictionary<Vector3Int, CellKnowledge>();
     readonly HashSet<Vector3Int> _knownCells = new HashSet<Vector3Int>();
     readonly HashSet<Vector3Int> _currentlyVisible = new HashSet<Vector3Int>();
+    readonly HashSet<Vector3Int> _currentlyLitVisible = new HashSet<Vector3Int>();
 
     Transform playerTransform;
 
@@ -63,6 +69,12 @@ public class VisibilityManager : MonoBehaviour
             && knowledge.state == TileKnowledgeState.Visible;
     }
 
+    public bool IsLitVisible(Vector3Int cell)
+    {
+        cell.z = 0;
+        return _currentlyLitVisible.Contains(cell);
+    }
+
     public bool IsExplored(Vector3Int cell)
     {
         cell.z = 0;
@@ -80,6 +92,7 @@ public class VisibilityManager : MonoBehaviour
         _knowledge.Clear();
         _knownCells.Clear();
         _currentlyVisible.Clear();
+        _currentlyLitVisible.Clear();
 
         foreach (Tilemap tm in tilemaps)
         {
@@ -104,7 +117,7 @@ public class VisibilityManager : MonoBehaviour
 
     public void RefreshVision()
     {
-        HashSet<Vector3Int> currentVisible = ComputeCurrentVisibleSet();
+        HashSet<Vector3Int> currentVisible = ComputeCurrentVisibleSet(out HashSet<Vector3Int> currentLitVisible);
         if (currentVisible.Count == 0)
             return;
 
@@ -137,7 +150,16 @@ public class VisibilityManager : MonoBehaviour
 
             _knowledge[cell] = knowledge;
             _knownCells.Add(cell);
-            TintCell(cell, visibleColor);
+            if (currentLitVisible.Contains(cell))
+            {
+                TintCell(cell, visibleColor);
+            }
+            else
+            {
+                TintCell(cell, darkTileColor);
+                if (verboseDarkTileLogs)
+                    Debug.Log($"[Lighting:DarkTile] {cell} LOS-visible but under threshold.");
+            }
         }
 
         // Apply explored tint for known non-visible cells.
@@ -160,17 +182,22 @@ public class VisibilityManager : MonoBehaviour
         _currentlyVisible.Clear();
         foreach (Vector3Int cell in currentVisible)
             _currentlyVisible.Add(cell);
+        _currentlyLitVisible.Clear();
+        foreach (Vector3Int cell in currentLitVisible)
+            _currentlyLitVisible.Add(cell);
 
         ApplyEntityVisibility();
     }
 
-    HashSet<Vector3Int> ComputeCurrentVisibleSet()
+    HashSet<Vector3Int> ComputeCurrentVisibleSet(out HashSet<Vector3Int> litVisible)
     {
         ShadowCaster.IsOpaque isOpaque =
             pos => MapManager.Instance != null && !MapManager.Instance.IsWalkable(pos);
 
         var visible = new HashSet<Vector3Int>();
+        litVisible = new HashSet<Vector3Int>();
         PartyManager party = PartyManager.Instance;
+        LightingService lighting = LightingService.Instance;
 
         if (party != null && party.partyMembers != null && party.partyMembers.Count > 0)
         {
@@ -181,9 +208,18 @@ public class VisibilityManager : MonoBehaviour
                     continue;
 
                 Vector3Int origin = new Vector3Int(member.GridPosition.x, member.GridPosition.y, 0);
-                List<Vector3Int> memberVisible = ShadowCaster.GetVisibleTiles(origin, viewRange, isOpaque);
+                int effectiveSight = GetEffectiveSightRange(member, origin);
+                if (verboseSightLogs)
+                    Debug.Log($"[Lighting:Sight] {member.DisplayName} at {origin} -> {effectiveSight}");
+
+                List<Vector3Int> memberVisible = ShadowCaster.GetVisibleTiles(origin, effectiveSight, isOpaque);
                 for (int j = 0; j < memberVisible.Count; j++)
-                    visible.Add(memberVisible[j]);
+                {
+                    Vector3Int cell = memberVisible[j];
+                    visible.Add(cell);
+                    if (IsCellFullyVisibleForMember(member, cell, lighting))
+                        litVisible.Add(cell);
+                }
             }
         }
         else if (playerTransform != null)
@@ -192,10 +228,57 @@ public class VisibilityManager : MonoBehaviour
             Vector3Int origin = new Vector3Int(fp.x, fp.y, 0);
             List<Vector3Int> fallbackVisible = ShadowCaster.GetVisibleTiles(origin, viewRange, isOpaque);
             for (int i = 0; i < fallbackVisible.Count; i++)
+            {
                 visible.Add(fallbackVisible[i]);
+                litVisible.Add(fallbackVisible[i]);
+            }
         }
 
         return visible;
+    }
+
+    bool IsCellFullyVisibleForMember(BaseActor member, Vector3Int cell, LightingService lighting)
+    {
+        if (member == null)
+            return false;
+
+        // R7.1 occupied party member cell is always fully bright.
+        if (PartyManager.Instance != null)
+        {
+            for (int i = 0; i < PartyManager.Instance.partyMembers.Count; i++)
+            {
+                BaseActor partyMember = PartyManager.Instance.partyMembers[i];
+                if (partyMember != null && partyMember.GridPosition == cell)
+                    return true;
+            }
+        }
+
+        if (lighting == null)
+            return true;
+
+        // R7.1 emitter in LOS with active emission is always fully bright.
+        if (lighting.GetEmitLight(cell) > 0)
+            return true;
+
+        int received = lighting.GetReceivedLight(cell);
+        int threshold = GetEffectiveLightThreshold(member, cell);
+        return received >= threshold;
+    }
+
+    public int GetEffectiveSightRange(BaseActor member, Vector3Int originCell)
+    {
+        if (member == null || member.stats == null || member.stats.sight == null)
+            return viewRange;
+
+        // Phase B/C stub: Dark Vision bonuses hook here in Phase H.
+        int baseSight = member.stats.sight.GetValue();
+        return Mathf.Max(1, baseSight);
+    }
+
+    public int GetEffectiveLightThreshold(BaseActor member, Vector3Int cell)
+    {
+        // Phase C stub: Dark Vision / magical darkness hooks land in Phase H/L.
+        return Mathf.Max(0, baseVisibilityThreshold);
     }
 
     void SetCellState(Vector3Int cell, TileKnowledgeState state)
@@ -260,13 +343,13 @@ public class VisibilityManager : MonoBehaviour
             GridFootprintUtility.GetOccupiedCells(footprint, cells);
             for (int i = 0; i < cells.Count; i++)
             {
-                if (IsVisible(cells[i]))
+                if (IsLitVisible(cells[i]))
                     return true;
             }
 
             return false;
         }
 
-        return IsVisible(enemy.GridPosition);
+        return IsLitVisible(enemy.GridPosition);
     }
 }
