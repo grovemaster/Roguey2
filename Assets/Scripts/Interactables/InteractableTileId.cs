@@ -7,5 +7,6 @@ namespace JRogue.Interactables
         LeverSwitchSecond = 2,
         LeverSwitchThird = 3,
         LeverSwitchFourth = 4,
+        WallTorch = 5,
     }
 }

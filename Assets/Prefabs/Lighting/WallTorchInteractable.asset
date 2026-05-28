@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7da8c259564a2d4e19f9c81db1953269, type: 3}
+  m_Name: WallTorchInteractable
+  m_EditorClassIdentifier: JRogue::JRogue.Interactables.InteractableTileDefinition
+  interactableId: 5
+  displayName: Wall Torch
+  kind: 0
+  blocksOccupancy: 1
+  bumpEnabled: 1
+  preconditions:
+  - {fileID: 11400000, guid: 307b0277118640a5889d05da1e59446b, type: 2}
+  onActivateEffects:
+  - {fileID: 11400000, guid: 1d7e800598822c7c7ac23ead1ad300c3, type: 2}
+  spriteOff: {fileID: 0}
+  spriteOn: {fileID: 0}

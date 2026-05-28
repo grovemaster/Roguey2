@@ -30,6 +30,7 @@ namespace JRogue.World.Lighting
         readonly List<PendingRegistration> _pending = new List<PendingRegistration>();
 
         bool _registryFinalized;
+        int _playerPhaseTurnCount;
 
         struct PendingRegistration
         {
@@ -126,6 +127,16 @@ namespace JRogue.World.Lighting
             }
 
             RecomputeReceiversInRegion(regionId);
+        }
+
+        /// <summary>
+        /// Advances any configured ambient cycles at each player-phase boundary.
+        /// </summary>
+        public void OnPlayerPhaseBoundary()
+        {
+            EnsureRegistryFinalized();
+            _playerPhaseTurnCount++;
+            TickAmbientCycles();
         }
 
         /// <summary>Registers or overwrites cell data before <see cref="FinalizeRegistry"/>.</summary>
@@ -267,6 +278,49 @@ namespace JRogue.World.Lighting
         {
             AmbientRegion region = GetOrCreateAmbientRegion(defaultFloorAmbientRegionId);
             region.CurrentAmbientLight = defaultFloorAmbientLight;
+        }
+
+        void TickAmbientCycles()
+        {
+            if (_ambientRegions.Count == 0)
+                return;
+
+            foreach (KeyValuePair<int, AmbientRegion> pair in _ambientRegions)
+            {
+                AmbientRegion region = pair.Value;
+                if (region == null || region.Phases == null || region.Phases.Length == 0)
+                    continue;
+
+                if (region.CycleLengthTurns <= 0)
+                {
+                    int sum = 0;
+                    for (int i = 0; i < region.Phases.Length; i++)
+                        sum += Mathf.Max(1, region.Phases[i].durationTurns);
+                    region.CycleLengthTurns = sum;
+                }
+
+                if (region.TurnsUntilNextPhase <= 0)
+                {
+                    region.PhaseIndex = Mathf.Clamp(region.PhaseIndex, 0, region.Phases.Length - 1);
+                    region.TurnsUntilNextPhase = Mathf.Max(1, region.Phases[region.PhaseIndex].durationTurns);
+                }
+
+                region.TurnsUntilNextPhase--;
+                if (region.TurnsUntilNextPhase > 0)
+                    continue;
+
+                region.PhaseIndex = (region.PhaseIndex + 1) % region.Phases.Length;
+                AmbientPhaseScheduleEntry phase = region.Phases[region.PhaseIndex];
+                region.TurnsUntilNextPhase = Mathf.Max(1, phase.durationTurns);
+
+                int nextAmbient = LightLevel.Clamp(phase.ambientLight);
+                if (region.CurrentAmbientLight == nextAmbient)
+                    continue;
+
+                region.CurrentAmbientLight = nextAmbient;
+                Debug.Log($"[Lighting:Cycle] Region {region.Id} -> ambient {nextAmbient} (turn {_playerPhaseTurnCount})");
+                RecomputeReceiversInRegion(region.Id);
+            }
         }
 
         void BuildFloorReceivers()

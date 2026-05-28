@@ -107,6 +107,7 @@ namespace JRogue.Manager.Turn
 
         private void NotifyPartyTurnStart()
         {
+            LightingService.Instance?.OnPlayerPhaseBoundary();
             HazardService.Instance?.TickOccupancyOnPlayerPhaseStart();
             TrapService.Instance?.EvaluateDetection();
 

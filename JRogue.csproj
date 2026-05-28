@@ -148,6 +148,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileId.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryManager.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileDefinition.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightingPhase3SampleContent.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightCellData.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInspectPaneView.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Assets/Scripts/Manager/Party/PartyManaStoneLedger.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/FlagPrecondition.cs" />
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Effects/SetTileEmissionEffect.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />

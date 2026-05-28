@@ -842,7 +842,7 @@ MonoBehaviour:
   baseVisibilityThreshold: 3
   verboseSightLogs: 0
   verboseDarkTileLogs: 0
-  verboseFogLogs: 1
+  verboseFogLogs: 0
 --- !u!4 &745011028
 Transform:
   m_ObjectHideFlags: 0
@@ -966,6 +966,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 858001454}
+  - component: {fileID: 858001455}
   m_Layer: 0
   m_Name: LightingPhase_Phase3_RuntimeEmitters
   m_TagString: Untagged
@@ -988,6 +989,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1986568399}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &858001455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 858001453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.World.Lighting.LightingPhase3SampleContent
+  wallTorchCell: {x: 4, y: -2, z: 0}
+  torchDefinition: {fileID: 11400000, guid: 95d4d3f90e3455d5584308f81cb90a04, type: 2}
+  wallTorchInteractable: {fileID: 11400000, guid: b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9, type: 2}
 --- !u!1 &880297827
 GameObject:
   m_ObjectHideFlags: 0
@@ -2664,14 +2680,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: JRogue::JRogue.World.Lighting.LightingBootstrap
   placementSet: {fileID: 0}
-  placements:
-  - cell: {x: 3, y: -2, z: 0}
-    isEmitter: 1
-    emitterDefinition: {fileID: 11400000, guid: 95d4d3f90e3455d5584308f81cb90a04, type: 2}
-    initialEmission: 6
-    isReceiver: 0
-    ambientRegionId: 0
-  ambientRegions: []
+  placements: []
+  ambientRegions:
+  - regionId: 0
+    currentAmbientLight: 10
+    cycleLengthTurns: 15
+    phases:
+    - ambientLight: 10
+      durationTurns: 5
+    - ambientLight: 3
+      durationTurns: 5
+    - ambientLight: 10
+      durationTurns: 5
 --- !u!1 &2014373860
 GameObject:
   m_ObjectHideFlags: 0
