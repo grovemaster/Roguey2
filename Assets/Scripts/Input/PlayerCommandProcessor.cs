@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using JRogue.Ability;
 using JRogue.Actors;
+using JRogue.Item;
+using JRogue.Manager.Inventory;
 using JRogue.Actors.Components;
 using JRogue.Core.Actor;
 using JRogue.Manager.Equipment;
@@ -33,10 +35,16 @@ namespace JRogue.Input
             public PlayerAbilitySource Source;
             public int SlotIndex;
             public int AbilityIndex;
+            public AbilityAction InventoryAbility;
+            public ItemInstance InventoryItemInstance;
+            public BaseActor InventoryOwner;
+            public int InventoryResumeSelectionIndex;
+            public string InventoryLogTag;
         }
 
         private InputState currentState = InputState.Normal;
         private PendingTargetedAbility? pendingTargetedAbility;
+        private System.Action<int> inventoryTargetedUseCancelCallback;
 
         private PartyManager partyManager;
         private TurnManager turnManager;
@@ -46,7 +54,51 @@ namespace JRogue.Input
 
         public InputState CurrentState => currentState;
 
+        public bool IsPendingInventoryTargetedUse =>
+            currentState == InputState.Targeting
+            && pendingTargetedAbility.HasValue
+            && pendingTargetedAbility.Value.Source == PlayerAbilitySource.InventoryItem;
+
         public void SetReticleView(TargetingReticleView view) => reticleView = view;
+
+        public void SetInventoryTargetedUseCancelCallback(System.Action<int> callback) =>
+            inventoryTargetedUseCancelCallback = callback;
+
+        /// <summary>Begin targeting for a carried item (inventory closed by UI before call).</summary>
+        public bool TryBeginInventoryTargetedUse(
+            BaseActor activeMember,
+            AbilityAction ability,
+            ItemInstance itemInstance,
+            BaseActor itemOwner,
+            int resumeSelectionIndex,
+            string logTag)
+        {
+            if (ability == null || activeMember == null)
+                return false;
+
+            EnsureManagers();
+
+            if (currentState == InputState.Targeting)
+                return false;
+
+            if (!turnManager.CanActorTakeAction(activeMember.gameObject))
+                return false;
+
+            currentState = InputState.Targeting;
+            pendingTargetedAbility = new PendingTargetedAbility
+            {
+                Source = PlayerAbilitySource.InventoryItem,
+                InventoryAbility = ability,
+                InventoryItemInstance = itemInstance,
+                InventoryOwner = itemOwner,
+                InventoryResumeSelectionIndex = resumeSelectionIndex,
+                InventoryLogTag = logTag ?? string.Empty,
+            };
+
+            InventoryTargetedUseLog.Log(logTag, "Use started; inventory closed; targeting active.");
+            reticleView?.Show(activeMember.GridPosition);
+            return true;
+        }
 
         /// <summary>
         /// Returns false when the command is ignored (wrong turn, invalid context, no-op move, etc.).
@@ -338,6 +390,8 @@ namespace JRogue.Input
                 PlayerAbilitySource.HumanMageSpell =>
                     mageSpells != null
                     && mageSpells.TryExecuteEquipped(pending.SlotIndex, activeMember.gameObject, target),
+                PlayerAbilitySource.InventoryItem =>
+                    TryExecuteInventoryItemTargetedUse(pending, activeMember, target),
                 _ => false,
             };
 
@@ -363,8 +417,63 @@ namespace JRogue.Input
         private bool ApplyCancelTarget()
         {
             if (currentState != InputState.Targeting) return false;
+
+            if (pendingTargetedAbility.HasValue
+                && pendingTargetedAbility.Value.Source == PlayerAbilitySource.InventoryItem)
+            {
+                PendingTargetedAbility pending = pendingTargetedAbility.Value;
+                if (inventoryTargetedUseCancelCallback != null)
+                {
+                    inventoryTargetedUseCancelCallback.Invoke(pending.InventoryResumeSelectionIndex);
+                    InventoryTargetedUseLog.Log(
+                        pending.InventoryLogTag,
+                        "Cancelled; scroll retained; inventory reopened; selection restored.");
+                }
+                else
+                {
+                    InventoryTargetedUseLog.LogWarning(
+                        pending.InventoryLogTag,
+                        "Cancel with no pending scroll state.");
+                }
+            }
+            else
+            {
+                Debug.Log("Targeted Ability Cancelled.");
+            }
+
             ExitTargetingMode();
-            Debug.Log("Targeted Ability Cancelled.");
+            return true;
+        }
+
+        static bool TryExecuteInventoryItemTargetedUse(
+            PendingTargetedAbility pending,
+            BaseActor activeMember,
+            Vector3Int target)
+        {
+            AbilityAction ability = pending.InventoryAbility;
+            if (ability == null || activeMember == null)
+                return false;
+
+            if (!ability.Execute(activeMember.gameObject, target))
+            {
+                InventoryTargetedUseLog.Log(pending.InventoryLogTag, $"Confirm rejected at {target}.");
+                return false;
+            }
+
+            BaseActor itemOwner = pending.InventoryOwner;
+            InventoryManager inventory = itemOwner != null ? itemOwner.GetComponent<InventoryManager>() : null;
+            if (inventory != null
+                && pending.InventoryItemInstance != null
+                && !inventory.TryRemoveCarried(pending.InventoryItemInstance))
+            {
+                InventoryTargetedUseLog.LogWarning(
+                    pending.InventoryLogTag,
+                    $"Execute succeeded but TryRemoveCarried failed for {pending.InventoryItemInstance.Id}.");
+            }
+
+            InventoryTargetedUseLog.Log(
+                pending.InventoryLogTag,
+                $"Confirm success at {target}; scroll consumed; turn ended.");
             return true;
         }
 

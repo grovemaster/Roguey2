@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: ProjectBrowser
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -245,14 +245,14 @@ MonoBehaviour:
     y: 857
     width: 1332
     height: 503
-  m_MinSize: {x: 101, y: 126}
-  m_MaxSize: {x: 4001, y: 4026}
-  m_ActualView: {fileID: 17}
+  m_MinSize: {x: 231, y: 276}
+  m_MaxSize: {x: 10001, y: 10026}
+  m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
   - {fileID: 17}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -693,10 +693,16 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -31852
+      - m_Data: -78954
+      - m_Data: -78344
+      - m_Data: -77460
+      - m_Data: -72872
+      - m_Data: -65748
+      - m_Data: -19284
       - m_Data: -1344
-      - m_Data: 53326
-      - m_Data: 59520
+      - m_Data: 59312
+      - m_Data: 59340
+      - m_Data: 59428
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -714,7 +720,7 @@ MonoBehaviour:
         m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_TrimLeadingAndTrailingWhitespace: 0
-        m_ClientGUIView: {fileID: 0}
+        m_ClientGUIView: {fileID: 8}
       m_SearchString: 
     m_ExpandedScenes: []
     m_CurrenRootEntityId:
@@ -1330,8 +1336,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Project\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1288
-    y: 1050
+    x: 0
+    y: 881
     width: 1331
     height: 477
   m_SerializedDataModeController:
@@ -1358,7 +1364,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Data/Status
+    - Assets/Scripts/Input
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1368,46 +1374,48 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 73
   m_LastFolders:
-  - Assets/Data/Status
+  - Assets/Scripts/Input
   m_LastFoldersGridSize: 73
   m_LastProjectPath: /home/jonathan/UnityProjects/Roguey2
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 167}
+    scrollPos: {x: 0, y: 183}
     m_SelectedIDs:
-    - m_Data: 64440
+    - m_Data: 59512
     m_LastClickedID:
-      m_Data: 64440
+      m_Data: 59512
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 53886
-    - m_Data: 53888
-    - m_Data: 53890
-    - m_Data: 53892
-    - m_Data: 53894
-    - m_Data: 53896
-    - m_Data: 53898
-    - m_Data: 53900
-    - m_Data: 53902
-    - m_Data: 53904
-    - m_Data: 53906
-    - m_Data: 53908
-    - m_Data: 53910
-    - m_Data: 53912
-    - m_Data: 53914
-    - m_Data: 53916
-    - m_Data: 53918
-    - m_Data: 53920
-    - m_Data: 53922
-    - m_Data: 53924
-    - m_Data: 53926
-    - m_Data: 53928
-    - m_Data: 53930
-    - m_Data: 53932
-    - m_Data: 53934
-    - m_Data: 53936
+    - m_Data: 54034
+    - m_Data: 54036
+    - m_Data: 54038
+    - m_Data: 54040
+    - m_Data: 54042
+    - m_Data: 54044
+    - m_Data: 54046
+    - m_Data: 54048
+    - m_Data: 54050
+    - m_Data: 54052
+    - m_Data: 54054
+    - m_Data: 54056
+    - m_Data: 54058
+    - m_Data: 54060
+    - m_Data: 54062
+    - m_Data: 54064
+    - m_Data: 54066
+    - m_Data: 54068
+    - m_Data: 54070
+    - m_Data: 54072
+    - m_Data: 54074
+    - m_Data: 54076
+    - m_Data: 54078
+    - m_Data: 54080
+    - m_Data: 54082
+    - m_Data: 54084
+    - m_Data: 54086
+    - m_Data: 54088
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1442,32 +1450,34 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 53886
-    - m_Data: 53888
-    - m_Data: 53890
-    - m_Data: 53892
-    - m_Data: 53894
-    - m_Data: 53896
-    - m_Data: 53898
-    - m_Data: 53900
-    - m_Data: 53902
-    - m_Data: 53904
-    - m_Data: 53906
-    - m_Data: 53908
-    - m_Data: 53910
-    - m_Data: 53912
-    - m_Data: 53914
-    - m_Data: 53916
-    - m_Data: 53918
-    - m_Data: 53920
-    - m_Data: 53922
-    - m_Data: 53924
-    - m_Data: 53926
-    - m_Data: 53928
-    - m_Data: 53930
-    - m_Data: 53932
-    - m_Data: 53934
-    - m_Data: 53936
+    - m_Data: 54034
+    - m_Data: 54036
+    - m_Data: 54038
+    - m_Data: 54040
+    - m_Data: 54042
+    - m_Data: 54044
+    - m_Data: 54046
+    - m_Data: 54048
+    - m_Data: 54050
+    - m_Data: 54052
+    - m_Data: 54054
+    - m_Data: 54056
+    - m_Data: 54058
+    - m_Data: 54060
+    - m_Data: 54062
+    - m_Data: 54064
+    - m_Data: 54066
+    - m_Data: 54068
+    - m_Data: 54070
+    - m_Data: 54072
+    - m_Data: 54074
+    - m_Data: 54076
+    - m_Data: 54078
+    - m_Data: 54080
+    - m_Data: 54082
+    - m_Data: 54084
+    - m_Data: 54086
+    - m_Data: 54088
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1523,7 +1533,7 @@ MonoBehaviour:
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_TrimLeadingAndTrailingWhitespace: 0
-      m_ClientGUIView: {fileID: 0}
+      m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
       m_EntityId:
@@ -1557,8 +1567,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Console\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 0
-    y: 881
+    x: 1288
+    y: 1050
     width: 1331
     height: 477
   m_SerializedDataModeController:

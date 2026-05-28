@@ -1,3 +1,6 @@
+using JRogue.Actors;
+using JRogue.Ability;
+using JRogue.Item;
 using JRogue.Manager.Turn;
 using JRogue.UI.Gameplay;
 using JRogue.UI.Inventory;
@@ -13,6 +16,8 @@ namespace JRogue.Input
         private InputAction toggleInventoryAction;
         private InputAction pickupFloorItemsAction;
         private readonly PlayerCommandProcessor commandProcessor = new PlayerCommandProcessor();
+
+        public PlayerCommandProcessor CommandProcessor => commandProcessor;
 
         [Header("Targeting Visuals")]
         [SerializeField] private TargetingReticleView reticleView;
@@ -120,8 +125,26 @@ namespace JRogue.Input
             if (InventoryUI.IsOpenInSearchFocus())
                 return;
 
+            if (commandProcessor.IsPendingInventoryTargetedUse)
+                return;
+
             InventoryUI.TogglePanelFromGameplayInput();
         }
+
+        public bool TryBeginInventoryTargetedUse(
+            BaseActor activeMember,
+            AbilityAction ability,
+            ItemInstance itemInstance,
+            BaseActor itemOwner,
+            int resumeSelectionIndex,
+            string logTag) =>
+            commandProcessor.TryBeginInventoryTargetedUse(
+                activeMember,
+                ability,
+                itemInstance,
+                itemOwner,
+                resumeSelectionIndex,
+                logTag);
 
         /// <summary>
         /// Apply a command from a recording or test harness. Same rules as live input (player turn, etc.).

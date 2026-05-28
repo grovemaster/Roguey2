@@ -135,6 +135,7 @@
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionEvaluator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryHotkeyRuntimeOverrides.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
+    <Compile Include="Assets/Scripts/Manager/Inventory/InventoryTargetedUseLog.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementEntry.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TrapConfirmDialogUI.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardExitEvaluator.cs" />
+    <Compile Include="Assets/Scripts/Manager/Inventory/InventoryUseResult.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AutoPickupConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/Input/AutoPickupMoveGate.cs" />
     <Compile Include="Assets/Scripts/Collector/InventoryCollector.cs" />

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15a0f08dbbd994f0b944b944e42b57c, type: 3}
+  m_Name: Scroll_Fireball
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: Scroll of Fireball
+  category: 13
+  inventoryRiskHints: 0
+  slotType: 0
+  weight: 1
+  icon: {fileID: 0}
+  goldValue: 50
+  requiresAppraisal: 1
+  autoPickupOnStep: 0
+  requiresAutoPickupConfirmation: 0
+  equipRequiresAllFlags: 0
+  equipExcludesActorFlags: 0
+  damageModules: []
+  statModifiers: []
+  passiveEffects: []
+  activeAbilities:
+  - {fileID: 11400000, guid: ccbdd8aa50ddf7c8b91ce85b5ca98601, type: 2}
+  inventoryTargetedUseLogTag: Scroll:Fireball

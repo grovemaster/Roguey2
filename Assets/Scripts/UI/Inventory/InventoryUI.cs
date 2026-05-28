@@ -108,6 +108,10 @@ namespace JRogue.UI.Inventory
 
         const string FooterExpandedPrefKey = "JRogue.Inv.FooterExpanded";
 
+        JRogue.Input.InputHandler _inputHandler;
+
+        public static InventoryUI Instance => _instance;
+
         public static bool BlocksGameplay =>
             _instance != null && _instance.inventoryPanel != null && _instance.inventoryPanel.activeSelf;
 
@@ -190,6 +194,34 @@ namespace JRogue.UI.Inventory
             ApplyFooterCopy();
             ApplyDarkPanelTheme();
             ApplyAccessibilityToUiChrome();
+        }
+
+        void Start() => TryRegisterInventoryTargetedUseInput();
+
+        /// <summary>Wires cancel → reopen inventory (called from <see cref="JRogue.Input.InputHandler"/>).</summary>
+        public void RegisterInventoryTargetedUseWithInput(JRogue.Input.InputHandler inputHandler)
+        {
+            _inputHandler = inputHandler;
+            inputHandler.CommandProcessor.SetInventoryTargetedUseCancelCallback(
+                ReopenAfterInventoryTargetedUseCancel);
+        }
+
+        void TryRegisterInventoryTargetedUseInput()
+        {
+            if (_inputHandler != null)
+                return;
+
+            JRogue.Input.InputHandler handler = FindAnyObjectByType<JRogue.Input.InputHandler>();
+            if (handler != null)
+                RegisterInventoryTargetedUseWithInput(handler);
+        }
+
+        void ReopenAfterInventoryTargetedUseCancel(int selectionIndex)
+        {
+            _selection = selectionIndex;
+            if (inventoryPanel != null)
+                inventoryPanel.SetActive(true);
+            RefreshInventoryDisplay();
         }
 
         void ApplyAccessibilityToUiChrome()
@@ -2272,10 +2304,83 @@ namespace JRogue.UI.Inventory
             if (row.Instance != null && row.Instance.Quantity > 1)
                 Debug.Log($"[Inventory Phase2 stub] Partial consume qty UI not wired ({row.Instance.Quantity}).");
 
-            if (!JRogue.Manager.Inventory.InventoryItemUse.TryUseCarriedItem(row, InCombatContext, out string failureReason))
-                Debug.Log($"[Use] {failureReason}");
-            else
-                RefreshInventoryDisplay();
+            JRogue.Manager.Inventory.InventoryUseResult result =
+                JRogue.Manager.Inventory.InventoryItemUse.TryUseCarriedItem(row, InCombatContext);
+
+            if (result.Outcome == JRogue.Manager.Inventory.InventoryUseOutcome.Failed)
+            {
+                string tag = row.Item.inventoryTargetedUseLogTag;
+                if (!string.IsNullOrEmpty(tag))
+                {
+                    JRogue.Manager.Inventory.InventoryTargetedUseLog.Log(
+                        tag,
+                        $"Use blocked: {result.FailureReason}");
+                }
+                else
+                {
+                    Debug.Log($"[Use] {result.FailureReason}");
+                }
+
+                return;
+            }
+
+            if (result.Outcome == JRogue.Manager.Inventory.InventoryUseOutcome.StartedTargeting)
+            {
+                TryBeginInventoryTargetedUse(row, result.TargetingPending);
+                return;
+            }
+
+            RefreshInventoryDisplay();
+        }
+
+        void TryBeginInventoryTargetedUse(
+            InventoryViewModel.Row row,
+            JRogue.Manager.Inventory.InventoryTargetedUsePending pending)
+        {
+            TryRegisterInventoryTargetedUseInput();
+            if (_inputHandler == null)
+            {
+                Debug.LogWarning("[Use] No InputHandler; cannot start inventory targeting.");
+                return;
+            }
+
+            JRogue.Manager.Party.PartyManager party = JRogue.Manager.Party.PartyManager.Instance;
+            BaseActor activeMember = party != null ? party.GetActiveMember() : null;
+            if (activeMember == null)
+            {
+                if (!string.IsNullOrEmpty(pending.LogTag))
+                {
+                    JRogue.Manager.Inventory.InventoryTargetedUseLog.Log(
+                        pending.LogTag,
+                        "Use blocked: no active party member.");
+                }
+
+                return;
+            }
+
+            int resumeSelection = _selection;
+            SaveInventorySessionState();
+            if (inventoryPanel != null)
+                inventoryPanel.SetActive(false);
+
+            if (!_inputHandler.TryBeginInventoryTargetedUse(
+                    activeMember,
+                    pending.Ability,
+                    pending.Instance,
+                    pending.Owner,
+                    resumeSelection,
+                    pending.LogTag))
+            {
+                if (!string.IsNullOrEmpty(pending.LogTag))
+                {
+                    JRogue.Manager.Inventory.InventoryTargetedUseLog.Log(
+                        pending.LogTag,
+                        "Use blocked: could not start targeting.");
+                }
+
+                if (inventoryPanel != null)
+                    inventoryPanel.SetActive(true);
+            }
         }
 
         void GiveToStub()

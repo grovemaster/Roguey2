@@ -106,6 +106,10 @@ namespace JRogue.Item
         [Header("Activated Ability")]
         public List<AbilityAction> activeAbilities;  // Run OnActivate
 
+        [Header("Inventory use")]
+        [Tooltip("Optional debug log prefix when using from inventory with targeting (e.g. Scroll:Fireball).")]
+        public string inventoryTargetedUseLogTag;
+
         void Awake()
         {
             damageModules ??= new List<DamageEntry>();

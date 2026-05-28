@@ -11,6 +11,8 @@ namespace JRogue.Input
         Essence = 0,
         EquipmentItem = 1,
         HumanMageSpell = 2,
+        /// <summary>Carried item used from inventory (scrolls, wands, etc.) with targeting.</summary>
+        InventoryItem = 3,
     }
 
     /// <summary>Discriminant for <see cref="PlayerCommand"/>; stable for serialization.</summary>
