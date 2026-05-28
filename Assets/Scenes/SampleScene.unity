@@ -842,6 +842,7 @@ MonoBehaviour:
   baseVisibilityThreshold: 3
   verboseSightLogs: 0
   verboseDarkTileLogs: 0
+  verboseFogLogs: 1
 --- !u!4 &745011028
 Transform:
   m_ObjectHideFlags: 0

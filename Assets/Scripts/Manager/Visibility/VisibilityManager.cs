@@ -31,6 +31,15 @@ public class VisibilityManager : MonoBehaviour
     {
         public TileKnowledgeState state;
         public TerrainSnapshot snapshot;
+        public LightingSnapshot lightingSnapshot;
+    }
+
+    struct LightingSnapshot
+    {
+        public int snapshotEmitLight;
+        public int snapshotReceivedLight;
+        public int snapshotAmbient;
+        public bool presentationWasDarkTile;
     }
 
     public List<Tilemap> tilemaps;
@@ -43,6 +52,7 @@ public class VisibilityManager : MonoBehaviour
     [Min(0)] public int baseVisibilityThreshold = 3;
     [SerializeField] bool verboseSightLogs;
     [SerializeField] bool verboseDarkTileLogs;
+    [SerializeField] bool verboseFogLogs;
 
     readonly Dictionary<Vector3Int, CellKnowledge> _knowledge =
         new Dictionary<Vector3Int, CellKnowledge>();
@@ -128,15 +138,25 @@ public class VisibilityManager : MonoBehaviour
                 continue;
 
             SetCellState(prev, TileKnowledgeState.Explored);
+            if (verboseFogLogs && _knowledge.TryGetValue(prev, out CellKnowledge frozen))
+            {
+                LightingSnapshot ls = frozen.lightingSnapshot;
+                Debug.Log(
+                    $"[Lighting:Fog] Snapshot frozen at {prev} " +
+                    $"emit={ls.snapshotEmitLight} recv={ls.snapshotReceivedLight} ambient={ls.snapshotAmbient} dark={ls.presentationWasDarkTile}");
+            }
         }
 
         // Unseen/explored -> visible and snapshot refresh.
         foreach (Vector3Int cell in currentVisible)
         {
             TerrainSnapshot snapshot = CaptureSnapshot(cell);
+            bool isDarkTile = !currentLitVisible.Contains(cell);
+            LightingSnapshot lightingSnapshot = CaptureLightingSnapshot(cell, isDarkTile);
             if (_knowledge.TryGetValue(cell, out CellKnowledge knowledge))
             {
                 knowledge.snapshot = snapshot;
+                knowledge.lightingSnapshot = lightingSnapshot;
                 knowledge.state = TileKnowledgeState.Visible;
             }
             else
@@ -144,7 +164,8 @@ public class VisibilityManager : MonoBehaviour
                 knowledge = new CellKnowledge
                 {
                     state = TileKnowledgeState.Visible,
-                    snapshot = snapshot
+                    snapshot = snapshot,
+                    lightingSnapshot = lightingSnapshot
                 };
             }
 
@@ -160,6 +181,14 @@ public class VisibilityManager : MonoBehaviour
                 if (verboseDarkTileLogs)
                     Debug.Log($"[Lighting:DarkTile] {cell} LOS-visible but under threshold.");
             }
+
+            if (verboseFogLogs)
+            {
+                Debug.Log(
+                    $"[Lighting:Fog] Snapshot capture at {cell} " +
+                    $"emit={lightingSnapshot.snapshotEmitLight} recv={lightingSnapshot.snapshotReceivedLight} " +
+                    $"ambient={lightingSnapshot.snapshotAmbient} dark={lightingSnapshot.presentationWasDarkTile}");
+            }
         }
 
         // Apply explored tint for known non-visible cells.
@@ -171,7 +200,7 @@ public class VisibilityManager : MonoBehaviour
             if (_knowledge.TryGetValue(cell, out CellKnowledge knowledge)
                 && knowledge.state == TileKnowledgeState.Explored)
             {
-                TintCell(cell, memColor);
+                TintCell(cell, GetExploredSnapshotColor(knowledge));
             }
             else
             {
@@ -298,6 +327,58 @@ public class VisibilityManager : MonoBehaviour
             hasFloor = map != null && map.FloorMap != null && map.FloorMap.HasTile(cell),
             hasWall = map != null && map.WallMap != null && map.WallMap.HasTile(cell)
         };
+    }
+
+    LightingSnapshot CaptureLightingSnapshot(Vector3Int cell, bool isDarkTile)
+    {
+        LightingService lighting = LightingService.Instance;
+        if (lighting == null)
+        {
+            return new LightingSnapshot
+            {
+                snapshotEmitLight = 0,
+                snapshotReceivedLight = 0,
+                snapshotAmbient = 0,
+                presentationWasDarkTile = isDarkTile
+            };
+        }
+
+        if (lighting.TryGetCellData(cell, out LightCellData data))
+        {
+            AmbientRegion region = lighting.GetOrCreateAmbientRegion(data.AmbientRegionId);
+            return new LightingSnapshot
+            {
+                snapshotEmitLight = data.IsEmitter ? data.EmitLight : 0,
+                snapshotReceivedLight = data.ReceivedLight,
+                snapshotAmbient = region != null ? LightLevel.Clamp(region.CurrentAmbientLight) : 0,
+                presentationWasDarkTile = isDarkTile
+            };
+        }
+
+        return new LightingSnapshot
+        {
+            snapshotEmitLight = lighting.GetEmitLight(cell),
+            snapshotReceivedLight = lighting.GetReceivedLight(cell),
+            snapshotAmbient = 0,
+            presentationWasDarkTile = isDarkTile
+        };
+    }
+
+    Color GetExploredSnapshotColor(CellKnowledge knowledge)
+    {
+        LightingSnapshot snapshot = knowledge.lightingSnapshot;
+        if (snapshot.snapshotReceivedLight <= 0 && snapshot.snapshotEmitLight <= 0 && snapshot.snapshotAmbient <= 0)
+            return memColor;
+
+        float normalized = Mathf.Clamp01(snapshot.snapshotReceivedLight / (float)LightLevel.Max);
+        if (snapshot.presentationWasDarkTile)
+        {
+            // Dark-tile memory: closer to unseen while still explored.
+            return Color.Lerp(unseenColor, memColor, normalized * 0.45f);
+        }
+
+        // Brighter memory for tiles last seen in strong light.
+        return Color.Lerp(memColor * 0.8f, memColor, normalized);
     }
 
     void TintCell(Vector3Int pos, Color color)
