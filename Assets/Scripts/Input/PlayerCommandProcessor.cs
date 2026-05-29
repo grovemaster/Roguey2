@@ -427,7 +427,7 @@ namespace JRogue.Input
                     inventoryTargetedUseCancelCallback.Invoke(pending.InventoryResumeSelectionIndex);
                     InventoryTargetedUseLog.Log(
                         pending.InventoryLogTag,
-                        "Cancelled; scroll retained; inventory reopened; selection restored.");
+                        "Cancelled; item retained; inventory reopened; selection restored.");
                 }
                 else
                 {
@@ -464,16 +464,16 @@ namespace JRogue.Input
             InventoryManager inventory = itemOwner != null ? itemOwner.GetComponent<InventoryManager>() : null;
             if (inventory != null
                 && pending.InventoryItemInstance != null
-                && !inventory.TryRemoveCarried(pending.InventoryItemInstance))
+                && !inventory.TryConsumeCarriedQuantity(pending.InventoryItemInstance, 1))
             {
                 InventoryTargetedUseLog.LogWarning(
                     pending.InventoryLogTag,
-                    $"Execute succeeded but TryRemoveCarried failed for {pending.InventoryItemInstance.Id}.");
+                    $"Execute succeeded but TryConsumeCarriedQuantity failed for {pending.InventoryItemInstance.Id}.");
             }
 
             InventoryTargetedUseLog.Log(
                 pending.InventoryLogTag,
-                $"Confirm success at {target}; scroll consumed; turn ended.");
+                $"Confirm success at {target}; item consumed; turn ended.");
             return true;
         }
 

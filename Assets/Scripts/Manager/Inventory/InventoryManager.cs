@@ -44,6 +44,24 @@ namespace JRogue.Manager.Inventory
             return instance != null && carriedItems.Remove(instance);
         }
 
+        /// <summary>Removes up to <paramref name="amount"/> from a carried stack; removes the instance when quantity reaches 0.</summary>
+        public bool TryConsumeCarriedQuantity(ItemInstance instance, int amount = 1)
+        {
+            if (instance == null || amount < 1 || !carriedItems.Contains(instance))
+                return false;
+
+            if (instance.Quantity > amount)
+            {
+                instance.Quantity -= amount;
+                return true;
+            }
+
+            if (instance.Quantity == amount)
+                return TryRemoveCarried(instance);
+
+            return false;
+        }
+
         public bool AddItem(ItemInstance instance)
         {
             if (instance == null || instance.Definition == null)

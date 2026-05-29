@@ -66,7 +66,7 @@ namespace JRogue.Manager.Inventory
 
             InventoryManager inventory = row.Owner.GetComponent<InventoryManager>();
             if (inventory != null && row.Instance != null)
-                inventory.TryRemoveCarried(row.Instance);
+                inventory.TryConsumeCarriedQuantity(row.Instance, 1);
 
             return InventoryUseResult.Consumed();
         }

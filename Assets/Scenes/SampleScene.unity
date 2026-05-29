@@ -4125,16 +4125,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.size
-      value: 1
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[1].id
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.data[0].quantity
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[1].quantity
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.data[0].definition
       value: 
       objectReference: {fileID: 11400000, guid: f4e5d6c7b8a9478091ab2c3d4e5f6001, type: 2}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[1].definition
+      value: 
+      objectReference: {fileID: 11400000, guid: d05fb955cc514445bcb3ce5c4a5024fe, type: 2}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[1].isAppraised
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[1].storageLocation
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

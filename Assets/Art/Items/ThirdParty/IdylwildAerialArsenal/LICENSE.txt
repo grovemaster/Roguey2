@@ -1,0 +1,16 @@
+Idylwild's Aerial Arsenal (subset)
+
+Source: https://opengameart.org/content/idylwilds-aerial-arsenal
+Archive: idylwilds_aerial_arsenal.zip
+
+Tiles used in Roguey2 (items):
+  Item Icons/throwingknife1.png — Throwing Knife inventory / world icon
+  Item Icons/throwingknife1stack.png — optional stacked variant (not used in v0 UI)
+
+Author: Idylwild — https://idylwild.itch.io/
+
+License: Free to share, copy, redistribute, remix, transform, and build upon for any
+purpose including commercial use. Attribution appreciated but not required.
+
+Product approval: Option A — 2026-05-29.
+See Docs/Inventory/Throwing-Knife-Requirements.md.

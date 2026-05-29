@@ -13,6 +13,32 @@ namespace JRogue.Core.Targeting
             return GridManager.Instance.GetActorAt(tile) != null;
         }
 
+        /// <summary>Battle targets whose footprint includes <paramref name="tile"/> (multi-tile aware).</summary>
+        public static List<IBattleTarget> GetTargetsOnTile(Vector3Int tile)
+        {
+            var results = new List<IBattleTarget>();
+            if (GridManager.Instance == null)
+                return results;
+
+            foreach (IBattleTarget actor in GridManager.Instance.GetAllActors())
+            {
+                if (actor == null)
+                    continue;
+
+                if (actor is IGridFootprint footprint)
+                {
+                    if (GridFootprintUtility.Occupies(footprint, tile))
+                        results.Add(actor);
+                }
+                else if (actor.GridPosition == tile)
+                {
+                    results.Add(actor);
+                }
+            }
+
+            return results;
+        }
+
         // AOE Check for Fireball
         public static List<IBattleTarget> GetTargetsInRadius(Vector3Int center, int radius)
         {

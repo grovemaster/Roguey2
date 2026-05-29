@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15a0f08dbbd994f0b944b944e42b57c, type: 3}
+  m_Name: Missile_ThrowingKnife
+  m_EditorClassIdentifier: Assembly-CSharp::JRogue.Item.ItemData
+  itemName: Throwing Knife
+  category: 8
+  inventoryRiskHints: 0
+  slotType: 0
+  weight: 0.1
+  icon: {fileID: 21300000, guid: b08192d2e52143708f3c8b1b37ad0dc9, type: 3}
+  goldValue: 15
+  requiresAppraisal: 0
+  autoPickupOnStep: 0
+  requiresAutoPickupConfirmation: 0
+  equipRequiresAllFlags: 0
+  equipExcludesActorFlags: 0
+  damageModules: []
+  statModifiers: []
+  passiveEffects: []
+  activeAbilities:
+  - {fileID: 11400000, guid: d60f0b6a3f4242a2b0c5d286238c233c, type: 2}
+  inventoryTargetedUseLogTag: Missile:ThrowingKnife

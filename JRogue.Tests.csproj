@@ -62,6 +62,7 @@
     <Compile Include="Assets/Tests/UnitTests/Racial/DwarfAncestryRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/PlayerCommandProcessorTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/Phase0RacialContractTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryConsumeQuantityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/TelekinesisAbilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/EquipmentLegalityEvaluatorTests.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Assets/Tests/UnitTests/Progression/PartyExperienceServiceTests.cs" />
     <Compile Include="Assets/Tests/Mocks/MockBattleTarget.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/SpiritImprintRuntimeTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Inventory/ThrowingKnifeAbilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/InteractableTileTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/TrapServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputHandlerTest.cs" />
