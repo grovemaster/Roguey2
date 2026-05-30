@@ -29,6 +29,9 @@ namespace JRogue.Racial
         [Header("Passive effects")]
         public List<PassiveEffect> passiveEffects;
 
+        [Header("Non-physical racial traits")]
+        public RacialTraitFlags grantedRacialTraits = RacialTraitFlags.None;
+
         [Header("Active abilities (execution wired later)")]
         public List<AbilityAction> activeAbilities;
 
@@ -60,6 +63,9 @@ namespace JRogue.Racial
 
             foreach (var passive in passiveEffects)
                 passive?.OnApply(target);
+
+            if (grantedRacialTraits != RacialTraitFlags.None)
+                stats.racialTraits |= grantedRacialTraits;
         }
 
         public void Remove(GameObject target)
@@ -87,6 +93,9 @@ namespace JRogue.Racial
                 foreach (var passive in passiveEffects)
                     passive?.OnRemove(target);
             }
+
+            if (grantedRacialTraits != RacialTraitFlags.None)
+                stats.racialTraits &= ~grantedRacialTraits;
         }
 
         public void RefreshPassives(GameObject target)

@@ -36,6 +36,7 @@ namespace JRogue.Tests.UnitTests.Status
         {
             Assert.AreEqual(StatusPolarity.Positive, StatusEffectPolarityRules.GetDefaultPolarity(StatusEffectId.Might));
             Assert.AreEqual(StatusPolarity.Positive, StatusEffectPolarityRules.GetDefaultPolarity(StatusEffectId.Hasted));
+            Assert.AreEqual(StatusPolarity.Negative, StatusEffectPolarityRules.GetDefaultPolarity(StatusEffectId.Stunned));
         }
 
         [Test]

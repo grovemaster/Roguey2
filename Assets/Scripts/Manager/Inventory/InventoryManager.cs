@@ -146,6 +146,32 @@ namespace JRogue.Manager.Inventory
             AddCarriedForEditorSeed(steelArrow, steelQty);
         }
 
+        /// <summary>Editor menu seeding — avoids SerializedObject on prefab instances (SO refs often drop).</summary>
+        public void EditorSeedCarriedItem(ItemData definition, int quantity)
+        {
+            if (definition == null || quantity < 1)
+                return;
+
+            for (int i = carriedItems.Count - 1; i >= 0; i--)
+            {
+                if (carriedItems[i]?.Definition == null)
+                    carriedItems.RemoveAt(i);
+            }
+
+            for (int i = 0; i < carriedItems.Count; i++)
+            {
+                if (carriedItems[i]?.Definition == definition)
+                {
+                    carriedItems[i].Quantity = quantity;
+                    carriedItems[i].StorageLocation = ItemStorageLocation.Carried;
+                    carriedItems[i].IsAppraised = true;
+                    return;
+                }
+            }
+
+            AddCarriedForEditorSeed(definition, quantity);
+        }
+
         void AddCarriedForEditorSeed(ItemData definition, int quantity)
         {
             if (definition == null || quantity < 1)

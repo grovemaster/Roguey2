@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3484d6fa5364480a66d22f0ba714dc4, type: 3}
+  m_Name: HealingPotion_Ability
+  m_EditorClassIdentifier: JRogue::JRogue.Ability.Heal.HealingPotionAbility
+  abilityName: Healing Potion
+  description: Restores 50 HP. May Stun the drinker unless Warrior Willpower and high Pain Tolerance.
+  soulPowerCost: 0
+  magicPowerCost: 0
+  divinePowerCost: 0
+  cooldownTurns: 0
+  requiresTarget: 0
+  range: 0
+  splashRadius: 0
+  isMovementAbility: 0
+  noiseVolume: 0
+  noiseOriginAtTargetTile: 0
+  stunnedDefinition: {fileID: 11400000, guid: f26aa0baea2d4814a903fa4b77cc5bfc, type: 2}

@@ -13,6 +13,7 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 | **Racial subsystem** | Progression framework keyed off race: Spirit Imprint (Barbarian), Human specialization, Tiefling implants, Elf contracts, Dwarf patron Ancestor + common abilities, etc. |
 | **Commitment policy** | Whether subsystem choices are permanent or respec-able (`RacialCommitmentPolicy`). |
 | **Body capabilities** | Mutable flags (horns, stature, …) combined with race rules when resolving equipment; essences/curses/artifacts change these. |
+| **Racial trait flags** | Non-physical gates (`RacialTraitFlags`, e.g. **Warrior Willpower** on Barbarians). Not passives/actives. See [Warrior Willpower / Healing Potion](Warrior-Willpower-Healing-Potion-And-Stun-Requirements.md). |
 
 ## Stacking rules (design contract)
 

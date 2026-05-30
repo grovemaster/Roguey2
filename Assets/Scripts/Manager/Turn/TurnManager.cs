@@ -224,8 +224,15 @@ namespace JRogue.Manager.Turn
             if (currentState == GameState.GAME_OVER)
                 return false;
 
-            // If it's not the player's turn, or they've already acted, return false
-            return currentState == GameState.PLAYER_TURN && !charactersWhoActed.Contains(actor);
+            if (currentState != GameState.PLAYER_TURN || charactersWhoActed.Contains(actor))
+                return false;
+
+            if (actor != null
+                && actor.TryGetComponent(out StatusEffectController statuses)
+                && statuses.HasStatus(StatusEffectId.Stunned))
+                return false;
+
+            return true;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace JRogue.Status
         Might = 2,
         Drained = 3,
         Slowed = 4,
-        Hasted = 5
+        Hasted = 5,
+        Stunned = 6
     }
 }

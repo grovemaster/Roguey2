@@ -62,6 +62,57 @@ namespace JRogue.Status
             return true;
         }
 
+        public static bool TryApplyWithDuration(
+            StatusEffectController controller,
+            StatusEffectDefinition definition,
+            int turnsRemaining,
+            GameObject source = null)
+        {
+            if (controller == null || definition == null || definition.statusId == StatusEffectId.None)
+                return false;
+
+            turnsRemaining = Mathf.Max(1, turnsRemaining);
+
+            if (IsImmune(controller, definition))
+            {
+                Debug.Log($"[Status] {controller.DisplayName} is immune to {definition.displayName}.");
+                return false;
+            }
+
+            if (controller.TryGetStatus(definition.statusId, out StatusEffectInstance existing))
+            {
+                existing.turnsRemaining = Mathf.Max(existing.turnsRemaining, turnsRemaining);
+                existing.source = source;
+                Debug.Log(
+                    $"[Status] {controller.DisplayName} refreshed {definition.displayName} ({existing.turnsRemaining} turns).");
+                return true;
+            }
+
+            controller.AddStatus(new StatusEffectInstance
+            {
+                definition = definition,
+                source = source,
+                turnsRemaining = turnsRemaining
+            });
+
+            Debug.Log($"[Status] {controller.DisplayName} is now {definition.displayName} ({turnsRemaining} turns).");
+            return true;
+        }
+
+        public static bool TryApplyWithDuration(
+            BaseActor target,
+            StatusEffectDefinition definition,
+            int turnsRemaining,
+            GameObject source = null)
+        {
+            if (target == null)
+                return false;
+
+            StatusEffectController controller = target.GetComponent<StatusEffectController>();
+            return controller != null
+                   && TryApplyWithDuration(controller, definition, turnsRemaining, source);
+        }
+
         static bool IsImmune(StatusEffectController controller, StatusEffectDefinition definition)
         {
             StatusImmunity immunity = controller.GetComponent<StatusImmunity>();

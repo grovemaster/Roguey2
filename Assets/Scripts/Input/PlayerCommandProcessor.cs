@@ -222,7 +222,7 @@ namespace JRogue.Input
             if (activeMember == null) return false;
             if (!turnManager.CanActorTakeAction(activeMember.gameObject))
             {
-                Debug.Log($"{activeMember.name} has already moved! Switch characters or end turn.");
+                Debug.Log($"{activeMember.name} has already acted! Switch characters or end turn.");
                 return false;
             }
 
@@ -393,7 +393,7 @@ namespace JRogue.Input
 
             if (!turnManager.CanActorTakeAction(activeMember.gameObject))
             {
-                Debug.Log($"{activeMember.name} has already moved! Switch characters or end turn.");
+                Debug.Log($"{activeMember.name} has already acted! Switch characters or end turn.");
                 return false;
             }
 

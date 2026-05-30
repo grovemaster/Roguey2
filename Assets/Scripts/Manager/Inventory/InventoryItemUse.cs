@@ -24,6 +24,11 @@ namespace JRogue.Manager.Inventory
             if (row.Item.IsBowAmmo)
                 return TryUseBowArrow(row, inCombat);
 
+            if (HealingPotionRules.IsHealingPotionItem(row.Item)
+                && inCombat
+                && !HealingPotionRules.IsExemptFromPainStun(row.Owner.gameObject))
+                return InventoryUseResult.Fail(HealingPotionRules.CombatBanMessage);
+
             if (!InventoryUsability.AppearsUsableNow(row, inCombat))
             {
                 if (!InventoryConsumePolicy.CanConsume(row, out string reason))
@@ -73,6 +78,7 @@ namespace JRogue.Manager.Inventory
             if (inventory != null && row.Instance != null)
                 inventory.TryConsumeCarriedQuantity(row.Instance, 1);
 
+            PartyPlayerActionCompletion.CompleteActiveMemberAction(activeMember);
             return InventoryUseResult.Consumed();
         }
 

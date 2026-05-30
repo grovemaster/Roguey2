@@ -28,6 +28,7 @@ namespace JRogue.Stats
     {
         Strength, Dexterity, Agility, Constitution,
         Intelligence, Wisdom, Charisma, Luck,
-        Sight, Hearing, Smell
+        Sight, Hearing, Smell,
+        PainTolerance
     }
 }

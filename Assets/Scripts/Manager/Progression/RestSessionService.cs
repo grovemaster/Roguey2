@@ -244,7 +244,6 @@ namespace JRogue.Manager.Progression
             if (party == null)
                 return true;
 
-            bool anySoulUser = false;
             for (int i = 0; i < party.partyMembers.Count; i++)
             {
                 BaseActor member = party.partyMembers[i];
@@ -254,7 +253,6 @@ namespace JRogue.Manager.Progression
                 if (!HumanClassRules.UsesSoulPower(member.stats.humanClass))
                     continue;
 
-                anySoulUser = true;
                 if (member.stats.currentSoulPower < member.stats.MaxSoulPower)
                     return false;
             }

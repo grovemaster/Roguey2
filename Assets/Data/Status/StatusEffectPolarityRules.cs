@@ -11,6 +11,7 @@ namespace JRogue.Status
                 StatusEffectId.Slowed => StatusPolarity.Negative,
                 StatusEffectId.Might => StatusPolarity.Positive,
                 StatusEffectId.Hasted => StatusPolarity.Positive,
+                StatusEffectId.Stunned => StatusPolarity.Negative,
                 _ => StatusPolarity.Neutral
             };
 

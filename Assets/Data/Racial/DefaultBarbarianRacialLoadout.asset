@@ -18,4 +18,5 @@ MonoBehaviour:
   statModifiers: []
   resistanceModifiers: []
   passiveEffects: []
+  grantedRacialTraits: 1
   activeAbilities: []

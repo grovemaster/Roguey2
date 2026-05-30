@@ -122,8 +122,9 @@ Menu: **`JRogue/Status/Status Effect Definition`**.
 | **Drained** | **Negative** | Timed stat penalty and/or max HP reduction. |
 | **Slowed** | **Negative** | Reduced movement or actions per turn. |
 | **Hasted** | **Positive** | Extra movement or actions per turn. |
+| **Stunned** | **Negative** | Cannot move or act; see [Warrior Willpower / Healing Potion](../RacialSystem/Warrior-Willpower-Healing-Potion-And-Stun-Requirements.md). |
 
-Create **stub assets** optional; **no** tick/apply code until specified.
+Create **stub assets** optional; **no** tick/apply code until specified (except **Stunned** when that doc is implemented).
 
 ### D4.6 — `StatusPolarity` (implemented)
 
@@ -138,6 +139,7 @@ public enum StatusPolarity { Neutral = 0, Negative = 1, Positive = 2 }
 | Slowed | Negative |
 | Might | Positive |
 | Hasted | Positive |
+| Stunned | Negative |
 
 `StatusEffectDefinition.IsNegative` / `IsPositive` — use for gameplay gates. Defaults applied in `OnValidate` from `StatusEffectPolarityRules.GetDefaultPolarity(statusId)`; designers may override on the asset.
 

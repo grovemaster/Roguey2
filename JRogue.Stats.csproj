@@ -51,8 +51,10 @@
   <ItemGroup>
     <Compile Include="Assets/Scripts/Stats/Racial/BodyCapabilityFlags.cs" />
     <Compile Include="Assets/Scripts/Stats/Racial/RacialSubsystemKind.cs" />
+    <Compile Include="Assets/Scripts/Stats/Racial/RacialTraitFlags.cs" />
     <Compile Include="Assets/Scripts/Stats/StatModifier.cs" />
     <Compile Include="Assets/Scripts/Stats/Racial/HumanClass.cs" />
+    <Compile Include="Assets/Scripts/Stats/Racial/RacialTraitQueries.cs" />
     <Compile Include="Assets/Scripts/Stats/Stat.cs" />
     <Compile Include="Assets/Scripts/Stats/Racial/RacialIdentitySnapshot.cs" />
     <Compile Include="Assets/Scripts/Stats/CharacterStats.cs" />

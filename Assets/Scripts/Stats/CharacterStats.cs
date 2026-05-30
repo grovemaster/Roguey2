@@ -18,6 +18,9 @@ namespace JRogue.Stats
         [Tooltip("Intrinsic anatomy / capability flags (saved with identity). Essences add OR-masks and exclusion-bypass masks at runtime — see GetEffectiveBodyCapabilities().")]
         public BodyCapabilityFlags bodyCapabilities = BodyCapabilityFlags.None;
 
+        [Tooltip("Non-physical racial traits (folk baseline, blessings, quests).")]
+        public RacialTraitFlags racialTraits = RacialTraitFlags.None;
+
         /// <summary>Phase 4: runtime-only contributions (essence slot keys, etc.). Not serialized.</summary>
         readonly Dictionary<string, BodyEquipmentContribution> _bodyEquipmentContributions = new Dictionary<string, BodyEquipmentContribution>();
 
@@ -27,6 +30,9 @@ namespace JRogue.Stats
         public float height; // in meters/cm
         public float weight; // in kg
         public int renown;   // Positive = Hero, Negative = Infamous
+
+        [Header("Pain")]
+        public Stat painTolerance = new Stat(10);
 
         [Header("Physical Senses")]
         public Stat sight = new Stat(8);    // Range in grid tiles
@@ -217,6 +223,7 @@ namespace JRogue.Stats
                 StatType.Sight => sight,
                 StatType.Hearing => hearing,
                 StatType.Smell => smell,
+                StatType.PainTolerance => painTolerance,
                 _ => null
             };
         }

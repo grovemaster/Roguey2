@@ -40,6 +40,15 @@ namespace JRogue.UI.Inventory
                         row.Owner.TryGetComponent(out CharacterStats stats) &&
                         stats.race == Race.Undead)
                         return false;
+                    if (HealingPotionRules.IsHealingPotionItem(item))
+                    {
+                        if (row.Owner == null)
+                            return false;
+                        if (!inCombat)
+                            return true;
+                        return HealingPotionRules.IsExemptFromPainStun(row.Owner.gameObject);
+                    }
+
                     goto case ItemCategory.Scroll;
                 case ItemCategory.Scroll:
                     if (row.IsEquipped)

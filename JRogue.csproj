@@ -101,6 +101,7 @@
     <Compile Include="Assets/Scripts/Manager/Party/GameOverService.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupService.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardMoveGate.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Heal/HealingPotionAbility.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingCellMarker.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionSettings.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlaceholderSprites.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Assets/Scripts/Core/Targeting/TargetingResolver.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableLeverContent.cs" />
     <Compile Include="Assets/Scripts/Abilities/ThrowingKnife/ThrowingKnifeAbility.cs" />
+    <Compile Include="Assets/Scripts/Manager/Party/PartyPlayerActionCompletion.cs" />
     <Compile Include="Assets/Scripts/Hazards/SampleSceneHazardPlacements.cs" />
     <Compile Include="Assets/Scripts/Manager/Turn/TurnManager.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionEvaluator.cs" />
@@ -189,6 +191,7 @@
     <Compile Include="Assets/Scripts/Manager/Party/PartyManaStoneLedger.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/FlagPrecondition.cs" />
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs" />
+    <Compile Include="Assets/Scripts/Manager/Inventory/HealingPotionRules.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SetTileEmissionEffect.cs" />
     <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
