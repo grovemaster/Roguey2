@@ -126,6 +126,7 @@ Menu: **`JRogue/Interactables/Interactable Tile Definition`**.
 | **`ActivateInteractableEffect`** | Sets another lever **on** (Lever 2 → 3) |
 | **`GrantPartyExperienceEffect`** | `PartyExperienceService.AwardPartyExperience(amount, source)` |
 | **`OpenDoorEffect`** | Calls `DoorService.Open(doorId)` (stub v0) |
+| **`SpawnEnemyInteractableEffect`** | [Conditional enemy spawn](Conditional-Enemy-Spawn-Requirements.md) |
 | **`ApplyStatusEffect`** | Future → [status spec](Status-Effects-Requirements.md) |
 | **`GrantStatBuffEffect`** | Future timed stat modifiers |
 

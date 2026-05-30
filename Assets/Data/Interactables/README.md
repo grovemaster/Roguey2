@@ -19,6 +19,11 @@ Author levers as **ScriptableObject** assets, place them with a **placement set*
 | `PlacementSets/` | Cell + definition lists per level/room |
 | `../../Art/Interactables/Sprites/` | Lever off/on sprites |
 
+## Skeleton spawn on Lever 1 (conditional enemy spawn)
+
+Lever 1 (`LeverSwitch_First`) includes **SpawnSkeletonOnLeverActivate** — spawns a Skeleton north of the lever (or nearest free floor).  
+To recreate assets: **JRogue → Interactables → Create Skeleton Lever Spawn Assets**.
+
 ## Add levers to a level
 
 ### 1. Create or duplicate a lever definition

@@ -24,6 +24,7 @@ namespace JRogue.Actors.Components
         private IGridFootprint footprint;
         private GridManager gridManager;
         private Vector3Int gridPosition;
+        private bool _spawnAnchorInitialized;
 
         public Vector3Int GridPosition => gridPosition;
 
@@ -37,6 +38,9 @@ namespace JRogue.Actors.Components
 
         private void Start()
         {
+            if (_spawnAnchorInitialized)
+                return;
+
             EnsureGridManager();
             if (footprint == null)
                 footprint = GetComponent<IGridFootprint>();
@@ -47,6 +51,23 @@ namespace JRogue.Actors.Components
 
             RegisterAtCurrentAnchor();
             SyncFootprintPose();
+        }
+
+        /// <summary>
+        /// Places a freshly instantiated actor on the grid before the first <see cref="Start"/>.
+        /// </summary>
+        public void InitializeAtGridAnchor(Vector3Int anchor)
+        {
+            EnsureGridManager();
+            if (self == null)
+                self = GetComponent<IBattleTarget>();
+            if (footprint == null)
+                footprint = GetComponent<IGridFootprint>();
+
+            gridPosition = anchor;
+            RegisterAtCurrentAnchor();
+            SyncFootprintPose();
+            _spawnAnchorInitialized = true;
         }
 
         private void OnDestroy()

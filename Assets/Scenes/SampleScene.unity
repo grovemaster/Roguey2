@@ -2070,7 +2070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcab0f504a39215e2ac5c875f4c4a851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: JRogue::JRogue.Interactables.InteractableTileBootstrap
-  placementSet: {fileID: 0}
+  placementSet: {fileID: 11400000, guid: 2ebf04b1de20427787c340e4fc7d9aca, type: 2}
   placements: []
 --- !u!114 &1529000340
 MonoBehaviour:

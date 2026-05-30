@@ -53,6 +53,7 @@
     <Compile Include="Assets/Editor/Inventory/HealingPotionSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />
+    <Compile Include="Assets/Editor/Interactables/EnemySpawnAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/SampleScenePrefabInstanceRepair.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioQaPack.cs" />
     <Compile Include="Assets/Editor/Inventory/ThrowingKnifeSampleSceneSetup.cs" />

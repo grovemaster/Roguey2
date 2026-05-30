@@ -19,6 +19,7 @@ MonoBehaviour:
   bumpEnabled: 1
   preconditions:
   - {fileID: 11400000, guid: 307b0277118640a5889d05da1e59446b, type: 2}
-  onActivateEffects: []
+  onActivateEffects:
+  - {fileID: 11400000, guid: b9d4f2a53c6e5789012345abcdef0123, type: 2}
   spriteOff: {fileID: 21300000, guid: 8d9b58e7de57433583497e88b900c77a, type: 3}
   spriteOn: {fileID: 21300000, guid: c95b26a1c544437899855d481c6b14a7, type: 3}
