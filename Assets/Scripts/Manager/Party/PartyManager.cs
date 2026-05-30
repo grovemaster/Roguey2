@@ -213,6 +213,38 @@ namespace JRogue.Manager.Party
 
         public BaseActor GetActiveMember() => (partyMembers.Count > 0) ? partyMembers[activeIndex] : null;
 
+        /// <summary>Removes a fallen member before destroy; snaps formation and repoints camera if leader died.</summary>
+        public bool RemovePartyMember(BaseActor member)
+        {
+            if (member == null)
+                return false;
+
+            int index = partyMembers.IndexOf(member);
+            if (index < 0)
+                return false;
+
+            bool wasLeader = index == 0;
+            partyMembers.RemoveAt(index);
+
+            for (int i = partyMembers.Count - 1; i >= 0; i--)
+            {
+                if (partyMembers[i] == null)
+                    partyMembers.RemoveAt(i);
+            }
+
+            activeIndex = 0;
+            SnapHistoryToCurrentPositions();
+
+            if (partyMembers.Count > 0 && wasLeader)
+            {
+                CameraFollow cam = FindAnyObjectByType<CameraFollow>();
+                if (cam != null)
+                    cam.SetTarget(partyMembers[0].transform);
+            }
+
+            return true;
+        }
+
         // Cycle through members (good for a single "Tab" key bind)
         public void CycleActiveMember()
         {

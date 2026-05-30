@@ -216,7 +216,7 @@ namespace JRogue.Tests.Controller
 
             actor.TakeDamage(10, source);
 
-            Assert.LessOrEqual(actor.stats.currentHP, 0);
+            Assert.AreEqual(0, actor.stats.currentHP);
             Assert.AreEqual(1, actor.DieInvocationCount);
         }
 

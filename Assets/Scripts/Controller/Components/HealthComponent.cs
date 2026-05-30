@@ -45,7 +45,7 @@ namespace JRogue.Actors.Components
                 damage = Mathf.Max(1, damage - (stats.ArmorClass / 5));
             }
 
-            stats.currentHP -= damage;
+            stats.currentHP = Mathf.Max(0, stats.currentHP - damage);
 
             // Update conditional passives whose threshold may now have flipped
             // (e.g., Heroic Spirit at half HP).

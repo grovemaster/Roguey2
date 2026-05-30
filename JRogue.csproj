@@ -117,6 +117,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapBootstrap.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapTypes.cs" />
+    <Compile Include="Assets/Scripts/Manager/Party/PartyMemberDeathService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusImmunity.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingBootstrap.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileMarker.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadNecroticSustenancePassive.cs" />
     <Compile Include="Assets/Scripts/Abilities/Teleport/TeleportAbility.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberDeathDialogUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Loot/ManaStoneAutoPickupService.cs" />
     <Compile Include="Assets/Scripts/Core/Targeting/TargetingResolver.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableLeverContent.cs" />

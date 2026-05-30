@@ -2,6 +2,7 @@ using JRogue.Actors;
 using JRogue.Combat;
 using JRogue.Controller.Enemy;
 using JRogue.Manager.Equipment;
+using JRogue.Manager.Party;
 using JRogue.Stats;
 using UnityEngine;
 
@@ -23,8 +24,7 @@ namespace JRogue.Controller.Player
 
         protected override void Die()
         {
-            Debug.Log("Game Over! The Player has fallen.");
-            // Future: trigger Game Over UI
+            PartyMemberDeathService.HandleDeath(this);
         }
 
         protected override void OnBump(BaseActor target)

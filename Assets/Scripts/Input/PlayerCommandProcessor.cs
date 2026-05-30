@@ -754,5 +754,14 @@ namespace JRogue.Input
             pendingTargetedAbility = null;
             reticleView?.Hide();
         }
+
+        /// <summary>Exits targeting without inventory restore (e.g. active member died).</summary>
+        public void ForceExitTargeting()
+        {
+            if (currentState != InputState.Targeting)
+                return;
+
+            ExitTargetingMode();
+        }
     }
 }

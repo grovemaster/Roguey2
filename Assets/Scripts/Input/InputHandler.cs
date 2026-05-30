@@ -129,10 +129,7 @@ namespace JRogue.Input
             if (!context.performed)
                 return;
 
-            if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
-                || TrapConfirmDialogUI.BlocksGameplay
-                || HazardConfirmDialogUI.BlocksGameplay
-                || FloorPickupMenuUI.BlocksGameplay)
+            if (BlocksFloorGameplay())
                 return;
 
             commandProcessor.TryApply(PlayerCommand.PickupFloorItems());
@@ -158,10 +155,7 @@ namespace JRogue.Input
             if (!context.performed)
                 return;
 
-            if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
-                || TrapConfirmDialogUI.BlocksGameplay
-                || HazardConfirmDialogUI.BlocksGameplay
-                || FloorPickupMenuUI.BlocksGameplay)
+            if (BlocksFloorGameplay())
                 return;
 
             commandProcessor.TryApply(PlayerCommand.AimBow());
@@ -271,7 +265,8 @@ namespace JRogue.Input
             InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
             || TrapConfirmDialogUI.BlocksGameplay
             || HazardConfirmDialogUI.BlocksGameplay
-            || FloorPickupMenuUI.BlocksGameplay;
+            || FloorPickupMenuUI.BlocksGameplay
+            || PartyMemberDeathDialogUI.BlocksGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed

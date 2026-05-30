@@ -54,6 +54,7 @@
     <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryValueDisplayTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/MultiTileEnemyGridTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputTestSceneBuilder.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Party/PartyMemberDeathTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/HumanClassPowersTests.cs" />
     <Compile Include="Assets/Tests/JRogueTestsRootSetupFixture.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/ConeSightFootprintTests.cs" />
