@@ -25,6 +25,57 @@ namespace JRogue.Tests.Equipment
         }
 
         [Test]
+        public void Potion_InMainHandSlot_Fails()
+        {
+            GameObject go = new GameObject("PotionEquip");
+            _destroy.Add(go);
+            go.AddComponent<CharacterStats>();
+
+            ItemData potion = ScriptableObject.CreateInstance<ItemData>();
+            _destroy.Add(potion);
+            potion.category = ItemCategory.Potion;
+            potion.slotType = EquipmentSlot.MainHand;
+
+            Assert.IsFalse(
+                EquipmentLegalityEvaluator.CanEquip(go, potion, EquipmentSlot.MainHand, out string reason));
+            Assert.That(reason, Does.Contain("Potion"));
+        }
+
+        [Test]
+        public void ThrowingKnifeMissile_Fails()
+        {
+            GameObject go = new GameObject("KnifeEquip");
+            _destroy.Add(go);
+            go.AddComponent<CharacterStats>();
+
+            ItemData knife = ScriptableObject.CreateInstance<ItemData>();
+            _destroy.Add(knife);
+            knife.category = ItemCategory.Missile;
+            knife.slotType = EquipmentSlot.MainHand;
+            knife.requiresBow = false;
+
+            Assert.IsFalse(
+                EquipmentLegalityEvaluator.CanEquip(go, knife, EquipmentSlot.MainHand, out _));
+        }
+
+        [Test]
+        public void Armor_HeadSlot_Passes()
+        {
+            GameObject go = new GameObject("Helmet");
+            _destroy.Add(go);
+            go.AddComponent<CharacterStats>();
+
+            ItemData helmet = ScriptableObject.CreateInstance<ItemData>();
+            _destroy.Add(helmet);
+            helmet.category = ItemCategory.Armor;
+            helmet.slotType = EquipmentSlot.Head;
+
+            Assert.IsTrue(
+                EquipmentLegalityEvaluator.CanEquip(go, helmet, EquipmentSlot.Head, out string reason),
+                reason);
+        }
+
+        [Test]
         public void SlotMismatch_Fails()
         {
             GameObject go = new GameObject("SlotMismatch");
@@ -49,6 +100,7 @@ namespace JRogue.Tests.Equipment
 
             ItemData helmet = ScriptableObject.CreateInstance<ItemData>();
             _destroy.Add(helmet);
+            helmet.category = ItemCategory.Armor;
             helmet.slotType = EquipmentSlot.Head;
             helmet.equipExcludesActorFlags = BodyCapabilityFlags.Horns;
 
@@ -70,6 +122,7 @@ namespace JRogue.Tests.Equipment
 
             ItemData helmet = ScriptableObject.CreateInstance<ItemData>();
             _destroy.Add(helmet);
+            helmet.category = ItemCategory.Armor;
             helmet.slotType = EquipmentSlot.Head;
             helmet.equipExcludesActorFlags = BodyCapabilityFlags.Horns;
 
@@ -87,6 +140,7 @@ namespace JRogue.Tests.Equipment
 
             ItemData item = ScriptableObject.CreateInstance<ItemData>();
             _destroy.Add(item);
+            item.category = ItemCategory.Armor;
             item.slotType = EquipmentSlot.Feet;
             item.equipRequiresAllFlags = BodyCapabilityFlags.ReducedStature;
 
@@ -104,6 +158,7 @@ namespace JRogue.Tests.Equipment
 
             ItemData item = ScriptableObject.CreateInstance<ItemData>();
             _destroy.Add(item);
+            item.category = ItemCategory.Armor;
             item.slotType = EquipmentSlot.Feet;
             item.equipRequiresAllFlags = BodyCapabilityFlags.ReducedStature;
 
@@ -125,6 +180,7 @@ namespace JRogue.Tests.Equipment
 
             ItemData item = ScriptableObject.CreateInstance<ItemData>();
             _destroy.Add(item);
+            item.category = ItemCategory.Armor;
             item.slotType = EquipmentSlot.Feet;
             item.equipRequiresAllFlags = BodyCapabilityFlags.ReducedStature;
 

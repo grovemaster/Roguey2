@@ -110,6 +110,19 @@ namespace JRogue.Item
         public bool IsBowAmmo =>
             category == ItemCategory.Missile && requiresBow;
 
+        /// <summary>
+        /// Inventory equip policy: only gear categories may use equipment slots
+        /// (missiles limited to bow ammo such as arrows).
+        /// </summary>
+        public bool IsEquippableByCategory =>
+            category switch
+            {
+                ItemCategory.Accessory or ItemCategory.Armor or ItemCategory.Staff
+                    or ItemCategory.Wand or ItemCategory.Weapon => true,
+                ItemCategory.Missile => IsBowAmmo,
+                _ => false,
+            };
+
         [Header("Combat Modules")]
         // Support for multi-damage (e.g. 5 Blunt + 2 Fire)
         public List<DamageEntry> damageModules = new List<DamageEntry>();

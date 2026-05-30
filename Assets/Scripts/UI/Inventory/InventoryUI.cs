@@ -2669,7 +2669,12 @@ namespace JRogue.UI.Inventory
                 _presentation.ItemRows[Mathf.Clamp(_selection, 0, _presentation.ItemRows.Count - 1)];
 
             bool canEquip = !row.IsEquipped && row.CarriedListIndex >= 0 && row.Item != null &&
-                            row.Instance != null && row.Owner != null;
+                            row.Instance != null && row.Owner != null
+                            && EquipmentLegalityEvaluator.CanEquip(
+                                row.Owner.gameObject,
+                                row.Item,
+                                row.Item.slotType,
+                                out _);
             bool canUnequip = row.IsEquipped && row.EquippedSlot.HasValue && row.Owner != null;
             bool canUse = InventoryUsability.AppearsUsableNow(row, InCombatContext);
             bool canDrop = !row.IsEquipped && row.CarriedListIndex >= 0 && row.Owner != null;

@@ -19,6 +19,12 @@ namespace JRogue.Manager.Equipment
                 return false;
             }
 
+            if (!item.IsEquippableByCategory)
+            {
+                reason = $"{item.category} items cannot be equipped.";
+                return false;
+            }
+
             if (item.slotType != intendedSlot)
             {
                 reason = $"Item uses slot {item.slotType}, not {intendedSlot}.";
