@@ -63,6 +63,7 @@
     <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DwarfAncestryRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/PlayerCommandProcessorTest.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Party/MainCharacterGameOverTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/Phase0RacialContractTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryConsumeQuantityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/TelekinesisAbilityTests.cs" />

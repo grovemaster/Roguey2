@@ -262,7 +262,8 @@ namespace JRogue.Input
         }
 
         static bool BlocksFloorGameplay() =>
-            InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
+            GameOverModalUI.BlocksGameplay
+            || InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
             || TrapConfirmDialogUI.BlocksGameplay
             || HazardConfirmDialogUI.BlocksGameplay
             || FloorPickupMenuUI.BlocksGameplay
@@ -271,6 +272,7 @@ namespace JRogue.Input
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed
             || TurnManager.Instance == null
-            || TurnManager.Instance.currentState != GameState.PLAYER_TURN;
+            || TurnManager.Instance.currentState != GameState.PLAYER_TURN
+            || GameOverModalUI.BlocksGameplay;
     }
 }

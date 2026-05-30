@@ -143,9 +143,18 @@ namespace JRogue.UI.Inventory
             CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat;
 
         /// <summary>Called by <see cref="JRogue.Input.InputHandler"/> via the PlayerInput action asset (preferred path).</summary>
+        public static void ForceCloseForGameOver()
+        {
+            if (_instance?.inventoryPanel != null)
+                _instance.inventoryPanel.SetActive(false);
+        }
+
         public static void TogglePanelFromGameplayInput()
         {
             if (_instance == null)
+                return;
+
+            if (JRogue.Manager.Party.GameOverService.IsGameOver)
                 return;
 
             // Search focus uses the same keys as gameplay (e.g. i); never close the panel from Toggle here.

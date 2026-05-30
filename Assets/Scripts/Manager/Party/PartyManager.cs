@@ -21,6 +21,12 @@ namespace JRogue.Manager.Party
         public List<BaseActor> partyMembers = new List<BaseActor>();
         private int activeIndex = 0;
 
+        [Header("Main Character")]
+        [SerializeField, Tooltip("Optional explicit main character. Otherwise uses PartyMainCharacterMarker on a member.")]
+        BaseActor mainCharacterOverride;
+
+        BaseActor mainCharacter;
+
         [Header("Merchant (future)")]
         [SerializeField, Tooltip("Party member index that talks to shops (single shopper per requirements).")]
         private int activeShopperMemberIndex;
@@ -42,6 +48,21 @@ namespace JRogue.Manager.Party
         public bool IsFormationActive
         {
             get => isFormationActive;
+        }
+
+        public BaseActor MainCharacter => mainCharacter;
+
+        public bool HasMainCharacter => mainCharacter != null;
+
+        public bool IsMainCharacter(BaseActor actor) =>
+            mainCharacter != null && actor != null && mainCharacter == actor;
+
+        public bool IsMainCharacter(GameObject go)
+        {
+            if (go == null || mainCharacter == null)
+                return false;
+
+            return mainCharacter.gameObject == go;
         }
 
         /// <summary>Index into <see cref="partyMembers"/> for the current merchant UI (not yet wired).</summary>
@@ -113,6 +134,61 @@ namespace JRogue.Manager.Party
 
             SnapHistoryToCurrentPositions();
             ManaStoneAutoPickupService.Instance?.SubscribePartyMembers();
+            BootstrapMainCharacterDesignation();
+        }
+
+        /// <summary>One-time main character designation from override or marker (immutable after success).</summary>
+        public bool TryDesignateMainCharacter(BaseActor actor)
+        {
+            const string logPrefix = "[GameOver]";
+
+            if (mainCharacter != null)
+            {
+                Debug.Log($"{logPrefix} Cannot designate {actor?.name}: main character already set ({mainCharacter.DisplayName}).");
+                return false;
+            }
+
+            if (actor == null)
+                return false;
+
+            if (!partyMembers.Contains(actor))
+            {
+                Debug.LogWarning($"{logPrefix} Cannot designate {actor.name}: not in partyMembers.");
+                return false;
+            }
+
+            mainCharacter = actor;
+            Debug.Log(
+                $"{logPrefix} Main character designated: {mainCharacter.DisplayName} ({mainCharacter.gameObject.name}).");
+            return true;
+        }
+
+        void BootstrapMainCharacterDesignation()
+        {
+            if (HasMainCharacter)
+                return;
+
+            if (mainCharacterOverride != null)
+            {
+                TryDesignateMainCharacter(mainCharacterOverride);
+                return;
+            }
+
+            for (int i = 0; i < partyMembers.Count; i++)
+            {
+                BaseActor member = partyMembers[i];
+                if (member == null)
+                    continue;
+
+                if (member.GetComponent<PartyMainCharacterMarker>() != null)
+                {
+                    TryDesignateMainCharacter(member);
+                    return;
+                }
+            }
+
+            Debug.LogWarning(
+                "[GameOver] No main character designated. Add PartyMainCharacterMarker or assign mainCharacterOverride.");
         }
 
         public void RecordNewLeaderPosition(Vector3Int newPos)

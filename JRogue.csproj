@@ -95,6 +95,7 @@
     <Compile Include="Assets/Scripts/World/Lighting/LightLevel.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryTelemetry.cs" />
+    <Compile Include="Assets/Scripts/Manager/Party/GameOverService.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupService.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardMoveGate.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingCellMarker.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySessionPersistence.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardPassageEvaluator.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/GrantPartyExperienceEffect.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/GameOverModalUI.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
@@ -158,6 +160,7 @@
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryDetailFormatter.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryCarriedSorter.cs" />
+    <Compile Include="Assets/Scripts/Manager/Party/PartyMainCharacterMarker.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassAbilityResources.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />

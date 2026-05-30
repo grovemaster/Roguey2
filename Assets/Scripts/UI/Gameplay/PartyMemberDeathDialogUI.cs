@@ -86,6 +86,12 @@ namespace JRogue.UI.Gameplay
             act?.Invoke();
         }
 
+        public static void ForceClose()
+        {
+            if (_instance != null)
+                _instance.Close();
+        }
+
         void Close()
         {
             _blocking = false;

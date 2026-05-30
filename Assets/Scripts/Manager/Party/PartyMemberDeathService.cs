@@ -28,6 +28,9 @@ namespace JRogue.Manager.Party
             if (member == null)
                 return;
 
+            if (GameOverService.IsGameOver)
+                return;
+
             if (DyingMembers.Contains(member))
             {
                 Debug.Log($"{LogPrefix} Ignored duplicate death for {member.DisplayName}.");
@@ -54,7 +57,13 @@ namespace JRogue.Manager.Party
             CancelTargetingIfNeeded(member);
             UnregisterFromGrid(member);
 
-            int indexBeforeRemove = party.partyMembers.IndexOf(member);
+            if (party.IsMainCharacter(member))
+            {
+                party.RemovePartyMember(member);
+                GameOverService.TriggerMainCharacterDeath(member);
+                return;
+            }
+
             party.RemovePartyMember(member);
             int remaining = party.partyMembers.Count;
             Debug.Log($"{LogPrefix} Removed from party. Remaining: {remaining}.");
@@ -66,6 +75,13 @@ namespace JRogue.Manager.Party
             });
 
             TryShowNextDialog();
+        }
+
+        public static void CancelAllPendingRecruitDeaths()
+        {
+            PendingQueue.Clear();
+            _dialogOpen = false;
+            PartyMemberDeathDialogUI.ForceClose();
         }
 
         static void CancelTargetingIfNeeded(BaseActor member)
@@ -94,6 +110,9 @@ namespace JRogue.Manager.Party
 
         static void TryShowNextDialog()
         {
+            if (GameOverService.IsGameOver)
+                return;
+
             if (_dialogOpen || PendingQueue.Count == 0)
                 return;
 
@@ -117,7 +136,10 @@ namespace JRogue.Manager.Party
 
             PartyManager party = PartyManager.Instance;
             if (party == null || party.partyMembers.Count == 0)
-                Debug.Log($"{LogPrefix} No living party members remain.");
+            {
+                if (!GameOverService.IsGameOver)
+                    Debug.Log($"{LogPrefix} No living party members remain.");
+            }
 
             TryShowNextDialog();
         }
@@ -128,6 +150,7 @@ namespace JRogue.Manager.Party
             DyingMembers.Clear();
             PendingQueue.Clear();
             _dialogOpen = false;
+            PartyMemberDeathDialogUI.ForceClose();
         }
 #endif
     }

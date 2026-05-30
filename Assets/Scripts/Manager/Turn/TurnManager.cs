@@ -10,7 +10,7 @@ using JRogue.Racial;
 using JRogue.Status;
 using JRogue.World.Lighting;
 using UnityEngine;
-public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY }
+public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY, GAME_OVER }
 
 namespace JRogue.Manager.Turn
 {
@@ -72,14 +72,27 @@ namespace JRogue.Manager.Turn
 
         public void ForceEndPlayerTurn()
         {
+            if (currentState == GameState.GAME_OVER)
+                return;
+
             if (currentState == GameState.PLAYER_TURN)
             {
                 StartCoroutine(EnemyTurnSequence());
             }
         }
 
+        public void EnterGameOver()
+        {
+            currentState = GameState.GAME_OVER;
+            charactersWhoActed.Clear();
+            Debug.Log("--- Game Over ---");
+        }
+
         private IEnumerator EnemyTurnSequence()
         {
+            if (currentState == GameState.GAME_OVER)
+                yield break;
+
             currentState = GameState.ENEMY_TURN;
 
             // Clear the set for the next player turn
@@ -90,12 +103,18 @@ namespace JRogue.Manager.Turn
 
             foreach (var enemy in enemies)
             {
+                if (currentState == GameState.GAME_OVER)
+                    yield break;
+
                 if (enemy != null)
                 {
                     enemy.TakeTurn();
                     yield return new WaitForSeconds(0.05f); // Slight delay for visual clarity
                 }
             }
+
+            if (currentState == GameState.GAME_OVER)
+                yield break;
 
             CombatThreatCoordinator.Instance?.ApplyPursuitDecayAfterEnemyWave();
             CombatThreatCoordinator.Instance?.EvaluateThreat();
@@ -139,6 +158,9 @@ namespace JRogue.Manager.Turn
 
         public bool CanActorTakeAction(GameObject actor)
         {
+            if (currentState == GameState.GAME_OVER)
+                return false;
+
             // If it's not the player's turn, or they've already acted, return false
             return currentState == GameState.PLAYER_TURN && !charactersWhoActed.Contains(actor);
         }

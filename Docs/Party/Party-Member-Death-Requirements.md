@@ -4,7 +4,7 @@ When a **party member’s HP** reaches **zero**, that character **dies**: HP mus
 
 **Depends on:** `CharacterStats.currentHP`, `HealthComponent` (`TakeDamage`, `Died` event), `BaseActor` (`HandleDied` → `Die()`), `PlayerController`, `PartyManager`, `GridManager` / `GridMover` (if actors occupy cells), `TurnManager`, `InputHandler` (`BlocksGameplay` gates), existing modal UI pattern (`TrapConfirmDialogUI`, `AutoPickupConfirmDialogUI`).
 
-**Related:** [Party experience & leveling](../Progression/Party-Experience-And-Leveling-Requirements.md) (living vs dead members for XP — today “dead still receive XP”; update when death pipeline exists). [Enemy death loot & mana stones](../Combat/Enemy-Death-Loot-And-Mana-Stones-Requirements.md) (enemy `Die()` → `Destroy` pattern). [Inventory UI redesign](../Inventory/Inventory-UI-Redesign-Requirements.md) (modal chrome). [Auto-pickup confirmation](../Inventory/Auto-Pickup-Confirmation-Requirements.md) (`BlocksGameplay` integration).
+**Related:** [Main character game over](Main-Character-Game-Over-Requirements.md) (main hero death → terminal modal, not this OK flow). [Party experience & leveling](../Progression/Party-Experience-And-Leveling-Requirements.md) (living vs dead members for XP — today “dead still receive XP”; update when death pipeline exists). [Enemy death loot & mana stones](../Combat/Enemy-Death-Loot-And-Mana-Stones-Requirements.md) (enemy `Die()` → `Destroy` pattern). [Inventory UI redesign](../Inventory/Inventory-UI-Redesign-Requirements.md) (modal chrome). [Auto-pickup confirmation](../Inventory/Auto-Pickup-Confirmation-Requirements.md) (`BlocksGameplay` integration).
 
 **Explicitly out of scope (v0):** Permadeath vs revival; corpse / loot drop from dead member’s inventory; game-over when last member dies (minimal safe behavior documented in §8); resurrection spells; HP overheal rules; damage that bypasses `HealthComponent`; save/load mid-death-dialog; **dead-party-member memorial log** (§10 future).
 
@@ -188,7 +188,7 @@ While the death dialog blocks gameplay, no new player moves. Incoming enemy dama
 **v0 minimum:**
 
 - After final OK + destroy, log `[Party:Death] No living party members remain.`
-- **Future:** dedicated game-over screen.
+- **Not** game over unless the fallen member is the [main character](Main-Character-Game-Over-Requirements.md) (main death uses terminal game over, not this OK flow).
 - Do not leave `PartyManager` with an empty list and a null `GetActiveMember()` without a defined idle state (no input exceptions).
 
 ### 8.4 — Inventory & equipment

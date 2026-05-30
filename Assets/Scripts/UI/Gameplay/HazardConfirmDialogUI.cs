@@ -21,7 +21,8 @@ namespace JRogue.UI.Gameplay
             (_instance != null && _instance._blocking)
             || TrapConfirmDialogUI.BlocksGameplay
             || AutoPickupConfirmDialogUI.BlocksGameplay
-            || PartyMemberDeathDialogUI.BlocksGameplay;
+            || PartyMemberDeathDialogUI.BlocksGameplay
+            || GameOverModalUI.BlocksGameplay;
 
         public static HazardConfirmDialogUI EnsureInstance()
         {
