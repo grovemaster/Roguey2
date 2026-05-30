@@ -137,6 +137,19 @@ namespace JRogue.Manager.Party
             SnapHistoryToCurrentPositions();
             ManaStoneAutoPickupService.Instance?.SubscribePartyMembers();
             BootstrapMainCharacterDesignation();
+            RefreshCameraFollow();
+        }
+
+        /// <summary>Points the main camera at the currently controlled party member.</summary>
+        public void RefreshCameraFollow()
+        {
+            BaseActor active = GetActiveMember();
+            if (active == null)
+                return;
+
+            CameraFollow cam = FindAnyObjectByType<CameraFollow>();
+            if (cam != null)
+                cam.SetTarget(active.transform);
         }
 
         /// <summary>One-time main character designation from override or marker (immutable after success).</summary>
@@ -314,11 +327,7 @@ namespace JRogue.Manager.Party
             SnapHistoryToCurrentPositions();
 
             if (partyMembers.Count > 0 && wasLeader)
-            {
-                CameraFollow cam = FindAnyObjectByType<CameraFollow>();
-                if (cam != null)
-                    cam.SetTarget(partyMembers[0].transform);
-            }
+                RefreshCameraFollow();
 
             return true;
         }
@@ -350,12 +359,7 @@ namespace JRogue.Manager.Party
             // Active index stays 0 because of the reordering
             activeIndex = 0;
 
-            // 3. Update Camera
-            CameraFollow cam = FindAnyObjectByType<JRogue.View.CameraFollow>();
-            if (cam != null)
-            {
-                cam.SetTarget(newLeader.transform);
-            }
+            RefreshCameraFollow();
 
             // 4. RESET HISTORY: When the leader changes, the old breadcrumbs 
             // are invalid for the new line formation.

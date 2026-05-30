@@ -8,12 +8,27 @@ namespace JRogue.World.Lighting
     /// </summary>
     public sealed class LightingPhase3SampleContent : MonoBehaviour
     {
-        [SerializeField] Vector3Int wallTorchCell = new Vector3Int(4, -2, 0);
+        [SerializeField] bool wallTorchConfigured;
+        [SerializeField] Vector3Int wallTorchCell;
         [SerializeField] LightEmitterDefinition torchDefinition;
         [SerializeField] InteractableTileDefinition wallTorchInteractable;
 
-        void OnEnable()
+        public Vector3Int WallTorchCell => wallTorchCell;
+
+        void OnEnable() => RegisterTorch();
+
+        void Start() => RegisterTorch();
+
+        void RegisterTorch()
         {
+            if (!wallTorchConfigured)
+            {
+                Debug.LogWarning(
+                    $"[Lighting:QA] {name}: wall torch not configured. "
+                    + "Run JRogue/Lighting/Place Wall Torch Near Tiefling Mage.");
+                return;
+            }
+
             if (LightingService.Instance != null && torchDefinition != null)
             {
                 LightingService.Instance.EnableEmitter(

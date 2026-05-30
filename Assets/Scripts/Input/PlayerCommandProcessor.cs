@@ -285,6 +285,13 @@ namespace JRogue.Input
                 return true;
             }
 
+            if (isInteractableBump
+                && InteractableTileService.Instance != null
+                && TryActivateInteractableBump(activeMember, targetTile))
+            {
+                return true;
+            }
+
             if (formationActive)
             {
                 if (isEnemyBump
@@ -331,6 +338,31 @@ namespace JRogue.Input
                 return false;
 
             return FloorPickupCoordinator.TryBeginManualPickup(activeMember);
+        }
+
+        static bool TryActivateInteractableBump(BaseActor actor, Vector3Int targetTile)
+        {
+            if (actor == null || InteractableTileService.Instance == null)
+                return false;
+
+            if (!InteractableTileService.Instance.ShouldAttemptPlayerBump(actor.GridPosition, targetTile))
+                return false;
+
+            InteractableBumpResult result =
+                InteractableTileService.Instance.TryBumpActivate(targetTile, actor);
+
+            if (result != InteractableBumpResult.Activated)
+                return false;
+
+            TurnManager turn = TurnManager.Instance;
+            if (turn != null && actor.gameObject.CompareTag("Player"))
+                turn.OnPlayerActionComplete(actor.gameObject);
+
+            PartyManager party = PartyManager.Instance;
+            if (party != null && party.IsFormationActive)
+                FormationRushService.Rush(party, turn, GridManager.Instance, MapManager.Instance);
+
+            return true;
         }
 
         bool TryConfirmGatedMove(

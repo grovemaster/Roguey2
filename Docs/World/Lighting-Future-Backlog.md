@@ -81,8 +81,8 @@ Use this list to draft implementation prompts. Suggested build order is at the e
 37. **Cave floor region** — Low ambient (e.g. 2), receivers only.
 38. **`SetTileEmissionEffect`** — Interactable effect calling `LightingService.SetEmission`.
 39. **Lever/quest/trap hooks** — Any system can change emission with reason id for logs.
-40. **Torch flame / glow overlay** — Optional VFX layer (registry + overlay painter pattern).
-41. **SampleScene geometry** — Under each `LightingPhase_*` root: Phase 1 core rooms, Phase 2 fog-memory layout, Phase 3 runtime torch, etc.
+40. **Torch flame / glow overlay** — Optional VFX layer (registry + overlay painter pattern). **QA subset shipped:** `LightingDebugOverlay` + **`L`** toggle ([Lighting QA and Torch v0](Lighting-QA-And-Torch-v0-Requirements.md) §3.2); shipping art/VFX still open.
+41. **SampleScene geometry** — Under each `LightingPhase_*` root: Phase 1 core rooms, Phase 2 fog-memory layout, Phase 3 runtime torch, etc. **Partial:** editor menus **Create Dark QA Pocket** / **Place Wall Torch Near Tiefling Mage** / **Setup Lighting QA (All)**.
 
 ---
 

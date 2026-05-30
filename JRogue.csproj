@@ -52,6 +52,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUsability.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationService.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/HealthComponent.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Preconditions/CarriedLitTorchPrecondition.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlacementSet.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/HeroicSpirit.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/AcousticsService.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Assets/Scripts/Controller/BaseActor.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileMarker.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightingDebugOverlay.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadNecroticSustenancePassive.cs" />
     <Compile Include="Assets/Scripts/Abilities/Teleport/TeleportAbility.cs" />
@@ -223,6 +225,7 @@
     <Compile Include="Assets/Scripts/Interactables/Preconditions/ScriptOnlyPrecondition.cs" />
     <Compile Include="Assets/Scripts/Abilities/Progression/GrantPartyExperienceAbility.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/OtherInteractableOnPrecondition.cs" />
+    <Compile Include="Assets/Scripts/Interactables/PartyCarriedLightSource.cs" />
     <Compile Include="Assets/Scripts/Interactables/SampleSceneInteractablePlacements.cs" />
     <Compile Include="Assets/Scripts/Abilities/Fireball/FIreballAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Loot/EnemyLootService.cs" />
@@ -240,6 +243,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceProfile.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/GridOverlayPainter.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/LightingQaPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyExperienceService.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/AmbientRegion.cs" />
     <Compile Include="Assets/Scripts/Manager/Map/MapManager.cs" />

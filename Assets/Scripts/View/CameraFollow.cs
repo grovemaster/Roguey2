@@ -1,27 +1,41 @@
+using JRogue.Actors;
+using JRogue.Manager.Party;
 using UnityEngine;
 
 namespace JRogue.View
 {
     public class CameraFollow : MonoBehaviour
     {
-        private Transform target;
-        [SerializeField] private float smoothSpeed = 0.125f;
-        [SerializeField] private Vector3 offset = new Vector3(0, 0, -10);
+        Transform _manualTarget;
+        [SerializeField] float smoothSpeed = 0.125f;
+        [SerializeField] Vector3 offset = new Vector3(0, 0, z: -10);
+        [SerializeField] bool preferPartyActiveMember = true;
 
-        // This is the "Hook" that the PartyManager will call
         public void SetTarget(Transform newTarget)
         {
-            target = newTarget;
+            _manualTarget = newTarget;
         }
 
         void LateUpdate()
         {
-            if (target == null) return;
+            Transform follow = ResolveFollowTarget();
+            if (follow == null)
+                return;
 
-            // Simple Lerp for smooth following
-            Vector3 desiredPosition = target.position + offset;
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-            transform.position = smoothedPosition;
+            Vector3 desiredPosition = follow.position + offset;
+            transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        }
+
+        Transform ResolveFollowTarget()
+        {
+            if (preferPartyActiveMember && PartyManager.Instance != null)
+            {
+                BaseActor active = PartyManager.Instance.GetActiveMember();
+                if (active != null)
+                    return active.transform;
+            }
+
+            return _manualTarget;
         }
     }
 }

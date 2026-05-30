@@ -4,7 +4,7 @@ Per-party-member **sight range** (grid LOS distance) combines with a per-cell **
 
 **Depends on:** `CharacterStats` (`sight` stat), `PartyManager`, `ShadowCaster`, `VisibilityManager`, `MapManager`, `TurnManager`, `EssenceData` / `EssenceSlotManager`, racial trait / `BodyCapabilityFlags` (or dedicated flags), [Fog of War](Fog-Of-War-Requirements.md), [Interactable tiles](../Combat/Interactable-Tiles-Requirements.md) (wall-torch activation), [Inventory](../Inventory/Inventory-UI-Redesign-Requirements.md) (torch items), `EnemyAiBrain` / `SenseSightService` (enemy sight + alert).
 
-**Related:** *Surviving the Game as a Barbarian* — overhead/day–night floors; DCSS — torches, LOS, fog memory (terrain frozen off-screen).
+**Related:** *Surviving the Game as a Barbarian* — overhead/day–night floors; DCSS — torches, LOS, fog memory (terrain frozen off-screen). **SampleScene QA + wall/carried torch v0:** [Lighting QA and Torch v0](Lighting-QA-And-Torch-v0-Requirements.md).
 
 **Explicitly out of scope (v0):** **Magical darkness** gameplay (zones that override Dark Vision); full save/load of per-cell light state; dynamic light propagation through open doors (optional phase 2); colored light / mood lighting; light-based stealth damage modifiers.
 
@@ -319,8 +319,8 @@ When `C` becomes **Visible** again:
 
 | Field | Requirement |
 |-------|-------------|
-| **Item category** | e.g. `Evocable` or `Tool` with `LightSourceDefinition` reference |
-| **Behavior** | While **active** in inventory (equipped or “lit” slot — v0: **equipped hand / dedicated light slot** TBD in inventory policy), attach **virtual emitter** centered on bearer’s `GridPosition`. |
+| **Item category** | `ItemCategory.Accessory` with light-source fields — see [Lighting QA and Torch v0](Lighting-QA-And-Torch-v0-Requirements.md) §8. |
+| **Behavior** | While **equipped** in an **accessory slot** and **lit**, attach **virtual emitter** centered on bearer’s `GridPosition`. |
 | **`emitLight`** | From definition (e.g. **6**). |
 | **Falloff** | Short radius (e.g. **3** Manhattan). |
 | **Turn cost** | Lighting/extinguishing torch may cost action (designer-authored); moving with lit torch does not re-light each turn. |

@@ -20,24 +20,50 @@ namespace JRogue.Editor.Lighting
         [MenuItem(BootstrapAssetsMenuPath, false, 1)]
         public static void BootstrapActiveSceneLightingHarness()
         {
+            EnsureLightingHarness(applyScenarioIndex: 0, selectLightingSystem: true);
+            Debug.Log(
+                "[Lighting:Scenario] Place test geometry under each LightingPhase_* child.");
+        }
+
+        /// <summary>
+        /// Ensures LightingSystem, service, controller, scenario assets, and phase roots exist.
+        /// </summary>
+        /// <param name="applyScenarioIndex">When set, applies that scenario's active roots.</param>
+        /// <param name="selectLightingSystem">Avoid during bulk QA setup (reduces inspector churn).</param>
+        public static GameObject EnsureLightingHarness(
+            int? applyScenarioIndex = null,
+            bool selectLightingSystem = false)
+        {
             GameObject lightingSystem = FindOrCreateLightingSystem();
             EnsureLightingService(lightingSystem);
             LightingScenarioController controller = EnsureController(lightingSystem);
 
             List<LightingScenarioDefinition> scenarios = LightingScenarioQaPack.EnsureQaScenarioPack();
             EnsurePhaseRoots(lightingSystem.transform, scenarios);
-            AssignScenarios(controller, scenarios);
+            AssignScenarios(controller, scenarios, resetActiveIndex: applyScenarioIndex.HasValue);
 
-            controller.ApplyScenarioByIndex(0);
+            if (applyScenarioIndex.HasValue)
+            {
+                controller.ApplyScenarioByIndex(applyScenarioIndex.Value);
+                Debug.Log(
+                    $"[Lighting:Scenario] Harness ready on '{LightingSystemObjectName}'; "
+                    + $"applied scenario index {applyScenarioIndex.Value}.");
+            }
+            else
+            {
+                Debug.Log(
+                    $"[Lighting:Scenario] Harness ready on '{LightingSystemObjectName}' "
+                    + "(scenario roots unchanged).");
+            }
 
             EditorUtility.SetDirty(lightingSystem);
             EditorUtility.SetDirty(controller);
             MarkActiveSceneDirty();
-            Selection.activeGameObject = lightingSystem;
 
-            Debug.Log(
-                "[Lighting:Scenario] SampleScene harness ready on 'LightingSystem'. " +
-                "Phase roots created; Phase 1 active. Place test geometry under each LightingPhase_* child.");
+            if (selectLightingSystem)
+                Selection.activeGameObject = lightingSystem;
+
+            return lightingSystem;
         }
 
         static GameObject FindOrCreateLightingSystem()
@@ -121,7 +147,8 @@ namespace JRogue.Editor.Lighting
 
         static void AssignScenarios(
             LightingScenarioController controller,
-            List<LightingScenarioDefinition> scenarios)
+            List<LightingScenarioDefinition> scenarios,
+            bool resetActiveIndex)
         {
             var so = new SerializedObject(controller);
             SerializedProperty list = so.FindProperty("scenarios");
@@ -129,8 +156,10 @@ namespace JRogue.Editor.Lighting
             for (int i = 0; i < scenarios.Count; i++)
                 list.GetArrayElementAtIndex(i).objectReferenceValue = scenarios[i];
 
-            so.FindProperty("activeScenarioIndex").intValue = 0;
-            so.ApplyModifiedPropertiesWithoutUndo();
+            if (resetActiveIndex)
+                so.FindProperty("activeScenarioIndex").intValue = 0;
+
+            so.ApplyModifiedProperties();
             EditorUtility.SetDirty(controller);
         }
 
