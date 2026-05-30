@@ -17,7 +17,7 @@
 ## Lifecycle wiring
 
 - **`HealthComponent`**: after essence conditional refresh, calls **`RacialPassiveHooks.RefreshPassives`**.
-- **`TurnManager.NotifyPartyTurnStart`**: **`RacialPassiveHooks.NotifyTurnStart(member.gameObject)`** then essence `NotifyTurnStart` (racial first).
+- **`TurnManager.NotifyPartyTurnStart`**: **`SoulPowerRegenerationService.TickRegeneration`** then **`RacialPassiveHooks.NotifyTurnStart(member.gameObject)`** (regen before Elf upkeep) then essence `NotifyTurnStart`.
 - **`EnemyController.TakeTurn`**: racial turn start, then essence.
 
 ## Authoring

@@ -15,5 +15,9 @@ namespace JRogue.Data.Enemy
 
         [Header("Death loot")]
         public EnemyLootTable lootTable;
+
+        [Header("Soul Power")]
+        [Tooltip("Regen rate per enemy turn. < 0 uses global default (0.5).")]
+        public float soulPowerRegenRate = -1f;
     }
 }

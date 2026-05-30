@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUsability.cs" />
+    <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationService.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/HealthComponent.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlacementSet.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/HeroicSpirit.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Assets/Scripts/Interactables/Preconditions/StatMinimumPrecondition.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedStatModifierRuntime.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
+    <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationState.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />

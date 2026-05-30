@@ -4,6 +4,7 @@ using JRogue.Controller.Enemy;
 using JRogue.Manager.Combat;
 using JRogue.Manager.Essence;
 using JRogue.Manager.Party;
+using JRogue.Manager.Progression;
 using JRogue.Hazards;
 using JRogue.Traps;
 using JRogue.Racial;
@@ -134,6 +135,7 @@ namespace JRogue.Manager.Turn
             foreach (var member in PartyManager.Instance.partyMembers)
             {
                 if (member == null) continue;
+                SoulPowerRegenerationService.TickRegeneration(member.gameObject);
                 RacialPassiveHooks.NotifyTurnStart(member.gameObject);
                 var slots = member.GetComponent<EssenceSlotManager>();
                 if (slots != null) slots.NotifyTurnStart();

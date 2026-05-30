@@ -113,6 +113,7 @@ namespace JRogue.Controller.Enemy
                 return;
 
             HazardService.Instance?.TickOccupancyOnEnemyTurnStart(this);
+            SoulPowerRegenerationService.TickRegeneration(gameObject);
             RacialPassiveHooks.NotifyTurnStart(gameObject);
             essenceManager?.NotifyTurnStart();
             GetComponent<StatusEffectController>()?.TickStatuses();
