@@ -39,6 +39,34 @@ namespace JRogue.Core.Targeting
             return results;
         }
 
+        /// <summary>
+        /// Unique battle targets occupying any of <paramref name="cells"/> (footprint-aware, deduped by owner).
+        /// </summary>
+        public static List<IBattleTarget> GetTargetsInCells(IReadOnlyList<Vector3Int> cells)
+        {
+            var results = new List<IBattleTarget>();
+            if (cells == null || cells.Count == 0 || GridManager.Instance == null)
+                return results;
+
+            var seenOwners = new HashSet<GameObject>();
+
+            for (int c = 0; c < cells.Count; c++)
+            {
+                List<IBattleTarget> onTile = GetTargetsOnTile(cells[c]);
+                for (int i = 0; i < onTile.Count; i++)
+                {
+                    IBattleTarget target = onTile[i];
+                    if (target?.Owner == null)
+                        continue;
+
+                    if (seenOwners.Add(target.Owner))
+                        results.Add(target);
+                }
+            }
+
+            return results;
+        }
+
         // AOE Check for Fireball
         public static List<IBattleTarget> GetTargetsInRadius(Vector3Int center, int radius)
         {

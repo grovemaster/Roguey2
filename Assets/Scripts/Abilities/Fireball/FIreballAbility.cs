@@ -1,8 +1,8 @@
-using UnityEngine;
 using System.Collections.Generic;
-using JRogue.Stats;
 using JRogue.Core.Actor;
 using JRogue.Core.Targeting;
+using JRogue.Stats;
+using UnityEngine;
 
 namespace JRogue.Ability.Fireball
 {
@@ -28,10 +28,14 @@ namespace JRogue.Ability.Fireball
         {
             Debug.Log($"Casting Fireball at {targetTile}!");
 
-            // 1. Get everyone in the splash zone
-            List<IBattleTarget> targets = TargetingResolver.GetTargetsInRadius(targetTile, splashRadius);
+            if (!user.TryGetComponent(out JRogue.Actors.BaseActor caster))
+                return false;
 
-            // 2. Loop through and apply damage
+            var ctx = new SplashZoneContext(caster.GridPosition, targetTile, caster.currentFacing);
+            IReadOnlyList<Vector3Int> cells = SplashZoneResolver.GetEffectCells(ResolveSplashZone(), ctx);
+            List<IBattleTarget> targets = TargetingResolver.GetTargetsInCells(cells);
+
+            // Loop through and apply damage
             foreach (var target in targets)
             {
                 // Self-damage check

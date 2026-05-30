@@ -1,4 +1,5 @@
 using JRogue.Core.Actor;
+using JRogue.Core.Targeting;
 using UnityEngine;
 
 namespace JRogue.Ability
@@ -15,7 +16,24 @@ namespace JRogue.Ability
         [Header("Targeting Settings")]
         public bool requiresTarget; // Fixes 'does not have requiresTarget'
         public int range;
+
+        [Tooltip("Splash shape for preview + AoE resolution. Preferred over splashRadius.")]
+        public SplashZoneDefinition splashZone;
+
+        [Tooltip("Legacy AoE radius when splashZone is unset.")]
         public int splashRadius;
+
+        /// <summary>Effective splash zone for targeting preview and AoE abilities.</summary>
+        public SplashZoneDefinition ResolveSplashZone()
+        {
+            if (splashZone != null)
+                return splashZone;
+
+            if (splashRadius > 0)
+                return SplashZoneResolver.CreateLegacyDisk(splashRadius);
+
+            return null;
+        }
 
         [Header("Movement Settings")]
         public bool isMovementAbility; // Indicates if this ability moves the user

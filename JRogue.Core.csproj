@@ -50,9 +50,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/Core/Actor/FootprintSpriteAlignment.cs" />
+    <Compile Include="Assets/Scripts/Core/Actor/Targeting/SplashZoneDistanceMetric.cs" />
+    <Compile Include="Assets/Scripts/Core/Actor/Targeting/SplashZoneDefinition.cs" />
     <Compile Include="Assets/Scripts/Core/Actor/GridFootprintUtility.cs" />
     <Compile Include="Assets/Scripts/Core/Actor/INoiseProducer.cs" />
+    <Compile Include="Assets/Scripts/Core/Actor/Targeting/SplashZoneResolver.cs" />
+    <Compile Include="Assets/Scripts/Core/Actor/Targeting/SplashZoneContext.cs" />
     <Compile Include="Assets/Scripts/Core/Actor/IBattleTarget.cs" />
+    <Compile Include="Assets/Scripts/Core/Actor/Targeting/SplashZoneShapeKind.cs" />
     <Compile Include="Assets/Scripts/Core/Actor/EssenceType.cs" />
     <Compile Include="Assets/Scripts/Core/Actor/GridFootprintTypes.cs" />
     <Compile Include="Assets/Scripts/Core/Actor/IGridFootprint.cs" />

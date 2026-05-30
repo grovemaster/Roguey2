@@ -22,6 +22,7 @@ using JRogue.UI.Gameplay;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
 using JRogue.UI.Targeting;
+using JRogue.Core.Targeting;
 using UnityEngine;
 
 namespace JRogue.Input
@@ -107,7 +108,7 @@ namespace JRogue.Input
             };
 
             InventoryTargetedUseLog.Log(logTag, "Use started; inventory closed; targeting active.");
-            reticleView?.Show(activeMember.GridPosition);
+            ShowTargetingReticle(activeMember, ability);
             return true;
         }
 
@@ -745,7 +746,18 @@ namespace JRogue.Input
             };
 
             Debug.Log($"Entered Targeting Mode for {ability.abilityName}. Move reticle, then confirm.");
-            reticleView?.Show(actor.GridPosition);
+            ShowTargetingReticle(actor, ability);
+        }
+
+        void ShowTargetingReticle(BaseActor actor, AbilityAction ability)
+        {
+            if (reticleView == null || actor == null)
+                return;
+
+            reticleView.Show(
+                actor.GridPosition,
+                ability?.ResolveSplashZone(),
+                actor);
         }
 
         private void ExitTargetingMode()

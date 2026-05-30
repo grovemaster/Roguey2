@@ -18,6 +18,7 @@ MonoBehaviour:
   cooldownTurns: 0
   requiresTarget: 1
   range: 0
+  splashZone: {fileID: 11400000, guid: f1e2d3c4b5a64789a0b1c2d3e4f56781, type: 2}
   splashRadius: 2
   noiseVolume: 35
   noiseOriginAtTargetTile: 1

@@ -1,45 +1,116 @@
+using System.Collections.Generic;
+using JRogue.Actors;
+using JRogue.Core.Actor;
+using JRogue.Core.Targeting;
 using UnityEngine;
 
 namespace JRogue.UI.Targeting
 {
     /// <summary>
-    /// View component that owns the on-screen targeting reticle: prefab
-    /// instantiation, current tile position, and the transform mirror.
-    /// Game logic (e.g. <see cref="JRogue.Input.InputHandler"/>) interacts only
-    /// through <see cref="Show"/> / <see cref="Move"/> / <see cref="Hide"/> /
-    /// <see cref="Position"/>. Future targeting feedback (range halo, AoE
-    /// preview, line-of-fire) belongs in this component as well.
+    /// Targeting reticle: white primary tile + red splash preview tiles.
     /// </summary>
     public class TargetingReticleView : MonoBehaviour
     {
+        const int SplashSortingOrder = 499;
+        const int PrimarySortingOrder = 500;
+
         [SerializeField] private GameObject reticlePrefab;
+        [SerializeField] private GameObject splashMarkerPrefab;
+
         private GameObject activeReticle;
+        private readonly List<GameObject> splashMarkers = new List<GameObject>();
         private Vector3Int position;
+        private SplashZoneDefinition splashZone;
+        private Vector3Int casterCell;
+        private FacingDirection casterFacing;
 
         public Vector3Int Position => position;
 
-        public void Show(Vector3Int initialPosition)
+        public void Show(Vector3Int initialPosition) =>
+            Show(initialPosition, null, initialPosition, FacingDirection.North);
+
+        public void Show(
+            Vector3Int initialPosition,
+            SplashZoneDefinition zone,
+            BaseActor caster)
+        {
+            if (caster == null)
+            {
+                Show(initialPosition, zone, initialPosition, FacingDirection.North);
+                return;
+            }
+
+            Show(initialPosition, zone, caster.GridPosition, caster.currentFacing);
+        }
+
+        public void Show(
+            Vector3Int initialPosition,
+            SplashZoneDefinition zone,
+            Vector3Int casterGridCell,
+            FacingDirection facing)
         {
             position = initialPosition;
-            EnsureReticleInstance();
-            if (activeReticle != null) activeReticle.SetActive(true);
-            UpdateVisual();
+            splashZone = zone;
+            casterCell = casterGridCell;
+            casterFacing = facing;
+
+            EnsurePrimaryReticle();
+            if (activeReticle != null)
+            {
+                activeReticle.SetActive(true);
+                ApplyPrimaryTint();
+            }
+
+            RefreshSplashMarkers();
+            UpdatePrimaryVisual();
         }
 
         public void Move(Vector3Int direction)
         {
             position += direction;
-            UpdateVisual();
+            RefreshSplashMarkers();
+            UpdatePrimaryVisual();
         }
 
         public void Hide()
         {
-            if (activeReticle != null) activeReticle.SetActive(false);
+            if (activeReticle != null)
+                activeReticle.SetActive(false);
+
+            for (int i = 0; i < splashMarkers.Count; i++)
+            {
+                if (splashMarkers[i] != null)
+                    splashMarkers[i].SetActive(false);
+            }
         }
 
-        private void EnsureReticleInstance()
+        void RefreshSplashMarkers()
         {
-            if (activeReticle != null) return;
+            var ctx = new SplashZoneContext(casterCell, position, casterFacing);
+            IReadOnlyList<Vector3Int> splash = SplashZoneResolver.GetSplashPreviewCells(splashZone, ctx);
+            int needed = splash.Count;
+
+            while (splashMarkers.Count < needed)
+                splashMarkers.Add(CreateSplashMarkerInstance());
+
+            for (int i = 0; i < needed; i++)
+            {
+                GameObject marker = splashMarkers[i];
+                marker.SetActive(true);
+                PositionMarker(marker, splash[i], SplashSortingOrder);
+            }
+
+            for (int i = needed; i < splashMarkers.Count; i++)
+            {
+                if (splashMarkers[i] != null)
+                    splashMarkers[i].SetActive(false);
+            }
+        }
+
+        void EnsurePrimaryReticle()
+        {
+            if (activeReticle != null)
+                return;
 
             if (reticlePrefab != null)
             {
@@ -48,11 +119,32 @@ namespace JRogue.UI.Targeting
             }
 
             Debug.LogWarning(
-                $"{nameof(TargetingReticleView)} on '{gameObject.name}' has no reticlePrefab; using a procedural fallback quad.");
-            activeReticle = BuildRuntimeFallbackReticle();
+                $"{nameof(TargetingReticleView)} on '{gameObject.name}' has no reticlePrefab; using procedural fallback.");
+            activeReticle = BuildRuntimeFallbackReticle(Color.white, PrimarySortingOrder, 0.08f);
         }
 
-        private static GameObject BuildRuntimeFallbackReticle()
+        GameObject CreateSplashMarkerInstance()
+        {
+            if (splashMarkerPrefab != null)
+                return Instantiate(splashMarkerPrefab);
+
+            return BuildRuntimeFallbackReticle(
+                new Color(1f, 0.2f, 0.2f, 0.65f),
+                SplashSortingOrder,
+                0.075f);
+        }
+
+        void ApplyPrimaryTint()
+        {
+            SpriteRenderer sr = activeReticle.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.color = Color.white;
+                sr.sortingOrder = PrimarySortingOrder;
+            }
+        }
+
+        static GameObject BuildRuntimeFallbackReticle(Color color, int sortingOrder, float scale)
         {
             Texture2D white = Texture2D.whiteTexture;
             Sprite quad = Sprite.Create(
@@ -61,27 +153,29 @@ namespace JRogue.UI.Targeting
                 new Vector2(0.5f, 0.5f),
                 Mathf.Max(1f, Mathf.Max(white.width, white.height)));
 
-            GameObject go = new GameObject("TargetingReticle_RuntimeFallback");
+            var go = new GameObject("TargetingReticle_RuntimeFallback");
             go.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
 
             SpriteRenderer spriteRenderer = go.AddComponent<SpriteRenderer>();
             spriteRenderer.sprite = quad;
-            spriteRenderer.color = new Color(1f, 1f, 0.2f, 0.9f);
-            spriteRenderer.sortingOrder = 500;
-
-            Transform t = go.transform;
-            t.localScale = new Vector3(0.08f, 0.08f, 1f);
-
+            spriteRenderer.color = color;
+            spriteRenderer.sortingOrder = sortingOrder;
+            go.transform.localScale = new Vector3(scale, scale, 1f);
             go.SetActive(false);
             return go;
         }
 
-        private void UpdateVisual()
+        void UpdatePrimaryVisual() => PositionMarker(activeReticle, position, PrimarySortingOrder);
+
+        static void PositionMarker(GameObject marker, Vector3Int cell, int sortingOrder)
         {
-            if (activeReticle == null) return;
-            // Add 0.5f to align with tile centers (matches GridMover.SyncPosition).
-            activeReticle.transform.position =
-                new Vector3(position.x + 0.5f, position.y + 0.5f, 0f);
+            if (marker == null)
+                return;
+
+            marker.transform.position = new Vector3(cell.x + 0.5f, cell.y + 0.5f, 0f);
+            SpriteRenderer sr = marker.GetComponent<SpriteRenderer>();
+            if (sr != null)
+                sr.sortingOrder = sortingOrder;
         }
     }
 }
