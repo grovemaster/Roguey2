@@ -58,6 +58,18 @@ namespace JRogue.UI.Inventory
                     return row.Owner != null &&
                            InventoryPolicy.CanUseCarriedFromAlly(row.Owner, row.Owner, itemEquippedElsewhere: false);
 
+                case ItemCategory.Evocable:
+                    if (row.IsEquipped)
+                        return false;
+                    if (row.Instance == null || !EvocableChargeRules.HasChargeToInvoke(row.Instance))
+                        return false;
+                    if (EvocableChargeRules.GetInvokeAbility(item) == null)
+                        return false;
+                    if (!inCombat)
+                        return row.Owner != null;
+                    return row.Owner != null &&
+                           InventoryPolicy.CanUseCarriedFromAlly(row.Owner, row.Owner, itemEquippedElsewhere: false);
+
                 default:
                     if (!hasActiveAbility)
                         return false;

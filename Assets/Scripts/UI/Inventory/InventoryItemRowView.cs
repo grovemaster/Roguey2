@@ -161,8 +161,17 @@ namespace JRogue.UI.Inventory
             _letterText.text = row.Letter.ToString();
             _letterText.fontSize = 17f * detailsFontScale;
 
-            int qty = row.Instance != null ? row.Instance.Quantity : 1;
-            _qtyText.text = qty > 1 ? $"×{qty}" : "×1";
+            string chargeCol = EvocableChargeRules.FormatChargeColumn(row.Instance, row.Item);
+            if (chargeCol != null)
+            {
+                _qtyText.text = chargeCol;
+            }
+            else
+            {
+                int qty = row.Instance != null ? row.Instance.Quantity : 1;
+                _qtyText.text = qty > 1 ? $"×{qty}" : "×1";
+            }
+
             _qtyText.fontSize = 13f * detailsFontScale;
 
             _weightText.text = $"{row.StackedWeight:0.#}";
@@ -196,6 +205,13 @@ namespace JRogue.UI.Inventory
                 subParts.Add(row.OwnerDisplayName);
             if (row.IsEquipped && row.EquippedSlot.HasValue)
                 subParts.Add($"[E {row.EquippedSlot}]");
+
+            if (row.Item is EvocableItemData evocableDef)
+            {
+                string recharge = EvocableChargeRules.FormatRechargeSubtitle(row.Instance, evocableDef);
+                if (!string.IsNullOrEmpty(recharge))
+                    subParts.Add(recharge);
+            }
 
             string sub = string.Join(" · ", subParts);
             if (valueStr == InventoryValueDisplay.Unknown)

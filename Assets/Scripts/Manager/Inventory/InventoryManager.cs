@@ -98,6 +98,15 @@ namespace JRogue.Manager.Inventory
             }
 
             instance.StorageLocation = ItemStorageLocation.Carried;
+            if (instance.Definition is EvocableItemData evocable)
+            {
+                instance.Quantity = 1;
+                if (instance.MaxCharges < 1)
+                    EvocableChargeRules.InitializeCharges(instance, evocable);
+                else
+                    EvocableChargeRules.ClampCharges(instance);
+            }
+
             carriedItems.Add(instance);
 
             if (automationProfile != null)
@@ -158,6 +167,12 @@ namespace JRogue.Manager.Inventory
                     carriedItems.RemoveAt(i);
             }
 
+            if (definition is EvocableItemData evocable)
+            {
+                EditorAddEvocableInstance(evocable, quantity);
+                return;
+            }
+
             for (int i = 0; i < carriedItems.Count; i++)
             {
                 if (carriedItems[i]?.Definition == definition)
@@ -182,6 +197,18 @@ namespace JRogue.Manager.Inventory
                 StorageLocation = ItemStorageLocation.Carried,
                 IsAppraised = true,
             };
+            carriedItems.Add(inst);
+        }
+
+        /// <summary>Always adds a new evocable row (no merge by definition).</summary>
+        public void EditorAddEvocableInstance(EvocableItemData definition, int startingCharges)
+        {
+            if (definition == null)
+                return;
+
+            ItemInstance inst = ItemInstance.CreateEvocable(definition, startingCharges);
+            inst.StorageLocation = ItemStorageLocation.Carried;
+            inst.IsAppraised = true;
             carriedItems.Add(inst);
         }
 #endif

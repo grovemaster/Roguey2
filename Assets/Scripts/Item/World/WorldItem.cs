@@ -59,7 +59,7 @@ namespace JRogue.Item.World
             if (data == null)
                 return null;
 
-            var inst = new ItemInstance(Instantiate(data));
+            var inst = ItemInstance.CreateFromDefinition(data);
             inst.StorageLocation = ItemStorageLocation.OnGround;
             return inst;
         }

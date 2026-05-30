@@ -44,6 +44,9 @@ namespace JRogue.UI.Inventory
             if (selectedRow.Instance != null && selectedRow.Instance.Quantity > 1)
                 sb.AppendLine($"<color=#8a97a3>Quantity:</color> {selectedRow.Instance.Quantity}");
 
+            if (item is EvocableItemData evocable)
+                AppendEvocableInspect(sb, evocable, selectedRow.Instance);
+
             if (item.damageModules is { Count: > 0 })
             {
                 sb.AppendLine("<color=#cfd6dd><b>Damage</b></color>");
@@ -102,6 +105,31 @@ namespace JRogue.UI.Inventory
             }
 
             return sb.ToString().TrimEnd();
+        }
+
+        static void AppendEvocableInspect(StringBuilder sb, EvocableItemData evocable, ItemInstance instance)
+        {
+            if (instance != null)
+                EvocableChargeRules.ClampCharges(instance);
+
+            int current = instance != null ? instance.CurrentCharges : evocable.startingCharges;
+            int max = instance != null ? instance.MaxCharges : evocable.maxCharges;
+            sb.AppendLine($"<color=#cfd6dd><b>Charges</b></color> {current} / {max}");
+
+            if (evocable.consumesWhenEmpty)
+                sb.AppendLine("<color=#8a97a3>Recharge:</color> Consumable (removed at 0 charges)");
+            else
+                sb.AppendLine(
+                    $"<color=#8a97a3>Recharge:</color> +1 every {evocable.rechargeIntervalPlayerPhases} player phases");
+
+            if (evocable.invokeAbility != null)
+            {
+                string abilityName = !string.IsNullOrEmpty(evocable.invokeAbility.abilityName)
+                    ? evocable.invokeAbility.abilityName
+                    : evocable.invokeAbility.name;
+                string targetNote = evocable.invokeAbility.requiresTarget ? " (targeted)" : string.Empty;
+                sb.AppendLine($"<color=#8a97a3>Invoke:</color> {abilityName}{targetNote}");
+            }
         }
 
         public static string FormatHeroSubtitle(ItemData item, InventoryViewModel.Row row)

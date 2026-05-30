@@ -86,6 +86,7 @@
     <Compile Include="Assets/Data/Enemy/LootTablePayload.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeRankEntry.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonSlotPreset.cs" />
+    <Compile Include="Assets/Data/Item/Evocable/EvocableItemData.cs" />
     <Compile Include="Assets/Data/Status/StatusPolarity.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanSkillNodeRankEntry.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryHotkeyProfile.cs" />

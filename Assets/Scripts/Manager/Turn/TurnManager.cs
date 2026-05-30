@@ -4,6 +4,7 @@ using JRogue.Actors;
 using JRogue.Controller.Enemy;
 using JRogue.Manager.Combat;
 using JRogue.Manager.Essence;
+using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
 using JRogue.Manager.Progression;
 using JRogue.Hazards;
@@ -65,7 +66,7 @@ namespace JRogue.Manager.Turn
             // Check if the WHOLE party is done
             if (IsPartyDone())
             {
-                // Switch to Enemy Turn
+                EvocableRechargeService.TickPartyAfterPlayerPhase();
                 StartCoroutine(EnemyTurnSequence());
             }
             // Switch to Enemy Turn
@@ -79,6 +80,7 @@ namespace JRogue.Manager.Turn
 
             if (currentState == GameState.PLAYER_TURN)
             {
+                EvocableRechargeService.TickPartyAfterPlayerPhase();
                 StartCoroutine(EnemyTurnSequence());
             }
         }
@@ -113,6 +115,8 @@ namespace JRogue.Manager.Turn
             }
 
             HazardService.Instance?.TickOccupancyOnPlayerPhaseStart();
+
+            EvocableRechargeService.TickPartyAfterPlayerPhase();
 
             FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
             LightingService.Instance?.OnPartyVisionActivity();

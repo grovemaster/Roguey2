@@ -90,6 +90,7 @@
     <Compile Include="Assets/Tests/UnitTests/Racial/SpiritImprintRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Inventory/ThrowingKnifeAbilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/InteractableTileTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Inventory/EvocableChargeRulesTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/TrapServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputHandlerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/EnvironmentalHazardTests.cs" />

@@ -42,7 +42,7 @@ namespace JRogue.UI.Inventory
             view._letterSpacer = AddSpacer(root.transform, 28f);
             view._iconSpacer = AddSpacer(root.transform, 44f);
             view._nameLabel = AddLabel(root.transform, "Name", TextAlignmentOptions.Left, flex: 1f);
-            view._qtyLabel = AddLabel(root.transform, "Qty", TextAlignmentOptions.Right, 44f);
+            view._qtyLabel = AddLabel(root.transform, "Chg", TextAlignmentOptions.Right, 44f);
             view._wtLabel = AddLabel(root.transform, "Wt", TextAlignmentOptions.Right, 52f);
             view._valueLabel = AddLabel(root.transform, "Value", TextAlignmentOptions.Right, 56f);
             view.ApplyScale(fontScale);

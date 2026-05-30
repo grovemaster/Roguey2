@@ -577,18 +577,25 @@ namespace JRogue.Input
 
             BaseActor itemOwner = pending.InventoryOwner;
             InventoryManager inventory = itemOwner != null ? itemOwner.GetComponent<InventoryManager>() : null;
-            if (inventory != null
-                && pending.InventoryItemInstance != null
-                && !inventory.TryConsumeCarriedQuantity(pending.InventoryItemInstance, 1))
+            ItemInstance itemInstance = pending.InventoryItemInstance;
+            if (inventory != null && itemInstance != null)
             {
-                InventoryTargetedUseLog.LogWarning(
-                    pending.InventoryLogTag,
-                    $"Execute succeeded but TryConsumeCarriedQuantity failed for {pending.InventoryItemInstance.Id}.");
+                if (EvocableChargeRules.IsEvocable(itemInstance))
+                    EvocableChargeRules.SpendChargeAfterSuccessfulInvoke(inventory, itemInstance);
+                else if (!inventory.TryConsumeCarriedQuantity(itemInstance, 1))
+                {
+                    InventoryTargetedUseLog.LogWarning(
+                        pending.InventoryLogTag,
+                        $"Execute succeeded but TryConsumeCarriedQuantity failed for {itemInstance.Id}.");
+                }
             }
 
+            string consumeNote = itemInstance != null && EvocableChargeRules.IsEvocable(itemInstance)
+                ? "charge spent"
+                : "item consumed";
             InventoryTargetedUseLog.Log(
                 pending.InventoryLogTag,
-                $"Confirm success at {target}; item consumed; turn ended.");
+                $"Confirm success at {target}; {consumeNote}; turn ended.");
             return true;
         }
 

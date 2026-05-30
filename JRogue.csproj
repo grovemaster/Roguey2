@@ -93,6 +93,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/AlwaysTruePrecondition.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableBumpResult.cs" />
+    <Compile Include="Assets/Scripts/Item/EvocableChargeRules.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/HazardConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightLevel.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Assets/Scripts/Interactables/Effects/GrantPartyExperienceEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameOverModalUI.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
+    <Compile Include="Assets/Scripts/Manager/Inventory/EvocableRechargeService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />

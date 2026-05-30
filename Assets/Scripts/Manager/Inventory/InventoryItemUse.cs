@@ -24,6 +24,9 @@ namespace JRogue.Manager.Inventory
             if (row.Item.IsBowAmmo)
                 return TryUseBowArrow(row, inCombat);
 
+            if (row.Item is EvocableItemData evocableDef)
+                return TryUseEvocable(row, inCombat, evocableDef);
+
             if (HealingPotionRules.IsHealingPotionItem(row.Item)
                 && inCombat
                 && !HealingPotionRules.IsExemptFromPainStun(row.Owner.gameObject))
@@ -77,6 +80,72 @@ namespace JRogue.Manager.Inventory
             InventoryManager inventory = row.Owner.GetComponent<InventoryManager>();
             if (inventory != null && row.Instance != null)
                 inventory.TryConsumeCarriedQuantity(row.Instance, 1);
+
+            PartyPlayerActionCompletion.CompleteActiveMemberAction(activeMember);
+            return InventoryUseResult.Consumed();
+        }
+
+        static InventoryUseResult TryUseEvocable(InventoryViewModel.Row row, bool inCombat, EvocableItemData definition)
+        {
+            if (row.Instance == null)
+                return InventoryUseResult.Fail("Invalid evocable instance.");
+
+            EvocableChargeRules.ClampCharges(row.Instance);
+
+            if (!EvocableChargeRules.HasChargeToInvoke(row.Instance))
+            {
+                Debug.Log($"{EvocableChargeRules.LogPrefix} Invoke blocked — no charges id={row.Instance.Id}.");
+                return InventoryUseResult.Fail("No charges remaining.");
+            }
+
+            AbilityAction ability = definition.invokeAbility;
+            if (ability == null)
+                return InventoryUseResult.Fail("Evocable has no invoke ability.");
+
+            if (!InventoryUsability.AppearsUsableNow(row, inCombat))
+                return InventoryUseResult.Fail("Cannot use this item right now.");
+
+            if (!InventoryConsumePolicy.CanConsume(row, out string consumeReason))
+                return InventoryUseResult.Fail(consumeReason);
+
+            TurnManager turnManager = TurnManager.Instance;
+            if (turnManager == null || turnManager.currentState != GameState.PLAYER_TURN)
+                return InventoryUseResult.Fail("Not your turn.");
+
+            PartyManager party = PartyManager.Instance;
+            BaseActor activeMember = party != null ? party.GetActiveMember() : null;
+            if (activeMember == null || !turnManager.CanActorTakeAction(activeMember.gameObject))
+                return InventoryUseResult.Fail("Already acted this turn.");
+
+            if (!ability.CanExecute(row.Owner.gameObject))
+                return InventoryUseResult.Fail("Cannot use this item right now.");
+
+            string logTag = string.IsNullOrEmpty(definition.inventoryTargetedUseLogTag)
+                ? EvocableChargeRules.LogPrefix
+                : definition.inventoryTargetedUseLogTag;
+
+            int chargesBefore = row.Instance.CurrentCharges;
+            Debug.Log(
+                $"{EvocableChargeRules.LogPrefix} Invoke start {definition.itemName} id={row.Instance.Id} " +
+                $"charges={chargesBefore}/{row.Instance.MaxCharges} ability={ability.abilityName}.");
+
+            if (ability.requiresTarget)
+            {
+                var pending = new InventoryTargetedUsePending(
+                    ability,
+                    row.Instance,
+                    row.Owner,
+                    resumeSelectionIndex: 0,
+                    logTag);
+                return InventoryUseResult.StartTargeting(pending);
+            }
+
+            if (!ability.Execute(row.Owner.gameObject))
+                return InventoryUseResult.Fail("Item use failed.");
+
+            InventoryManager inventory = row.Owner.GetComponent<InventoryManager>();
+            if (inventory != null)
+                EvocableChargeRules.SpendChargeAfterSuccessfulInvoke(inventory, row.Instance);
 
             PartyPlayerActionCompletion.CompleteActiveMemberAction(activeMember);
             return InventoryUseResult.Consumed();

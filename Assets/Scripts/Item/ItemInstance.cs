@@ -27,13 +27,20 @@ namespace JRogue.Item
 
         [SerializeField] string manaStoneSourceSpeciesId = string.Empty;
 
+        [SerializeField] int currentCharges;
+
+        [SerializeField] int maxCharges;
+
+        [SerializeField] int rechargePhasesAccumulated;
+
         public const int MaxInscriptionLength = 280;
 
         public ItemInstance(ItemData def, int qty = 1)
         {
             id = Guid.NewGuid().ToString("N");
             definition = def;
-            quantity = Mathf.Max(1, qty);
+            quantity = ResolveQuantity(def, qty);
+            ApplyDefinitionDefaults(def);
         }
 
         /// <summary>For tools/tests—prefer the constructor that generates a new id.</summary>
@@ -41,8 +48,35 @@ namespace JRogue.Item
         {
             id = string.IsNullOrEmpty(existingId) ? Guid.NewGuid().ToString("N") : existingId;
             definition = def;
-            quantity = Mathf.Max(1, qty);
+            quantity = ResolveQuantity(def, qty);
+            ApplyDefinitionDefaults(def);
         }
+
+        static int ResolveQuantity(ItemData def, int qty)
+        {
+            if (def != null && def.category == ItemCategory.Evocable)
+                return 1;
+            return Mathf.Max(1, qty);
+        }
+
+        void ApplyDefinitionDefaults(ItemData def)
+        {
+            if (def is EvocableItemData evocable)
+                EvocableChargeRules.InitializeCharges(this, evocable);
+        }
+
+        /// <summary>Creates a runtime instance with evocable charge state initialized.</summary>
+        public static ItemInstance CreateFromDefinition(ItemData def, int? startingChargesOverride = null)
+        {
+            var inst = new ItemInstance(def, 1);
+            if (def is EvocableItemData evocable)
+                EvocableChargeRules.InitializeCharges(inst, evocable, startingChargesOverride);
+            return inst;
+        }
+
+        /// <summary>Creates an evocable with explicit starting charges (clamped to max).</summary>
+        public static ItemInstance CreateEvocable(EvocableItemData def, int? startingChargesOverride = null) =>
+            CreateFromDefinition(def, startingChargesOverride);
 
         public string Id => id;
 
@@ -55,8 +89,36 @@ namespace JRogue.Item
         public int Quantity
         {
             get => quantity;
-            set => quantity = Mathf.Max(1, value);
+            set => quantity = definition != null && definition.category == ItemCategory.Evocable
+                ? 1
+                : Mathf.Max(1, value);
         }
+
+        public int CurrentCharges
+        {
+            get => currentCharges;
+            set => currentCharges = value;
+        }
+
+        public int MaxCharges
+        {
+            get => maxCharges;
+            set => maxCharges = value;
+        }
+
+        public int RechargePhasesAccumulated
+        {
+            get => rechargePhasesAccumulated;
+            set => rechargePhasesAccumulated = Mathf.Max(0, value);
+        }
+
+        public void SetCharges(int current, int max)
+        {
+            maxCharges = Mathf.Max(1, max);
+            currentCharges = Mathf.Clamp(current, 0, maxCharges);
+        }
+
+        public bool IsEvocable => definition != null && definition.category == ItemCategory.Evocable;
 
         public float TotalWeight => definition != null ? definition.weight * quantity : 0f;
 
