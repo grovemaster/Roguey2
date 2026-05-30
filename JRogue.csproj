@@ -98,6 +98,8 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/HazardConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightLevel.cs" />
+    <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceHost.cs" />
+    <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceEffect.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryTelemetry.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/GameOverService.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Assets/Scripts/Controller/BaseActor.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileMarker.cs" />
+    <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadNecroticSustenancePassive.cs" />
     <Compile Include="Assets/Scripts/Abilities/Teleport/TeleportAbility.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberDeathDialogUI.cs" />
@@ -146,6 +149,7 @@
     <Compile Include="Assets/Scripts/Abilities/ThrowingKnife/ThrowingKnifeAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyPlayerActionCompletion.cs" />
     <Compile Include="Assets/Scripts/Hazards/SampleSceneHazardPlacements.cs" />
+    <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceContext.cs" />
     <Compile Include="Assets/Scripts/Manager/Turn/TurnManager.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionEvaluator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryHotkeyRuntimeOverrides.cs" />
@@ -224,6 +228,7 @@
     <Compile Include="Assets/Scripts/Manager/Loot/EnemyLootService.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTypes.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupHudButton.cs" />
+    <Compile Include="Assets/Scripts/World/MapPresence/TrapWhileAliveMapEffect.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementEntry.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRoller.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentManager.cs" />
@@ -233,6 +238,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableActivationSource.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
+    <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceProfile.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/GridOverlayPainter.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyExperienceService.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/AmbientRegion.cs" />

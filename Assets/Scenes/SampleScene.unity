@@ -1116,7 +1116,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1164970273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2160,6 +2160,89 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.Traps.TrapBootstrap
   placementSet: {fileID: 11400000, guid: 39d401818fa4952e893bf4f46b901ae1, type: 2}
   placements: []
+--- !u!1001 &1575213276
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641161215688148502, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177042056790637932, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: m_Name
+      value: Enemy_MapPresenceTestSkeleton
+      objectReference: {fileID: 0}
+    - target: {fileID: 5257779920492708037, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: hp
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4177042056790637932, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1575213278}
+  m_SourcePrefab: {fileID: 100100000, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+--- !u!1 &1575213277 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4177042056790637932, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+  m_PrefabInstance: {fileID: 1575213276}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1575213278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575213277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 987a97b9311ce899f810d3718759a1e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.World.MapPresence.MonsterMapPresenceHost
+  profileOverride: {fileID: 11400000, guid: 75d7a2a566745fa489b6741fd1f59e90, type: 2}
+  enemy: {fileID: 0}
 --- !u!1 &1598217590
 GameObject:
   m_ObjectHideFlags: 0
@@ -4558,3 +4641,4 @@ SceneRoots:
   - {fileID: 1986568399}
   - {fileID: 951903496}
   - {fileID: 1164970275}
+  - {fileID: 1575213276}

@@ -23,5 +23,9 @@ namespace JRogue.Data.Enemy
 
         [Header("Doors")]
         public EnemyDoorCapability doorCapability;
+
+        [Header("Map presence (while alive)")]
+        [Tooltip("MonsterMapPresenceProfile asset (JRogue/World). Stored as Object to avoid Data→runtime asm coupling.")]
+        public ScriptableObject mapPresenceProfileAsset;
     }
 }

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a4dd4f68687ac528ad29bddec560cb1, type: 3}
+  m_Name: TrapWhileAlive_SkeletonPit
+  m_EditorClassIdentifier: JRogue::JRogue.World.MapPresence.TrapWhileAliveMapEffect
+  cell: {x: -1, y: -1, z: 0}
+  trapDefinition: {fileID: 11400000, guid: bd88c3562f61968e5bba0e7cb109babe, type: 2}
+  logTag: skeleton_pit

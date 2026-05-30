@@ -10,6 +10,7 @@ using JRogue.Manager.Loot;
 using JRogue.Manager.Progression;
 using JRogue.Hazards;
 using JRogue.Racial;
+using JRogue.World.MapPresence;
 using JRogue.Status;
 using Roguey2.Sensing;
 using UnityEngine;
@@ -150,6 +151,8 @@ namespace JRogue.Controller.Enemy
 
         protected override void Die()
         {
+            GetComponent<MonsterMapPresenceHost>()?.Unbind();
+
             PartyManager party = PartyManager.Instance ?? partyManager;
             GameObject killer = PartyExperienceService.ResolveKillCredit(health, party);
             PartyExperienceService.Instance?.HandleEnemyDeath(this, killer);

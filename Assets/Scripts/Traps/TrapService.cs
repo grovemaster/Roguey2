@@ -228,6 +228,22 @@ namespace JRogue.Traps
             Debug.Log($"[Trap] Registered {definition.displayName} at {hostCell} ({definition.placement}).");
         }
 
+        public bool TryUnregisterFloorTrap(Vector3Int cell)
+        {
+            if (!_floorTrapsByCell.TryGetValue(cell, out TrapInstance instance))
+                return false;
+
+            _floorTrapsByCell.Remove(cell);
+            _allInstances.Remove(instance);
+
+            if (trapOverlayMap != null)
+                GridOverlayPainter.Clear(trapOverlayMap, cell);
+
+            string name = instance?.Definition != null ? instance.Definition.displayName : "trap";
+            Debug.Log($"[Trap] Unregistered {name} at {cell} (floor).");
+            return true;
+        }
+
         public void EvaluateDetection()
         {
             MapManager map = MapManager.Instance;

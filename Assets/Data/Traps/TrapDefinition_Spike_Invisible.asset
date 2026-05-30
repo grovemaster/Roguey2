@@ -24,4 +24,5 @@ MonoBehaviour:
   disguiseFloorTile: {fileID: 0}
   disguiseWallTile: {fileID: 0}
   revealedSprite: {fileID: -2672856206109967872, guid: 0174558c78fa470d6964050135bd88ff, type: 3}
+  revealedTriggeredSprite: {fileID: 0}
   futureEffects: []
