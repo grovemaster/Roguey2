@@ -156,6 +156,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Rest"",
+                    ""type"": ""Button"",
+                    ""id"": ""b7e6f5a4-3c2d-1e0f-9a8b-7c6d5e4f3a2b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""CyclePartyMembers"",
                     ""type"": ""Button"",
                     ""id"": ""4e0a4a33-a21b-4d48-83ed-c3a070b1e456"",
@@ -1159,6 +1168,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""c8d7e6f5-a4b3-2c1d-0e9f-8a7b6c5d4e3f"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rest"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""39b0a372-2fbe-432d-8917-e1874907e5f6"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
@@ -1303,6 +1323,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_Confirm = m_Player.FindAction("Confirm", throwIfNotFound: true);
         m_Player_Cancel = m_Player.FindAction("Cancel", throwIfNotFound: true);
         m_Player_Wait = m_Player.FindAction("Wait", throwIfNotFound: true);
+        m_Player_Rest = m_Player.FindAction("Rest", throwIfNotFound: true);
         m_Player_CyclePartyMembers = m_Player.FindAction("CyclePartyMembers", throwIfNotFound: true);
         m_Player_SelectPartyMember = m_Player.FindAction("SelectPartyMember", throwIfNotFound: true);
         m_Player_ToggleFormation = m_Player.FindAction("ToggleFormation", throwIfNotFound: true);
@@ -1396,6 +1417,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Confirm;
     private readonly InputAction m_Player_Cancel;
     private readonly InputAction m_Player_Wait;
+    private readonly InputAction m_Player_Rest;
     private readonly InputAction m_Player_CyclePartyMembers;
     private readonly InputAction m_Player_SelectPartyMember;
     private readonly InputAction m_Player_ToggleFormation;
@@ -1441,6 +1463,10 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Wait".
         /// </summary>
         public InputAction @Wait => m_Wrapper.m_Player_Wait;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Rest".
+        /// </summary>
+        public InputAction @Rest => m_Wrapper.m_Player_Rest;
         /// <summary>
         /// Provides access to the underlying input action "Player/CyclePartyMembers".
         /// </summary>
@@ -1512,6 +1538,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Wait.started += instance.OnWait;
             @Wait.performed += instance.OnWait;
             @Wait.canceled += instance.OnWait;
+            @Rest.started += instance.OnRest;
+            @Rest.performed += instance.OnRest;
+            @Rest.canceled += instance.OnRest;
             @CyclePartyMembers.started += instance.OnCyclePartyMembers;
             @CyclePartyMembers.performed += instance.OnCyclePartyMembers;
             @CyclePartyMembers.canceled += instance.OnCyclePartyMembers;
@@ -1562,6 +1591,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Wait.started -= instance.OnWait;
             @Wait.performed -= instance.OnWait;
             @Wait.canceled -= instance.OnWait;
+            @Rest.started -= instance.OnRest;
+            @Rest.performed -= instance.OnRest;
+            @Rest.canceled -= instance.OnRest;
             @CyclePartyMembers.started -= instance.OnCyclePartyMembers;
             @CyclePartyMembers.performed -= instance.OnCyclePartyMembers;
             @CyclePartyMembers.canceled -= instance.OnCyclePartyMembers;
@@ -1669,6 +1701,13 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnWait(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Rest" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRest(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "CyclePartyMembers" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

@@ -70,6 +70,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Rest",
+                    "type": "Button",
+                    "id": "b7e6f5a4-3c2d-1e0f-9a8b-7c6d5e4f3a2b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "CyclePartyMembers",
                     "type": "Button",
                     "id": "4e0a4a33-a21b-4d48-83ed-c3a070b1e456",
@@ -1068,6 +1077,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Wait",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c8d7e6f5-a4b3-2c1d-0e9f-8a7b6c5d4e3f",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rest",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

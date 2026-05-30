@@ -30,6 +30,32 @@ namespace JRogue.Status
 
         public bool HasStatus(StatusEffectId id) => TryGetStatus(id, out _);
 
+        /// <summary>True if any active status has <see cref="StatusPolarity.Negative"/>.</summary>
+        public bool HasNegativeStatus()
+        {
+            for (int i = 0; i < _activeStatuses.Count; i++)
+            {
+                StatusEffectDefinition def = _activeStatuses[i]?.definition;
+                if (def != null && def.IsNegative)
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>True if any active status has <see cref="StatusPolarity.Positive"/>.</summary>
+        public bool HasPositiveStatus()
+        {
+            for (int i = 0; i < _activeStatuses.Count; i++)
+            {
+                StatusEffectDefinition def = _activeStatuses[i]?.definition;
+                if (def != null && def.IsPositive)
+                    return true;
+            }
+
+            return false;
+        }
+
         public bool TryApply(StatusEffectDefinition definition, GameObject source = null) =>
             StatusEffectService.TryApply(this, definition, source);
 

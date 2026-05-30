@@ -61,6 +61,7 @@
     <Compile Include="Assets/Scripts/Service/Loot/ILootRandom.cs" />
     <Compile Include="Assets/Scripts/Item/ItemStorageLocation.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileBootstrap.cs" />
+    <Compile Include="Assets/Scripts/Manager/Progression/PartyRestState.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryConsumePolicy.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupCoordinator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyDisplay.cs" />
@@ -144,9 +145,11 @@
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryTargetedUseLog.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementEntry.cs" />
+    <Compile Include="Assets/Scripts/Manager/Progression/HealthRegenerationService.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TrapConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingScenarioController.cs" />
+    <Compile Include="Assets/Scripts/Status/PartyStatusQueries.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardBootstrap.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileService.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorItemPileService.cs" />
@@ -196,6 +199,7 @@
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTile.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardDefinition.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
+    <Compile Include="Assets/Scripts/Manager/Progression/RestSessionService.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/ScriptOnlyPrecondition.cs" />
     <Compile Include="Assets/Scripts/Abilities/Progression/GrantPartyExperienceAbility.cs" />

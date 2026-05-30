@@ -104,6 +104,8 @@ namespace JRogue.Manager.Party
             EnsureComponent<PartyManaStoneLedger>();
             EnsureComponent<PartyCurrencyLedger>();
             EnsureComponent<ManaStoneAutoPickupService>();
+            EnsureComponent<PartyRestState>();
+            EnsureComponent<RestSessionService>();
         }
 
         void EnsureComponent<T>() where T : Component

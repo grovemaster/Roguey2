@@ -8,6 +8,8 @@ A **data-driven status system** for temporary combat conditions (Poisoned, Might
 
 **Explicitly out of scope (v0):** Status UI icons/tooltips, save/load active statuses, poison **stack** increasing damage, enemy Constitution saves, cure-poison items (asset mentioned in progression doc only), Might/Drained/Slow/Haste implementation (schema only).
 
+**Related:** [Rest](../Progression/Rest-Requirements.md) — gates on `HasNegativeStatus()` / `PartyStatusQueries`, not per-id poison checks.
+
 ---
 
 ## 1. Goals
@@ -89,9 +91,12 @@ New statuses **add an enum value** (or string id on definition) + **new asset**;
 | `statusId` | `StatusEffectId` |
 | `displayName` | UI / logs (e.g. `Poisoned`) |
 | `description` | Designer notes / player text |
+| `polarity` | `StatusPolarity` — **Negative** / **Positive** / **Neutral** (§4.6); defaults from `StatusEffectPolarityRules` on validate |
 | `maxDurationTurns` | Cap (Poisoned: **10**) |
 | `immunityTags` | e.g. `Poison`, `UndeadPoison` for filtering |
 | `ignoresPoisonImmunity` | bool, default **false** (v0 unused) |
+
+**Code:** prefer `StatusEffectController.HasNegativeStatus()` and `PartyStatusQueries.AnyLivingMemberHasNegativeStatus()` over checking `StatusEffectId.Poisoned` directly.
 
 Menu: **`JRogue/Status/Status Effect Definition`**.
 
@@ -111,14 +116,30 @@ Menu: **`JRogue/Status/Status Effect Definition`**.
 
 ### D4.5 — Placeholder statuses (authoring only, no logic v0)
 
-| Status | Intended role (future doc) |
-|--------|----------------------------|
-| **Might** | Timed stat buff (e.g. +Strength). |
-| **Drained** | Timed stat penalty and/or max HP reduction. |
-| **Slowed** | Reduced movement or actions per turn. |
-| **Hasted** | Extra movement or actions per turn. |
+| Status | `polarity` (locked) | Intended role (future doc) |
+|--------|---------------------|----------------------------|
+| **Might** | **Positive** | Timed stat buff (e.g. +Strength). |
+| **Drained** | **Negative** | Timed stat penalty and/or max HP reduction. |
+| **Slowed** | **Negative** | Reduced movement or actions per turn. |
+| **Hasted** | **Positive** | Extra movement or actions per turn. |
 
 Create **stub assets** optional; **no** tick/apply code until specified.
+
+### D4.6 — `StatusPolarity` (implemented)
+
+```csharp
+public enum StatusPolarity { Neutral = 0, Negative = 1, Positive = 2 }
+```
+
+| `StatusEffectId` | Default `polarity` |
+|------------------|-------------------|
+| Poisoned | Negative |
+| Drained | Negative |
+| Slowed | Negative |
+| Might | Positive |
+| Hasted | Positive |
+
+`StatusEffectDefinition.IsNegative` / `IsPositive` — use for gameplay gates. Defaults applied in `OnValidate` from `StatusEffectPolarityRules.GetDefaultPolarity(statusId)`; designers may override on the asset.
 
 ---
 

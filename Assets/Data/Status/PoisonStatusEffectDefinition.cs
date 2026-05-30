@@ -12,9 +12,10 @@ namespace JRogue.Status
         public DamageType damageType = DamageType.Poison;
         public int escapeDifficulty = 12;
 
-        void OnValidate()
+        protected override void OnValidate()
         {
             statusId = StatusEffectId.Poisoned;
+            polarity = StatusPolarity.Negative;
             if (maxDurationTurns <= 0)
                 maxDurationTurns = 10;
             if (damagePerTick <= 0)

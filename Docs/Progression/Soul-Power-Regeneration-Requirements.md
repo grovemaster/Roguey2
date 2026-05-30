@@ -6,7 +6,9 @@
 
 **Related:** [Human — Class powers](../RacialSystem/Human-Class-Powers-Requirements.md) (Mage/Priest **do not** use Soul Power — use Magic/Divine Power pools separately when those systems gain regen). [Elf — Elemental Spirit contracts](../RacialSystem/Elf-ElementalSpirit-Contracts-Requirements.md) (summon cost + **upkeep** deducts Soul Power at turn boundary — **after** or **before** regen must be ordered explicitly in §6). [Sudden Strength essence](../Essence/Sudden-Strength-Essence-Requirements.md), [Telekinesis essence](../Essence/Telekinesis-Essence-Requirements.md) (spend pattern). [Party experience & leveling](Party-Experience-And-Leveling-Requirements.md) (level-up may raise max and refill gap). [Party member death](../Party/Party-Member-Death-Requirements.md) (dead members do not regen).
 
-**Explicitly out of scope (v0):** Magic Power / Divine Power regeneration (document parallel rules when those pools ship); UI bar animation; save/load of regen accumulator; aut-based action-time scaling (JRogue uses discrete turns, not DCSS auts); “no regen while in combat” toggles; hunger/faith systems; MP-link mutations; resting to full outside turns.
+**Explicitly out of scope (v0):** Magic Power / Divine Power regeneration (document parallel rules when those pools ship); UI bar animation; save/load of regen accumulator; aut-based action-time scaling (JRogue uses discrete turns, not DCSS auts); “no regen while in combat” toggles; hunger/faith systems; MP-link mutations. **Rest** fast-forward is specified in [Rest](Rest-Requirements.md) (uses this service’s per-turn tick).
+
+**Related:** [Rest](Rest-Requirements.md) — automatic multi-turn SP recovery session (uses `TickRegeneration` each rest step).
 
 ---
 

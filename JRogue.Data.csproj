@@ -78,6 +78,7 @@
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintGraph.cs" />
     <Compile Include="Assets/Data/Racial/RacialLoadoutDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanClassSkillTreePayloadApplicator.cs" />
+    <Compile Include="Assets/Data/Status/StatusEffectPolarityRules.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeRuntime.cs" />
     <Compile Include="Assets/Data/Inventory/DestructiveInventoryActionConfig.cs" />
     <Compile Include="Assets/Data/Progression/ExperienceCurve.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Assets/Data/Enemy/LootTablePayload.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeRankEntry.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonSlotPreset.cs" />
+    <Compile Include="Assets/Data/Status/StatusPolarity.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanSkillNodeRankEntry.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryHotkeyProfile.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritDefinition.cs" />

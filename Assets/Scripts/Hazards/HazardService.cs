@@ -44,6 +44,27 @@ namespace JRogue.Hazards
         public EnvironmentalHazardDefinition GetHazardAt(Vector3Int cell) =>
             TryGetState(cell, out HazardCellState state) ? state.Definition : null;
 
+        /// <summary>True if standing on this cell would apply occupancy damage (rest gate).</summary>
+        public bool WouldDealOccupancyDamageTo(BaseActor actor)
+        {
+            if (actor == null)
+                return false;
+
+            EnvironmentalHazardDefinition def = GetHazardAt(actor.GridPosition);
+            if (def == null)
+                return false;
+
+            if (def.kind == EnvironmentalHazardKind.Persistent)
+                return def.persistentDamagePerTrigger > 0;
+
+            if (def.kind == EnvironmentalHazardKind.Passage
+                && def.failedPassageOccupancyDamagePerTurn > 0
+                && !HazardPassageEvaluator.MeetsPassageCondition(def, actor))
+                return true;
+
+            return false;
+        }
+
         public bool HasHazardAt(Vector3Int cell) => _hazards.ContainsKey(cell);
 
         public bool IsHiddenToPlayer(Vector3Int cell) =>

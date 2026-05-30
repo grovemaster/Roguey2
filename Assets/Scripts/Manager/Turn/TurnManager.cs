@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using JRogue.Actors;
 using JRogue.Controller.Enemy;
 using JRogue.Manager.Combat;
 using JRogue.Manager.Essence;
@@ -82,6 +83,46 @@ namespace JRogue.Manager.Turn
             }
         }
 
+        /// <summary>One rest step player-phase boundary (SP regen → upkeep → statuses → rest HP → hazards).</summary>
+        public void ExecuteRestPlayerPhaseStep(PartyRestState restState)
+        {
+            LightingService.Instance?.OnPlayerPhaseBoundary();
+            TrapService.Instance?.EvaluateDetection();
+
+            PartyManager party = PartyManager.Instance;
+            if (party == null)
+                return;
+
+            for (int i = 0; i < party.partyMembers.Count; i++)
+            {
+                BaseActor member = party.partyMembers[i];
+                if (member == null || member.stats == null || member.stats.currentHP <= 0)
+                    continue;
+
+                SoulPowerRegenerationService.TickRegeneration(member.gameObject);
+                RacialPassiveHooks.NotifyTurnStart(member.gameObject);
+                EssenceSlotManager slots = member.GetComponent<EssenceSlotManager>();
+                if (slots != null)
+                    slots.NotifyTurnStart();
+                StatusEffectController statuses = member.GetComponent<StatusEffectController>();
+                if (statuses != null)
+                    statuses.TickStatuses();
+
+                if (restState != null)
+                    restState.TickRestHeal(member);
+            }
+
+            HazardService.Instance?.TickOccupancyOnPlayerPhaseStart();
+
+            FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
+            LightingService.Instance?.OnPartyVisionActivity();
+        }
+
+        public IEnumerator RunEnemyWaveDuringRest()
+        {
+            yield return RunEnemyWave(endWithPlayerTurn: false);
+        }
+
         public void EnterGameOver()
         {
             currentState = GameState.GAME_OVER;
@@ -91,18 +132,20 @@ namespace JRogue.Manager.Turn
 
         private IEnumerator EnemyTurnSequence()
         {
+            yield return RunEnemyWave(endWithPlayerTurn: true);
+        }
+
+        IEnumerator RunEnemyWave(bool endWithPlayerTurn)
+        {
             if (currentState == GameState.GAME_OVER)
                 yield break;
 
             currentState = GameState.ENEMY_TURN;
-
-            // Clear the set for the next player turn
             charactersWhoActed.Clear();
 
-            // Find all enemies (In the future, use a List for better performance)
             EnemyController[] enemies = FindObjectsByType<EnemyController>();
 
-            foreach (var enemy in enemies)
+            foreach (EnemyController enemy in enemies)
             {
                 if (currentState == GameState.GAME_OVER)
                     yield break;
@@ -110,7 +153,7 @@ namespace JRogue.Manager.Turn
                 if (enemy != null)
                 {
                     enemy.TakeTurn();
-                    yield return new WaitForSeconds(0.05f); // Slight delay for visual clarity
+                    yield return new WaitForSeconds(0.05f);
                 }
             }
 
@@ -120,28 +163,46 @@ namespace JRogue.Manager.Turn
             CombatThreatCoordinator.Instance?.ApplyPursuitDecayAfterEnemyWave();
             CombatThreatCoordinator.Instance?.EvaluateThreat();
 
-            currentState = GameState.PLAYER_TURN;
-            Debug.Log("--- New Player Turn ---");
-            NotifyPartyTurnStart();
+            if (endWithPlayerTurn)
+            {
+                currentState = GameState.PLAYER_TURN;
+                Debug.Log("--- New Player Turn ---");
+                NotifyPartyTurnStart();
+            }
+            else
+            {
+                currentState = GameState.BUSY;
+            }
         }
 
         private void NotifyPartyTurnStart()
         {
+            PartyRestState restState = PartyManager.Instance != null
+                ? PartyManager.Instance.GetComponent<PartyRestState>()
+                : null;
+
             LightingService.Instance?.OnPlayerPhaseBoundary();
-            HazardService.Instance?.TickOccupancyOnPlayerPhaseStart();
             TrapService.Instance?.EvaluateDetection();
 
-            if (PartyManager.Instance == null) return;
-            foreach (var member in PartyManager.Instance.partyMembers)
+            if (PartyManager.Instance == null)
+                return;
+
+            foreach (BaseActor member in PartyManager.Instance.partyMembers)
             {
-                if (member == null) continue;
+                if (member == null || member.stats == null || member.stats.currentHP <= 0)
+                    continue;
+
                 SoulPowerRegenerationService.TickRegeneration(member.gameObject);
                 RacialPassiveHooks.NotifyTurnStart(member.gameObject);
-                var slots = member.GetComponent<EssenceSlotManager>();
-                if (slots != null) slots.NotifyTurnStart();
-                var statuses = member.GetComponent<StatusEffectController>();
-                if (statuses != null) statuses.TickStatuses();
+                EssenceSlotManager slots = member.GetComponent<EssenceSlotManager>();
+                if (slots != null)
+                    slots.NotifyTurnStart();
+                StatusEffectController statuses = member.GetComponent<StatusEffectController>();
+                if (statuses != null)
+                    statuses.TickStatuses();
             }
+
+            HazardService.Instance?.TickOccupancyOnPlayerPhaseStart();
 
             FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
             LightingService.Instance?.OnPartyVisionActivity();

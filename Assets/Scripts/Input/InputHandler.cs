@@ -1,6 +1,7 @@
 using JRogue.Actors;
 using JRogue.Ability;
 using JRogue.Item;
+using JRogue.Manager.Progression;
 using JRogue.Manager.Turn;
 using JRogue.UI.Gameplay;
 using JRogue.UI.Inventory;
@@ -16,6 +17,7 @@ namespace JRogue.Input
         private InputAction toggleInventoryAction;
         private InputAction pickupFloorItemsAction;
         private InputAction aimBowAction;
+        private InputAction restAction;
         private readonly PlayerCommandProcessor commandProcessor = new PlayerCommandProcessor();
 
         public PlayerCommandProcessor CommandProcessor => commandProcessor;
@@ -95,6 +97,21 @@ namespace JRogue.Input
                 aimBowAction.performed += OnAimBowPerformed;
             }
 
+            restAction = playerInput != null
+                ? playerInput.actions.FindAction("Rest", throwIfNotFound: false)
+                : null;
+
+            if (restAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>Rest</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (binding <Keyboard>/r).");
+            }
+            else
+            {
+                restAction.performed += OnRestPerformed;
+            }
+
             FloorPickupHudButton.EnsureInstance();
         }
 
@@ -119,6 +136,12 @@ namespace JRogue.Input
             {
                 aimBowAction.performed -= OnAimBowPerformed;
                 aimBowAction = null;
+            }
+
+            if (restAction != null)
+            {
+                restAction.performed -= OnRestPerformed;
+                restAction = null;
             }
 
             controls?.Dispose();
@@ -206,6 +229,25 @@ namespace JRogue.Input
             commandProcessor.TryApply(PlayerCommand.Wait(partyWait));
         }
 
+        void OnRestPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            if (BlocksFloorGameplay() || RestSessionService.IsResting)
+                return;
+
+            if (IsContextInvalid(context))
+                return;
+
+            if (commandProcessor.CurrentState == InputState.Targeting)
+                return;
+
+            RestSessionService.TryStartOrDeny();
+        }
+
+        public void OnRest(InputAction.CallbackContext context) => OnRestPerformed(context);
+
         public void OnConfirm(InputAction.CallbackContext context)
         {
             if (!context.performed || commandProcessor.CurrentState != InputState.Targeting) return;
@@ -262,7 +304,8 @@ namespace JRogue.Input
         }
 
         static bool BlocksFloorGameplay() =>
-            GameOverModalUI.BlocksGameplay
+            RestSessionService.IsResting
+            || GameOverModalUI.BlocksGameplay
             || InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
             || TrapConfirmDialogUI.BlocksGameplay
             || HazardConfirmDialogUI.BlocksGameplay
