@@ -124,5 +124,40 @@ namespace JRogue.Manager.Inventory
             float potential = GetTotalWeight() + instance.TotalWeight;
             return potential <= stats.EncumbranceLimit;
         }
+
+#if UNITY_EDITOR
+        /// <summary>Sample-scene editor seeding — keeps ScriptableObject refs on prefab instances.</summary>
+        public void EditorReplaceBowKitItems(
+            ItemData bow,
+            ItemData stoneArrow,
+            ItemData steelArrow,
+            int stoneQty,
+            int steelQty)
+        {
+            for (int i = carriedItems.Count - 1; i >= 0; i--)
+            {
+                ItemData def = carriedItems[i]?.Definition;
+                if (def == null || def.IsBowWeapon || def.IsBowAmmo)
+                    carriedItems.RemoveAt(i);
+            }
+
+            AddCarriedForEditorSeed(bow, 1);
+            AddCarriedForEditorSeed(stoneArrow, stoneQty);
+            AddCarriedForEditorSeed(steelArrow, steelQty);
+        }
+
+        void AddCarriedForEditorSeed(ItemData definition, int quantity)
+        {
+            if (definition == null || quantity < 1)
+                return;
+
+            var inst = new ItemInstance(definition, quantity)
+            {
+                StorageLocation = ItemStorageLocation.Carried,
+                IsAppraised = true,
+            };
+            carriedItems.Add(inst);
+        }
+#endif
     }
 }

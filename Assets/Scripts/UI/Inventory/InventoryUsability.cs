@@ -1,4 +1,6 @@
+using JRogue.Combat;
 using JRogue.Item;
+using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
 using JRogue.Stats;
 
@@ -15,6 +17,17 @@ namespace JRogue.UI.Inventory
 
             if (row.Instance != null && row.Instance.StorageLocation == ItemStorageLocation.OnGround)
                 return false;
+
+            if (item.IsBowAmmo)
+            {
+                if (row.IsEquipped)
+                    return false;
+                if (row.Owner == null || !BowRangedCombatService.HasBowEquipped(row.Owner))
+                    return false;
+                if (!inCombat)
+                    return true;
+                return InventoryPolicy.CanUseCarriedFromAlly(row.Owner, row.Owner, itemEquippedElsewhere: false);
+            }
 
             bool hasActiveAbility = item.activeAbilities != null && item.activeAbilities.Count > 0;
 

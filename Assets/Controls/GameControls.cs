@@ -199,6 +199,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AimBow"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1268,6 +1277,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""PickupFloorItems"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d4e5f6a7-b8c9-0123-def0-234567890123"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AimBow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1288,6 +1308,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_ToggleFormation = m_Player.FindAction("ToggleFormation", throwIfNotFound: true);
         m_Player_ToggleInventory = m_Player.FindAction("ToggleInventory", throwIfNotFound: true);
         m_Player_PickupFloorItems = m_Player.FindAction("PickupFloorItems", throwIfNotFound: true);
+        m_Player_AimBow = m_Player.FindAction("AimBow", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -1380,6 +1401,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ToggleFormation;
     private readonly InputAction m_Player_ToggleInventory;
     private readonly InputAction m_Player_PickupFloorItems;
+    private readonly InputAction m_Player_AimBow;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1439,6 +1461,10 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/PickupFloorItems".
         /// </summary>
         public InputAction @PickupFloorItems => m_Wrapper.m_Player_PickupFloorItems;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/AimBow".
+        /// </summary>
+        public InputAction @AimBow => m_Wrapper.m_Player_AimBow;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1501,6 +1527,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @PickupFloorItems.started += instance.OnPickupFloorItems;
             @PickupFloorItems.performed += instance.OnPickupFloorItems;
             @PickupFloorItems.canceled += instance.OnPickupFloorItems;
+            @AimBow.started += instance.OnAimBow;
+            @AimBow.performed += instance.OnAimBow;
+            @AimBow.canceled += instance.OnAimBow;
         }
 
         /// <summary>
@@ -1548,6 +1577,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @PickupFloorItems.started -= instance.OnPickupFloorItems;
             @PickupFloorItems.performed -= instance.OnPickupFloorItems;
             @PickupFloorItems.canceled -= instance.OnPickupFloorItems;
+            @AimBow.started -= instance.OnAimBow;
+            @AimBow.performed -= instance.OnAimBow;
+            @AimBow.canceled -= instance.OnAimBow;
         }
 
         /// <summary>
@@ -1672,5 +1704,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPickupFloorItems(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "AimBow" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAimBow(InputAction.CallbackContext context);
     }
 }

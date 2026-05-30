@@ -2330,7 +2330,46 @@ namespace JRogue.UI.Inventory
                 return;
             }
 
+            if (result.Outcome == JRogue.Manager.Inventory.InventoryUseOutcome.StartedBowAim)
+            {
+                TryBeginBowInvokeAim(result.BowAimPending);
+                return;
+            }
+
             RefreshInventoryDisplay();
+        }
+
+        void TryBeginBowInvokeAim(JRogue.Manager.Inventory.InventoryBowAimPending pending)
+        {
+            TryRegisterInventoryTargetedUseInput();
+            if (_inputHandler == null)
+            {
+                Debug.LogWarning("[Bow] No InputHandler; cannot start bow aim.");
+                return;
+            }
+
+            JRogue.Manager.Party.PartyManager party = JRogue.Manager.Party.PartyManager.Instance;
+            BaseActor activeMember = party != null ? party.GetActiveMember() : null;
+            if (activeMember == null || pending.Owner == null)
+            {
+                Debug.Log("[Bow] Use blocked: no active party member.");
+                return;
+            }
+
+            int resumeSelection = _selection;
+            SaveInventorySessionState();
+            if (inventoryPanel != null)
+                inventoryPanel.SetActive(false);
+
+            if (!_inputHandler.TryBeginBowAim(
+                    activeMember,
+                    pending.RestoreOffHandAfterCancel,
+                    resumeSelection))
+            {
+                Debug.Log("[Bow] Use blocked: could not start bow aim.");
+                if (inventoryPanel != null)
+                    inventoryPanel.SetActive(true);
+            }
         }
 
         void TryBeginInventoryTargetedUse(

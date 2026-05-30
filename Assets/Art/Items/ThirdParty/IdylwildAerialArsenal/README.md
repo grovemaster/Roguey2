@@ -10,6 +10,9 @@ See `LICENSE.txt` for terms.
 |-----------|-------------|----------------------------------|
 | **Throwing Knife** | `originals/throwingknife1.png` | `Missile_ThrowingKnife.png` |
 | Stacked variant (future) | `originals/throwingknife1stack.png` | — |
+| **Short Bow** | `originals/bow2.png` | `Weapon_ShortBow.png` |
+| **Stone Arrow** | `originals/arrow1.png` | `Missile_StoneArrow.png` |
+| **Steel Arrow** | `originals/arrow2.png` | `Missile_SteelArrow.png` |
 
 ## Unity import
 

@@ -25,6 +25,42 @@ namespace JRogue.Manager.Equipment
                 return false;
             }
 
+            var equip = actor.GetComponent<EquipmentManager>();
+            ItemData mainHand = equip?.GetItemFromEquipmentSlot(EquipmentSlot.MainHand);
+            bool bowWielded = mainHand != null && mainHand.IsBowWeapon;
+
+            if (intendedSlot == EquipmentSlot.OffHand)
+            {
+                if (bowWielded && !item.IsBowAmmo)
+                {
+                    reason = $"Cannot equip {item.itemName}: bow requires arrow ammo in off hand.";
+                    Debug.Log($"[Bow] {reason}");
+                    return false;
+                }
+
+                if (item.IsBowAmmo && !bowWielded)
+                {
+                    reason = "Arrows require a bow in the main hand.";
+                    return false;
+                }
+            }
+
+            if (intendedSlot == EquipmentSlot.MainHand && item.IsBowWeapon && equip != null)
+            {
+                ItemInstance off = equip.GetEquippedInstance(EquipmentSlot.OffHand);
+                if (off?.Definition != null && !off.Definition.IsBowAmmo)
+                {
+                    reason = "Unequip the off-hand item before wielding a bow.";
+                    return false;
+                }
+            }
+
+            if (intendedSlot == EquipmentSlot.MainHand && bowWielded == false && item.IsBowAmmo)
+            {
+                reason = "Arrows equip only to the off hand.";
+                return false;
+            }
+
             var stats = actor.GetComponent<CharacterStats>();
             if (stats == null)
             {

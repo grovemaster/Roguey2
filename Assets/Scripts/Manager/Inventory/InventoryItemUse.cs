@@ -1,6 +1,8 @@
 using JRogue.Ability;
 using JRogue.Actors;
+using JRogue.Combat;
 using JRogue.Item;
+using JRogue.Manager.Equipment;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.UI.Inventory;
@@ -18,6 +20,9 @@ namespace JRogue.Manager.Inventory
 
             if (row.Instance != null && row.Instance.StorageLocation == ItemStorageLocation.OnGround)
                 return InventoryUseResult.Fail("Pick up the item before using it.");
+
+            if (row.Item.IsBowAmmo)
+                return TryUseBowArrow(row, inCombat);
 
             if (!InventoryUsability.AppearsUsableNow(row, inCombat))
             {
@@ -69,6 +74,66 @@ namespace JRogue.Manager.Inventory
                 inventory.TryConsumeCarriedQuantity(row.Instance, 1);
 
             return InventoryUseResult.Consumed();
+        }
+
+        static InventoryUseResult TryUseBowArrow(InventoryViewModel.Row row, bool inCombat)
+        {
+            if (row.Item is { isThrowable: false, requiresBow: true })
+            {
+                if (!BowRangedCombatService.HasBowEquipped(row.Owner))
+                {
+                    BowRangedCombatService.LogArrowsRequireBow();
+                    return InventoryUseResult.Fail("Arrows require a bow.");
+                }
+            }
+
+            if (!InventoryUsability.AppearsUsableNow(row, inCombat))
+                return InventoryUseResult.Fail("Cannot use this item right now.");
+
+            TurnManager turnManager = TurnManager.Instance;
+            if (turnManager == null || turnManager.currentState != GameState.PLAYER_TURN)
+                return InventoryUseResult.Fail("Not your turn.");
+
+            PartyManager party = PartyManager.Instance;
+            BaseActor activeMember = party != null ? party.GetActiveMember() : null;
+            if (activeMember == null || row.Owner == null)
+                return InventoryUseResult.Fail("Invalid owner.");
+
+            if (!turnManager.CanActorTakeAction(activeMember.gameObject))
+                return InventoryUseResult.Fail("Already acted this turn.");
+
+            if (!BowRangedCombatService.HasBowEquipped(row.Owner))
+            {
+                BowRangedCombatService.LogArrowsRequireBow();
+                return InventoryUseResult.Fail("Arrows require a bow.");
+            }
+
+            if (row.Instance == null || row.CarriedListIndex < 0)
+                return InventoryUseResult.Fail("Arrow must be carried.");
+
+            EquipmentManager equip = row.Owner.GetComponent<EquipmentManager>();
+            ItemInstance restoreOffHand = null;
+            if (equip != null)
+            {
+                ItemInstance currentOff = equip.GetEquippedInstance(EquipmentSlot.OffHand);
+                if (currentOff != null && currentOff.Id != row.Instance.Id)
+                    restoreOffHand = currentOff;
+
+                equip.EquipItem(EquipmentSlot.OffHand, row.Instance);
+            }
+
+            if (!BowRangedCombatService.HasAnyArrowAvailable(row.Owner))
+            {
+                BowRangedCombatService.LogArrowsRequireBow();
+                return InventoryUseResult.Fail("No arrows available.");
+            }
+
+            var bowPending = new InventoryBowAimPending(
+                row.Owner,
+                row.Instance,
+                restoreOffHand,
+                resumeSelectionIndex: 0);
+            return InventoryUseResult.StartBowAim(bowPending);
         }
     }
 }

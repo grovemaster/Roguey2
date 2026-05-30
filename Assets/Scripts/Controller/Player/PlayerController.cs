@@ -1,4 +1,5 @@
 using JRogue.Actors;
+using JRogue.Combat;
 using JRogue.Controller.Enemy;
 using JRogue.Manager.Equipment;
 using JRogue.Stats;
@@ -31,19 +32,34 @@ namespace JRogue.Controller.Player
             Debug.Log($"{gameObject.name} bumped into {target.gameObject.name} at {target.GridPosition}.");
             if (target is EnemyController enemy)
             {
+                if (BowRangedCombatService.HasBowEquipped(this))
+                {
+                    equipment?.TryEnsureDefaultAmmoEquipped();
+                    if (BowRangedCombatService.TryExecuteBowShot(this, enemy.GridPosition, 1))
+                        return;
+
+                    BowRangedCombatService.LogBumpUnarmed();
+                    AttackUnarmed(enemy);
+                    return;
+                }
+
                 AttackEnemy(enemy);
             }
         }
 
-        private void AttackEnemy(EnemyController enemy)
+        void AttackEnemy(EnemyController enemy)
         {
             int damage = equipment.GetTotalAttack(baseAttack);
-
-            // Default to Slash for melee — could later be driven by equipped weapon
             enemy.TakeDamage(damage, DamageType.Slash, gameObject);
-
             Debug.Log($"Player attacked {enemy.name} for {damage} damage!");
+            ProduceNoise(meleeNoiseVolume);
+        }
 
+        void AttackUnarmed(EnemyController enemy)
+        {
+            int damage = Mathf.Max(1, baseAttack);
+            enemy.TakeDamage(damage, DamageType.Blunt, gameObject);
+            Debug.Log($"Player attacked {enemy.name} unarmed for {damage} damage!");
             ProduceNoise(meleeNoiseVolume);
         }
 

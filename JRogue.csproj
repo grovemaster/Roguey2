@@ -180,6 +180,7 @@
     <Compile Include="Assets/Scripts/Interactables/Preconditions/FlagPrecondition.cs" />
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SetTileEmissionEffect.cs" />
+    <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapPlacementSet.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/OpenDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardMarker.cs" />
+    <Compile Include="Assets/Scripts/Combat/BowKitSampleSceneBootstrap.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommand.cs" />
     <Compile Include="Assets/Scripts/Testing/Essence/EssenceTestHarness.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryListColumnHeaderView.cs" />

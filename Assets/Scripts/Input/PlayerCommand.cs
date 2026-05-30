@@ -13,6 +13,8 @@ namespace JRogue.Input
         HumanMageSpell = 2,
         /// <summary>Carried item used from inventory (scrolls, wands, etc.) with targeting.</summary>
         InventoryItem = 3,
+        /// <summary>Bow aim reticle (ammo from equipped off-hand).</summary>
+        BowAim = 4,
     }
 
     /// <summary>Discriminant for <see cref="PlayerCommand"/>; stable for serialization.</summary>
@@ -26,6 +28,7 @@ namespace JRogue.Input
         ToggleFormation,
         SwapPartyMember,
         PickupFloorItems,
+        AimBow,
     }
 
     /// <summary>
@@ -80,5 +83,8 @@ namespace JRogue.Input
 
         public static PlayerCommand PickupFloorItems() =>
             new PlayerCommand { Kind = PlayerCommandKind.PickupFloorItems };
+
+        public static PlayerCommand AimBow() =>
+            new PlayerCommand { Kind = PlayerCommandKind.AimBow };
     }
 }

@@ -6,6 +6,9 @@ Archive: idylwilds_aerial_arsenal.zip
 Tiles used in Roguey2 (items):
   Item Icons/throwingknife1.png — Throwing Knife inventory / world icon
   Item Icons/throwingknife1stack.png — optional stacked variant (not used in v0 UI)
+  Item Icons/bow2.png — Short Bow (weapon)
+  Item Icons/arrow1.png — Stone Arrow (missile ammo)
+  Item Icons/arrow2.png — Steel Arrow (missile ammo)
 
 Author: Idylwild — https://idylwild.itch.io/
 

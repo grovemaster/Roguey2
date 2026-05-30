@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JRogue.Ability;
+using JRogue.Combat;
 using JRogue.Item;
 using JRogue.Manager.Inventory;
 using JRogue.Racial;
@@ -25,6 +26,13 @@ namespace JRogue.Manager.Equipment
         public void EquipItem(EquipmentSlot slot, ItemInstance newItem)
         {
             InventoryManager inv = GetComponent<InventoryManager>();
+
+            if (newItem?.Definition != null
+                && newItem.Definition.IsBowWeapon
+                && slot == EquipmentSlot.MainHand)
+            {
+                TryClearIllegalOffHandForBow(inv);
+            }
 
             if (newItem?.Definition != null
                 && !EquipmentLegalityEvaluator.CanEquip(gameObject, newItem.Definition, slot, out string illegalReason))
@@ -90,7 +98,95 @@ namespace JRogue.Manager.Equipment
                     passive.OnApply(gameObject);
 
                 Debug.Log($"Equipped {newItem.Definition.itemName} to {slot} (instance {newItem.Id}).");
+
+                if (slot == EquipmentSlot.OffHand && newItem.Definition.IsBowAmmo)
+                    BowRangedCombatService.LogDefaultAmmo(newItem.Definition, newItem.Quantity);
             }
+        }
+
+        void TryClearIllegalOffHandForBow(InventoryManager inv)
+        {
+            if (!_equipment.TryGetValue(EquipmentSlot.OffHand, out ItemInstance off) || off?.Definition == null)
+                return;
+
+            if (off.Definition.IsBowAmmo)
+                return;
+
+            if (!TryUnequipToBag(EquipmentSlot.OffHand))
+            {
+                Debug.LogWarning(
+                    $"[Bow] Cannot wield bow: off hand occupied by {off.Definition.itemName} and cannot stow it.");
+            }
+        }
+
+        /// <summary>Consumes ammo from the equipped off-hand stack. Promotes next carried stack at 0.</summary>
+        public bool TryConsumeEquippedAmmo(int amount, out ItemData consumedDefinition)
+        {
+            consumedDefinition = null;
+            if (amount < 1)
+                return false;
+
+            if (!_equipment.TryGetValue(EquipmentSlot.OffHand, out ItemInstance stack)
+                || stack?.Definition == null
+                || !stack.Definition.IsBowAmmo)
+            {
+                return false;
+            }
+
+            consumedDefinition = stack.Definition;
+
+            if (stack.Quantity > amount)
+            {
+                stack.Quantity -= amount;
+                return true;
+            }
+
+            if (stack.Quantity < amount)
+                return false;
+
+            _equipment.Remove(EquipmentSlot.OffHand);
+            TryPromoteNextArrowStack();
+            return true;
+        }
+
+        /// <summary>Equips the next carried bow-ammo stack into off-hand (inventory sort order).</summary>
+        public void TryPromoteNextArrowStack()
+        {
+            InventoryManager inv = GetComponent<InventoryManager>();
+            if (inv == null)
+            {
+                BowRangedCombatService.LogNoArrowsRemaining();
+                return;
+            }
+
+            var candidates = new List<ItemInstance>();
+            foreach (ItemInstance inst in inv.CarriedItems)
+            {
+                if (inst?.Definition != null && inst.Definition.IsBowAmmo && inst.Quantity > 0)
+                    candidates.Add(inst);
+            }
+
+            if (candidates.Count == 0)
+            {
+                BowRangedCombatService.LogNoArrowsRemaining();
+                return;
+            }
+
+            InventoryCarriedSorter.SortInPlace(candidates);
+            EquipItem(EquipmentSlot.OffHand, candidates[0]);
+            BowRangedCombatService.LogPromotedAmmo(candidates[0].Definition, candidates[0].Quantity);
+        }
+
+        /// <summary>Ensures off-hand has ammo when possible (for Aim key).</summary>
+        public void TryEnsureDefaultAmmoEquipped()
+        {
+            if (GetEquippedInstance(EquipmentSlot.OffHand) is { Quantity: > 0 } existing
+                && existing.Definition?.IsBowAmmo == true)
+            {
+                return;
+            }
+
+            TryPromoteNextArrowStack();
         }
 
         /// <summary>Moves equipped item back to this actor&apos;s carried list if weight allows.</summary>
@@ -102,6 +198,13 @@ namespace JRogue.Manager.Equipment
 
             if (!_equipment.TryGetValue(slot, out ItemInstance inst) || inst?.Definition == null)
                 return false;
+
+            if (slot == EquipmentSlot.MainHand && inst.Definition.IsBowWeapon)
+            {
+                ItemInstance off = GetEquippedInstance(EquipmentSlot.OffHand);
+                if (off?.Definition != null && off.Definition.IsBowAmmo)
+                    TryUnequipToBag(EquipmentSlot.OffHand);
+            }
 
             if (!inv.CanCarry(inst))
             {

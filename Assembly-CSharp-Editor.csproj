@@ -56,6 +56,7 @@
     <Compile Include="Assets/Editor/Inventory/ThrowingKnifeSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Traps/TrapAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioSampleSceneBootstrap.cs" />
+    <Compile Include="Assets/Editor/Inventory/BowSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Inventory/FireballScrollSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioAssetPackCreator.cs" />
   </ItemGroup>

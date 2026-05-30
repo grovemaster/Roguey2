@@ -96,6 +96,20 @@ namespace JRogue.Item
         [Tooltip("Conflict when actor has any of these bits, unless masked by essence exclusion bypass.")]
         public BodyCapabilityFlags equipExcludesActorFlags = BodyCapabilityFlags.None;
 
+        [Header("Weapon / ammo (ranged)")]
+        public WeaponType weaponType;
+        [Min(1)] public int handsRequired = 1;
+        [Tooltip("Missile ammo that may only be used or equipped with a bow.")]
+        public bool requiresBow;
+        [Tooltip("When false, item cannot be thrown from inventory (e.g. arrows).")]
+        public bool isThrowable = true;
+
+        public bool IsBowWeapon =>
+            category == ItemCategory.Weapon && weaponType == WeaponType.Bow;
+
+        public bool IsBowAmmo =>
+            category == ItemCategory.Missile && requiresBow;
+
         [Header("Combat Modules")]
         // Support for multi-damage (e.g. 5 Blunt + 2 Fire)
         public List<DamageEntry> damageModules = new List<DamageEntry>();

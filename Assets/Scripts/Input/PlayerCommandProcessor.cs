@@ -16,6 +16,7 @@ using JRogue.Racial;
 using JRogue.Hazards;
 using JRogue.Traps;
 using JRogue.Interactables;
+using JRogue.Combat;
 using JRogue.Service.Formation;
 using JRogue.UI.Gameplay;
 using JRogue.Stats;
@@ -40,6 +41,8 @@ namespace JRogue.Input
             public BaseActor InventoryOwner;
             public int InventoryResumeSelectionIndex;
             public string InventoryLogTag;
+            public ItemInstance BowRestoreOffHandInstance;
+            public int BowInventoryResumeIndex;
         }
 
         private InputState currentState = InputState.Normal;
@@ -58,6 +61,14 @@ namespace JRogue.Input
             currentState == InputState.Targeting
             && pendingTargetedAbility.HasValue
             && pendingTargetedAbility.Value.Source == PlayerAbilitySource.InventoryItem;
+
+        public bool IsPendingBowAim =>
+            currentState == InputState.Targeting
+            && pendingTargetedAbility.HasValue
+            && pendingTargetedAbility.Value.Source == PlayerAbilitySource.BowAim;
+
+        public bool IsPendingBowOrInventoryTargeting =>
+            IsPendingInventoryTargetedUse || IsPendingBowAim;
 
         public void SetReticleView(TargetingReticleView view) => reticleView = view;
 
@@ -100,6 +111,51 @@ namespace JRogue.Input
             return true;
         }
 
+        /// <summary>Begin bow targeting. Optional restore instance for invoke-arrow cancel.</summary>
+        public bool TryBeginBowAim(
+            BaseActor activeMember,
+            ItemInstance restoreOffHandOnCancel = null,
+            int inventoryResumeIndex = -1)
+        {
+            if (activeMember == null)
+                return false;
+
+            EnsureManagers();
+
+            if (currentState == InputState.Targeting)
+                return false;
+
+            if (!turnManager.CanActorTakeAction(activeMember.gameObject))
+                return false;
+
+            if (!BowRangedCombatService.HasBowEquipped(activeMember))
+            {
+                Debug.Log("[Bow] Cannot aim: no bow equipped.");
+                return false;
+            }
+
+            EquipmentManager equip = activeMember.GetComponent<EquipmentManager>();
+            equip?.TryEnsureDefaultAmmoEquipped();
+
+            if (!BowRangedCombatService.HasAnyArrowAvailable(activeMember))
+            {
+                Debug.Log("[Bow] Cannot shoot: no arrows.");
+                return false;
+            }
+
+            currentState = InputState.Targeting;
+            pendingTargetedAbility = new PendingTargetedAbility
+            {
+                Source = PlayerAbilitySource.BowAim,
+                BowRestoreOffHandInstance = restoreOffHandOnCancel,
+                BowInventoryResumeIndex = inventoryResumeIndex,
+            };
+
+            Debug.Log("[Bow] Aim started; targeting active.");
+            reticleView?.Show(activeMember.GridPosition);
+            return true;
+        }
+
         /// <summary>
         /// Returns false when the command is ignored (wrong turn, invalid context, no-op move, etc.).
         /// Party swap matches legacy input and is accepted regardless of turn phase.
@@ -126,6 +182,8 @@ namespace JRogue.Input
                     return ApplySwapPartyMember(command.PartyMemberIndex);
                 case PlayerCommandKind.PickupFloorItems:
                     return ApplyPickupFloorItems();
+                case PlayerCommandKind.AimBow:
+                    return ApplyAimBow();
                 default:
                     return false;
             }
@@ -392,6 +450,8 @@ namespace JRogue.Input
                     && mageSpells.TryExecuteEquipped(pending.SlotIndex, activeMember.gameObject, target),
                 PlayerAbilitySource.InventoryItem =>
                     TryExecuteInventoryItemTargetedUse(pending, activeMember, target),
+                PlayerAbilitySource.BowAim =>
+                    BowRangedCombatService.TryExecuteBowShot(activeMember, target, 1),
                 _ => false,
             };
 
@@ -414,31 +474,85 @@ namespace JRogue.Input
             return true;
         }
 
+        bool ApplyAimBow()
+        {
+            EnsureManagers();
+            BaseActor activeMember = partyManager.GetActiveMember();
+            if (activeMember == null)
+                return false;
+
+            return TryBeginBowAim(activeMember);
+        }
+
+        static void RestoreBowOffHandAfterCancel(BaseActor actor, PendingTargetedAbility pending)
+        {
+            if (actor == null || pending.BowRestoreOffHandInstance == null)
+                return;
+
+            EquipmentManager equip = actor.GetComponent<EquipmentManager>();
+            if (equip == null)
+                return;
+
+            ItemInstance restore = pending.BowRestoreOffHandInstance;
+            ItemInstance current = equip.GetEquippedInstance(EquipmentSlot.OffHand);
+            if (current != null && current.Id == restore.Id)
+                return;
+
+            if (current != null)
+                equip.TryUnequipToBag(EquipmentSlot.OffHand);
+
+            InventoryManager inv = actor.GetComponent<InventoryManager>();
+            if (inv == null)
+                return;
+
+            foreach (ItemInstance c in inv.CarriedItems)
+            {
+                if (c != null && c.Id == restore.Id)
+                {
+                    equip.EquipItem(EquipmentSlot.OffHand, restore);
+                    return;
+                }
+            }
+        }
+
         private bool ApplyCancelTarget()
         {
             if (currentState != InputState.Targeting) return false;
 
-            if (pendingTargetedAbility.HasValue
-                && pendingTargetedAbility.Value.Source == PlayerAbilitySource.InventoryItem)
+            EnsureManagers();
+            BaseActor activeMember = partyManager.GetActiveMember();
+
+            if (pendingTargetedAbility.HasValue)
             {
                 PendingTargetedAbility pending = pendingTargetedAbility.Value;
-                if (inventoryTargetedUseCancelCallback != null)
+
+                if (pending.Source == PlayerAbilitySource.InventoryItem)
                 {
-                    inventoryTargetedUseCancelCallback.Invoke(pending.InventoryResumeSelectionIndex);
-                    InventoryTargetedUseLog.Log(
-                        pending.InventoryLogTag,
-                        "Cancelled; item retained; inventory reopened; selection restored.");
+                    if (inventoryTargetedUseCancelCallback != null)
+                    {
+                        inventoryTargetedUseCancelCallback.Invoke(pending.InventoryResumeSelectionIndex);
+                        InventoryTargetedUseLog.Log(
+                            pending.InventoryLogTag,
+                            "Cancelled; item retained; inventory reopened; selection restored.");
+                    }
+                    else
+                    {
+                        InventoryTargetedUseLog.LogWarning(
+                            pending.InventoryLogTag,
+                            "Cancel with no pending scroll state.");
+                    }
+                }
+                else if (pending.Source == PlayerAbilitySource.BowAim)
+                {
+                    RestoreBowOffHandAfterCancel(activeMember, pending);
+                    if (pending.BowInventoryResumeIndex >= 0 && inventoryTargetedUseCancelCallback != null)
+                        inventoryTargetedUseCancelCallback.Invoke(pending.BowInventoryResumeIndex);
+                    Debug.Log("[Bow] Aim cancelled; no arrow consumed.");
                 }
                 else
                 {
-                    InventoryTargetedUseLog.LogWarning(
-                        pending.InventoryLogTag,
-                        "Cancel with no pending scroll state.");
+                    Debug.Log("Targeted Ability Cancelled.");
                 }
-            }
-            else
-            {
-                Debug.Log("Targeted Ability Cancelled.");
             }
 
             ExitTargetingMode();

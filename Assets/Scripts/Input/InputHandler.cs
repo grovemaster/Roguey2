@@ -15,6 +15,7 @@ namespace JRogue.Input
         private GameControls controls;
         private InputAction toggleInventoryAction;
         private InputAction pickupFloorItemsAction;
+        private InputAction aimBowAction;
         private readonly PlayerCommandProcessor commandProcessor = new PlayerCommandProcessor();
 
         public PlayerCommandProcessor CommandProcessor => commandProcessor;
@@ -79,6 +80,21 @@ namespace JRogue.Input
                 pickupFloorItemsAction.performed += OnPickupFloorItemsPerformed;
             }
 
+            aimBowAction = playerInput != null
+                ? playerInput.actions.FindAction("AimBow", throwIfNotFound: false)
+                : null;
+
+            if (aimBowAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>AimBow</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (binding <Keyboard>/a).");
+            }
+            else
+            {
+                aimBowAction.performed += OnAimBowPerformed;
+            }
+
             FloorPickupHudButton.EnsureInstance();
         }
 
@@ -97,6 +113,12 @@ namespace JRogue.Input
             {
                 pickupFloorItemsAction.performed -= OnPickupFloorItemsPerformed;
                 pickupFloorItemsAction = null;
+            }
+
+            if (aimBowAction != null)
+            {
+                aimBowAction.performed -= OnAimBowPerformed;
+                aimBowAction = null;
             }
 
             controls?.Dispose();
@@ -125,11 +147,31 @@ namespace JRogue.Input
             if (InventoryUI.IsOpenInSearchFocus())
                 return;
 
-            if (commandProcessor.IsPendingInventoryTargetedUse)
+            if (commandProcessor.IsPendingBowOrInventoryTargeting)
                 return;
 
             InventoryUI.TogglePanelFromGameplayInput();
         }
+
+        void OnAimBowPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            if (InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
+                || TrapConfirmDialogUI.BlocksGameplay
+                || HazardConfirmDialogUI.BlocksGameplay
+                || FloorPickupMenuUI.BlocksGameplay)
+                return;
+
+            commandProcessor.TryApply(PlayerCommand.AimBow());
+        }
+
+        public bool TryBeginBowAim(
+            BaseActor activeMember,
+            ItemInstance restoreOffHandOnCancel,
+            int inventoryResumeIndex) =>
+            commandProcessor.TryBeginBowAim(activeMember, restoreOffHandOnCancel, inventoryResumeIndex);
 
         public bool TryBeginInventoryTargetedUse(
             BaseActor activeMember,
