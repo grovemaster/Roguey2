@@ -15,7 +15,7 @@ namespace JRogue.Interactables
             BaseActor bumper,
             InteractableActivationSource source)
         {
-            DoorService.Instance?.Open(doorId);
+            DoorService.Instance?.TryOpen(doorId);
         }
     }
 }

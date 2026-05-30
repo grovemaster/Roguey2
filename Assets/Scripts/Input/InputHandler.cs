@@ -18,6 +18,8 @@ namespace JRogue.Input
         private InputAction pickupFloorItemsAction;
         private InputAction aimBowAction;
         private InputAction restAction;
+        private InputAction openDoorAction;
+        private InputAction closeDoorAction;
         private readonly PlayerCommandProcessor commandProcessor = new PlayerCommandProcessor();
 
         public PlayerCommandProcessor CommandProcessor => commandProcessor;
@@ -112,6 +114,34 @@ namespace JRogue.Input
                 restAction.performed += OnRestPerformed;
             }
 
+            openDoorAction = playerInput != null
+                ? playerInput.actions.FindAction("OpenDoor", throwIfNotFound: false)
+                : null;
+            if (openDoorAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>OpenDoor</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (binding <Keyboard>/o).");
+            }
+            else
+            {
+                openDoorAction.performed += OnOpenDoorPerformed;
+            }
+
+            closeDoorAction = playerInput != null
+                ? playerInput.actions.FindAction("CloseDoor", throwIfNotFound: false)
+                : null;
+            if (closeDoorAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>CloseDoor</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (binding <Keyboard>/c).");
+            }
+            else
+            {
+                closeDoorAction.performed += OnCloseDoorPerformed;
+            }
+
             FloorPickupHudButton.EnsureInstance();
         }
 
@@ -142,6 +172,18 @@ namespace JRogue.Input
             {
                 restAction.performed -= OnRestPerformed;
                 restAction = null;
+            }
+
+            if (openDoorAction != null)
+            {
+                openDoorAction.performed -= OnOpenDoorPerformed;
+                openDoorAction = null;
+            }
+
+            if (closeDoorAction != null)
+            {
+                closeDoorAction.performed -= OnCloseDoorPerformed;
+                closeDoorAction = null;
             }
 
             controls?.Dispose();
@@ -182,6 +224,22 @@ namespace JRogue.Input
                 return;
 
             commandProcessor.TryApply(PlayerCommand.AimBow());
+        }
+
+        void OnOpenDoorPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed || BlocksFloorGameplay())
+                return;
+
+            commandProcessor.TryApply(PlayerCommand.OpenDoor());
+        }
+
+        void OnCloseDoorPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed || BlocksFloorGameplay())
+                return;
+
+            commandProcessor.TryApply(PlayerCommand.CloseDoor());
         }
 
         public bool TryBeginBowAim(

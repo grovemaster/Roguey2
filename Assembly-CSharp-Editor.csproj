@@ -61,6 +61,7 @@
     <Compile Include="Assets/Editor/Lighting/LightingScenarioSampleSceneBootstrap.cs" />
     <Compile Include="Assets/Editor/Inventory/BowSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Inventory/FireballScrollSampleSceneSetup.cs" />
+    <Compile Include="Assets/Editor/Doors/DoorPackEditor.cs" />
     <Compile Include="Assets/Editor/Inventory/EvocableItemPackEditor.cs" />
     <Compile Include="Assets/Editor/Targeting/SplashZoneAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioAssetPackCreator.cs" />

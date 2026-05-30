@@ -6,7 +6,7 @@
 
 **Related:** `GrantPartyExperienceAbility`, `FormationRushService`.
 
-**Explicitly out of scope (v0):** Toggle-off levers, walk-on pressure plates, multiplayer sync, save/load interactable state (nice-to-have later), full door system implementation (stub only for “open door” effect).
+**Explicitly out of scope (v0):** Toggle-off levers, walk-on pressure plates, multiplayer sync, save/load interactable state (nice-to-have later). **Doors** are specified in [Door requirements](../World/Door-Requirements.md) (`DoorService`, keys, bump-open; levers use `OpenDoorEffect` / `UnlockDoorEffect`).
 
 ---
 
@@ -343,7 +343,7 @@ Author four assets + instances at assigned cells (designer-placed).
 | Lever 1–4 definitions + SampleScene | **Done** — assets under `Assets/Data/Interactables/` + `PlacementSets/SampleScene_Levers.asset` |
 | `TryMove` bump integration | **Done** — `BaseActor`, `PlayerCommandProcessor`, `FormationRushService` |
 | Lever sprites | **Placeholder** (colored 32×32); §12 art **awaiting approval** |
-| Door open effect | **Stub** (`DoorService`) |
+| Door open / unlock effects | **Done** — [Door requirements](../World/Door-Requirements.md) |
 | Status / stat buff effects | **Future** |
 
 ---

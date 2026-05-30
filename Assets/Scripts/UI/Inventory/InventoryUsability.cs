@@ -1,8 +1,11 @@
 using JRogue.Combat;
+using JRogue.Actors;
 using JRogue.Item;
+using JRogue.Manager.Door;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
 using JRogue.Stats;
+using UnityEngine;
 
 namespace JRogue.UI.Inventory
 {
@@ -58,6 +61,17 @@ namespace JRogue.UI.Inventory
                     return row.Owner != null &&
                            InventoryPolicy.CanUseCarriedFromAlly(row.Owner, row.Owner, itemEquippedElsewhere: false);
 
+                case ItemCategory.Key:
+                    if (row.IsEquipped || row.Owner == null)
+                        return false;
+                    if (row.Item is not DoorKeyItemData key || string.IsNullOrEmpty(key.targetDoorId))
+                        return false;
+                    if (!TryFindAdjacentLockedDoor(row.Owner, key.targetDoorId))
+                        return false;
+                    if (!inCombat)
+                        return true;
+                    return InventoryPolicy.CanUseCarriedFromAlly(row.Owner, row.Owner, itemEquippedElsewhere: false);
+
                 case ItemCategory.Evocable:
                     if (row.IsEquipped)
                         return false;
@@ -75,6 +89,25 @@ namespace JRogue.UI.Inventory
                         return false;
                     return !row.IsEquipped && row.Owner != null;
             }
+        }
+
+        static bool TryFindAdjacentLockedDoor(BaseActor owner, string doorId)
+        {
+            DoorService doors = DoorService.Instance;
+            if (doors == null || owner == null)
+                return false;
+
+            Vector3Int[] ortho = { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+            for (int i = 0; i < ortho.Length; i++)
+            {
+                if (!doors.TryGetAtCell(owner.GridPosition + ortho[i], out DoorInstance door))
+                    continue;
+
+                if (door.DoorId == doorId && !door.IsUnlocked)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

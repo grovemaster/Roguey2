@@ -1,3 +1,4 @@
+using JRogue.Data.Door;
 using UnityEngine;
 
 namespace JRogue.Data.Enemy
@@ -19,5 +20,8 @@ namespace JRogue.Data.Enemy
         [Header("Soul Power")]
         [Tooltip("Regen rate per enemy turn. < 0 uses global default (0.5).")]
         public float soulPowerRegenRate = -1f;
+
+        [Header("Doors")]
+        public EnemyDoorCapability doorCapability;
     }
 }

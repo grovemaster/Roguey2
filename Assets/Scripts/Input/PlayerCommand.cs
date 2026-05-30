@@ -29,6 +29,8 @@ namespace JRogue.Input
         SwapPartyMember,
         PickupFloorItems,
         AimBow,
+        OpenDoor,
+        CloseDoor,
     }
 
     /// <summary>
@@ -86,5 +88,11 @@ namespace JRogue.Input
 
         public static PlayerCommand AimBow() =>
             new PlayerCommand { Kind = PlayerCommandKind.AimBow };
+
+        public static PlayerCommand OpenDoor() =>
+            new PlayerCommand { Kind = PlayerCommandKind.OpenDoor };
+
+        public static PlayerCommand CloseDoor() =>
+            new PlayerCommand { Kind = PlayerCommandKind.CloseDoor };
     }
 }

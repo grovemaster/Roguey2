@@ -131,6 +131,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "OpenDoor",
+                    "type": "Button",
+                    "id": "d0e1f2a3-b4c5-6789-d0e1-f2a3b4c5d6e7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CloseDoor",
+                    "type": "Button",
+                    "id": "e1f2a3b4-c5d6-7890-e1f2-a3b4c5d6e7f8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1088,6 +1106,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Rest",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f1a2b3c4-d5e6-7890-f1a2-b3c4d5e6f7a8",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenDoor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a2b3c4d5-e6f7-8901-a2b3-c4d5e6f7a8b9",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CloseDoor",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

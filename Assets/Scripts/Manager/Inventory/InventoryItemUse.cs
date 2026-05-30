@@ -3,6 +3,7 @@ using JRogue.Actors;
 using JRogue.Combat;
 using JRogue.Item;
 using JRogue.Manager.Equipment;
+using JRogue.Manager.Door;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.UI.Inventory;
@@ -23,6 +24,9 @@ namespace JRogue.Manager.Inventory
 
             if (row.Item.IsBowAmmo)
                 return TryUseBowArrow(row, inCombat);
+
+            if (row.Item is DoorKeyItemData doorKey)
+                return TryUseDoorKey(row, inCombat, doorKey);
 
             if (row.Item is EvocableItemData evocableDef)
                 return TryUseEvocable(row, inCombat, evocableDef);
@@ -149,6 +153,69 @@ namespace JRogue.Manager.Inventory
 
             PartyPlayerActionCompletion.CompleteActiveMemberAction(activeMember);
             return InventoryUseResult.Consumed();
+        }
+
+        static InventoryUseResult TryUseDoorKey(InventoryViewModel.Row row, bool inCombat, DoorKeyItemData keyData)
+        {
+            if (row.Owner == null || row.Instance == null || string.IsNullOrEmpty(keyData.targetDoorId))
+                return InventoryUseResult.Fail("Invalid key.");
+
+            DoorService doors = DoorService.Instance;
+            if (doors == null)
+                return InventoryUseResult.Fail("No door service.");
+
+            if (!TryFindAdjacentDoorForKey(row.Owner, keyData.targetDoorId, out DoorInstance door))
+            {
+                Debug.Log($"{DoorService.LogPrefix} No matching locked door adjacent.");
+                return InventoryUseResult.Fail("No matching locked door nearby.");
+            }
+
+            if (door.IsUnlocked)
+                return InventoryUseResult.Fail("That door is already unlocked.");
+
+            TurnManager turnManager = TurnManager.Instance;
+            if (turnManager == null || turnManager.currentState != GameState.PLAYER_TURN)
+                return InventoryUseResult.Fail("Not your turn.");
+
+            PartyManager party = PartyManager.Instance;
+            BaseActor activeMember = party != null ? party.GetActiveMember() : null;
+            if (activeMember == null || !turnManager.CanActorTakeAction(activeMember.gameObject))
+                return InventoryUseResult.Fail("Already acted this turn.");
+
+            if (!doors.Unlock(keyData.targetDoorId, $"key:{keyData.itemName}"))
+                return InventoryUseResult.Fail("The key does not fit.");
+
+            InventoryManager inventory = row.Owner.GetComponent<InventoryManager>();
+            if (inventory != null)
+                inventory.TryRemoveCarried(row.Instance);
+
+            Debug.Log($"{DoorService.LogPrefix} Key consumed for '{keyData.targetDoorId}'.");
+            DoorPlayerInteraction.CompletePlayerDoorAction(activeMember);
+            return InventoryUseResult.Consumed();
+        }
+
+        static bool TryFindAdjacentDoorForKey(BaseActor owner, string doorId, out DoorInstance found)
+        {
+            found = null;
+            DoorService doors = DoorService.Instance;
+            if (doors == null || owner == null)
+                return false;
+
+            Vector3Int[] ortho = { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+            for (int i = 0; i < ortho.Length; i++)
+            {
+                Vector3Int cell = owner.GridPosition + ortho[i];
+                if (!doors.TryGetAtCell(cell, out DoorInstance door))
+                    continue;
+
+                if (door.DoorId != doorId)
+                    continue;
+
+                found = door;
+                return true;
+            }
+
+            return false;
         }
 
         static InventoryUseResult TryUseBowArrow(InventoryViewModel.Row row, bool inCombat)

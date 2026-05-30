@@ -1,3 +1,4 @@
+using JRogue.Manager.Door;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,12 +13,14 @@ namespace JRogue.Manager.Map
         [SerializeField] private Tilemap hazardOverlayMap;
         [SerializeField] private Tilemap interactableOverlayMap;
         [SerializeField] private Tilemap trapOverlayMap;
+        [SerializeField] private Tilemap doorOverlayMap;
 
         public Tilemap FloorMap => floorMap;
         public Tilemap WallMap => wallMap;
         public Tilemap HazardOverlayMap => hazardOverlayMap;
         public Tilemap InteractableOverlayMap => interactableOverlayMap;
         public Tilemap TrapOverlayMap => trapOverlayMap;
+        public Tilemap DoorOverlayMap => doorOverlayMap;
 
         private void Awake()
         {
@@ -27,19 +30,27 @@ namespace JRogue.Manager.Map
 
         public bool IsCellBlocked(Vector3Int gridPos)
         {
-            // 1. Check if the tile exists in the Wall layer
-            if (wallMap.HasTile(gridPos)) return true;
+            if (DoorService.Instance != null && DoorService.Instance.BlocksMovement(gridPos))
+                return true;
 
-            // 2. Check if the floor tile is missing (the "void")
-            if (!floorMap.HasTile(gridPos)) return true;
+            if (wallMap.HasTile(gridPos))
+                return true;
+
+            if (!floorMap.HasTile(gridPos))
+                return true;
 
             return false;
         }
 
         public bool IsWalkable(Vector3Int gridPos)
         {
-            // Check: Must have a floor AND NOT have a wall
-            return floorMap.HasTile(gridPos) && !wallMap.HasTile(gridPos);
+            if (!floorMap.HasTile(gridPos))
+                return false;
+
+            if (DoorService.Instance != null && DoorService.Instance.BlocksMovement(gridPos))
+                return false;
+
+            return !wallMap.HasTile(gridPos);
         }
 
         public bool IsWall(Vector3Int gridPos)

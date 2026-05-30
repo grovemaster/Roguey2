@@ -9,6 +9,7 @@ using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.Hazards;
 using JRogue.Interactables;
+using JRogue.Manager.Door;
 using JRogue.Service.Sensing;
 using JRogue.Status;
 using JRogue.Stats;
@@ -172,6 +173,20 @@ namespace JRogue.Actors
             }
 
             Vector3Int targetPos = newAnchor;
+
+            if (!gameObject.CompareTag("Player")
+                && EnemyDoorInteraction.TryInteractBeforeMove(this, targetPos))
+            {
+                return true;
+            }
+
+            if (gameObject.CompareTag("Player"))
+            {
+                DoorPlayerActionResult doorResult =
+                    DoorPlayerInteraction.TryBumpOpenAndMove(this, targetPos);
+                if (doorResult != DoorPlayerActionResult.NotHandled)
+                    return doorResult == DoorPlayerActionResult.Succeeded;
+            }
 
             if (TryInteractableBump(targetPos))
                 return true;

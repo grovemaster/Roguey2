@@ -217,6 +217,24 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenDoor"",
+                    ""type"": ""Button"",
+                    ""id"": ""d0e1f2a3-b4c5-6789-d0e1-f2a3b4c5d6e7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CloseDoor"",
+                    ""type"": ""Button"",
+                    ""id"": ""e1f2a3b4-c5d6-7890-e1f2-a3b4c5d6e7f8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1179,6 +1197,28 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""f1a2b3c4-d5e6-7890-f1a2-b3c4d5e6f7a8"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenDoor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a2b3c4d5-e6f7-8901-a2b3-c4d5e6f7a8b9"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CloseDoor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""39b0a372-2fbe-432d-8917-e1874907e5f6"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
@@ -1330,6 +1370,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_ToggleInventory = m_Player.FindAction("ToggleInventory", throwIfNotFound: true);
         m_Player_PickupFloorItems = m_Player.FindAction("PickupFloorItems", throwIfNotFound: true);
         m_Player_AimBow = m_Player.FindAction("AimBow", throwIfNotFound: true);
+        m_Player_OpenDoor = m_Player.FindAction("OpenDoor", throwIfNotFound: true);
+        m_Player_CloseDoor = m_Player.FindAction("CloseDoor", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -1424,6 +1466,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ToggleInventory;
     private readonly InputAction m_Player_PickupFloorItems;
     private readonly InputAction m_Player_AimBow;
+    private readonly InputAction m_Player_OpenDoor;
+    private readonly InputAction m_Player_CloseDoor;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1492,6 +1536,14 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @AimBow => m_Wrapper.m_Player_AimBow;
         /// <summary>
+        /// Provides access to the underlying input action "Player/OpenDoor".
+        /// </summary>
+        public InputAction @OpenDoor => m_Wrapper.m_Player_OpenDoor;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/CloseDoor".
+        /// </summary>
+        public InputAction @CloseDoor => m_Wrapper.m_Player_CloseDoor;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1559,6 +1611,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @AimBow.started += instance.OnAimBow;
             @AimBow.performed += instance.OnAimBow;
             @AimBow.canceled += instance.OnAimBow;
+            @OpenDoor.started += instance.OnOpenDoor;
+            @OpenDoor.performed += instance.OnOpenDoor;
+            @OpenDoor.canceled += instance.OnOpenDoor;
+            @CloseDoor.started += instance.OnCloseDoor;
+            @CloseDoor.performed += instance.OnCloseDoor;
+            @CloseDoor.canceled += instance.OnCloseDoor;
         }
 
         /// <summary>
@@ -1612,6 +1670,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @AimBow.started -= instance.OnAimBow;
             @AimBow.performed -= instance.OnAimBow;
             @AimBow.canceled -= instance.OnAimBow;
+            @OpenDoor.started -= instance.OnOpenDoor;
+            @OpenDoor.performed -= instance.OnOpenDoor;
+            @OpenDoor.canceled -= instance.OnOpenDoor;
+            @CloseDoor.started -= instance.OnCloseDoor;
+            @CloseDoor.performed -= instance.OnCloseDoor;
+            @CloseDoor.canceled -= instance.OnCloseDoor;
         }
 
         /// <summary>
@@ -1750,5 +1814,19 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAimBow(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "OpenDoor" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnOpenDoor(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CloseDoor" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCloseDoor(InputAction.CallbackContext context);
     }
 }

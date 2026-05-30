@@ -1099,6 +1099,66 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 960e205820254e85b5b773a88669a44a, type: 3}
+--- !u!1 &1164970272
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1164970275}
+  - component: {fileID: 1164970274}
+  - component: {fileID: 1164970273}
+  m_Layer: 0
+  m_Name: DoorService
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1164970273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1164970272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca71c418b7fa0c75484b1049c126d94b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Manager.Door.DoorTileBootstrap
+  placementSet: {fileID: 11400000, guid: e1462301b5490ca7e9e2adbcbce2dc57, type: 2}
+  placements: []
+--- !u!114 &1164970274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1164970272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49a7cf4e288fac83b1790d18eea4bfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Manager.Door.DoorService
+  doorOverlayMap: {fileID: 0}
+--- !u!4 &1164970275
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1164970272}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1255627952
 GameObject:
   m_ObjectHideFlags: 0
@@ -2003,6 +2063,7 @@ MonoBehaviour:
   hazardOverlayMap: {fileID: 1351202632}
   interactableOverlayMap: {fileID: 0}
   trapOverlayMap: {fileID: 0}
+  doorOverlayMap: {fileID: 0}
 --- !u!114 &1529000335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4188,7 +4249,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.data[1].id
@@ -4225,6 +4286,10 @@ PrefabInstance:
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.data[9].id
       value: b3b4cafa151f4791ad1a516d6ade8c6d
+      objectReference: {fileID: 0}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[10].id
+      value: 8f477b6073e8451aae1f306495f8f2d0
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.data[0].quantity
@@ -4264,6 +4329,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.data[9].quantity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[10].quantity
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
@@ -4323,6 +4392,14 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[10].definition
+      value: 
+      objectReference: {fileID: 11400000, guid: 42109267fc04a8be697a6c3d554809fa, type: 2}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[10].maxCharges
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.data[1].isAppraised
       value: 1
       objectReference: {fileID: 0}
@@ -4356,6 +4433,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.data[9].isAppraised
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[10].isAppraised
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
@@ -4404,6 +4485,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
       propertyPath: carriedItems.Array.data[9].storageLocation
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6938168416556288278, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+      propertyPath: carriedItems.Array.data[10].storageLocation
       value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -4472,3 +4557,4 @@ SceneRoots:
   - {fileID: 76984284}
   - {fileID: 1986568399}
   - {fileID: 951903496}
+  - {fileID: 1164970275}

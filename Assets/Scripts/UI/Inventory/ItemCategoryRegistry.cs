@@ -63,8 +63,9 @@ namespace JRogue.UI.Inventory
                 { ItemCategory.Relic, R(ItemCategory.Relic, "Relics", "l") },
                 { ItemCategory.Currency, R(ItemCategory.Currency, "Currency", "C") },
                 { ItemCategory.Junk, R(ItemCategory.Junk, "Junk", "J") },
+                { ItemCategory.Key, R(ItemCategory.Key, "Keys", "k") },
                 { ItemCategory.QuestItem, R(ItemCategory.QuestItem, "Quest", "Q") },
-                { ItemCategory.PlotItem, R(ItemCategory.PlotItem, "Plot / Key", "K") },
+                { ItemCategory.PlotItem, R(ItemCategory.PlotItem, "Plot", "p") },
             };
         }
 

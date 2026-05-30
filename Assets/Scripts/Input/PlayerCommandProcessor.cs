@@ -17,6 +17,7 @@ using JRogue.Hazards;
 using JRogue.Traps;
 using JRogue.Interactables;
 using JRogue.Combat;
+using JRogue.Manager.Door;
 using JRogue.Service.Formation;
 using JRogue.UI.Gameplay;
 using JRogue.Stats;
@@ -185,6 +186,10 @@ namespace JRogue.Input
                     return ApplyPickupFloorItems();
                 case PlayerCommandKind.AimBow:
                     return ApplyAimBow();
+                case PlayerCommandKind.OpenDoor:
+                    return ApplyOpenDoor();
+                case PlayerCommandKind.CloseDoor:
+                    return ApplyCloseDoor();
                 default:
                     return false;
             }
@@ -229,6 +234,10 @@ namespace JRogue.Input
 
             Vector3Int targetTile = activeMember.GridPosition + direction;
             Vector3Int oldPosition = activeMember.GridPosition;
+
+            DoorPlayerActionResult doorBump = DoorPlayerInteraction.TryBumpOpenAndMove(activeMember, targetTile);
+            if (doorBump != DoorPlayerActionResult.NotHandled)
+                return true;
 
             IBattleTarget occupant = gridManager.GetActorAt(targetTile);
 
@@ -483,6 +492,44 @@ namespace JRogue.Input
                 return false;
 
             return TryBeginBowAim(activeMember);
+        }
+
+        bool ApplyOpenDoor()
+        {
+            EnsureManagers();
+            if (currentState == InputState.Targeting)
+                return false;
+
+            BaseActor activeMember = partyManager.GetActiveMember();
+            if (activeMember == null)
+                return false;
+
+            if (!turnManager.CanActorTakeAction(activeMember.gameObject))
+            {
+                Debug.Log($"{activeMember.name} has already acted!");
+                return false;
+            }
+
+            return DoorPlayerInteraction.TryOpenAdjacent(activeMember) == DoorPlayerActionResult.Succeeded;
+        }
+
+        bool ApplyCloseDoor()
+        {
+            EnsureManagers();
+            if (currentState == InputState.Targeting)
+                return false;
+
+            BaseActor activeMember = partyManager.GetActiveMember();
+            if (activeMember == null)
+                return false;
+
+            if (!turnManager.CanActorTakeAction(activeMember.gameObject))
+            {
+                Debug.Log($"{activeMember.name} has already acted!");
+                return false;
+            }
+
+            return DoorPlayerInteraction.TryCloseAdjacent(activeMember) == DoorPlayerActionResult.Succeeded;
         }
 
         static void RestoreBowOffHandAfterCancel(BaseActor actor, PendingTargetedAbility pending)

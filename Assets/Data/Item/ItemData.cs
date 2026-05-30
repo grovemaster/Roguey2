@@ -38,7 +38,9 @@ namespace JRogue.Item
         Staff,
         Treasure,
         Wand,
-        Weapon
+        Weapon,
+        /// <summary>Must remain last — preserves serialized <c>category</c> ints on existing item assets.</summary>
+        Key,
     }
     public enum EquipmentSlot
     {
