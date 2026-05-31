@@ -157,6 +157,7 @@ namespace JRogue.World.Generation
                 systems.AddComponent<LightingBootstrap>();
                 systems.AddComponent<DungeonFloorInstanceManager>();
                 systems.AddComponent<DungeonFloorTestController>();
+                systems.AddComponent<PortalEntryService>();
             }
             else
             {
@@ -166,6 +167,8 @@ namespace JRogue.World.Generation
                     systems.AddComponent<LightingService>();
                 if (systems.GetComponent<LightingBootstrap>() == null)
                     systems.AddComponent<LightingBootstrap>();
+                if (systems.GetComponent<PortalEntryService>() == null)
+                    systems.AddComponent<PortalEntryService>();
             }
 
             if (party == null)

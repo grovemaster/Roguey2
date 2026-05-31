@@ -7,9 +7,9 @@ namespace JRogue.Core.Actor
     public static class GridFootprintUtility
     {
         /// <summary>
-        /// World offset from cell origin for 1×1 actors (1-unit cells → 0.75 along X and Y).
+        /// Inset from cell corner toward center (0.5 for 1-unit cells).
         /// </summary>
-        public const float SingleCellActorInsetRatio = 0.75f;
+        public const float SingleCellActorInsetRatio = 0.5f;
 
         public static bool IsSingleCell(IGridFootprint footprint) =>
             footprint != null && IsSingleCell(footprint.Layout, footprint.FootprintWidth, footprint.FootprintHeight);

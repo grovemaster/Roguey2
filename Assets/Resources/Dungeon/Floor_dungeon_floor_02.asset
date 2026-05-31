@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinition
   floorId: dungeon_floor_02
   layoutStamp: {fileID: 11400000, guid: 6a5678b5e437c699982cc2a7daeb7865, type: 2}
-  floorTile: {fileID: 11400000, guid: 76b8e898b74148f479eecb778c522cf8, type: 2}
-  wallTile: {fileID: 11400000, guid: a770cea7164a14f4cbe48a9b5e25548f, type: 2}
+  floorTile: {fileID: 11400000, guid: a770cea7164a14f4cbe48a9b5e25548f, type: 2}
+  wallTile: {fileID: 11400000, guid: 76b8e898b74148f479eecb778c522cf8, type: 2}
   playerSafeRadius: 5
   formationProfile: {fileID: 11400000, guid: bc9b8ea4cc7eebeef321ff560e79df53, type: 2}
   enemyPopulation:

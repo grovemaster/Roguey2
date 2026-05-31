@@ -62,6 +62,7 @@ namespace JRogue.World.Generation
             party.SnapHistoryToCurrentPositions();
             party.RefreshCameraFollow();
             party.InitializeRosterAfterDeferredSpawn();
+            PortalEntryService.Instance?.SubscribePartyMembers();
             return true;
         }
 

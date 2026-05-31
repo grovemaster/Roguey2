@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using JRogue.World.Generation;
 using UnityEngine;
 
@@ -41,6 +40,7 @@ namespace JRogue.World.Generation.Phases
 
                 context.Portals.Add(interactable);
                 context.Instance.RegisterPortal(interactable);
+                context.Instance.PlacePortalVisual(portalCell);
                 placed++;
             }
 

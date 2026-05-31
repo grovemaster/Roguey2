@@ -1,0 +1,10 @@
+Dungeon portal sprite (dungeon_portal_32.png)
+==========================================
+
+Source: OpenGameArt.org — "portal_0.png" (32×32)
+URL: https://opengameart.org/sites/default/files/portal_0.png
+
+License: Check the asset page on OpenGameArt.org for the author’s terms.
+Commonly CC0 or CC-BY on OGA; verify before shipping commercially.
+
+Imported for Roguey2 dungeon floor portal overlay (May 2026).

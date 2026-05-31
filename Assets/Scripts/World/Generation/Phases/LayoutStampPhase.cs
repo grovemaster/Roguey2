@@ -29,6 +29,13 @@ namespace JRogue.World.Generation.Phases
                 return;
             }
 
+            Debug.Log(
+                $"[TileDebug] LayoutStampPhase floorId={def.FloorId} " +
+                $"instanceFloorId={context.Instance?.FloorId} " +
+                $"mapFloorId={map.FloorMap?.GetInstanceID()} anchor={map.FloorMap?.tileAnchor} " +
+                $"instanceFloorMapId={context.Instance?.Tilemaps.FloorMap?.GetInstanceID()} " +
+                $"sameRef={ReferenceEquals(map.FloorMap, context.Instance?.Tilemaps.FloorMap)}");
+
             map.ConfigurePaintTiles(def.FloorTile, def.WallTile);
             map.PaintLayoutStamp(stamp);
             context.PlayerStart = stamp.PlayerStart;

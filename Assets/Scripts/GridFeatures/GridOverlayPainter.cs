@@ -34,7 +34,7 @@ namespace JRogue.GridFeatures
                 var runtimeTile = ScriptableObject.CreateInstance<Tile>();
                 runtimeTile.sprite = sprite;
                 overlayMap.SetTile(cell, runtimeTile);
-                overlayMap.SetTransformMatrix(cell, CreateCellFillMatrix(overlayMap, sprite));
+                overlayMap.SetTransformMatrix(cell, CreateCellFillMatrix(overlayMap, sprite, fillScale: 1f));
                 return;
             }
 
@@ -50,7 +50,11 @@ namespace JRogue.GridFeatures
             overlayMap.SetTile(cell, null);
         }
 
-        public static Matrix4x4 CreateCellFillMatrix(Tilemap overlayMap, Sprite sprite)
+        /// <summary>
+        /// Scales a sprite to exactly fill one grid cell. Works with <see cref="Tilemap.tileAnchor"/> at (0,0)
+        /// so neighboring cells share edges with no dark gaps.
+        /// </summary>
+        public static Matrix4x4 CreateCellFillMatrix(Tilemap overlayMap, Sprite sprite, float fillScale = 1f)
         {
             if (overlayMap == null || sprite == null)
                 return Matrix4x4.identity;
@@ -59,16 +63,31 @@ namespace JRogue.GridFeatures
             if (grid == null)
                 return Matrix4x4.identity;
 
-            float targetSize = grid.cellSize.x;
-            float spriteWorldSize = sprite.rect.width / sprite.pixelsPerUnit;
-            if (spriteWorldSize <= 0f || targetSize <= 0f)
+            Vector3 cellSize = grid.cellSize;
+            float targetW = cellSize.x * fillScale;
+            float targetH = cellSize.y * fillScale;
+            float spriteWorldW = sprite.rect.width / sprite.pixelsPerUnit;
+            float spriteWorldH = sprite.rect.height / sprite.pixelsPerUnit;
+            if (spriteWorldW <= 0f || spriteWorldH <= 0f || targetW <= 0f || targetH <= 0f)
                 return Matrix4x4.identity;
 
-            float scale = targetSize / spriteWorldSize;
-            if (Mathf.Abs(scale - 1f) < 0.001f)
+            float scaleX = targetW / spriteWorldW;
+            float scaleY = targetH / spriteWorldH;
+            if (Mathf.Abs(scaleX - 1f) < 0.001f && Mathf.Abs(scaleY - 1f) < 0.001f)
                 return Matrix4x4.identity;
 
-            return Matrix4x4.Scale(new Vector3(scale, scale, 1f));
+            Vector3 anchor = overlayMap.tileAnchor;
+            if (anchor.x == 0f && anchor.y == 0f)
+                return Matrix4x4.Scale(new Vector3(scaleX, scaleY, 1f));
+
+            // Center-anchored tilemaps: offset so scaled sprite still fills the cell.
+            float offsetX = cellSize.x * (0.5f - anchor.x) * (1f - scaleX);
+            float offsetY = cellSize.y * (0.5f - anchor.y) * (1f - scaleY);
+            return Matrix4x4.TRS(
+                new Vector3(offsetX, offsetY, 0f),
+                Quaternion.identity,
+                new Vector3(scaleX, scaleY, 1f));
         }
+
     }
 }

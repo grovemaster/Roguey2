@@ -28,8 +28,9 @@ namespace JRogue.Editor.World
         const string DataRoot = "Assets/Resources/Dungeon";
         const string SceneFolder = "Assets/Scenes/Dungeon";
         const string ScenePath = SceneFolder + "/DungeonFloorTest.unity";
-        const string FloorTilePath = "Assets/TileMaps/Scavengers_SpriteSheet_50.asset";
-        const string WallTilePath = "Assets/TileMaps/Scavengers_SpriteSheet_32.asset";
+        // Sprites use 32 PPU on UrbanTheme; paint with identity matrix (no per-cell scale).
+        const string FloorTilePath = "Assets/TileMaps/Scavengers_SpriteSheet_32.asset";
+        const string WallTilePath = "Assets/TileMaps/Scavengers_SpriteSheet_50.asset";
         const string EnemyPrefabPath = "Assets/Prefabs/Actor/Enemy/Enemy.prefab";
         const string BarbarianPrefabPath = "Assets/Prefabs/Actor/Race/BarbarianPlayer.prefab";
         const string HumanPrefabPath = "Assets/Prefabs/Actor/Race/HumanPlayer.prefab";
@@ -80,6 +81,9 @@ namespace JRogue.Editor.World
 
             if (systems.GetComponent<VisibilityManager>() == null)
                 systems.AddComponent<VisibilityManager>();
+
+            if (systems.GetComponent<PortalEntryService>() == null)
+                systems.AddComponent<PortalEntryService>();
 
             EnsureLightingOnSystems(systems);
             EnsureGameplayUiFromSampleScene(EditorSceneManager.GetActiveScene());
@@ -454,6 +458,7 @@ namespace JRogue.Editor.World
             turn.currentState = GameState.PLAYER_TURN;
             systems.AddComponent<AdjacentMapInteractableService>();
             systems.AddComponent<VisibilityManager>();
+            systems.AddComponent<PortalEntryService>();
             EnsureLightingOnSystems(systems);
 
             DungeonFloorInstanceManager floorManager = systems.AddComponent<DungeonFloorInstanceManager>();

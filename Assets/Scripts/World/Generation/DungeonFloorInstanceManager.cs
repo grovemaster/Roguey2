@@ -21,6 +21,7 @@ namespace JRogue.World.Generation
             new Dictionary<string, DungeonFloorInstance>();
 
         DungeonFloorInstance _activeFloor;
+        bool _portalTransitionInProgress;
 
         void Awake()
         {
@@ -55,12 +56,27 @@ namespace JRogue.World.Generation
             return TryActivateFloor(startFloorId, null, isFirstVisitSpawn: true);
         }
 
-        public bool TryTransitionPortal(string portalLinkId, string targetFloorId)
+        public bool TryTransitionPortal(string portalLinkId, string targetFloorId) =>
+            TryTransitionPortalForWholeParty(portalLinkId, targetFloorId);
+
+        /// <summary>
+        /// Step-on portal: teleports the full party to the target floor arrival anchor.
+        /// Individual member positions on the source floor are ignored.
+        /// </summary>
+        public bool TryTransitionPortalForWholeParty(string portalLinkId, string targetFloorId)
         {
-            if (string.IsNullOrEmpty(targetFloorId))
+            if (string.IsNullOrEmpty(targetFloorId) || _portalTransitionInProgress)
                 return false;
 
-            return TryActivateFloor(targetFloorId, portalLinkId, isFirstVisitSpawn: false);
+            _portalTransitionInProgress = true;
+            try
+            {
+                return TryActivateFloor(targetFloorId, portalLinkId, isFirstVisitSpawn: false);
+            }
+            finally
+            {
+                _portalTransitionInProgress = false;
+            }
         }
 
         public bool TryActivateFloor(string floorId, string portalLinkId, bool isFirstVisitSpawn)

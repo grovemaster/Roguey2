@@ -205,6 +205,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarInteractable.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPhase3SampleContent.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/PortalEntryService.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightCellData.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SpawnEnemyInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInspectPaneView.cs" />
@@ -302,6 +303,7 @@
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardMarker.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarManaStoneOffering.cs" />
     <Compile Include="Assets/Scripts/Combat/BowKitSampleSceneBootstrap.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonPortalVisuals.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommand.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotFilters.cs" />
     <Compile Include="Assets/Scripts/Testing/Essence/EssenceTestHarness.cs" />

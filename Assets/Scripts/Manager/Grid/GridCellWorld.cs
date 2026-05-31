@@ -11,9 +11,7 @@ namespace JRogue.Manager.Grid
     /// </summary>
     public static class GridCellWorld
     {
-        /// <summary>
-        /// Actor snap offset from the cell origin (corner). Matches <see cref="GridFootprintUtility.SingleCellActorInsetRatio"/>.
-        /// </summary>
+        /// <summary>Matches <see cref="GridFootprintUtility.SingleCellActorInsetRatio"/>.</summary>
         public const float SingleCellActorInsetRatio = GridFootprintUtility.SingleCellActorInsetRatio;
 
         public static Vector3 GetCellSize()
@@ -26,30 +24,46 @@ namespace JRogue.Manager.Grid
         public static Vector3 GetCellCenter(Vector3Int cell)
         {
             Tilemap floor = MapManager.Instance != null ? MapManager.Instance.FloorMap : null;
-            if (floor != null)
-                return floor.GetCellCenterWorld(cell);
-
-            Vector3 size = Vector3.one;
-            return new Vector3(
-                cell.x + size.x * 0.5f,
-                cell.y + size.y * 0.5f,
-                0f);
+            return GetCellCenter(floor, cell);
         }
 
-        static Vector3 GetActorInset(Vector3 cellSize) =>
-            new Vector3(
+        /// <summary>
+        /// Geometric cell center in world space. Uses the layout <see cref="Grid"/> when available;
+        /// with <see cref="Tilemap.tileAnchor"/> at (0,0), <see cref="Tilemap.GetCellCenterWorld"/>
+        /// tracks the anchor (cell corner), not the center.
+        /// </summary>
+        public static Vector3 GetCellCenter(Tilemap floor, Vector3Int cell)
+        {
+            if (floor == null)
+            {
+                Vector3 size = Vector3.one;
+                return new Vector3(
+                    cell.x + size.x * SingleCellActorInsetRatio,
+                    cell.y + size.y * SingleCellActorInsetRatio,
+                    0f);
+            }
+
+            UnityEngine.Grid grid = floor.layoutGrid;
+            if (grid != null)
+                return grid.GetCellCenterWorld(cell);
+
+            Vector3 cellSize = floor.cellSize;
+            return floor.CellToWorld(cell) + new Vector3(
                 cellSize.x * SingleCellActorInsetRatio,
                 cellSize.y * SingleCellActorInsetRatio,
-                0f);
+                cellSize.z * SingleCellActorInsetRatio);
+        }
 
         /// <summary>
-        /// World transform for a 1×1 actor on a floor tile (cell 16,10 → 16.75, 10.75 for 1-unit cells).
-        /// Uses cell origin + inset, not GetCellCenterWorld, to avoid tile-anchor double offsets.
+        /// World transform for a 1×1 actor (cell 16,10 → 16.5, 10.5 for 1-unit cells).
         /// </summary>
         public static Vector3 GetSingleCellActorPosition(Vector3Int cell)
         {
             Vector3 size = GetCellSize();
-            Vector3 inset = GetActorInset(size);
+            Vector3 inset = new Vector3(
+                size.x * SingleCellActorInsetRatio,
+                size.y * SingleCellActorInsetRatio,
+                0f);
 
             Tilemap floor = MapManager.Instance != null ? MapManager.Instance.FloorMap : null;
             if (floor != null)
@@ -75,16 +89,14 @@ namespace JRogue.Manager.Grid
         /// </summary>
         public static Vector3Int WorldToCellForSingleCellActor(Vector3 actorWorldPosition)
         {
-            Vector3 size = GetCellSize();
-            Vector3 inset = GetActorInset(size);
-
             Tilemap floor = MapManager.Instance != null ? MapManager.Instance.FloorMap : null;
             if (floor != null)
-                return floor.WorldToCell(actorWorldPosition - inset);
+                return floor.WorldToCell(actorWorldPosition);
 
+            Vector3 size = GetCellSize();
             return new Vector3Int(
-                Mathf.FloorToInt(actorWorldPosition.x - inset.x),
-                Mathf.FloorToInt(actorWorldPosition.y - inset.y),
+                Mathf.FloorToInt(actorWorldPosition.x - size.x * SingleCellActorInsetRatio),
+                Mathf.FloorToInt(actorWorldPosition.y - size.y * SingleCellActorInsetRatio),
                 0);
         }
     }
