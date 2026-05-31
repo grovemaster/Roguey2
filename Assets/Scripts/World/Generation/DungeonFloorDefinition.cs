@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using JRogue.Hazards;
 using JRogue.Interactables;
+using JRogue.Item;
 using JRogue.Spawn;
 using JRogue.Traps;
 using UnityEngine;
@@ -30,6 +31,7 @@ namespace JRogue.World.Generation
         [SerializeField] HazardPopulationEntry[] hazardPopulation = Array.Empty<HazardPopulationEntry>();
         [SerializeField] TrapPopulationEntry[] trapPopulation = Array.Empty<TrapPopulationEntry>();
         [SerializeField] InteractablePopulationEntry[] interactablePopulation = Array.Empty<InteractablePopulationEntry>();
+        [SerializeField] FloorItemPopulationEntry[] floorItemPopulation = Array.Empty<FloorItemPopulationEntry>();
         [SerializeField] List<DungeonPortalSpec> portals = new List<DungeonPortalSpec>();
         [SerializeField] List<EdgePortalSpec> edgePortals = new List<EdgePortalSpec>();
         [SerializeField] List<PortalArrivalBinding> arrivalBindings = new List<PortalArrivalBinding>();
@@ -50,6 +52,7 @@ namespace JRogue.World.Generation
         public IReadOnlyList<HazardPopulationEntry> HazardPopulation => hazardPopulation;
         public IReadOnlyList<TrapPopulationEntry> TrapPopulation => trapPopulation;
         public IReadOnlyList<InteractablePopulationEntry> InteractablePopulation => interactablePopulation;
+        public IReadOnlyList<FloorItemPopulationEntry> FloorItemPopulation => floorItemPopulation;
         public IReadOnlyList<DungeonPortalSpec> Portals => portals;
         public IReadOnlyList<EdgePortalSpec> EdgePortals => edgePortals;
         public IReadOnlyList<PortalArrivalBinding> ArrivalBindings => arrivalBindings;
@@ -128,6 +131,16 @@ namespace JRogue.World.Generation
         public InteractableTileDefinition definition;
         [Min(0)] public int minCount;
         [Min(0)] public int maxCount;
+    }
+
+    [Serializable]
+    public struct FloorItemPopulationEntry
+    {
+        public ItemData itemData;
+        [Min(0)] public int minCount;
+        [Min(0)] public int maxCount;
+        [Min(1)] public int minQuantity;
+        [Min(1)] public int maxQuantity;
     }
 
     [Serializable]

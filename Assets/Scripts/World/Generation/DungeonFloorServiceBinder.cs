@@ -1,6 +1,7 @@
 using JRogue.Hazards;
 using JRogue.Interactables;
 using JRogue.Manager.Door;
+using JRogue.Manager.Floor;
 using JRogue.Manager.Map;
 using JRogue.Traps;
 using UnityEngine.Tilemaps;
@@ -28,6 +29,9 @@ namespace JRogue.World.Generation
 
             if (InteractableTileService.Instance != null)
                 InteractableTileService.Instance.CaptureSnapshot(snapshot.interactables);
+
+            if (FloorItemPileService.Instance != null)
+                FloorItemPileService.Instance.CaptureSnapshot(snapshot.floorItems);
         }
 
         public static void BindActiveFloor(DungeonFloorInstance instance)
@@ -58,6 +62,12 @@ namespace JRogue.World.Generation
                 InteractableTileService.Instance.RestoreSnapshot(instance.FeatureSnapshot.interactables);
             }
 
+            if (FloorItemPileService.Instance != null)
+            {
+                FloorItemPileService.Instance.ClearAllPiles();
+                FloorItemPileService.Instance.RestoreSnapshot(instance.FeatureSnapshot.floorItems);
+            }
+
             if (DoorService.Instance != null)
                 DoorService.Instance.SetOverlayMap(maps.DoorOverlayMap);
 
@@ -70,6 +80,7 @@ namespace JRogue.World.Generation
             HazardService.Instance?.ClearAllRegistrations();
             TrapService.Instance?.ClearAllRegistrations();
             InteractableTileService.Instance?.ClearAllRegistrations();
+            FloorItemPileService.Instance?.ClearAllPiles();
         }
     }
 }

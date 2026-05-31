@@ -84,6 +84,21 @@ namespace JRogue.Tests.UnitTests.Loot
         }
 
         [Test]
+        public void PickupFloorItems_WithFormation_EndsPlayerTurnViaRush()
+        {
+            SetupParty(out PartyManager party, out PlayerCommandProcessor processor, out BaseActor leader, formationActive: true);
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
+
+            ItemData manual = CreateItem("Healing Potion", auto: false, confirm: false);
+            Vector3Int tile = leader.GridPosition;
+            FloorItemPileService.Instance.AddEntry(tile, new ItemInstance(manual));
+
+            Assert.IsTrue(processor.TryApply(PlayerCommand.PickupFloorItems()));
+            Assert.AreEqual(GameState.ENEMY_TURN, TurnManager.Instance.currentState);
+            Assert.IsFalse(processor.TryApply(PlayerCommand.MoveGrid(Vector3Int.right)));
+        }
+
+        [Test]
         public void PickupFloorItems_EmptyTile_DoesNotConsumeTurn()
         {
             SetupParty(out _, out PlayerCommandProcessor processor, out BaseActor leader);
@@ -125,7 +140,8 @@ namespace JRogue.Tests.UnitTests.Loot
         void SetupParty(
             out PartyManager party,
             out PlayerCommandProcessor processor,
-            out BaseActor leader)
+            out BaseActor leader,
+            bool formationActive = false)
         {
             InputTestSceneBuilder.SetupMapAndManagers(_created);
             EnsurePileService();
@@ -133,7 +149,7 @@ namespace JRogue.Tests.UnitTests.Loot
             party = InputTestSceneBuilder.CreatePartyWithTestActors(1, _created);
             leader = party.partyMembers[0];
             InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
-            InputTestSceneBuilder.SetPrivateField(party, "isFormationActive", false);
+            InputTestSceneBuilder.SetPrivateField(party, "isFormationActive", formationActive);
 
             processor = new PlayerCommandProcessor();
             TurnManager.Instance.currentState = GameState.PLAYER_TURN;

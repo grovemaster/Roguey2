@@ -38,7 +38,7 @@ namespace JRogue.Manager.Floor
             if (targets.Count <= PickupMenuThreshold)
             {
                 AttemptPickup(targets[0], picker);
-                turn.OnPlayerActionComplete(picker.gameObject);
+                PartyPlayerActionCompletion.CompleteActiveMemberAction(picker);
                 return true;
             }
 
@@ -49,7 +49,7 @@ namespace JRogue.Manager.Floor
                 pickedCount =>
                 {
                     if (pickedCount > 0)
-                        turn.OnPlayerActionComplete(picker.gameObject);
+                        PartyPlayerActionCompletion.CompleteActiveMemberAction(picker);
                 });
 
             return true;

@@ -463,6 +463,10 @@ namespace JRogue.Editor.World
                 "Assets/Resources/Hazards/EnvironmentalHazard_Lava.asset");
             var spike = AssetDatabase.LoadAssetAtPath<JRogue.Traps.TrapDefinition>(
                 "Assets/Data/Traps/TrapDefinition_Spike_Visible.asset");
+            var healingPotion = AssetDatabase.LoadAssetAtPath<JRogue.Item.ItemData>(
+                "Assets/Resources/Item/Potion/Potion_HealingPotion.asset");
+            var lever = AssetDatabase.LoadAssetAtPath<JRogue.Interactables.InteractableTileDefinition>(
+                "Assets/Data/Interactables/LeverSwitch_First.asset");
 
             ConfigureFloorV0b(
                 $"{DataRoot}/Floor_dungeon_floor_01.asset",
@@ -480,7 +484,13 @@ namespace JRogue.Editor.World
                 lavaMax: 4,
                 spike: spike,
                 spikeMin: 1,
-                spikeMax: 3);
+                spikeMax: 3,
+                healingPotion: healingPotion,
+                potionMin: 2,
+                potionMax: 4,
+                lever: lever,
+                leverMin: 1,
+                leverMax: 2);
 
             ConfigureFloorV0b(
                 $"{DataRoot}/Floor_dungeon_floor_02.asset",
@@ -492,7 +502,13 @@ namespace JRogue.Editor.World
                 lavaMax: 2,
                 spike: spike,
                 spikeMin: 1,
-                spikeMax: 2);
+                spikeMax: 2,
+                healingPotion: healingPotion,
+                potionMin: 1,
+                potionMax: 2,
+                lever: null,
+                leverMin: 0,
+                leverMax: 0);
         }
 
         static void ConfigureFloorV0b(
@@ -505,7 +521,13 @@ namespace JRogue.Editor.World
             int lavaMax,
             JRogue.Traps.TrapDefinition spike,
             int spikeMin,
-            int spikeMax)
+            int spikeMax,
+            JRogue.Item.ItemData healingPotion,
+            int potionMin,
+            int potionMax,
+            JRogue.Interactables.InteractableTileDefinition lever,
+            int leverMin,
+            int leverMax)
         {
             var def = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(path);
             if (def == null)
@@ -545,6 +567,28 @@ namespace JRogue.Editor.World
                 t.FindPropertyRelative("definition").objectReferenceValue = spike;
                 t.FindPropertyRelative("minCount").intValue = spikeMin;
                 t.FindPropertyRelative("maxCount").intValue = spikeMax;
+            }
+
+            SerializedProperty items = so.FindProperty("floorItemPopulation");
+            if (healingPotion != null && potionMax > 0)
+            {
+                items.arraySize = 1;
+                SerializedProperty item = items.GetArrayElementAtIndex(0);
+                item.FindPropertyRelative("itemData").objectReferenceValue = healingPotion;
+                item.FindPropertyRelative("minCount").intValue = potionMin;
+                item.FindPropertyRelative("maxCount").intValue = potionMax;
+                item.FindPropertyRelative("minQuantity").intValue = 1;
+                item.FindPropertyRelative("maxQuantity").intValue = 1;
+            }
+
+            SerializedProperty interactables = so.FindProperty("interactablePopulation");
+            if (lever != null && leverMax > 0)
+            {
+                interactables.arraySize = 1;
+                SerializedProperty interactable = interactables.GetArrayElementAtIndex(0);
+                interactable.FindPropertyRelative("definition").objectReferenceValue = lever;
+                interactable.FindPropertyRelative("minCount").intValue = leverMin;
+                interactable.FindPropertyRelative("maxCount").intValue = leverMax;
             }
 
             so.ApplyModifiedPropertiesWithoutUndo();

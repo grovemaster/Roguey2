@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using JRogue.Item;
 using JRogue.Item.World;
+using JRogue.Manager.Grid;
 using UnityEngine;
 
 namespace JRogue.Manager.Floor
@@ -171,7 +172,80 @@ namespace JRogue.Manager.Floor
         }
 
         public static Vector3 TileCenterWorld(Vector3Int tile) =>
-            new Vector3(tile.x + 0.5f, tile.y + 0.5f, 0f);
+            GridCellWorld.GetCellCenter(tile);
+
+        public void ClearAllPiles()
+        {
+            foreach (KeyValuePair<string, FloorItemWorldView> kv in _views)
+            {
+                if (kv.Value != null)
+                    Destroy(kv.Value.gameObject);
+            }
+
+            _views.Clear();
+            _piles.Clear();
+            Changed?.Invoke();
+        }
+
+        public void CaptureSnapshot(List<JRogue.World.Generation.FloorItemSnapshotEntry> dest)
+        {
+            if (dest == null)
+                return;
+
+            dest.Clear();
+            foreach (KeyValuePair<Vector3Int, List<FloorItemEntry>> kv in _piles)
+            {
+                List<FloorItemEntry> list = kv.Value;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    FloorItemEntry entry = list[i];
+                    if (entry?.instance?.Definition == null)
+                        continue;
+
+                    dest.Add(new JRogue.World.Generation.FloorItemSnapshotEntry
+                    {
+                        tile = kv.Key,
+                        entryId = entry.entryId,
+                        definition = entry.instance.Definition,
+                        quantity = entry.instance.Quantity,
+                        phasesRemaining = entry.phasesRemaining,
+                    });
+                }
+            }
+        }
+
+        public void RestoreSnapshot(IReadOnlyList<JRogue.World.Generation.FloorItemSnapshotEntry> src)
+        {
+            ClearAllPiles();
+            if (src == null)
+                return;
+
+            for (int i = 0; i < src.Count; i++)
+                RestoreSnapshotEntry(src[i]);
+        }
+
+        void RestoreSnapshotEntry(JRogue.World.Generation.FloorItemSnapshotEntry snap)
+        {
+            if (snap.definition == null || string.IsNullOrEmpty(snap.entryId))
+                return;
+
+            var instance = new ItemInstance(snap.entryId, snap.definition, snap.quantity);
+            if (!_piles.TryGetValue(snap.tile, out List<FloorItemEntry> list))
+            {
+                list = new List<FloorItemEntry>();
+                _piles[snap.tile] = list;
+            }
+
+            var entry = new FloorItemEntry
+            {
+                entryId = snap.entryId,
+                instance = instance,
+                phasesRemaining = snap.phasesRemaining,
+            };
+            list.Add(entry);
+            SpawnView(snap.tile, entry);
+            Changed?.Invoke();
+        }
 
         public void TickFloorItemLifetimes()
         {

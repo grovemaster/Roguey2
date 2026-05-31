@@ -32,6 +32,12 @@ MonoBehaviour:
     minCount: 1
     maxCount: 2
   interactablePopulation: []
+  floorItemPopulation:
+  - itemData: {fileID: 11400000, guid: 390da36adb5c41edb9ca22cae4e5872f, type: 2}
+    minCount: 1
+    maxCount: 2
+    minQuantity: 1
+    maxQuantity: 1
   portals:
   - portalLinkId: link_floor02_to_floor01
     targetFloorId: dungeon_floor_01

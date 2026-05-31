@@ -18,7 +18,8 @@ namespace JRogue.World.Generation.Phases
 
             lighting.SyncFloorReceiversFromMap();
             lighting.OnPartyVisionActivity();
-            DungeonGenerationLog.Phase(nameof(LightingInitPhase), "floor receivers synced");
+            DungeonGenerationLog.Phase(nameof(LightingInitPhase),
+                $"floor receivers synced ambient={LightLevel.FullDaylightAmbient}");
         }
     }
 }

@@ -65,6 +65,7 @@
     <Compile Include="Assets/Scripts/Item/ItemStorageLocation.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorRuntime.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/DoorPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyFormationSpawnProfile.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyRestState.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryConsumePolicy.cs" />
@@ -289,6 +290,7 @@
     <Compile Include="Assets/Scripts/Item/World/FloorEssenceWorldView.cs" />
     <Compile Include="Assets/Scripts/Manager/Loot/EnemyLootService.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTypes.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/FloorItemPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupHudButton.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/TrapWhileAliveMapEffect.cs" />

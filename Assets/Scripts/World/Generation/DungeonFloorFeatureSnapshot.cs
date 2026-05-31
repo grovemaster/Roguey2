@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using JRogue.Hazards;
 using JRogue.Interactables;
+using JRogue.Item;
 using JRogue.Traps;
 using UnityEngine;
 
@@ -16,12 +17,14 @@ namespace JRogue.World.Generation
         public List<HazardSnapshotEntry> hazards = new List<HazardSnapshotEntry>();
         public List<TrapSnapshotEntry> traps = new List<TrapSnapshotEntry>();
         public List<InteractableSnapshotEntry> interactables = new List<InteractableSnapshotEntry>();
+        public List<FloorItemSnapshotEntry> floorItems = new List<FloorItemSnapshotEntry>();
 
         public void Clear()
         {
             hazards.Clear();
             traps.Clear();
             interactables.Clear();
+            floorItems.Clear();
         }
     }
 
@@ -49,5 +52,15 @@ namespace JRogue.World.Generation
         public Vector3Int cell;
         public InteractableTileDefinition definition;
         public bool isOn;
+    }
+
+    [Serializable]
+    public struct FloorItemSnapshotEntry
+    {
+        public Vector3Int tile;
+        public string entryId;
+        public ItemData definition;
+        public int quantity;
+        public int phasesRemaining;
     }
 }
