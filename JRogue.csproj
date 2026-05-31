@@ -209,8 +209,8 @@
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlaceholderSprites.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardExitEvaluator.cs" />
-    <Compile Include="Assets/Scripts/Manager/Inventory/InventoryUseResult.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorLifetimeTicker.cs" />
+    <Compile Include="Assets/Scripts/Manager/Inventory/InventoryUseResult.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AutoPickupConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/Input/AutoPickupMoveGate.cs" />
     <Compile Include="Assets/Scripts/Collector/InventoryCollector.cs" />
