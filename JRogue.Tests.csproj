@@ -56,12 +56,14 @@
     <Compile Include="Assets/Tests/UnitTests/Combat/MultiTileEnemyGridTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputTestSceneBuilder.cs" />
     <Compile Include="Assets/Tests/UnitTests/Party/PartyMemberDeathTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Essence/EssencePickupEligibilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/HumanClassPowersTests.cs" />
     <Compile Include="Assets/Tests/JRogueTestsRootSetupFixture.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/LightingQaPlacementResolverTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/ConeSightFootprintTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantsRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/BowEquipmentLegalityTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Essence/FloorEssenceLifetimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarPlaceListBuilderTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Targeting/SplashZoneResolverTests.cs" />
     <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />

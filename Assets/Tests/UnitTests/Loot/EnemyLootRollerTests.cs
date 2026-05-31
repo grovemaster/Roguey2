@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Data.Enemy;
 using JRogue.Data.Item;
 using JRogue.Item;
+using JRogue.Item.Essence;
 using JRogue.Manager.Floor;
 using JRogue.Manager.Loot;
 using JRogue.Manager.Party;
@@ -37,13 +38,15 @@ namespace JRogue.Tests.UnitTests.Loot
         {
             ManaStoneTierCatalog catalog = CreateCatalog();
             EnemyLootTable table = CreateSkeletonTable();
-            var rng = new QueueLootRandom(0f, 1f);
+            var rng = new QueueLootRandom(0f, 1f, 0f);
 
-            List<ItemInstance> drops = EnemyLootRoller.Roll(table, "skeleton", catalog, rng);
+            EnemyLootRollResult drops = EnemyLootRoller.Roll(table, "skeleton", catalog, rng);
 
-            Assert.GreaterOrEqual(drops.Count, 1);
-            Assert.AreEqual(9, ((ManaStoneItemData)drops[0].Definition).tier);
-            Assert.AreEqual("skeleton", drops[0].ManaStoneSourceSpeciesId);
+            Assert.GreaterOrEqual(drops.Items.Count, 1);
+            Assert.AreEqual(9, ((ManaStoneItemData)drops.Items[0].Definition).tier);
+            Assert.AreEqual("skeleton", drops.Items[0].ManaStoneSourceSpeciesId);
+            Assert.AreEqual(1, drops.Essences.Count);
+            Assert.AreEqual("Sudden Strength", drops.Essences[0].essenceName);
         }
 
         [Test]
@@ -52,13 +55,15 @@ namespace JRogue.Tests.UnitTests.Loot
             ManaStoneTierCatalog catalog = CreateCatalog();
             EnemyLootTable table = CreateSkeletonTable();
 
-            List<ItemInstance> two = EnemyLootRoller.Roll(
-                table, "skeleton", catalog, new QueueLootRandom(0f, 0.49f));
-            List<ItemInstance> one = EnemyLootRoller.Roll(
-                table, "skeleton", catalog, new QueueLootRandom(0f, 0.51f));
+            EnemyLootRollResult two = EnemyLootRoller.Roll(
+                table, "skeleton", catalog, new QueueLootRandom(0f, 0.49f, 0f));
+            EnemyLootRollResult one = EnemyLootRoller.Roll(
+                table, "skeleton", catalog, new QueueLootRandom(0f, 0.51f, 0f));
 
-            Assert.AreEqual(2, two.Count);
-            Assert.AreEqual(1, one.Count);
+            Assert.AreEqual(2, two.Items.Count);
+            Assert.AreEqual(1, one.Items.Count);
+            Assert.AreEqual(1, two.Essences.Count);
+            Assert.AreEqual(1, one.Essences.Count);
         }
 
         [Test]
@@ -68,10 +73,11 @@ namespace JRogue.Tests.UnitTests.Loot
             EnemyLootTable table = CreateGiantSkeletonTable();
             var rng = new QueueLootRandom(0f, 0f, 0f, 1f);
 
-            List<ItemInstance> drops = EnemyLootRoller.Roll(table, "giant_skeleton", catalog, rng);
+            EnemyLootRollResult drops = EnemyLootRoller.Roll(table, "giant_skeleton", catalog, rng);
 
-            Assert.AreEqual(3, drops.Count);
-            foreach (ItemInstance drop in drops)
+            Assert.AreEqual(3, drops.Items.Count);
+            Assert.AreEqual(0, drops.Essences.Count);
+            foreach (ItemInstance drop in drops.Items)
             {
                 Assert.AreEqual(8, ((ManaStoneItemData)drop.Definition).tier);
                 Assert.AreEqual("giant_skeleton", drop.ManaStoneSourceSpeciesId);
@@ -84,13 +90,15 @@ namespace JRogue.Tests.UnitTests.Loot
             ManaStoneTierCatalog catalog = CreateCatalog();
             EnemyLootTable table = CreateGiantSkeletonTable();
 
-            List<ItemInstance> four = EnemyLootRoller.Roll(
+            EnemyLootRollResult four = EnemyLootRoller.Roll(
                 table, "giant_skeleton", catalog, new QueueLootRandom(0f, 0f, 0f, 0.29f));
-            List<ItemInstance> three = EnemyLootRoller.Roll(
+            EnemyLootRollResult three = EnemyLootRoller.Roll(
                 table, "giant_skeleton", catalog, new QueueLootRandom(0f, 0f, 0f, 0.31f));
 
-            Assert.AreEqual(4, four.Count);
-            Assert.AreEqual(3, three.Count);
+            Assert.AreEqual(4, four.Items.Count);
+            Assert.AreEqual(3, three.Items.Count);
+            Assert.AreEqual(0, four.Essences.Count);
+            Assert.AreEqual(0, three.Essences.Count);
         }
 
         [Test]
@@ -153,11 +161,21 @@ namespace JRogue.Tests.UnitTests.Loot
 
         static EnemyLootTable CreateSkeletonTable()
         {
+            var suddenStrength = ScriptableObject.CreateInstance<EssenceData>();
+            suddenStrength.essenceName = "Sudden Strength";
+            suddenStrength.tier = 9;
+
             var table = ScriptableObject.CreateInstance<EnemyLootTable>();
             table.entries = new List<LootTableEntry>
             {
                 new LootTableEntry { dropChance = 1f, payload = LootTablePayload.ManaStone, manaStoneTier = 9 },
-                new LootTableEntry { dropChance = 0.5f, payload = LootTablePayload.ManaStone, manaStoneTier = 9 }
+                new LootTableEntry { dropChance = 0.5f, payload = LootTablePayload.ManaStone, manaStoneTier = 9 },
+                new LootTableEntry
+                {
+                    dropChance = 1f,
+                    payload = LootTablePayload.Essence,
+                    essenceData = suddenStrength,
+                },
             };
             return table;
         }

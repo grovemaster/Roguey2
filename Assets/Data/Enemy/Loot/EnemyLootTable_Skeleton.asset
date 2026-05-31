@@ -18,9 +18,17 @@ MonoBehaviour:
     payload: 0
     manaStoneTier: 9
     itemData: {fileID: 0}
+    essenceData: {fileID: 0}
     quantity: 1
   - dropChance: 0.5
     payload: 0
     manaStoneTier: 9
     itemData: {fileID: 0}
+    essenceData: {fileID: 0}
+    quantity: 1
+  - dropChance: 1
+    payload: 2
+    manaStoneTier: 9
+    itemData: {fileID: 0}
+    essenceData: {fileID: 11400000, guid: f5d586846138423f9b6a019fad300072, type: 2}
     quantity: 1

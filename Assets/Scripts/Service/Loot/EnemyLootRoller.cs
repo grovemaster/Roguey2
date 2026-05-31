@@ -1,23 +1,22 @@
-using System.Collections.Generic;
 using JRogue.Data.Enemy;
 using JRogue.Data.Item;
 using JRogue.Item;
-using JRogue.Service.Loot;
+using JRogue.Item.Essence;
 using UnityEngine;
 
 namespace JRogue.Service.Loot
 {
     public static class EnemyLootRoller
     {
-        public static List<ItemInstance> Roll(
+        public static EnemyLootRollResult Roll(
             EnemyLootTable table,
             string sourceSpeciesId,
             ManaStoneTierCatalog catalog,
             ILootRandom rng)
         {
-            var results = new List<ItemInstance>();
+            var result = new EnemyLootRollResult();
             if (table == null || table.entries == null || table.entries.Count == 0 || rng == null)
-                return results;
+                return result;
 
             string species = string.IsNullOrEmpty(sourceSpeciesId) ? "unknown" : sourceSpeciesId;
 
@@ -44,7 +43,7 @@ namespace JRogue.Service.Loot
                         }
 
                         for (int i = 0; i < qty; i++)
-                            results.Add(ItemInstance.CreateManaStone(manaDef, species));
+                            result.Items.Add(ItemInstance.CreateManaStone(manaDef, species));
                         break;
 
                     case LootTablePayload.ItemData:
@@ -55,14 +54,22 @@ namespace JRogue.Service.Loot
                         {
                             var inst = new ItemInstance(entry.itemData);
                             inst.StorageLocation = ItemStorageLocation.OnGround;
-                            results.Add(inst);
+                            result.Items.Add(inst);
                         }
 
+                        break;
+
+                    case LootTablePayload.Essence:
+                        if (entry.essenceData == null)
+                            break;
+
+                        for (int i = 0; i < qty; i++)
+                            result.Essences.Add(entry.essenceData);
                         break;
                 }
             }
 
-            return results;
+            return result;
         }
     }
 }

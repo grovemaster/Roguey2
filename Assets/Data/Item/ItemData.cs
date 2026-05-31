@@ -80,6 +80,10 @@ namespace JRogue.Item
         [Tooltip("When true with autoPickupOnStep, entering the tile requires confirmation before pickup.")]
         public bool requiresAutoPickupConfirmation;
 
+        [Tooltip("Unclaimed floor item despawns after this many player phases. 0 = indefinite.")]
+        [Min(0)]
+        public int floorLifetimePlayerPhases;
+
         /// <summary>Walk-over auto-pickup without a confirmation dialog (e.g. mana stones).</summary>
         public bool ParticipatesInSilentAutoPickupOnStep =>
             autoPickupOnStep && !requiresAutoPickupConfirmation;

@@ -70,6 +70,12 @@ namespace JRogue.Manager.Inventory
                 return false;
             }
 
+            if (instance.Definition != null && instance.Definition.category == ItemCategory.Essence)
+            {
+                Debug.LogWarning("[Inventory] Essences cannot be stored in inventory.");
+                return false;
+            }
+
             if (instance.IsManaStone && instance.Definition is ManaStoneItemData manaStone)
             {
                 if (PartyManaStoneLedger.Instance != null)

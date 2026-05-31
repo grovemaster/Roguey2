@@ -71,6 +71,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySortMode.cs" />
     <Compile Include="Assets/Scripts/Controller/Player/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridManager.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/EssencePickupConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/IAdjacentMapInteractable.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapDefinition.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/Algorithm/ShadowCaster.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Assets/Scripts/Manager/Inventory/EvocableRechargeService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
+    <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceService.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
@@ -169,6 +171,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapPlacementEntry.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/HealthRegenerationService.cs" />
+    <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceEntry.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
     <Compile Include="Assets/Scripts/World/Altar/ManaStoneTierAcceptFilter.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TrapConfirmDialogUI.cs" />
@@ -193,6 +196,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/AltarUsedModalUI.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryDetailFormatter.cs" />
+    <Compile Include="Assets/Scripts/Input/EssenceMoveGate.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryCarriedSorter.cs" />
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarInstance.cs" />
@@ -206,6 +210,7 @@
     <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardExitEvaluator.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryUseResult.cs" />
+    <Compile Include="Assets/Scripts/Manager/Floor/FloorLifetimeTicker.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AutoPickupConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/Input/AutoPickupMoveGate.cs" />
     <Compile Include="Assets/Scripts/Collector/InventoryCollector.cs" />
@@ -227,6 +232,7 @@
     <Compile Include="Assets/Scripts/Manager/Inventory/HealingPotionRules.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SetTileEmissionEffect.cs" />
+    <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRollResult.cs" />
     <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
@@ -249,6 +255,7 @@
     <Compile Include="Assets/Scripts/Interactables/PartyCarriedLightSource.cs" />
     <Compile Include="Assets/Scripts/Interactables/SampleSceneInteractablePlacements.cs" />
     <Compile Include="Assets/Scripts/Abilities/Fireball/FIreballAbility.cs" />
+    <Compile Include="Assets/Scripts/Item/World/FloorEssenceWorldView.cs" />
     <Compile Include="Assets/Scripts/Manager/Loot/EnemyLootService.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTypes.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupHudButton.cs" />
@@ -282,6 +289,7 @@
     <Compile Include="Assets/Scripts/Hazards/HazardCellState.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInscriptionGuards.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapInstance.cs" />
+    <Compile Include="Assets/Scripts/Manager/Essence/EssencePickupEligibility.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyCurrencyLedger.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/MapInteractOrthogonal.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyAiBrain.cs" />

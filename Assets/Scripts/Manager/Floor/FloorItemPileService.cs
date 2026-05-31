@@ -11,6 +11,8 @@ namespace JRogue.Manager.Floor
     {
         public string entryId;
         public ItemInstance instance;
+        /// <summary>0 = never despawn.</summary>
+        public int phasesRemaining;
     }
 
     public sealed class FloorItemPileService : MonoBehaviour
@@ -88,10 +90,15 @@ namespace JRogue.Manager.Floor
                 _piles[tile] = list;
             }
 
+            int lifetime = instance.Definition != null
+                ? Mathf.Max(0, instance.Definition.floorLifetimePlayerPhases)
+                : 0;
+
             var entry = new FloorItemEntry
             {
                 entryId = Guid.NewGuid().ToString("N"),
-                instance = instance
+                instance = instance,
+                phasesRemaining = lifetime,
             };
             instance.StorageLocation = ItemStorageLocation.OnGround;
             list.Add(entry);
@@ -165,6 +172,31 @@ namespace JRogue.Manager.Floor
 
         public static Vector3 TileCenterWorld(Vector3Int tile) =>
             new Vector3(tile.x + 0.5f, tile.y + 0.5f, 0f);
+
+        public void TickFloorItemLifetimes()
+        {
+            if (_piles.Count == 0)
+                return;
+
+            var expiredIds = new List<string>();
+            foreach (KeyValuePair<Vector3Int, List<FloorItemEntry>> kv in _piles)
+            {
+                List<FloorItemEntry> list = kv.Value;
+                for (int i = list.Count - 1; i >= 0; i--)
+                {
+                    FloorItemEntry entry = list[i];
+                    if (entry.phasesRemaining <= 0)
+                        continue;
+
+                    entry.phasesRemaining--;
+                    if (entry.phasesRemaining <= 0)
+                        expiredIds.Add(entry.entryId);
+                }
+            }
+
+            for (int i = 0; i < expiredIds.Count; i++)
+                RemoveEntry(expiredIds[i]);
+        }
 
         public void ApplyVisibility(VisibilityManager visibility)
         {

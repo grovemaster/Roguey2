@@ -13,6 +13,17 @@ namespace JRogue.Item.Essence
         public string essenceName;
         [TextArea] public string description;
 
+        [Header("Tier & floor presentation")]
+        [Tooltip("DCSS-style: 1 = highest, 9 = lowest.")]
+        [Range(1, 9)]
+        public int tier = 9;
+
+        public Sprite mapIcon;
+
+        [Tooltip("Unclaimed floor essence despawns after this many player phases. 0 = never.")]
+        [Min(0)]
+        public int floorLifetimePlayerPhases = 10;
+
         [Header("1. Simple Stat Modifiers")]
         public List<AttributeModifier> statModifiers;
         public List<DamageResistanceModifier> resistanceModifiers;

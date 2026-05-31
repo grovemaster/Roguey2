@@ -4,7 +4,7 @@ On defeat, enemies may drop **zero or more** items onto the ground at their deat
 
 **Depends on:** `EnemyController` / `BaseActor.Die`, `EnemySpeciesDefinition`, `GridManager` / `Vector3Int` grid cells, `ItemData`, `ItemInstance`, `ItemCategory.Currency`, `PartyCurrencyLedger`, `InventoryManager`, `PartyManager`, `PartyExperienceService` (species ids). Floor placement integrates with [Floor item piles](../Inventory/Floor-Item-Pile-Requirements.md) when implemented; until then, **`WorldItem`** or equivalent spawn API.
 
-**Related:** [Party experience & leveling](../Progression/Party-Experience-And-Leveling-Requirements.md) (`skeleton` vs `giant_skeleton` species ids). [Multi-tile enemies](Multi-Tile-Enemy-Requirements.md) (drop anchor on footprint). [Inventory UI redesign](../Inventory/Inventory-UI-Redesign-Requirements.md) (currency strip). [Floor item piles](../Inventory/Floor-Item-Pile-Requirements.md) (general pickup rules; **mana stone autopickup is an explicit exception**, §6).
+**Related:** [Party experience & leveling](../Progression/Party-Experience-And-Leveling-Requirements.md) (`skeleton` vs `giant_skeleton` species ids). [Multi-tile enemies](Multi-Tile-Enemy-Requirements.md) (drop anchor on footprint). [Inventory UI redesign](../Inventory/Inventory-UI-Redesign-Requirements.md) (currency strip). [Floor item piles](../Inventory/Floor-Item-Pile-Requirements.md) (general pickup rules; **mana stone autopickup is an explicit exception**, §6). [Enemy essence drops](../Essence/Enemy-Essence-Drops-Requirements.md) (`LootTablePayload.Essence`, floor lifetime).
 
 ---
 

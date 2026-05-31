@@ -394,6 +394,15 @@ namespace JRogue.Input
                 return true;
             }
 
+            if (EssenceMoveGate.TryInterceptMove(
+                    activeMember,
+                    targetTile,
+                    isEnemyBump,
+                    () => CompleteConfirmedMove(activeMember, direction, formationActive, oldPosition)))
+            {
+                return true;
+            }
+
             return AutoPickupMoveGate.TryInterceptMove(
                 activeMember,
                 targetTile,
@@ -411,6 +420,7 @@ namespace JRogue.Input
                 return;
 
             Vector3Int dest = activeMember.GridPosition;
+            FloorEssenceService.Instance?.TryClaimAt(dest, activeMember);
             // Silent auto-pickup already ran via GridMover.Moved → ManaStoneAutoPickupService.
             FloorPickupService.PickupConfirmGatedAt(dest, activeMember.gameObject);
 

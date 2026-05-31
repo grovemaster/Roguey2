@@ -100,6 +100,7 @@ namespace JRogue.Manager.Party
             xp.Configure(this, experienceCurve);
 
             EnsureComponent<FloorItemPileService>();
+            EnsureComponent<FloorEssenceService>();
             EnsureComponent<EnemyLootService>();
             EnsureComponent<PartyManaStoneLedger>();
             EnsureComponent<PartyCurrencyLedger>();

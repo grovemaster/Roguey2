@@ -11,6 +11,7 @@ using JRogue.Hazards;
 using JRogue.Traps;
 using JRogue.Racial;
 using JRogue.Status;
+using JRogue.Manager.Floor;
 using JRogue.World.Lighting;
 using UnityEngine;
 public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY, GAME_OVER }
@@ -207,6 +208,7 @@ namespace JRogue.Manager.Turn
             }
 
             HazardService.Instance?.TickOccupancyOnPlayerPhaseStart();
+            FloorLifetimeTicker.TickAllOnPlayerPhaseStart();
 
             FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
             LightingService.Instance?.OnPartyVisionActivity();

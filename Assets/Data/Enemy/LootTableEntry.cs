@@ -1,5 +1,6 @@
 using System;
 using JRogue.Item;
+using JRogue.Item.Essence;
 using UnityEngine;
 
 namespace JRogue.Data.Enemy
@@ -16,6 +17,8 @@ namespace JRogue.Data.Enemy
         public int manaStoneTier = 9;
 
         public ItemData itemData;
+
+        public EssenceData essenceData;
 
         [Min(1)]
         public int quantity = 1;

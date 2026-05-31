@@ -404,7 +404,8 @@ namespace JRogue.Input
             || PartyMemberDeathDialogUI.BlocksGameplay
             || AdjacentInteractPickerModalUI.BlocksGameplay
             || AltarOfferingModalUI.BlocksGameplay
-            || AltarUsedModalUI.BlocksGameplay;
+            || AltarUsedModalUI.BlocksGameplay
+            || EssencePickupConfirmDialogUI.BlocksGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed

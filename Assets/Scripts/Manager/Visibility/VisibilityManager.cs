@@ -402,6 +402,10 @@ public class VisibilityManager : MonoBehaviour
         if (piles != null)
             piles.ApplyVisibility(this);
 
+        FloorEssenceService essences = FloorEssenceService.Instance;
+        if (essences != null)
+            essences.ApplyVisibility(this);
+
         TrapService.Instance?.RefreshOverlayVisibility();
     }
 

@@ -106,6 +106,65 @@ namespace JRogue.Manager.Essence
             return equippedEssences[slotIndex];
         }
 
+        public bool HasEssence(EssenceData data)
+        {
+            if (data == null || equippedEssences == null)
+                return false;
+
+            for (int i = 0; i < equippedEssences.Length; i++)
+            {
+                if (equippedEssences[i] == data)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public int CountOccupiedSlots()
+        {
+            int count = 0;
+            if (equippedEssences == null)
+                return count;
+
+            int limit = Mathf.Min(totalSlots, equippedEssences.Length);
+            for (int i = 0; i < limit; i++)
+            {
+                if (equippedEssences[i] != null)
+                    count++;
+            }
+
+            return count;
+        }
+
+        public bool HasFreeSlot() => CountOccupiedSlots() < totalSlots;
+
+        public int GetFirstFreeSlotIndex()
+        {
+            if (equippedEssences == null)
+                return -1;
+
+            int limit = Mathf.Min(totalSlots, equippedEssences.Length);
+            for (int i = 0; i < limit; i++)
+            {
+                if (equippedEssences[i] == null)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public bool TryAcquireEssence(EssenceData data)
+        {
+            if (data == null || HasEssence(data))
+                return false;
+
+            int slot = GetFirstFreeSlotIndex();
+            if (slot < 0)
+                return false;
+
+            return EquipEssence(data, slot);
+        }
+
         // Inside EssenceSlotManager.cs
         public AbilityAction GetAbility(int slotIndex, int subIndex)
         {

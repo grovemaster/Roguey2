@@ -1,8 +1,8 @@
-using System.Collections.Generic;
 using JRogue.Controller.Enemy;
 using JRogue.Data.Enemy;
 using JRogue.Data.Item;
 using JRogue.Item;
+using JRogue.Item.Essence;
 using JRogue.Manager.Floor;
 using JRogue.Service.Loot;
 using UnityEngine;
@@ -51,25 +51,44 @@ namespace JRogue.Manager.Loot
             EnsureCatalog();
             ILootRandom roll = rng ?? UnityLootRandom.Default;
             Vector3Int tile = enemy.GridPosition;
-            List<ItemInstance> drops = EnemyLootRoller.Roll(species.lootTable, species.speciesId, manaStoneCatalog, roll);
+            EnemyLootRollResult drops = EnemyLootRoller.Roll(
+                species.lootTable,
+                species.speciesId,
+                manaStoneCatalog,
+                roll);
 
-            if (drops.Count == 0)
+            if (drops.Items.Count == 0 && drops.Essences.Count == 0)
             {
                 Debug.Log($"[LOOT] {species.displayName} dropped nothing at {tile}.");
                 return;
             }
 
             FloorItemPileService pile = FloorItemPileService.Instance;
-            if (pile == null)
+            if (pile == null && drops.Items.Count > 0)
+                Debug.LogWarning("[LOOT] No FloorItemPileService in scene; item drops discarded.");
+
+            for (int i = 0; i < drops.Items.Count; i++)
             {
-                Debug.LogWarning("[LOOT] No FloorItemPileService in scene; drops discarded.");
-                return;
+                if (pile == null)
+                    break;
+
+                ItemInstance item = drops.Items[i];
+                pile.AddEntry(tile, item);
+                Debug.Log($"[LOOT] {species.displayName} dropped {DescribeDrop(item)} at {tile}.");
             }
 
-            for (int i = 0; i < drops.Count; i++)
+            FloorEssenceService essenceService = FloorEssenceService.Instance;
+            if (essenceService == null && drops.Essences.Count > 0)
+                Debug.LogWarning("[LOOT] No FloorEssenceService in scene; essence drops discarded.");
+
+            for (int i = 0; i < drops.Essences.Count; i++)
             {
-                pile.AddEntry(tile, drops[i]);
-                Debug.Log($"[LOOT] {species.displayName} dropped {DescribeDrop(drops[i])} at {tile}.");
+                if (essenceService == null)
+                    break;
+
+                EssenceData essence = drops.Essences[i];
+                essenceService.SpawnEssence(tile, essence);
+                Debug.Log($"[LOOT] {species.displayName} dropped essence {essence.essenceName} at {tile}.");
             }
         }
 

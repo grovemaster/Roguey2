@@ -25,7 +25,8 @@ namespace JRogue.UI.Gameplay
             || GameOverModalUI.BlocksGameplay
             || AdjacentInteractPickerModalUI.BlocksGameplay
             || AltarOfferingModalUI.BlocksGameplay
-            || AltarUsedModalUI.BlocksGameplay;
+            || AltarUsedModalUI.BlocksGameplay
+            || EssencePickupConfirmDialogUI.BlocksGameplay;
 
         public static HazardConfirmDialogUI EnsureInstance()
         {
