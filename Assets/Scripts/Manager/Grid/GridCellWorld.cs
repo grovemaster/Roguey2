@@ -59,17 +59,8 @@ namespace JRogue.Manager.Grid
         /// </summary>
         public static Vector3 GetSingleCellActorPosition(Vector3Int cell)
         {
-            Vector3 size = GetCellSize();
-            Vector3 inset = new Vector3(
-                size.x * SingleCellActorInsetRatio,
-                size.y * SingleCellActorInsetRatio,
-                0f);
-
             Tilemap floor = MapManager.Instance != null ? MapManager.Instance.FloorMap : null;
-            if (floor != null)
-                return floor.CellToWorld(cell) + inset;
-
-            return new Vector3(cell.x + inset.x, cell.y + inset.y, 0f);
+            return GetCellCenter(floor, cell);
         }
 
         public static Vector3Int WorldToCell(Vector3 worldPosition)

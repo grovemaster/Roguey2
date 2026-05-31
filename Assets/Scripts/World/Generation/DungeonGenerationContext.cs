@@ -16,6 +16,7 @@ namespace JRogue.World.Generation
         public Dictionary<string, PortalArrivalBinding> PortalArrivals { get; } =
             new Dictionary<string, PortalArrivalBinding>();
         public List<PortalInteractable> Portals { get; } = new List<PortalInteractable>();
+        public List<ResolvedEdgePortal> ResolvedEdgePortals { get; } = new List<ResolvedEdgePortal>();
 
         public DungeonGenerationContext(
             DungeonFloorDefinition definition,

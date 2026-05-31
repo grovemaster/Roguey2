@@ -28,6 +28,7 @@ namespace JRogue.Editor.World
         const string DataRoot = "Assets/Resources/Dungeon";
         const string SceneFolder = "Assets/Scenes/Dungeon";
         const string ScenePath = SceneFolder + "/DungeonFloorTest.unity";
+        const string ProductionScenePath = SceneFolder + "/DungeonFloor.unity";
         // Sprites use 32 PPU on UrbanTheme; paint with identity matrix (no per-cell scale).
         const string FloorTilePath = "Assets/TileMaps/Scavengers_SpriteSheet_32.asset";
         const string WallTilePath = "Assets/TileMaps/Scavengers_SpriteSheet_50.asset";
@@ -47,6 +48,23 @@ namespace JRogue.Editor.World
         {
             CreateV0aTestDataInternal();
             CreateOrUpdateTestScene();
+        }
+
+        [MenuItem("JRogue/Dungeon/Apply v0b Floor Data")]
+        public static void ApplyV0bFloorData()
+        {
+            CreateV0aTestDataInternal();
+            ConfigureV0bFloorDefinitions();
+            AssetDatabase.SaveAssets();
+            Debug.Log("[Dungeon] v0b floor data applied (edge portals, hazard/trap population).");
+        }
+
+        [MenuItem("JRogue/Dungeon/Create DungeonFloor Production Scene")]
+        public static void CreateDungeonFloorProductionScene()
+        {
+            CreateV0aTestDataInternal();
+            ConfigureV0bFloorDefinitions();
+            CreateOrUpdateProductionScene();
         }
 
         [MenuItem("JRogue/Dungeon/Fix DungeonFloorTest Scene")]
@@ -84,6 +102,8 @@ namespace JRogue.Editor.World
 
             if (systems.GetComponent<PortalEntryService>() == null)
                 systems.AddComponent<PortalEntryService>();
+
+            DungeonWorldFeatureServices.EnsureOn(systems);
 
             EnsureLightingOnSystems(systems);
             EnsureGameplayUiFromSampleScene(EditorSceneManager.GetActiveScene());
@@ -433,7 +453,151 @@ namespace JRogue.Editor.World
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log($"[Dungeon] v0a data at {DataRoot}. Floors: {floor01.FloorId}, {floor02.FloorId}");
+            ConfigureV0bFloorDefinitions();
+            Debug.Log($"[Dungeon] v0a/v0b data at {DataRoot}. Floors: {floor01.FloorId}, {floor02.FloorId}");
+        }
+
+        static void ConfigureV0bFloorDefinitions()
+        {
+            var lava = AssetDatabase.LoadAssetAtPath<JRogue.Hazards.EnvironmentalHazardDefinition>(
+                "Assets/Resources/Hazards/EnvironmentalHazard_Lava.asset");
+            var spike = AssetDatabase.LoadAssetAtPath<JRogue.Traps.TrapDefinition>(
+                "Assets/Data/Traps/TrapDefinition_Spike_Visible.asset");
+
+            ConfigureFloorV0b(
+                $"{DataRoot}/Floor_dungeon_floor_01.asset",
+                orthogonalEdges: 4,
+                edgeInset: 2,
+                southLink: new EdgePortalSpec
+                {
+                    edge = MapEdge.South,
+                    portalLinkId = "link_floor01_to_floor02",
+                    targetFloorId = "dungeon_floor_02",
+                    listLabel = "Portal (South)",
+                },
+                lava: lava,
+                lavaMin: 2,
+                lavaMax: 4,
+                spike: spike,
+                spikeMin: 1,
+                spikeMax: 3);
+
+            ConfigureFloorV0b(
+                $"{DataRoot}/Floor_dungeon_floor_02.asset",
+                orthogonalEdges: 0,
+                edgeInset: 2,
+                southLink: default,
+                lava: lava,
+                lavaMin: 1,
+                lavaMax: 2,
+                spike: spike,
+                spikeMin: 1,
+                spikeMax: 2);
+        }
+
+        static void ConfigureFloorV0b(
+            string path,
+            int orthogonalEdges,
+            int edgeInset,
+            EdgePortalSpec southLink,
+            JRogue.Hazards.EnvironmentalHazardDefinition lava,
+            int lavaMin,
+            int lavaMax,
+            JRogue.Traps.TrapDefinition spike,
+            int spikeMin,
+            int spikeMax)
+        {
+            var def = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(path);
+            if (def == null)
+                return;
+
+            SerializedObject so = new SerializedObject(def);
+            so.FindProperty("orthogonalEdgePortalCount").intValue = orthogonalEdges;
+            so.FindProperty("orthogonalEdgeInset").intValue = edgeInset;
+
+            SerializedProperty edgePortals = so.FindProperty("edgePortals");
+            if (!string.IsNullOrEmpty(southLink.targetFloorId))
+            {
+                edgePortals.arraySize = 1;
+                SerializedProperty edge = edgePortals.GetArrayElementAtIndex(0);
+                edge.FindPropertyRelative("edge").enumValueIndex = (int)southLink.edge;
+                edge.FindPropertyRelative("portalLinkId").stringValue = southLink.portalLinkId;
+                edge.FindPropertyRelative("targetFloorId").stringValue = southLink.targetFloorId;
+                edge.FindPropertyRelative("listLabel").stringValue = southLink.listLabel;
+            }
+
+            SerializedProperty hazards = so.FindProperty("hazardPopulation");
+            if (lava != null)
+            {
+                hazards.arraySize = 1;
+                SerializedProperty h = hazards.GetArrayElementAtIndex(0);
+                h.FindPropertyRelative("definition").objectReferenceValue = lava;
+                h.FindPropertyRelative("minCount").intValue = lavaMin;
+                h.FindPropertyRelative("maxCount").intValue = lavaMax;
+                h.FindPropertyRelative("startHidden").boolValue = false;
+            }
+
+            SerializedProperty traps = so.FindProperty("trapPopulation");
+            if (spike != null)
+            {
+                traps.arraySize = 1;
+                SerializedProperty t = traps.GetArrayElementAtIndex(0);
+                t.FindPropertyRelative("definition").objectReferenceValue = spike;
+                t.FindPropertyRelative("minCount").intValue = spikeMin;
+                t.FindPropertyRelative("maxCount").intValue = spikeMax;
+            }
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(def);
+        }
+
+        static void CreateOrUpdateProductionScene()
+        {
+            EnsureFolder(SceneFolder);
+            if (File.Exists(ProductionScenePath))
+            {
+                var scene = EditorSceneManager.OpenScene(ProductionScenePath, OpenSceneMode.Single);
+                FixSceneHierarchyInPlace();
+                ReplaceTestControllerWithRuntime(scene);
+                EditorSceneManager.SaveScene(scene);
+                AssetDatabase.SaveAssets();
+                Debug.Log($"[Dungeon] Updated {ProductionScenePath}.");
+                return;
+            }
+
+            CreateOrUpdateTestScene();
+            if (!File.Exists(ScenePath))
+                return;
+
+            AssetDatabase.CopyAsset(ScenePath, ProductionScenePath);
+            AssetDatabase.Refresh();
+            var prod = EditorSceneManager.OpenScene(ProductionScenePath, OpenSceneMode.Single);
+            ReplaceTestControllerWithRuntime(prod);
+            EditorSceneManager.SaveScene(prod);
+            Debug.Log($"[Dungeon] Created {ProductionScenePath} from test scene template.");
+        }
+
+        static void ReplaceTestControllerWithRuntime(UnityEngine.SceneManagement.Scene scene)
+        {
+            GameObject systems = GameObject.Find(DungeonFloorTestSceneValidator.SystemsObjectName);
+            if (systems == null)
+                return;
+
+            DungeonFloorTestController test = systems.GetComponent<DungeonFloorTestController>();
+            if (test != null)
+                Object.DestroyImmediate(test);
+
+            if (systems.GetComponent<DungeonFloorRuntime>() == null)
+            {
+                DungeonFloorRuntime runtime = systems.AddComponent<DungeonFloorRuntime>();
+                SerializedObject so = new SerializedObject(runtime);
+                so.FindProperty("floorInstanceManager").objectReferenceValue =
+                    systems.GetComponent<DungeonFloorInstanceManager>();
+                so.FindProperty("floorCatalog").objectReferenceValue =
+                    AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>($"{DataRoot}/DungeonV0aCatalog.asset");
+                so.FindProperty("beginRunOnStart").boolValue = true;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
         }
 
         static void CreateOrUpdateTestScene()

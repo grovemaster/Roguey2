@@ -27,9 +27,12 @@ namespace JRogue.World.Generation
         readonly Dictionary<string, PortalArrivalBinding> _arrivalBindings =
             new Dictionary<string, PortalArrivalBinding>();
         readonly List<PortalInteractable> _portals = new List<PortalInteractable>();
+        readonly DungeonFloorFeatureSnapshot _featureSnapshot = new DungeonFloorFeatureSnapshot();
 
         bool _isGenerated;
         Vector3Int _playerStart;
+
+        public DungeonFloorFeatureSnapshot FeatureSnapshot => _featureSnapshot;
 
         public DungeonFloorDefinition Definition => definition;
         public string FloorId => definition != null ? definition.FloorId : name;
@@ -67,15 +70,10 @@ namespace JRogue.World.Generation
         {
             if (floorMap != null && enemyContainer != null)
             {
-                Debug.Log(
-                    $"[TileDebug] EnsureHierarchyBuilt early-exit on '{name}' " +
-                    $"floorMapId={floorMap.GetInstanceID()} anchorBefore={floorMap.tileAnchor}");
-                ApplyFloorWallTileAnchor(floorMap);
-                ApplyFloorWallTileAnchor(wallMap);
+                ApplyDungeonTileAnchors();
                 return;
             }
 
-            Debug.Log($"[TileDebug] EnsureHierarchyBuilt full BuildHierarchy on '{name}'");
             BuildHierarchy();
         }
 
@@ -137,52 +135,25 @@ namespace JRogue.World.Generation
                 }
             }
 
-            ApplyFloorWallTileAnchor(floorMap);
-            ApplyFloorWallTileAnchor(wallMap);
-
-            Debug.Log(
-                $"[TileDebug] BuildHierarchy done '{name}' " +
-                $"floor={DescribeTilemap(floorMap)} wall={DescribeTilemap(wallMap)}");
+            ApplyDungeonTileAnchors();
         }
 
-        static void ApplyFloorWallTileAnchor(Tilemap tilemap)
+        void ApplyDungeonTileAnchors()
+        {
+            ApplyTileAnchor(floorMap);
+            ApplyTileAnchor(wallMap);
+            ApplyTileAnchor(hazardOverlayMap);
+            ApplyTileAnchor(interactableOverlayMap);
+            ApplyTileAnchor(trapOverlayMap);
+            ApplyTileAnchor(doorOverlayMap);
+        }
+
+        static void ApplyTileAnchor(Tilemap tilemap)
         {
             if (tilemap == null)
                 return;
 
-            Vector3 before = tilemap.tileAnchor;
             tilemap.tileAnchor = FloorWallTileAnchor;
-            Debug.Log(
-                $"[TileDebug] ApplyFloorWallTileAnchor '{tilemap.name}' id={tilemap.GetInstanceID()} " +
-                $"before={before} after={tilemap.tileAnchor} path={GetTransformPath(tilemap.transform)}");
-        }
-
-        static string DescribeTilemap(Tilemap tilemap)
-        {
-            if (tilemap == null)
-                return "null";
-
-            UnityEngine.Grid grid = tilemap.layoutGrid;
-            return $"id={tilemap.GetInstanceID()} anchor={tilemap.tileAnchor} " +
-                $"pos={tilemap.transform.position} scale={tilemap.transform.lossyScale} " +
-                $"gridRef={(grid != null ? grid.GetInstanceID().ToString() : "null")} " +
-                $"gridCellSize={(grid != null ? grid.cellSize.ToString() : "n/a")}";
-        }
-
-        static string GetTransformPath(Transform t)
-        {
-            if (t == null)
-                return "null";
-
-            var parts = new System.Collections.Generic.List<string>();
-            while (t != null)
-            {
-                parts.Add(t.name);
-                t = t.parent;
-            }
-
-            parts.Reverse();
-            return string.Join("/", parts);
         }
 
         static Tilemap FindOrCreateTilemap(Transform gridParent, string objectName, int sortingOrder)
@@ -199,8 +170,7 @@ namespace JRogue.World.Generation
             var go = new GameObject(objectName);
             go.transform.SetParent(parent, false);
             var tilemap = go.AddComponent<Tilemap>();
-            if (objectName is "Floor" or "Wall")
-                tilemap.tileAnchor = FloorWallTileAnchor;
+            tilemap.tileAnchor = FloorWallTileAnchor;
             var renderer = go.AddComponent<TilemapRenderer>();
             renderer.sortingOrder = sortingOrder;
             return tilemap;
@@ -259,16 +229,13 @@ namespace JRogue.World.Generation
         public void BindToMapManager(MapManager mapManager)
         {
             gameObject.SetActive(true);
-            Debug.Log(
-                $"[TileDebug] BindToMapManager '{FloorId}' before SetActiveFloor " +
-                $"floor={DescribeTilemap(floorMap)} wall={DescribeTilemap(wallMap)}");
             mapManager?.SetActiveFloor(Tilemaps, FloorId);
             mapManager?.ConfigurePaintTiles(definition?.FloorTile, definition?.WallTile);
-            Debug.Log($"[TileDebug] BindToMapManager '{FloorId}' after ConfigurePaintTiles");
         }
 
         public void FinishActivation(GridManager gridManager)
         {
+            DungeonFloorServiceBinder.BindActiveFloor(this);
             gridManager?.ClearAllOccupancy();
             ReregisterEnemyOccupancy(gridManager);
             RegisterPortalsWithService();
@@ -276,6 +243,7 @@ namespace JRogue.World.Generation
 
         public void ParkFloor()
         {
+            DungeonFloorServiceBinder.CaptureFeatureState(this);
             UnregisterPortalsFromService();
             gameObject.SetActive(false);
         }

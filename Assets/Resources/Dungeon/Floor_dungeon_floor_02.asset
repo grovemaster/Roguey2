@@ -22,12 +22,27 @@ MonoBehaviour:
   - spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
     minCount: 3
     maxCount: 5
+  hazardPopulation:
+  - definition: {fileID: 11400000, guid: b1c2d3e4f5a6478990abcdef12345001, type: 2}
+    minCount: 1
+    maxCount: 2
+    startHidden: 0
+  trapPopulation:
+  - definition: {fileID: 11400000, guid: 68220db961ef11f9285660299efa3bd8, type: 2}
+    minCount: 1
+    maxCount: 2
+  interactablePopulation: []
   portals:
   - portalLinkId: link_floor02_to_floor01
     targetFloorId: dungeon_floor_01
     portalMarkerId: portal_north
     portalCell: {x: 0, y: 0, z: 0}
     listLabel: Portal (North)
+  edgePortals: []
   arrivalBindings:
   - portalLinkId: link_floor01_to_floor02
     arrivalAnchor: {x: 10, y: 2, z: 0}
+  orthogonalEdgePortalCount: 0
+  orthogonalEdgeInset: 2
+  doorPolicy: 0
+  vaults: []

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using JRogue.Hazards;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
+using JRogue.Traps;
 using JRogue.World.Lighting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -114,7 +116,7 @@ namespace JRogue.World.Generation
             instance.BindToMapManager(map);
 
             if (!instance.IsGenerated)
-                DungeonFloorGenerator.GenerateFirstVisit(instance, run.RunSeed);
+                DungeonGenerationPipeline.GenerateFirstVisit(instance, run.RunSeed);
             else
                 DungeonGenerationLog.Info($"Floor '{floorId}' already generated — reusing parked state.");
 
@@ -175,6 +177,20 @@ namespace JRogue.World.Generation
             }
 
             _instances.Clear();
+            DungeonFloorServiceBinder.ClearSingletonServices();
+        }
+
+        /// <summary>
+        /// Tears down the current dungeon run (stub hub destination — §12 TBD).
+        /// </summary>
+        public void ExitDungeon()
+        {
+            DestroyAllFloors();
+            DungeonRunState run = DungeonRunState.Instance;
+            if (run != null)
+                run.SetActiveFloor(null);
+
+            DungeonGenerationLog.Info("ExitDungeon — all floor instances destroyed.");
         }
 
         DungeonFloorDefinition FindDefinition(string floorId)
@@ -228,6 +244,17 @@ namespace JRogue.World.Generation
 
             visibility.ResetForNewFloor();
             visibility.RefreshPartyVision();
+            RefreshWorldFeatureOverlayVisibility();
+        }
+
+        static void RefreshWorldFeatureOverlayVisibility()
+        {
+            HazardService hazards = HazardService.Instance;
+            if (hazards != null)
+                hazards.RefreshAllOverlayVisuals();
+
+            TrapService traps = TrapService.Instance;
+            traps?.RefreshOverlayVisibility();
         }
 
         DungeonFloorInstance FindOrCreateFloorInstance(DungeonFloorDefinition def)

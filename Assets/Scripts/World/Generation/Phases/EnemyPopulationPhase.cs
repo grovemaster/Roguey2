@@ -19,11 +19,11 @@ namespace JRogue.World.Generation.Phases
             if (map == null)
                 return;
 
-            List<Vector3Int> candidates = CollectCandidates(map, context);
+            List<Vector3Int> candidates = PopulationPlacementUtility.CollectFloorCandidates(map, context);
             if (candidates.Count == 0)
                 return;
 
-            Shuffle(candidates, context.Rng);
+            PopulationPlacementUtility.Shuffle(candidates, context.Rng);
             int candidateIndex = 0;
 
             int spawnedTotal = 0;
@@ -61,41 +61,5 @@ namespace JRogue.World.Generation.Phases
                 $"spawned={spawnedTotal} candidates={candidates.Count}");
         }
 
-        static List<Vector3Int> CollectCandidates(MapManager map, DungeonGenerationContext context)
-        {
-            DungeonLayoutStamp stamp = context.Definition.LayoutStamp;
-            var candidates = new List<Vector3Int>();
-            if (stamp == null)
-                return candidates;
-
-            for (int y = 0; y < stamp.Height; y++)
-            {
-                for (int x = 0; x < stamp.Width; x++)
-                {
-                    Vector3Int cell = new Vector3Int(x, y, 0);
-                    if (!stamp.IsFloor(x, y))
-                        continue;
-                    if (!map.IsWalkable(cell))
-                        continue;
-                    if (context.IsInSafeZone(cell))
-                        continue;
-                    if (context.ReservedCells.Contains(cell))
-                        continue;
-
-                    candidates.Add(cell);
-                }
-            }
-
-            return candidates;
-        }
-
-        static void Shuffle(List<Vector3Int> list, System.Random rng)
-        {
-            for (int i = list.Count - 1; i > 0; i--)
-            {
-                int swap = rng.Next(i + 1);
-                (list[i], list[swap]) = (list[swap], list[i]);
-            }
-        }
     }
 }

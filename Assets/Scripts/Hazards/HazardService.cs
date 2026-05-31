@@ -78,6 +78,9 @@ namespace JRogue.Hazards
             if (definition == null)
                 return;
 
+            if (!IsValidFloorHazardCell(cell))
+                return;
+
             var state = new HazardCellState(definition, startHidden);
             _hazards[cell] = state;
             RefreshOverlayVisual(cell, state);
@@ -92,9 +95,20 @@ namespace JRogue.Hazards
             foreach (Vector3Int pos in bounds.allPositionsWithin)
             {
                 TileBase tile = overlay.GetTile(pos);
-                if (tile is EnvironmentalHazardTile hazardTile && hazardTile.hazardDefinition != null)
-                    Register(pos, hazardTile.hazardDefinition, hazardTile.startHidden);
+                if (tile is not EnvironmentalHazardTile hazardTile || hazardTile.hazardDefinition == null)
+                    continue;
+
+                if (!IsValidFloorHazardCell(pos))
+                    continue;
+
+                Register(pos, hazardTile.hazardDefinition, hazardTile.startHidden);
             }
+        }
+
+        public void RefreshAllOverlayVisuals()
+        {
+            foreach (KeyValuePair<Vector3Int, HazardCellState> entry in _hazards)
+                RefreshOverlayVisual(entry.Key, entry.Value);
         }
 
         public bool CanEnter(Vector3Int cell, BaseActor actor)
@@ -316,7 +330,7 @@ namespace JRogue.Hazards
             if (hazardOverlayMap == null || state == null)
                 return;
 
-            if (!state.IsRevealed)
+            if (!state.IsRevealed || !IsCellVisibleToPlayer(cell))
             {
                 GridOverlayPainter.Clear(hazardOverlayMap, cell);
                 return;
@@ -331,14 +345,87 @@ namespace JRogue.Hazards
             if (hazardOverlayMap == null && MapManager.Instance != null)
                 hazardOverlayMap = MapManager.Instance.HazardOverlayMap;
 
-            if (hazardOverlayMap != null && _hazards.Count == 0)
+            // SampleScene only — dungeon floors register hazards via generation / snapshot restore.
+            if (hazardOverlayMap != null
+                && _hazards.Count == 0
+                && JRogue.World.Generation.DungeonFloorInstanceManager.Instance == null)
                 RegisterFromOverlayTilemap(hazardOverlayMap);
 
             RefreshHiddenHazardDetection();
+            RefreshAllOverlayVisuals();
+        }
+
+        static bool IsValidFloorHazardCell(Vector3Int cell)
+        {
+            MapManager map = MapManager.Instance;
+            if (map?.FloorMap == null)
+                return true;
+
+            if (!map.FloorMap.HasTile(cell))
+                return false;
+
+            return map.IsWalkable(cell);
+        }
+
+        static bool IsCellVisibleToPlayer(Vector3Int cell)
+        {
+            VisibilityManager visibility = Object.FindAnyObjectByType<VisibilityManager>();
+            if (visibility == null)
+                return true;
+
+            return visibility.IsVisible(cell);
         }
 
         bool TryGetState(Vector3Int cell, out HazardCellState state) =>
             _hazards.TryGetValue(cell, out state);
+
+        public void ClearAllRegistrations()
+        {
+            if (hazardOverlayMap != null)
+            {
+                foreach (Vector3Int cell in _hazards.Keys)
+                    GridOverlayPainter.Clear(hazardOverlayMap, cell);
+            }
+
+            _hazards.Clear();
+        }
+
+        public void CaptureSnapshot(System.Collections.Generic.List<JRogue.World.Generation.HazardSnapshotEntry> dest)
+        {
+            if (dest == null)
+                return;
+
+            dest.Clear();
+            foreach (System.Collections.Generic.KeyValuePair<Vector3Int, HazardCellState> pair in _hazards)
+            {
+                HazardCellState state = pair.Value;
+                if (state?.Definition == null)
+                    continue;
+
+                dest.Add(new JRogue.World.Generation.HazardSnapshotEntry
+                {
+                    cell = pair.Key,
+                    definition = state.Definition,
+                    isRevealed = state.IsRevealed,
+                });
+            }
+        }
+
+        public void RestoreSnapshot(System.Collections.Generic.IReadOnlyList<JRogue.World.Generation.HazardSnapshotEntry> src)
+        {
+            ClearAllRegistrations();
+            if (src == null)
+                return;
+
+            for (int i = 0; i < src.Count; i++)
+            {
+                JRogue.World.Generation.HazardSnapshotEntry entry = src[i];
+                if (entry.definition == null)
+                    continue;
+
+                Register(entry.cell, entry.definition, startHidden: !entry.isRevealed);
+            }
+        }
 
         static void LogPassageBlocked(EnvironmentalHazardDefinition def, BaseActor actor)
         {

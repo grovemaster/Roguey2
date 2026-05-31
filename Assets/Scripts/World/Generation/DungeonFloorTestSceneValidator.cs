@@ -158,6 +158,7 @@ namespace JRogue.World.Generation
                 systems.AddComponent<DungeonFloorInstanceManager>();
                 systems.AddComponent<DungeonFloorTestController>();
                 systems.AddComponent<PortalEntryService>();
+                DungeonWorldFeatureServices.EnsureOn(systems);
             }
             else
             {
@@ -169,6 +170,7 @@ namespace JRogue.World.Generation
                     systems.AddComponent<LightingBootstrap>();
                 if (systems.GetComponent<PortalEntryService>() == null)
                     systems.AddComponent<PortalEntryService>();
+                DungeonWorldFeatureServices.EnsureOn(systems);
             }
 
             if (party == null)

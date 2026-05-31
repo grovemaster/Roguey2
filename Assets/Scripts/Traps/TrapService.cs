@@ -458,5 +458,71 @@ namespace JRogue.Traps
 
             return _visibility.IsVisible(cell);
         }
+
+        public void ClearAllRegistrations()
+        {
+            if (trapOverlayMap != null)
+            {
+                for (int i = 0; i < _allInstances.Count; i++)
+                {
+                    TrapInstance instance = _allInstances[i];
+                    if (instance != null)
+                        GridOverlayPainter.Clear(trapOverlayMap, instance.HostCell);
+                }
+            }
+
+            _floorTrapsByCell.Clear();
+            _wallTrapsByHost.Clear();
+            _wallTrapsByTriggerCell.Clear();
+            _allInstances.Clear();
+            _pendingTriggeredInstances.Clear();
+        }
+
+        public void CaptureSnapshot(System.Collections.Generic.List<JRogue.World.Generation.TrapSnapshotEntry> dest)
+        {
+            if (dest == null)
+                return;
+
+            dest.Clear();
+            for (int i = 0; i < _allInstances.Count; i++)
+            {
+                TrapInstance instance = _allInstances[i];
+                if (instance?.Definition == null)
+                    continue;
+
+                dest.Add(new JRogue.World.Generation.TrapSnapshotEntry
+                {
+                    hostCell = instance.HostCell,
+                    definition = instance.Definition,
+                    hasTriggered = instance.HasTriggered,
+                    isDetected = instance.IsDetected,
+                    chargesRemaining = instance.ChargesRemaining,
+                });
+            }
+        }
+
+        public void RestoreSnapshot(System.Collections.Generic.IReadOnlyList<JRogue.World.Generation.TrapSnapshotEntry> src)
+        {
+            ClearAllRegistrations();
+            if (src == null)
+                return;
+
+            for (int i = 0; i < src.Count; i++)
+            {
+                JRogue.World.Generation.TrapSnapshotEntry entry = src[i];
+                if (entry.definition == null)
+                    continue;
+
+                Register(entry.hostCell, entry.definition);
+                if (!TryGetFloorTrap(entry.hostCell, out TrapInstance instance)
+                    && !TryGetWallTrap(entry.hostCell, out instance))
+                    continue;
+
+                instance.HasTriggered = entry.hasTriggered;
+                instance.IsDetected = entry.isDetected;
+                instance.ChargesRemaining = entry.chargesRemaining;
+                RefreshOverlayVisual(instance);
+            }
+        }
     }
 }

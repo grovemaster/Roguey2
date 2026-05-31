@@ -7,6 +7,7 @@ using JRogue.Manager.Floor;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Visibility.Algorithm;
+using JRogue.Hazards;
 using JRogue.Traps;
 using JRogue.World.Lighting;
 using UnityEngine;
@@ -444,6 +445,7 @@ public class VisibilityManager : MonoBehaviour
             essences.ApplyVisibility(this);
 
         TrapService.Instance?.RefreshOverlayVisibility();
+        HazardService.Instance?.RefreshAllOverlayVisuals();
     }
 
     void ApplyEnemyVisibility(EnemyController enemy)

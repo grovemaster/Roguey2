@@ -8,6 +8,8 @@ namespace JRogue.GridFeatures
     {
         public const int DefaultOverlaySortingOrder = 3;
 
+        static readonly Vector3 CenterPivotCellTranslate = new Vector3(0.5f, 0.5f, 0f);
+
         public static void ConfigureRenderer(Tilemap overlayMap, int sortingOrder = DefaultOverlaySortingOrder)
         {
             if (overlayMap == null)
@@ -24,8 +26,8 @@ namespace JRogue.GridFeatures
 
             if (tile != null)
             {
-                overlayMap.SetTransformMatrix(cell, Matrix4x4.identity);
                 overlayMap.SetTile(cell, tile);
+                overlayMap.SetTransformMatrix(cell, GetPaintMatrix(overlayMap, null, fillScale: 1f));
                 return;
             }
 
@@ -34,7 +36,7 @@ namespace JRogue.GridFeatures
                 var runtimeTile = ScriptableObject.CreateInstance<Tile>();
                 runtimeTile.sprite = sprite;
                 overlayMap.SetTile(cell, runtimeTile);
-                overlayMap.SetTransformMatrix(cell, CreateCellFillMatrix(overlayMap, sprite, fillScale: 1f));
+                overlayMap.SetTransformMatrix(cell, GetPaintMatrix(overlayMap, sprite, fillScale: 1f));
                 return;
             }
 
@@ -51,10 +53,22 @@ namespace JRogue.GridFeatures
         }
 
         /// <summary>
-        /// Scales a sprite to exactly fill one grid cell. Works with <see cref="Tilemap.tileAnchor"/> at (0,0)
-        /// so neighboring cells share edges with no dark gaps.
+        /// Matrix for overlay tiles/sprites aligned with floor paint (anchor at corner + center-pivot translate).
         /// </summary>
-        public static Matrix4x4 CreateCellFillMatrix(Tilemap overlayMap, Sprite sprite, float fillScale = 1f)
+        public static Matrix4x4 GetPaintMatrix(Tilemap overlayMap, Sprite sprite, float fillScale = 1f)
+        {
+            Matrix4x4 fill = CreateCellFillScaleMatrix(overlayMap, sprite, fillScale);
+            if (overlayMap == null || overlayMap.tileAnchor != Vector3.zero)
+                return fill;
+
+            Matrix4x4 translate = Matrix4x4.TRS(CenterPivotCellTranslate, Quaternion.identity, Vector3.one);
+            return translate * fill;
+        }
+
+        /// <summary>
+        /// Scales a sprite to fill one grid cell (scale only; combine via <see cref="GetPaintMatrix"/>).
+        /// </summary>
+        public static Matrix4x4 CreateCellFillScaleMatrix(Tilemap overlayMap, Sprite sprite, float fillScale = 1f)
         {
             if (overlayMap == null || sprite == null)
                 return Matrix4x4.identity;
@@ -80,7 +94,6 @@ namespace JRogue.GridFeatures
             if (anchor.x == 0f && anchor.y == 0f)
                 return Matrix4x4.Scale(new Vector3(scaleX, scaleY, 1f));
 
-            // Center-anchored tilemaps: offset so scaled sprite still fills the cell.
             float offsetX = cellSize.x * (0.5f - anchor.x) * (1f - scaleX);
             float offsetY = cellSize.y * (0.5f - anchor.y) * (1f - scaleY);
             return Matrix4x4.TRS(
@@ -89,5 +102,11 @@ namespace JRogue.GridFeatures
                 new Vector3(scaleX, scaleY, 1f));
         }
 
+        /// <summary>
+        /// Scales a sprite to exactly fill one grid cell. Works with <see cref="Tilemap.tileAnchor"/> at (0,0)
+        /// so neighboring cells share edges with no dark gaps.
+        /// </summary>
+        public static Matrix4x4 CreateCellFillMatrix(Tilemap overlayMap, Sprite sprite, float fillScale = 1f) =>
+            GetPaintMatrix(overlayMap, sprite, fillScale);
     }
 }

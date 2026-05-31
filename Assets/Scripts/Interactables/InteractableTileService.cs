@@ -234,5 +234,59 @@ namespace JRogue.Interactables
             interactableOverlayMap = overlayGo.AddComponent<Tilemap>();
             overlayGo.AddComponent<TilemapRenderer>();
         }
+
+        public void ClearAllRegistrations()
+        {
+            if (interactableOverlayMap != null)
+            {
+                foreach (Vector3Int cell in _byCell.Keys)
+                    GridOverlayPainter.Clear(interactableOverlayMap, cell);
+            }
+
+            _byCell.Clear();
+            _byId.Clear();
+        }
+
+        public void CaptureSnapshot(System.Collections.Generic.List<JRogue.World.Generation.InteractableSnapshotEntry> dest)
+        {
+            if (dest == null)
+                return;
+
+            dest.Clear();
+            foreach (System.Collections.Generic.KeyValuePair<Vector3Int, InteractableTileInstance> pair in _byCell)
+            {
+                InteractableTileInstance instance = pair.Value;
+                if (instance?.Definition == null)
+                    continue;
+
+                dest.Add(new JRogue.World.Generation.InteractableSnapshotEntry
+                {
+                    cell = instance.Cell,
+                    definition = instance.Definition,
+                    isOn = instance.IsOn,
+                });
+            }
+        }
+
+        public void RestoreSnapshot(System.Collections.Generic.IReadOnlyList<JRogue.World.Generation.InteractableSnapshotEntry> src)
+        {
+            ClearAllRegistrations();
+            if (src == null)
+                return;
+
+            for (int i = 0; i < src.Count; i++)
+            {
+                JRogue.World.Generation.InteractableSnapshotEntry entry = src[i];
+                if (entry.definition == null)
+                    continue;
+
+                Register(entry.cell, entry.definition);
+                if (entry.isOn && TryGetInstance(entry.cell, out InteractableTileInstance instance))
+                {
+                    instance.SetOn();
+                    RefreshOverlayVisual(instance);
+                }
+            }
+        }
     }
 }

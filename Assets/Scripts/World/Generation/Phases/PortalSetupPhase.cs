@@ -1,4 +1,3 @@
-using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
@@ -8,7 +7,7 @@ namespace JRogue.World.Generation.Phases
         public void Execute(DungeonGenerationContext context)
         {
             DungeonFloorDefinition def = context.Definition;
-            if (def?.Portals == null)
+            if (def == null)
                 return;
 
             for (int i = 0; i < def.ArrivalBindings.Count; i++)
@@ -22,30 +21,69 @@ namespace JRogue.World.Generation.Phases
             }
 
             int placed = 0;
+            var usedCells = new System.Collections.Generic.HashSet<Vector3Int>();
+
             for (int i = 0; i < def.Portals.Count; i++)
+                TryPlacePortal(context, def.Portals[i], usedCells, ref placed);
+
+            for (int i = 0; i < context.ResolvedEdgePortals.Count; i++)
             {
-                DungeonPortalSpec spec = def.Portals[i];
-                Vector3Int portalCell = ResolvePortalCell(def.LayoutStamp, spec);
-                if (portalCell == new Vector3Int(int.MinValue, int.MinValue, 0))
+                ResolvedEdgePortal edgePortal = context.ResolvedEdgePortals[i];
+                if (!usedCells.Add(edgePortal.cell))
                     continue;
 
-                context.ReservedCells.Add(portalCell);
-                context.AddChebyshevDisk(portalCell, def.PlayerSafeRadius);
-
-                var interactable = new PortalInteractable(
-                    portalCell,
-                    spec.portalLinkId,
-                    spec.targetFloorId,
-                    string.IsNullOrEmpty(spec.listLabel) ? "Portal" : spec.listLabel);
-
-                context.Portals.Add(interactable);
-                context.Instance.RegisterPortal(interactable);
-                context.Instance.PlacePortalVisual(portalCell);
-                placed++;
+                def.TryGetEdgePortalSpec(edgePortal.edge, out EdgePortalSpec edgeSpec);
+                if (!string.IsNullOrEmpty(edgeSpec.targetFloorId))
+                {
+                    var spec = new DungeonPortalSpec
+                    {
+                        portalLinkId = edgeSpec.portalLinkId,
+                        targetFloorId = edgeSpec.targetFloorId,
+                        portalCell = edgePortal.cell,
+                        listLabel = edgeSpec.listLabel,
+                    };
+                    TryPlacePortal(context, spec, usedCells, ref placed);
+                }
+                else
+                {
+                    context.Instance.PlacePortalVisual(edgePortal.cell);
+                }
             }
 
             DungeonGenerationLog.Phase(nameof(PortalSetupPhase),
                 $"portals={placed} arrivalBindings={def.ArrivalBindings.Count}");
+        }
+
+        static void TryPlacePortal(
+            DungeonGenerationContext context,
+            DungeonPortalSpec spec,
+            System.Collections.Generic.HashSet<Vector3Int> usedCells,
+            ref int placed)
+        {
+            Vector3Int portalCell = ResolvePortalCell(context.Definition.LayoutStamp, spec);
+            if (portalCell == new Vector3Int(int.MinValue, int.MinValue, 0))
+                return;
+
+            if (!usedCells.Add(portalCell))
+                return;
+
+            context.ReservedCells.Add(portalCell);
+            context.AddChebyshevDisk(portalCell, context.Definition.PlayerSafeRadius);
+
+            context.Instance.PlacePortalVisual(portalCell);
+
+            if (string.IsNullOrEmpty(spec.targetFloorId))
+                return;
+
+            var interactable = new PortalInteractable(
+                portalCell,
+                spec.portalLinkId,
+                spec.targetFloorId,
+                string.IsNullOrEmpty(spec.listLabel) ? "Portal" : spec.listLabel);
+
+            context.Portals.Add(interactable);
+            context.Instance.RegisterPortal(interactable);
+            placed++;
         }
 
         static Vector3Int ResolvePortalCell(DungeonLayoutStamp stamp, DungeonPortalSpec spec)
