@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,11 @@ namespace JRogue.Core.Actor
 {
     public static class GridFootprintUtility
     {
+        /// <summary>
+        /// World offset from cell origin for 1×1 actors (1-unit cells → 0.75 along X and Y).
+        /// </summary>
+        public const float SingleCellActorInsetRatio = 0.75f;
+
         public static bool IsSingleCell(IGridFootprint footprint) =>
             footprint != null && IsSingleCell(footprint.Layout, footprint.FootprintWidth, footprint.FootprintHeight);
 
@@ -14,13 +20,20 @@ namespace JRogue.Core.Actor
         /// <summary>
         /// Derives the footprint anchor from a scene transform position (integer corner or footprint center).
         /// </summary>
-        public static Vector3Int ResolvePlacementAnchor(Vector3 worldPosition, IGridFootprint footprint)
-        {
-            if (footprint == null)
-                return Vector3Int.FloorToInt(worldPosition - new Vector3(0.5f, 0.5f, 0f));
+        public static Vector3Int ResolvePlacementAnchor(Vector3 worldPosition, IGridFootprint footprint) =>
+            ResolvePlacementAnchor(worldPosition, footprint, null);
 
-            if (IsSingleCell(footprint))
-                return Vector3Int.FloorToInt(worldPosition - new Vector3(0.5f, 0.5f, 0f));
+        /// <summary>
+        /// Derives the grid cell anchor from a world transform, using sprite bounds when provided so
+        /// bottom-left pivots invert <see cref="GetSingleCellActorWorldPosition"/> correctly.
+        /// </summary>
+        public static Vector3Int ResolvePlacementAnchor(
+            Vector3 worldPosition,
+            IGridFootprint footprint,
+            SpriteRenderer spriteRenderer)
+        {
+            if (footprint == null || IsSingleCell(footprint))
+                return ResolveSingleCellAnchor(worldPosition, spriteRenderer);
 
             if (IsAnchorCornerPlacement(worldPosition))
                 return new Vector3Int(Mathf.RoundToInt(worldPosition.x), Mathf.RoundToInt(worldPosition.y), 0);
@@ -145,10 +158,66 @@ namespace JRogue.Core.Actor
             return new Vector3((minX + maxX + 1f) * 0.5f, (minY + maxY + 1f) * 0.5f, 0f);
         }
 
+        internal static Vector3 DefaultCellCenter(Vector3Int cell) =>
+            new Vector3(cell.x + 0.5f, cell.y + 0.5f, 0f);
+
+        static Vector3Int DefaultWorldToCell(Vector3 worldPosition) =>
+            new Vector3Int(Mathf.FloorToInt(worldPosition.x), Mathf.FloorToInt(worldPosition.y), 0);
+
         /// <summary>
-        /// World position for the footprint anchor (bottom-left cell corner). Multi-tile actors with
-        /// bottom-left sprite pivots use this as the root transform position.
+        /// World position for a 1×1 actor on a tile (cell origin + <see cref="SingleCellActorInsetRatio"/> per axis).
         /// </summary>
+        public static Vector3 GetSingleCellActorWorldPosition(Vector3Int cell, Transform actorRoot = null) =>
+            GetSingleCellActorWorldPosition(cell, DefaultCellCenter(cell), Vector3.one);
+
+        public static Vector3 GetSingleCellActorWorldPosition(
+            Vector3Int cell,
+            Vector3 cellCenterWorld,
+            Vector3 cellSize)
+        {
+            Vector3 inset = new Vector3(
+                cellSize.x * SingleCellActorInsetRatio,
+                cellSize.y * SingleCellActorInsetRatio,
+                0f);
+            return cellCenterWorld - cellSize * 0.5f + inset;
+        }
+
+        public static Vector3Int ResolveSingleCellAnchor(Vector3 worldPosition, SpriteRenderer spriteRenderer = null) =>
+            ResolveSingleCellAnchor(worldPosition, spriteRenderer, DefaultWorldToCell, Vector3.one);
+
+        public static Vector3Int ResolveSingleCellAnchor(
+            Vector3 worldPosition,
+            SpriteRenderer spriteRenderer,
+            Func<Vector3, Vector3Int> worldToCell,
+            Vector3 cellSize)
+        {
+            Vector3 inset = new Vector3(
+                cellSize.x * SingleCellActorInsetRatio,
+                cellSize.y * SingleCellActorInsetRatio,
+                0f);
+            return worldToCell(worldPosition - inset);
+        }
+
+        public static SpriteRenderer FindPrimarySpriteRenderer(Transform actorRoot)
+        {
+            if (actorRoot == null)
+                return null;
+
+            SpriteRenderer rootRenderer = actorRoot.GetComponent<SpriteRenderer>();
+            if (rootRenderer != null && rootRenderer.sprite != null)
+                return rootRenderer;
+
+            Transform visual = actorRoot.Find(FootprintPoseUtility.VisualChildName);
+            if (visual != null)
+            {
+                SpriteRenderer visualRenderer = visual.GetComponent<SpriteRenderer>();
+                if (visualRenderer != null && visualRenderer.sprite != null)
+                    return visualRenderer;
+            }
+
+            return actorRoot.GetComponentInChildren<SpriteRenderer>();
+        }
+
         public static Vector3 GetFootprintAnchorWorldPosition(Vector3Int anchor) =>
             new Vector3(anchor.x, anchor.y, 0f);
 
@@ -362,9 +431,20 @@ namespace JRogue.Core.Actor
             FootprintLayout layout,
             int width,
             int height,
-            FacingDirection facing) =>
+            FacingDirection facing,
+            Transform actorRoot = null) =>
+            GetRootWorldPosition(anchor, layout, width, height, facing, GridFootprintUtility.DefaultCellCenter(anchor), Vector3.one);
+
+        public static Vector3 GetRootWorldPosition(
+            Vector3Int anchor,
+            FootprintLayout layout,
+            int width,
+            int height,
+            FacingDirection facing,
+            Vector3 cellCenterWorld,
+            Vector3 cellSize) =>
             GridFootprintUtility.IsSingleCell(layout, width, height)
-                ? new Vector3(anchor.x + 0.5f, anchor.y + 0.5f, 0f)
+                ? GridFootprintUtility.GetSingleCellActorWorldPosition(anchor, cellCenterWorld, cellSize)
                 : GridFootprintUtility.GetFootprintAnchorWorldPosition(anchor);
     }
 }

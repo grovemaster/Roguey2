@@ -64,6 +64,28 @@ namespace JRogue.Tests.UnitTests.Combat
         }
 
         [Test]
+        public void GetSingleCellActorWorldPosition_UsesThreeQuarterCellInsetFromCenter()
+        {
+            var cell = new Vector3Int(16, 10, 0);
+            Vector3 cellCenter = new Vector3(16.5f, 10.5f, 0f);
+            Vector3 world = GridFootprintUtility.GetSingleCellActorWorldPosition(cell, cellCenter, Vector3.one);
+
+            Assert.AreEqual(16.75f, world.x, 0.001f);
+            Assert.AreEqual(10.75f, world.y, 0.001f);
+            Assert.AreEqual(cell, GridFootprintUtility.ResolveSingleCellAnchor(world, null, DefaultWorldToCell, Vector3.one));
+
+            Vector3Int fromSubtract = GridFootprintUtility.ResolveSingleCellAnchor(
+                new Vector3(16.75f, 10.75f, 0f),
+                null,
+                DefaultWorldToCell,
+                Vector3.one);
+            Assert.AreEqual(cell, fromSubtract);
+        }
+
+        static Vector3Int DefaultWorldToCell(Vector3 world) =>
+            new Vector3Int(Mathf.FloorToInt(world.x), Mathf.FloorToInt(world.y), 0);
+
+        [Test]
         public void CenterPivotAtAnchorWithoutOffset_OnlyOneCellOverlapsFootprint()
         {
             var anchor = new Vector3Int(-2, -2, 0);

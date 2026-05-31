@@ -45,9 +45,10 @@ namespace JRogue.Actors.Components
             if (footprint == null)
                 footprint = GetComponent<IGridFootprint>();
 
-            gridPosition = footprint != null
-                ? GridFootprintUtility.ResolvePlacementAnchor(transform.position, footprint)
-                : Vector3Int.FloorToInt(transform.position - new Vector3(0.5f, 0.5f, 0f));
+            SpriteRenderer spriteRenderer = GridFootprintUtility.FindPrimarySpriteRenderer(transform);
+            gridPosition = footprint != null && !GridFootprintUtility.IsSingleCell(footprint)
+                ? GridFootprintUtility.ResolvePlacementAnchor(transform.position, footprint, spriteRenderer)
+                : GridCellWorld.WorldToCellForSingleCellActor(transform.position);
 
             RegisterAtCurrentAnchor();
             SyncFootprintPose();
@@ -154,7 +155,7 @@ namespace JRogue.Actors.Components
             if (footprint != null && !GridFootprintUtility.IsSingleCell(footprint))
                 transform.position = GridFootprintUtility.GetFootprintAnchorWorldPosition(gridPosition);
             else
-                transform.position = new Vector3(gridPosition.x + 0.5f, gridPosition.y + 0.5f, 0);
+                transform.position = GridCellWorld.GetSingleCellActorPosition(gridPosition);
         }
 
         /// <summary>

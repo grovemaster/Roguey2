@@ -141,6 +141,16 @@ namespace JRogue.Manager.Party
             RefreshCameraFollow();
         }
 
+        /// <summary>
+        /// When the roster is created after <see cref="Start"/> (e.g. dungeon generate), run services that
+        /// <see cref="Start"/> would have wired with an empty list.
+        /// </summary>
+        public void InitializeRosterAfterDeferredSpawn()
+        {
+            ManaStoneAutoPickupService.Instance?.SubscribePartyMembers();
+            BootstrapMainCharacterDesignation();
+        }
+
         /// <summary>Points the main camera at the currently controlled party member.</summary>
         public void RefreshCameraFollow()
         {

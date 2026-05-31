@@ -186,6 +186,8 @@ namespace JRogue.Manager.Grid
             }
         }
 
+        public void ClearAllOccupancy() => actorMap.Clear();
+
         /// <summary>
         /// Yields the eight neighboring grid cells (including diagonals) around <paramref name="origin"/>.
         /// </summary>

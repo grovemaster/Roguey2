@@ -34,7 +34,7 @@ namespace JRogue.GridFeatures
                 var runtimeTile = ScriptableObject.CreateInstance<Tile>();
                 runtimeTile.sprite = sprite;
                 overlayMap.SetTile(cell, runtimeTile);
-                overlayMap.SetTransformMatrix(cell, GetCellFillMatrix(overlayMap, sprite));
+                overlayMap.SetTransformMatrix(cell, CreateCellFillMatrix(overlayMap, sprite));
                 return;
             }
 
@@ -50,7 +50,7 @@ namespace JRogue.GridFeatures
             overlayMap.SetTile(cell, null);
         }
 
-        static Matrix4x4 GetCellFillMatrix(Tilemap overlayMap, Sprite sprite)
+        public static Matrix4x4 CreateCellFillMatrix(Tilemap overlayMap, Sprite sprite)
         {
             if (overlayMap == null || sprite == null)
                 return Matrix4x4.identity;

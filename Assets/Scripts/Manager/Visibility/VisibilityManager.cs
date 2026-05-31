@@ -68,6 +68,10 @@ public class VisibilityManager : MonoBehaviour
         if (player != null)
             playerTransform = player.transform;
 
+        // Procedural floors paint after Start; dungeon activation calls ResetForNewFloor + refresh.
+        if (!HasPaintedTilesInBoundTilemaps())
+            return;
+
         ResetForNewFloor();
         RefreshPartyVision();
     }
@@ -129,7 +133,13 @@ public class VisibilityManager : MonoBehaviour
     {
         HashSet<Vector3Int> currentVisible = ComputeCurrentVisibleSet(out HashSet<Vector3Int> currentLitVisible);
         if (currentVisible.Count == 0)
+        {
+            ApplyUnseenToAllKnownCells();
+            _currentlyVisible.Clear();
+            _currentlyLitVisible.Clear();
+            ApplyEntityVisibility();
             return;
+        }
 
         // Visible -> explored.
         foreach (Vector3Int prev in _currentlyVisible)
@@ -216,6 +226,33 @@ public class VisibilityManager : MonoBehaviour
             _currentlyLitVisible.Add(cell);
 
         ApplyEntityVisibility();
+    }
+
+    void ApplyUnseenToAllKnownCells()
+    {
+        foreach (Vector3Int cell in _knownCells)
+            TintCell(cell, unseenColor);
+    }
+
+    bool HasPaintedTilesInBoundTilemaps()
+    {
+        if (tilemaps == null)
+            return false;
+
+        for (int i = 0; i < tilemaps.Count; i++)
+        {
+            Tilemap tm = tilemaps[i];
+            if (tm == null)
+                continue;
+
+            foreach (Vector3Int pos in tm.cellBounds.allPositionsWithin)
+            {
+                if (tm.HasTile(pos))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     HashSet<Vector3Int> ComputeCurrentVisibleSet(out HashSet<Vector3Int> litVisible)

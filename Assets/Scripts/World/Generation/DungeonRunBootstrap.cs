@@ -1,0 +1,112 @@
+using System.Collections.Generic;
+using JRogue.Actors;
+using JRogue.Actors.Components;
+using JRogue.Manager.Party;
+using UnityEngine;
+
+namespace JRogue.World.Generation
+{
+    public sealed class DungeonRunBootstrap : MonoBehaviour
+    {
+        [SerializeField] bool applyOnAwake = true;
+        [SerializeField] GameObject[] partyMemberPrefabs;
+        [SerializeField] Transform partyContainer;
+        [SerializeField] DungeonFloorInstanceManager floorInstanceManager;
+
+        void Awake()
+        {
+            if (!applyOnAwake)
+                return;
+
+            EnsureDungeonRunObjects();
+            // Party is spawned when the dungeon floor is ready (Generate / enter dungeon),
+            // not here — instantiating at (0,0,0) causes GridMover registration conflicts.
+        }
+
+        public void EnsureDungeonRunObjects()
+        {
+            if (DungeonRunState.Instance == null)
+            {
+                var runGo = new GameObject("DungeonRunState");
+                runGo.AddComponent<DungeonRunState>();
+            }
+
+            if (floorInstanceManager == null)
+            {
+                floorInstanceManager = DungeonFloorInstanceManager.Instance;
+                if (floorInstanceManager == null)
+                {
+                    var managerGo = new GameObject("DungeonFloorInstanceManager");
+                    floorInstanceManager = managerGo.AddComponent<DungeonFloorInstanceManager>();
+                    if (floorInstanceManager.UseDontDestroyOnLoad)
+                        DontDestroyOnLoad(managerGo);
+                }
+            }
+            else if (floorInstanceManager.UseDontDestroyOnLoad)
+            {
+                DontDestroyOnLoad(floorInstanceManager.gameObject);
+            }
+        }
+
+        public void EnsurePartyRoster()
+        {
+            PartyManager party = PartyManager.Instance;
+            if (party == null)
+                return;
+
+            if (party.partyMembers != null && party.partyMembers.Count > 0)
+                return;
+
+            if (partyMemberPrefabs == null || partyMemberPrefabs.Length == 0)
+            {
+#if UNITY_EDITOR
+                partyMemberPrefabs = LoadDefaultPartyPrefabsEditor();
+#endif
+            }
+
+            if (partyMemberPrefabs == null || partyMemberPrefabs.Length == 0)
+                return;
+
+            party.partyMembers = new List<BaseActor>();
+            Transform parent = partyContainer != null ? partyContainer : party.transform;
+
+            for (int i = 0; i < partyMemberPrefabs.Length; i++)
+            {
+                GameObject prefab = partyMemberPrefabs[i];
+                if (prefab == null)
+                    continue;
+
+                GameObject instance = Instantiate(prefab, parent);
+                GridMover mover = instance.GetComponent<GridMover>();
+                if (mover != null)
+                    mover.enabled = false;
+
+                BaseActor actor = instance.GetComponent<BaseActor>();
+                if (actor != null)
+                    party.partyMembers.Add(actor);
+            }
+        }
+
+#if UNITY_EDITOR
+        static GameObject[] LoadDefaultPartyPrefabsEditor()
+        {
+            string[] paths =
+            {
+                "Assets/Prefabs/Actor/Race/BarbarianPlayer.prefab",
+                "Assets/Prefabs/Actor/Race/HumanPlayer.prefab",
+                "Assets/Prefabs/Actor/Race/ElfPlayer.prefab",
+            };
+
+            var loaded = new System.Collections.Generic.List<GameObject>();
+            for (int i = 0; i < paths.Length; i++)
+            {
+                GameObject prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(paths[i]);
+                if (prefab != null)
+                    loaded.Add(prefab);
+            }
+
+            return loaded.Count > 0 ? loaded.ToArray() : null;
+        }
+#endif
+    }
+}

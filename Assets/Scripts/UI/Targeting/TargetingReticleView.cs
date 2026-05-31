@@ -172,7 +172,7 @@ namespace JRogue.UI.Targeting
             if (marker == null)
                 return;
 
-            marker.transform.position = new Vector3(cell.x + 0.5f, cell.y + 0.5f, 0f);
+            marker.transform.position = JRogue.Manager.Grid.GridCellWorld.GetCellCenter(cell);
             SpriteRenderer sr = marker.GetComponent<SpriteRenderer>();
             if (sr != null)
                 sr.sortingOrder = sortingOrder;

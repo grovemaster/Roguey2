@@ -21,6 +21,10 @@ namespace JRogue.Input
         private InputAction openDoorAction;
         private InputAction closeDoorAction;
         private InputAction interactAction;
+        private InputAction moveAction;
+        private InputAction waitAction;
+        private InputAction confirmAction;
+        private InputAction cancelAction;
         private readonly PlayerCommandProcessor commandProcessor = new PlayerCommandProcessor();
 
         public PlayerCommandProcessor CommandProcessor => commandProcessor;
@@ -157,6 +161,8 @@ namespace JRogue.Input
                 interactAction.performed += OnInteractPerformed;
             }
 
+            WireCoreGameplayActions(playerInput);
+
             AdjacentInteractPickerModalUI.EnsureInstance();
             AltarOfferingModalUI.EnsureInstance();
             AltarUsedModalUI.EnsureInstance();
@@ -211,7 +217,53 @@ namespace JRogue.Input
                 interactAction = null;
             }
 
+            if (moveAction != null)
+            {
+                moveAction.performed -= OnMove;
+                moveAction = null;
+            }
+
+            if (waitAction != null)
+            {
+                waitAction.performed -= OnWait;
+                waitAction = null;
+            }
+
+            if (confirmAction != null)
+            {
+                confirmAction.performed -= OnConfirm;
+                confirmAction = null;
+            }
+
+            if (cancelAction != null)
+            {
+                cancelAction.performed -= OnCancel;
+                cancelAction = null;
+            }
+
             controls?.Dispose();
+        }
+
+        void WireCoreGameplayActions(PlayerInput playerInput)
+        {
+            if (playerInput?.actions == null)
+                return;
+
+            moveAction = playerInput.actions.FindAction("Move", throwIfNotFound: false);
+            if (moveAction != null)
+                moveAction.performed += OnMove;
+
+            waitAction = playerInput.actions.FindAction("Wait", throwIfNotFound: false);
+            if (waitAction != null)
+                waitAction.performed += OnWait;
+
+            confirmAction = playerInput.actions.FindAction("Confirm", throwIfNotFound: false);
+            if (confirmAction != null)
+                confirmAction.performed += OnConfirm;
+
+            cancelAction = playerInput.actions.FindAction("Cancel", throwIfNotFound: false);
+            if (cancelAction != null)
+                cancelAction.performed += OnCancel;
         }
 
         void OnInteractPerformed(InputAction.CallbackContext context)

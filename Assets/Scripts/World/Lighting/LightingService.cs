@@ -268,6 +268,16 @@ namespace JRogue.World.Lighting
                 Debug.Log($"[Lighting:Receive] Registry finalized ({_cells.Count} cells).");
         }
 
+        /// <summary>
+        /// Adds floor receivers for cells painted after <see cref="FinalizeRegistry"/> (e.g. procedural dungeon generate).
+        /// </summary>
+        public void SyncFloorReceiversFromMap()
+        {
+            BuildFloorReceivers();
+            if (_registryFinalized)
+                RecomputeAll();
+        }
+
         void EnsureRegistryFinalized()
         {
             if (!_registryFinalized)

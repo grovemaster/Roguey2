@@ -4,6 +4,7 @@ using JRogue.Actors.Components;
 using JRogue.Controller.Player;
 using JRogue.Core.Actor;
 using JRogue.Data.Enemy;
+using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Loot;
@@ -228,12 +229,14 @@ namespace JRogue.Controller.Enemy
                 return;
             }
 
-            transform.position = FootprintPoseUtility.GetRootWorldPosition(
-                anchor,
-                footprintLayout,
-                footprintWidth,
-                footprintHeight,
-                currentFacing);
+            transform.position = GridFootprintUtility.IsSingleCell(footprintLayout, footprintWidth, footprintHeight)
+                ? GridCellWorld.GetSingleCellActorPosition(anchor)
+                : FootprintPoseUtility.GetRootWorldPosition(
+                    anchor,
+                    footprintLayout,
+                    footprintWidth,
+                    footprintHeight,
+                    currentFacing);
             FootprintPoseUtility.ApplyVisual(anchor, footprintLayout, footprintWidth, footprintHeight, currentFacing, transform);
         }
 

@@ -1,8 +1,8 @@
 # Dynamic dungeon floor generation — Requirements (draft)
 
-**Status:** Draft for review — expect back-and-forth before locking §§ marked **TBD**.
+**Status:** **v0 locked** — implement as **v0a** (vertical slice) then **v0b** (full v0). Parent spec for layout/portal/lighting; v1+ in §2.4 and §17.
 
-**Purpose:** Move from **hand-authored SampleScene** to **per-run procedural dungeon floors** (DCSS-style: new layout every run). This doc covers **scene strategy**, **production scene hierarchy**, **QA exclusion**, **floor definition data**, **generation pipeline**, **placement algorithms**, **vaults**, and **refactors** needed in existing code.
+**Purpose:** Move from **hand-authored SampleScene** to **per-run dungeon floors** with **pre-baked layouts** (v0), multi-floor persistence, and Barbarian-style portals. v1 adds procedural room-and-corridor (§17).
 
 **Depends on:** `MapManager`, `GridManager`, `PartyManager`, `TurnManager`, `VisibilityManager`, `LightingService`, `HazardService`, `TrapService`, `InteractableTileService`, `DoorService`, `EnemySpawnService`, floor economy (`FloorItemPileService`, `FloorEssenceService`), [Fog of War](Fog-Of-War-Requirements.md), [Lighting](Lighting-Requirements.md), [Traps](../Combat/Traps-Requirements.md), [Environmental hazards](../Combat/Environmental-Hazards-Requirements.md), [Interactables](../Combat/Interactable-Tiles-Requirements.md), [Doors](Door-Requirements.md), [Altars](Altar-And-Map-Interact-Requirements.md), [Enemy spawn](../Combat/Conditional-Enemy-Spawn-Requirements.md), [Floor items](../Inventory/Floor-Item-Pile-Requirements.md), [Essence drops](../Essence/Enemy-Essence-Drops-Requirements.md).
 
@@ -137,22 +137,22 @@ DungeonRun (DDOL)
 | Concern | Approach |
 |---------|----------|
 | **One MapManager** | On switch: `MapManager.SetActiveFloor(instance)` rebinds tilemap references to the active child |
-| **Services** (`TrapService`, `HazardService`, …) | **Per-floor registries** inside `DungeonFloorInstance`, or global service clears/reloads from instance snapshot on switch — prefer **per-floor** to avoid bleed |
+| **Services** (`TrapService`, `HazardService`, …) | **v0a:** global services OK for single active floor; **v0b:** on switch, **export/import** registrations into `DungeonFloorInstance` (or per-floor sub-services) so Floor 1 state does not bleed into Floor 2 |
 | **Fog / lighting** | Per-floor `VisibilityManager` state or snapshot blob on park |
 | **Memory** | Cost = sum of visited floors; acceptable for typical run depth (2–10). Cap max parked floors if needed later |
 | **Alternative (v0 fallback)** | Serialize instance to `FloorSnapshot` when parking, destroy GameObjects, **rehydrate** on return — logically preserved, heavier IO; use if single-scene tilemap swap is too risky |
 
 **Why not teardown-on-switch:** Your design (return to Floor 1 and find it unchanged) requires either **parked roots** or **lossless snapshot**. Teardown + `Initialize()` from seed violates “not recreated.”
 
-**Sync with party:** Party is **not** parented under floor roots long-term; on switch, move `GridMover` anchors to cells on the **active** floor’s grid. Inactive floors keep **enemy GameObjects** disabled under their `EnemyContainer` (AI off, renderers off) or snapshot-only (no GOs) — **TBD** performance tradeoff; default **disable roots**.
+**Sync with party:** Party is **not** parented under floor roots long-term; on switch, move `GridMover` anchors to cells on the **active** floor’s grid.
 
-#### Scene loading patterns (still TBD)
+#### Scene loading — **locked for v0**
 
-| Pattern | Fit for multi-floor park |
-|---------|--------------------------|
-| **B — Single run scene + `Floors/*` children** | **Best fit** for simultaneous instances |
-| **A — Additive scenes per floorId** | Possible (one additive scene per floor, unload = park) |
-| **C — Full reload** | **Poor fit** — fights persistence |
+| Decision | Choice |
+|----------|--------|
+| **Pattern** | **B —** `DungeonRun` (DDOL) + `Floors/{floorId}/` child roots (§16) |
+| **Park** | **`SetActive(false)`** on inactive floor root; enemies/UI on that floor disabled, not destroyed |
+| **Snapshot fallback** | Defer unless disable roots cause unacceptable memory — not v0a |
 
 **Locked intent:** Party/UI **DDOL**; **one `DungeonFloorInstance` per visited `floorId`** until exit dungeon; **switch = park/activate**, not regenerate.
 
@@ -529,7 +529,7 @@ Author under `Assets/Data/Dungeon/Floors/` (path TBD).
 
 ### R6.2 — Grid bounds
 
-- Generation writes only within `[0, width) × [0, height)` (origin TBD — likely (0,0) bottom-left).
+- Generation writes only within `[0, width) × [0, height)` — origin **(0, 0)** = bottom-left (v0 locked).
 - `MapManager` / `GridManager` must support **resizing** or **preallocated** tilemaps cleared each gen — **refactor required** (§10).
 
 ### R6.3 — Default light ambience (v0)
@@ -620,7 +620,7 @@ Doors are **not** global. `DungeonFloorDefinition.doorPolicy`:
 
 | Policy | Procedural door pass | Vault doors | Stamp doors |
 |--------|----------------------|-------------|-------------|
-| **`None`** | No | Vault may still place doors if vault stamp includes door tiles — **TBD:** allow vault override vs strict none |
+| **`None`** | No procedural/stamp doors | **Yes** — vault stamp may still place door tiles (explicit override) | No |
 | **`VaultOnly`** | No | Yes — only doors inside stamped vaults | No |
 | **`StampOnly`** | No | Yes | Yes — doors only where pre-baked stamp marks door cells |
 | **`Procedural`** | Yes (post-v0 layout) | Yes | Yes |
@@ -783,7 +783,7 @@ These are **different floors, different rules** — Floor 1 definition lists fou
 
 - Implement **`OrthogonalMapEdgeCount`** for Floor 1 (four edge portals).
 - Floor 2+ portals authored via **`FixedStampMarker`** until forest/region rules exist.
-- Transition UX (step on portal vs interact): **TBD** — document in portal interactable spec when wired.
+- Portal activation: **`Interact`** command (same family as altar — §8.9); step-on-tile deferred.
 
 ### R8.8 — Cross-floor transition spawn (locked — *Barbarian*-style)
 
@@ -840,6 +840,15 @@ Player activates portal P on Floor A (linkId = L, target = B)
   → binding = B.GetArrivalBinding(L)
   → PartySpawnPhase(anchor = binding.arrivalAnchor)
 ```
+
+### R8.9 — Portal activation UX (v0 locked)
+
+| Rule | Detail |
+|------|--------|
+| **Input** | **`Interact`** (`GameControls`) when orthogonally adjacent to portal cell (same adjacency rules as altar — §3 in [Altar doc](Altar-And-Map-Interact-Requirements.md)). |
+| **v0a** | Single portal on test floor may use a simple `PortalInteractable` implementing `IAdjacentMapInteractable` or dedicated bump tile — minimum: adjacent Interact opens transition. |
+| **Turn** | Portal transition consumes a player action (same as moving between floors — TBD exact turn cost; default **yes**, matches significant travel). |
+| **Deferred** | Step-on-portal without Interact; multi-portal picker when several adjacent (use picker pattern from altar if needed). |
 
 ---
 
@@ -977,23 +986,34 @@ public interface IDungeonGenerationPhase
 
 ---
 
-## 12. Acceptance criteria (draft)
+## 12. Acceptance criteria
+
+### v0a (vertical slice)
 
 | # | Criterion |
 |---|-----------|
-| **AC1** | Production uses **one reusable dungeon scene shell**, not a new scene per run. |
-| **AC2** | Floor 1 / 2 use **pre-baked stamps** at **30×30** and **20×20**. |
-| **AC3** | Default ambient is **maximum** unless floor enables `dayNightCycle`. |
-| **AC4** | No QA scripts in §4.1 on production dungeon scene. |
-| **AC5** | Enemies/hazards/traps respect **Chebyshev 5** safe zone (formation cells included). |
-| **AC6** | Party spawns in **1–6 cell formation** from profile. |
-| **AC7** | Floor 1 implements **four orthogonal edge portals** heuristic. |
-| **AC8** | `doorPolicy` per floor; vault-only doors supported. |
-| **AC9** | Floor items default to **`FloorItemPileService`**. |
-| **AC10** | Multi-floor: Floor 1 preserved when visiting Floor 2 and returning; teardown only on **exit dungeon** (§1.3–1.4). |
-| **AC10b** | Ground loot uses **`FloorItemPileService`** + **`FloorEssenceService`** only (§7.4.1). |
-| **AC11** | **SampleScene** unchanged (hand-authored, no Generate button). |
-| **AC12** | **DungeonFloorTest** scene can regenerate a test floor without modifying SampleScene. |
+| **AC-a1** | `RunBootstrap` (DDOL) + `DungeonFloorInstanceManager` with **park/activate** between two floor ids. |
+| **AC-a2** | **Floor 1** stamp **30×30** paints tilemaps; `playerStart` formation spawn; Chebyshev **5** on first populate. |
+| **AC-a3** | **One** portal link Floor 1 → Floor 2 (minimal Floor 2 stamp acceptable, e.g. 20×20). |
+| **AC-a4** | Portal transition uses **fixed arrival anchor** per `portalLinkId` (§8.8). |
+| **AC-a5** | Return Floor 1 → Floor 2 → Floor 1: Floor 1 **unchanged** (enemy death, taken loot persist). |
+| **AC-a6** | `DungeonFloorTest` scene + **Generate Test Floor**; **SampleScene** still plays unchanged. |
+| **AC-a7** | Loot on dynamic floors: **`FloorItemPileService`** + **`FloorEssenceService`** only. |
+
+### v0b (complete v0)
+
+| # | Criterion |
+|---|-----------|
+| **AC-b1** | Production **`DungeonFloor.unity`** hierarchy per §3–5 (no §4.1 QA scripts). |
+| **AC-b2** | Floor 1: **four orthogonal edge portals**; Floor 2: authored stamp + portal rules + `doorPolicy`. |
+| **AC-b3** | Population: enemies, hazards, traps, items, interactables per tables (§7). |
+| **AC-b4** | At least **one vault** placed on a floor (§9). |
+| **AC-b5** | Service state **isolates per floor** on switch (no trap/hazard bleed). |
+| **AC-b6** | `MapManager.SetActiveFloor` + programmatic tile paint API (§11.1). |
+| **AC-b7** | `EnemyContainer` parenting; max ambient lighting bootstrap (§6.3). |
+| **AC-b8** | `ExitDungeon()` stub destroys all floor instances (hook only; hub out of scope). |
+
+**Full v0** = all **AC-a*** and **AC-b*** pass.
 
 ---
 
@@ -1013,39 +1033,124 @@ public interface IDungeonGenerationPhase
 | 8 | **Portal heuristics** per floor via `PortalPlacementRule` (§8). |
 | 8b | **Portal transition spawn** = fixed **arrival anchor** per `portalLinkId`, Barbarian-style (§8.8). |
 | 9 | **SampleScene** = fixed dungeon; **DungeonFloorTest** = Generate button (intro). |
+| 10 | **v0 = v0a then v0b** (§16). |
+| 11 | Run scene **pattern B**; park = **deactivate** floor root (§1.4). |
+| 12 | Portal use **`Interact`** (§8.9). |
+| 13 | **`doorPolicy: None`** still allows doors **inside vault stamps** (§6.6). |
 
-### Remaining TBD (next review)
+### Remaining TBD (non-blocking)
 
-- Run scene pattern **A vs B** (§1.3).
-- Portal transition UX: step on portal vs interact (§8.7).
-- Portal **interaction UX** (step vs interact).
-- `doorPolicy: None` — can vaults still place doors? (recommend **yes** for `VaultOnly` semantics).
-- Floor 2 portal rules and `doorPolicy` assets.
-
----
-
-## 14. Implementation checklist (empty until spec locked)
-
-- [ ] Lock remaining TBD (§13)
-- [ ] Create `DungeonFloor.unity` hierarchy (§3, §5)
-- [ ] `DungeonFloorDefinition` + Floor 1 / Floor 2 assets (§6)
-- [ ] `DungeonFloorRuntime` + phase pipeline (§9)
-- [ ] `DungeonLayoutStamp` + LayoutStampPhase (§2.4)
-- [ ] `DungeonFloorTest.unity` + Generate Test Floor UI
-- [ ] Portal rules Floor 1 four-edge (§8)
-- [ ] `PortalPlacementRule` + visit registry (§1.3, §8)
-- [ ] Party formation spawn profiles 1–6 (§6.5)
-- [ ] RunBootstrap DDOL (§1.3)
-- [ ] Vault format + one sample vault (§8)
-- [ ] Population passes (§7)
-- [ ] MapManager programmatic tile API (§10.1)
-- [ ] `EnemyContainer` / `WorldItemContainer` parenting (§3.3)
-- [ ] QA exclusion audit on dungeon scene (§4)
-- [ ] Confirm SampleScene still passes manual QA after hierarchy doc alignment
+- Floor 2 exact portal rules / `doorPolicy` asset values (author during v0b).
+- Blocked arrival tile list for formation fallback (§8.8).
+- `ExitDungeon` hub destination.
 
 ---
 
-## 15. Traceability
+## 14. Implementation checklist
+
+### v0a — vertical slice (ship first)
+
+- [ ] `RunBootstrap` scene/prefab (DDOL): Party, UI, Input, `DungeonFloorInstanceManager`
+- [ ] `Floors/dungeon_floor_01` + `Floors/dungeon_floor_02` child hierarchy (pattern B)
+- [ ] `DungeonFloorInstance` + park/activate (`SetActive`)
+- [ ] `DungeonLayoutStamp` Floor 1 (30×30) + minimal Floor 2 (20×20)
+- [ ] `LayoutStampPhase` + `MapManager` tile paint API (minimal)
+- [ ] `DungeonFloorDefinition` assets (floor_01, floor_02)
+- [ ] `PartyFormationSpawnProfile` (counts 1–6)
+- [ ] `PartySpawnPhase` at `playerStart` / portal arrival
+- [ ] Population pass: enemies only (Chebyshev 5) — hazards/traps optional defer to v0b
+- [ ] One `portalLinkId` pair + `PortalArrivalBinding` + **Interact** to transition (§8.9)
+- [ ] `FloorItemPileService` / `FloorEssenceService` on run or floor root
+- [ ] `DungeonFloorTest.unity` + Generate Test Floor button
+- [ ] Manual test: AC-a1–AC-a7
+
+### v0b — complete v0 (after v0a)
+
+- [ ] `DungeonFloor.unity` production hierarchy (§3, §5)
+- [ ] QA exclusion audit (§4.1)
+- [ ] `DungeonFloorRuntime` + full phase pipeline (§10)
+- [ ] Per-floor service export/import on switch
+- [ ] `MapManager.SetActiveFloor` polish
+- [ ] Floor 1: four-edge `OrthogonalMapEdgeCount` portals
+- [ ] Floor 2: full stamp, portal rules, population tables
+- [ ] Hazard, trap, item, interactable population passes
+- [ ] One `DungeonVaultDefinition` + vault phase
+- [ ] `doorPolicy` per floor
+- [ ] `LightingBootstrap` max ambient
+- [ ] `EnemyContainer` on all spawns; `AdjacentSingle` on 1×1 enemies
+- [ ] `ExitDungeon()` destroys all instances (stub)
+- [ ] Manual test: all AC-b* + regression SampleScene
+
+---
+
+## 16. v0 implementation plan (v0a + v0b)
+
+### 16.1 — Dependency graph
+
+```text
+v0a: RunBootstrap → InstanceManager → Stamp → Populate → Portal link → Test scene
+                                      ↓
+v0b:  Production scene + full phases + vault + 4 portals + service isolation
+```
+
+**Rule:** Do not start v0b production scene until **AC-a5** (round-trip persistence) passes in `DungeonFloorTest`.
+
+### 16.2 — v0a scope (what to build)
+
+| System | v0a deliverable |
+|--------|-----------------|
+| **Scenes** | `RunBootstrap` + `DungeonFloorTest` only (production `DungeonFloor.unity` is v0b) |
+| **Floors** | 2× `DungeonFloorInstance` (floor_01, floor_02) |
+| **Layout** | Pre-baked stamps only |
+| **Population** | Enemies from table; safe zone Chebyshev 5 |
+| **Portals** | Minimum 1 link (e.g. south F1 → arrival on F2); Interact to travel |
+| **Persistence** | Park F1 when on F2; return to F1 with state intact |
+| **Party** | DDOL; formation spawn |
+| **Loot** | Piles + essences (wire services; loot table can be minimal) |
+| **Deferred to v0b** | Full hierarchy, 4 edge portals, vault, hazards/traps full pass, fog per-floor, exit dungeon hub |
+
+### 16.3 — v0b scope (what completes the parent doc)
+
+Everything in §3–§11 not required for v0a: production scene, full portal set for Floor 1, all population passes, vault injection, `doorPolicy`, lighting bootstrap on prod scene, per-floor trap/hazard/fog isolation, editor-authored Floor 2 content.
+
+### 16.4 — Suggested code layout (`JRogue.World.Generation`)
+
+| Type | Responsibility |
+|------|----------------|
+| `DungeonRunState` | Run seed, active `floorId`, visited floors |
+| `DungeonFloorInstanceManager` | Create / park / activate / destroy all |
+| `DungeonFloorInstance` | Floor root GO, tilemaps, bindings, snapshot of service data |
+| `DungeonFloorRuntime` | Runs phase list on first visit only |
+| `IDungeonGenerationPhase` | Pluggable passes (§10) |
+| `DungeonLayoutStamp` | ScriptableObject grid |
+| `PortalPlacementRule` | ScriptableObject heuristics |
+| `PortalTransitionController` | Interact → park → activate → spawn at binding |
+
+### 16.5 — v0a “done” demo
+
+1. Play `DungeonFloorTest` → Generate → party on Floor 1 `playerStart`.
+2. Walk to portal → Interact → Floor 2 at fixed arrival.
+3. Kill an enemy on Floor 2, leave loot on ground.
+4. Return via portal → Floor 1 exactly as left before step 2.
+5. Return to Floor 2 → enemy still dead, loot still there.
+
+---
+
+## 17. v1 preview (post-v0)
+
+**Not specified for implementation yet.** Direction from §2.4:
+
+| v1 core | Replace or supplement `LayoutStampPhase` with **`RoomCorridorGenerationPhase`** (`layoutMode = ProceduralRoomCorridor`). |
+|---------|------------------------------------------------------------------------------------------------------------------|
+| **Unchanged from v0** | Multi-floor park/persist, portal bindings, population tables, vaults, Chebyshev safe zone on **first** populate |
+| **v1 must add** | Connectivity validation (reachable floors), portal site reservation on generated maps, `DungeonGeneratorProfile` (room count/size) |
+| **v1.1+** | Cave generator, layout weights (v2), themed regions (v5) |
+
+Author a separate **`Dynamic-Dungeon-Floor-Generation-v1-Requirements.md`** when v0b ships.
+
+---
+
+## 18. Traceability
 
 | Request | Section |
 |---------|---------|
@@ -1069,4 +1174,6 @@ public interface IDungeonGenerationPhase
 | Extensibility | §10 |
 | EnemyContainer / ItemContainer | §3.3 |
 | SampleScene vs test scene | intro, §13 |
+| v0a / v0b plan | §16 |
+| v1 preview | §17 |
 | Refactors + namespaces | §11 |
