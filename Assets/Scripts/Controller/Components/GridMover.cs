@@ -259,11 +259,8 @@ namespace JRogue.Actors.Components
             return ownerA != null && ownerB != null && ownerA == ownerB;
         }
 
-        static bool BlocksInteractableOccupancy(Vector3Int cell)
-        {
-            InteractableTileService interactables = InteractableTileService.Instance;
-            return interactables != null && interactables.BlocksOccupancy(cell);
-        }
+        static bool BlocksInteractableOccupancy(Vector3Int cell) =>
+            GridFeatures.MapCellOccupancy.BlocksActorEntry(cell);
 
         static bool BlocksInteractableOccupancy(List<Vector3Int> cells)
         {

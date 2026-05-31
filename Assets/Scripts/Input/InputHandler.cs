@@ -20,6 +20,7 @@ namespace JRogue.Input
         private InputAction restAction;
         private InputAction openDoorAction;
         private InputAction closeDoorAction;
+        private InputAction interactAction;
         private readonly PlayerCommandProcessor commandProcessor = new PlayerCommandProcessor();
 
         public PlayerCommandProcessor CommandProcessor => commandProcessor;
@@ -142,6 +143,24 @@ namespace JRogue.Input
                 closeDoorAction.performed += OnCloseDoorPerformed;
             }
 
+            interactAction = playerInput != null
+                ? playerInput.actions.FindAction("Interact", throwIfNotFound: false)
+                : null;
+            if (interactAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>Interact</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (binding <Keyboard>/e).");
+            }
+            else
+            {
+                interactAction.performed += OnInteractPerformed;
+            }
+
+            AdjacentInteractPickerModalUI.EnsureInstance();
+            AltarOfferingModalUI.EnsureInstance();
+            AltarUsedModalUI.EnsureInstance();
+
             FloorPickupHudButton.EnsureInstance();
         }
 
@@ -186,7 +205,21 @@ namespace JRogue.Input
                 closeDoorAction = null;
             }
 
+            if (interactAction != null)
+            {
+                interactAction.performed -= OnInteractPerformed;
+                interactAction = null;
+            }
+
             controls?.Dispose();
+        }
+
+        void OnInteractPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed || BlocksFloorGameplay())
+                return;
+
+            commandProcessor.TryApply(PlayerCommand.Interact());
         }
 
         void OnPickupFloorItemsPerformed(InputAction.CallbackContext context)
@@ -368,7 +401,10 @@ namespace JRogue.Input
             || TrapConfirmDialogUI.BlocksGameplay
             || HazardConfirmDialogUI.BlocksGameplay
             || FloorPickupMenuUI.BlocksGameplay
-            || PartyMemberDeathDialogUI.BlocksGameplay;
+            || PartyMemberDeathDialogUI.BlocksGameplay
+            || AdjacentInteractPickerModalUI.BlocksGameplay
+            || AltarOfferingModalUI.BlocksGameplay
+            || AltarUsedModalUI.BlocksGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed

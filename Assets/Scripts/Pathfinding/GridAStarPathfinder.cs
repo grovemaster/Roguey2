@@ -62,8 +62,7 @@ namespace JRogue.Pathfinding
 
             bool CanEnter(Vector3Int c)
             {
-                InteractableTileService interactables = InteractableTileService.Instance;
-                if (interactables != null && interactables.BlocksOccupancy(c))
+                if (GridFeatures.MapCellOccupancy.BlocksActorEntry(c))
                     return false;
 
                 if (c == goal)
@@ -133,8 +132,7 @@ namespace JRogue.Pathfinding
                 for (int i = 0; i < PathFootprintBuffer.Count; i++)
                 {
                     Vector3Int cell = PathFootprintBuffer[i];
-                    InteractableTileService interactables = InteractableTileService.Instance;
-                    if (interactables != null && interactables.BlocksOccupancy(cell))
+                    if (GridFeatures.MapCellOccupancy.BlocksActorEntry(cell))
                         return false;
 
                     if (!mapManager.IsWalkable(cell))

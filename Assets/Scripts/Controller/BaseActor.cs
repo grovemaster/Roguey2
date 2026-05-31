@@ -140,7 +140,7 @@ namespace JRogue.Actors
                 for (int i = 0; i < FootprintCellsBuffer.Count; i++)
                 {
                     Vector3Int cell = FootprintCellsBuffer[i];
-                    if (interactables != null && interactables.BlocksOccupancy(cell))
+                    if (GridFeatures.MapCellOccupancy.BlocksActorEntry(cell))
                         return false;
 
                     if (!CanExitHazardCell(GridPosition) || !mapManager.IsWalkable(cell) || !CanEnterHazardCell(cell))
@@ -191,7 +191,7 @@ namespace JRogue.Actors
             if (TryInteractableBump(targetPos))
                 return true;
 
-            if (interactables != null && interactables.BlocksOccupancy(targetPos))
+            if (GridFeatures.MapCellOccupancy.BlocksActorEntry(targetPos))
                 return false;
 
             if (!CanExitHazardCell(GridPosition) || !mapManager.IsWalkable(targetPos) || !CanEnterHazardCell(targetPos))

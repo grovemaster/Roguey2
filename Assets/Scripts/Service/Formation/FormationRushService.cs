@@ -166,8 +166,7 @@ namespace JRogue.Service.Formation
             if (map == null || grid == null) return false;
             if (!map.IsWalkable(tile)) return false;
 
-            InteractableTileService interactables = InteractableTileService.Instance;
-            if (interactables != null && interactables.BlocksOccupancy(tile))
+            if (GridFeatures.MapCellOccupancy.BlocksActorEntry(tile))
                 return false;
 
             TrapService traps = TrapService.Instance;

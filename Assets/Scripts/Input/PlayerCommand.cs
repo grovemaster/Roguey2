@@ -31,6 +31,7 @@ namespace JRogue.Input
         AimBow,
         OpenDoor,
         CloseDoor,
+        Interact,
     }
 
     /// <summary>
@@ -94,5 +95,8 @@ namespace JRogue.Input
 
         public static PlayerCommand CloseDoor() =>
             new PlayerCommand { Kind = PlayerCommandKind.CloseDoor };
+
+        public static PlayerCommand Interact() =>
+            new PlayerCommand { Kind = PlayerCommandKind.Interact };
     }
 }

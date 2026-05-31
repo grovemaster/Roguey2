@@ -235,6 +235,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""a3b4c5d6-e7f8-9012-a3b4-c5d6e7f8a9b0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1219,6 +1228,28 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""b4c5d6e7-f8a9-0123-b4c5-d6e7f8a9b0c1"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c5d6e7f8-a9b0-1234-c5d6-e7f8a9b0c1d2"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""39b0a372-2fbe-432d-8917-e1874907e5f6"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
@@ -1372,6 +1403,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_AimBow = m_Player.FindAction("AimBow", throwIfNotFound: true);
         m_Player_OpenDoor = m_Player.FindAction("OpenDoor", throwIfNotFound: true);
         m_Player_CloseDoor = m_Player.FindAction("CloseDoor", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -1468,6 +1500,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_AimBow;
     private readonly InputAction m_Player_OpenDoor;
     private readonly InputAction m_Player_CloseDoor;
+    private readonly InputAction m_Player_Interact;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1544,6 +1577,10 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @CloseDoor => m_Wrapper.m_Player_CloseDoor;
         /// <summary>
+        /// Provides access to the underlying input action "Player/Interact".
+        /// </summary>
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1617,6 +1654,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @CloseDoor.started += instance.OnCloseDoor;
             @CloseDoor.performed += instance.OnCloseDoor;
             @CloseDoor.canceled += instance.OnCloseDoor;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         /// <summary>
@@ -1676,6 +1716,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @CloseDoor.started -= instance.OnCloseDoor;
             @CloseDoor.performed -= instance.OnCloseDoor;
             @CloseDoor.canceled -= instance.OnCloseDoor;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         /// <summary>
@@ -1828,5 +1871,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCloseDoor(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteract(InputAction.CallbackContext context);
     }
 }

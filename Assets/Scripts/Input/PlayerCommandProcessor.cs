@@ -18,6 +18,7 @@ using JRogue.Traps;
 using JRogue.Interactables;
 using JRogue.Combat;
 using JRogue.Manager.Door;
+using JRogue.World.MapInteract;
 using JRogue.Service.Formation;
 using JRogue.UI.Gameplay;
 using JRogue.Stats;
@@ -190,6 +191,8 @@ namespace JRogue.Input
                     return ApplyOpenDoor();
                 case PlayerCommandKind.CloseDoor:
                     return ApplyCloseDoor();
+                case PlayerCommandKind.Interact:
+                    return ApplyInteract();
                 default:
                     return false;
             }
@@ -562,6 +565,19 @@ namespace JRogue.Input
             }
 
             return DoorPlayerInteraction.TryCloseAdjacent(activeMember) == DoorPlayerActionResult.Succeeded;
+        }
+
+        bool ApplyInteract()
+        {
+            EnsureManagers();
+            if (currentState == InputState.Targeting)
+                return false;
+
+            BaseActor activeMember = partyManager.GetActiveMember();
+            if (activeMember == null)
+                return false;
+
+            return MapInteractPlayerInteraction.TryInteractAdjacent(activeMember);
         }
 
         static void RestoreBowOffHandAfterCancel(BaseActor actor, PendingTargetedAbility pending)

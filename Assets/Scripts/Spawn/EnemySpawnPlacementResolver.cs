@@ -137,7 +137,7 @@ namespace JRogue.Spawn
                 if (!map.IsWalkable(cell))
                     return false;
 
-                if (interactables != null && interactables.BlocksOccupancy(cell))
+                if (GridFeatures.MapCellOccupancy.BlocksActorEntry(cell))
                     return false;
 
                 if (grid.GetActorAt(cell) != null)

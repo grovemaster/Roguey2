@@ -144,7 +144,7 @@ Menu: **`JRogue/Interactables/Interactable Tile Definition`**.
 
 | Kind | Interaction (future) |
 |------|----------------------|
-| **Altar** | Bump or pray command |
+| **Altar** | [Adjacent Interact `E`](../World/Altar-And-Map-Interact-Requirements.md) — offering slots, not bump |
 | **Shrine** | Stand on / bump |
 | **Rune door** | Item precondition |
 
