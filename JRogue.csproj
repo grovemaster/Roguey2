@@ -96,11 +96,13 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRule.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapService.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/StatMinimumPrecondition.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/TownToDungeonPortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedStatModifierRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarOfferingService.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationState.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownPortalSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultCellKind.cs" />
@@ -130,6 +132,7 @@
     <Compile Include="Assets/Scripts/Hazards/HazardMoveGate.cs" />
     <Compile Include="Assets/Scripts/Abilities/Heal/HealingPotionAbility.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingCellMarker.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/EnterDungeonDialogUI.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionSettings.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlaceholderSprites.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
@@ -320,6 +323,7 @@
     <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableEffect.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableActivationSource.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonEntryService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceProfile.cs" />

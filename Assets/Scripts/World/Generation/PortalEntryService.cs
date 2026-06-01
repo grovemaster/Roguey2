@@ -85,14 +85,16 @@ namespace JRogue.World.Generation
                 return false;
 
             AdjacentMapInteractableService mapInteract = AdjacentMapInteractableService.Instance;
-            if (mapInteract == null ||
-                !mapInteract.TryGetAtCell(cell, out IAdjacentMapInteractable interactable) ||
-                interactable is not PortalInteractable portal)
-            {
+            if (mapInteract == null || !mapInteract.TryGetAtCell(cell, out IAdjacentMapInteractable interactable))
                 return false;
-            }
 
-            return portal.TryActivatePartyTeleport(partyMember);
+            if (interactable is TownToDungeonPortalInteractable townPortal)
+                return townPortal.TryActivate(partyMember);
+
+            if (interactable is PortalInteractable portal)
+                return portal.TryActivatePartyTeleport(partyMember);
+
+            return false;
         }
     }
 }

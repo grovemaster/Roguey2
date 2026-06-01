@@ -95,11 +95,12 @@ namespace JRogue.Editor.World
             PartyFormationSpawnProfile formation =
                 AssetDatabase.LoadAssetAtPath<PartyFormationSpawnProfile>(PartyFormationPath);
 
-            DungeonLayoutStamp stamp = CreateOpenStamp(
+            DungeonLayoutStamp stamp = CreateTownPlazaStamp(
                 $"{DataRoot}/Stamp_TownPlaza_20x20.asset",
                 width: 20,
                 height: 20,
-                playerStart: new Vector3Int(10, 10, 0));
+                playerStart: new Vector3Int(10, 8, 0),
+                dungeonPortalCell: new Vector3Int(10, 10, 0));
 
             DungeonFloorDefinition townFloor = CreatePeacefulFloorDefinition(
                 $"{DataRoot}/Floor_town_main.asset",
@@ -237,11 +238,17 @@ namespace JRogue.Editor.World
             return null;
         }
 
-        static DungeonLayoutStamp CreateOpenStamp(string path, int width, int height, Vector3Int playerStart)
+        static DungeonLayoutStamp CreateTownPlazaStamp(
+            string path,
+            int width,
+            int height,
+            Vector3Int playerStart,
+            Vector3Int dungeonPortalCell)
         {
             var stamp = LoadOrCreate<DungeonLayoutStamp>(path);
             stamp.InitializeGrid(width, height, borderWalls: true);
             stamp.SetMarker(StampMarkerIds.PlayerStart, playerStart);
+            stamp.SetMarker(StampMarkerIds.TownDungeonPortal, dungeonPortalCell);
             EditorUtility.SetDirty(stamp);
             return stamp;
         }

@@ -90,6 +90,27 @@ namespace JRogue.World.Generation
             else
                 DungeonGenerationLog.Warn("No floor catalog — using floorDefinitions on DungeonFloorInstanceManager only.");
 
+            if (RunPartyPersistence.ConsumeEnteringDungeonFromTown())
+            {
+                if (runBootstrap != null)
+                    runBootstrap.EnsureDungeonRunObjects();
+
+                bool ok = manager.TryBeginRunAtFloor(
+                    string.IsNullOrEmpty(startFloorId) ? DungeonEntryService.StartFloorId : startFloorId,
+                    runSeed);
+                _runStarted = ok;
+                if (!ok)
+                    DungeonGenerationLog.Error("Failed to start fresh dungeon run from town portal.");
+                else
+                {
+                    EnsurePlayCamera();
+                    LogHierarchyHint(manager);
+                    DungeonGenerationLog.Info("New dungeon expedition started from town.");
+                }
+
+                return;
+            }
+
             bool fromForcedExit = RunPartyPersistence.ConsumeAwaitingTownArrival();
             if (fromForcedExit)
             {

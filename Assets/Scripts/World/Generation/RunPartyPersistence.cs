@@ -12,6 +12,7 @@ namespace JRogue.World.Generation
         public const string InputObjectName = "InputSystem";
 
         public static bool AwaitingTownArrival { get; private set; }
+        public static bool EnteringDungeonFromTown { get; private set; }
 
         public static bool HasLivingParty =>
             PartyManager.Instance != null
@@ -19,6 +20,17 @@ namespace JRogue.World.Generation
             && PartyManager.Instance.partyMembers.Count > 0;
 
         public static void MarkAwaitingTownArrival() => AwaitingTownArrival = true;
+
+        public static void MarkEnteringDungeonFromTown() => EnteringDungeonFromTown = true;
+
+        public static bool ConsumeEnteringDungeonFromTown()
+        {
+            if (!EnteringDungeonFromTown)
+                return false;
+
+            EnteringDungeonFromTown = false;
+            return true;
+        }
 
         public static bool ConsumeAwaitingTownArrival()
         {

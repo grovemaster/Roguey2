@@ -455,6 +455,7 @@ namespace JRogue.Input
             || FloorPickupMenuUI.BlocksGameplay
             || PartyMemberDeathDialogUI.BlocksGameplay
             || DungeonEndedDialogUI.BlocksGameplay
+            || EnterDungeonDialogUI.BlocksGameplay
             || AdjacentInteractPickerModalUI.BlocksGameplay
             || AltarOfferingModalUI.BlocksGameplay
             || AltarUsedModalUI.BlocksGameplay
@@ -463,7 +464,9 @@ namespace JRogue.Input
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed
             || JRogue.World.Generation.DungeonExitService.ExitScheduled
+            || JRogue.World.Generation.DungeonEntryService.EntryScheduled
             || DungeonEndedDialogUI.BlocksGameplay
+            || EnterDungeonDialogUI.BlocksGameplay
             || TurnManager.Instance == null
             || TurnManager.Instance.currentState != GameState.PLAYER_TURN
             || GameOverModalUI.BlocksGameplay;

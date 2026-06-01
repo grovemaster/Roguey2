@@ -120,5 +120,6 @@ namespace JRogue.World.Generation
         public const string PlayerStart = "playerStart";
         public const string PortalSouth = "portal_south";
         public const string PortalNorth = "portal_north";
+        public const string TownDungeonPortal = "town_dungeon_portal";
     }
 }

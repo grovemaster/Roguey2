@@ -84,6 +84,21 @@ namespace JRogue.World.Generation
             DungeonExitService.ExecuteForcedExitAfterFrame();
         }
 
+        public void ScheduleDungeonEntryCoroutine()
+        {
+            if (_forcedExitCoroutine != null)
+                StopCoroutine(_forcedExitCoroutine);
+
+            _forcedExitCoroutine = StartCoroutine(DungeonEntryNextFrame());
+        }
+
+        IEnumerator DungeonEntryNextFrame()
+        {
+            yield return null;
+            _forcedExitCoroutine = null;
+            DungeonEntryService.ExecuteDungeonEntryAfterFrame();
+        }
+
         public void OnFloorActivated(DungeonFloorDefinition floor, bool isFirstVisit)
         {
             if (!_dungeonRunActive || floor == null || !floor.ParticipatesInDungeonTime)

@@ -27,6 +27,8 @@ namespace JRogue.World.Generation
         readonly Dictionary<string, PortalArrivalBinding> _arrivalBindings =
             new Dictionary<string, PortalArrivalBinding>();
         readonly List<PortalInteractable> _portals = new List<PortalInteractable>();
+        readonly List<JRogue.World.MapInteract.IAdjacentMapInteractable> _extraMapInteractables =
+            new List<JRogue.World.MapInteract.IAdjacentMapInteractable>();
         readonly List<PortalVisual> _portalVisuals = new List<PortalVisual>();
         readonly DungeonFloorFeatureSnapshot _featureSnapshot = new DungeonFloorFeatureSnapshot();
 
@@ -205,6 +207,12 @@ namespace JRogue.World.Generation
 
         public void RegisterPortal(PortalInteractable portal) => _portals.Add(portal);
 
+        public void RegisterMapInteractable(JRogue.World.MapInteract.IAdjacentMapInteractable interactable)
+        {
+            if (interactable != null)
+                _extraMapInteractables.Add(interactable);
+        }
+
         public void PlacePortalVisual(Vector3Int cell)
         {
             Sprite sprite = DungeonPortalVisuals.PortalSprite;
@@ -300,6 +308,13 @@ namespace JRogue.World.Generation
             service.SetOverlayMap(interactableOverlayMap);
             for (int i = 0; i < _portals.Count; i++)
                 service.Register(_portals[i].Cell, _portals[i]);
+
+            for (int i = 0; i < _extraMapInteractables.Count; i++)
+            {
+                JRogue.World.MapInteract.IAdjacentMapInteractable interactable = _extraMapInteractables[i];
+                if (interactable != null)
+                    service.Register(interactable.Cell, interactable);
+            }
         }
 
         void UnregisterPortalsFromService()
@@ -310,6 +325,13 @@ namespace JRogue.World.Generation
 
             for (int i = 0; i < _portals.Count; i++)
                 service.Unregister(_portals[i].Cell);
+
+            for (int i = 0; i < _extraMapInteractables.Count; i++)
+            {
+                JRogue.World.MapInteract.IAdjacentMapInteractable interactable = _extraMapInteractables[i];
+                if (interactable != null)
+                    service.Unregister(interactable.Cell);
+            }
         }
     }
 }
