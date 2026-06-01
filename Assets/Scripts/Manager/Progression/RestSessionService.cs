@@ -9,6 +9,7 @@ using JRogue.Manager.Turn;
 using JRogue.Status;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Manager.Progression
@@ -22,8 +23,23 @@ namespace JRogue.Manager.Progression
 
         bool _resting;
         Coroutine _loop;
+        static bool _cancelForForcedDungeonExit;
 
         public static bool IsResting => Instance != null && Instance._resting;
+
+        public static void CancelForForcedDungeonExit()
+        {
+            _cancelForForcedDungeonExit = true;
+            if (Instance == null || !Instance._resting)
+                return;
+
+            Instance._resting = false;
+            if (Instance._loop != null)
+            {
+                Instance.StopCoroutine(Instance._loop);
+                Instance._loop = null;
+            }
+        }
 
         void Awake()
         {
@@ -185,6 +201,12 @@ namespace JRogue.Manager.Progression
 
                     turn.ExecuteRestPlayerPhaseStep(restState);
 
+                    if (_cancelForForcedDungeonExit
+                        || DungeonExitService.ExitScheduled
+                        || DungeonTimeService.Instance == null
+                        || !DungeonTimeService.Instance.DungeonRunActive)
+                        break;
+
                     if (DetectPartyDamage(hpBefore)
                         || (!hadNegativeBefore && PartyStatusQueries.AnyLivingMemberHasNegativeStatus()))
                     {
@@ -224,8 +246,12 @@ namespace JRogue.Manager.Progression
                 _loop = null;
                 restState.ClearSessionBudgets();
 
-                if (turn != null && turn.currentState != GameState.GAME_OVER)
+                if (!_cancelForForcedDungeonExit
+                    && turn != null
+                    && turn.currentState != GameState.GAME_OVER)
                     turn.currentState = GameState.PLAYER_TURN;
+
+                _cancelForForcedDungeonExit = false;
             }
         }
 

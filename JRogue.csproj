@@ -122,6 +122,7 @@
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceEffect.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryTelemetry.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonExitService.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/GameOverService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonLayoutStamp.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupService.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberDeathDialogUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Loot/ManaStoneAutoPickupService.cs" />
     <Compile Include="Assets/Scripts/Core/Targeting/TargetingResolver.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/RunPartyPersistence.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultSourceText.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableLeverContent.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/InteractablePopulationPhase.cs" />
@@ -200,6 +202,7 @@
     <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceEntry.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/LayoutStampPhase.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonTimePhase.cs" />
     <Compile Include="Assets/Scripts/World/Altar/ManaStoneTierAcceptFilter.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TrapConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingScenarioController.cs" />
@@ -234,11 +237,13 @@
     <Compile Include="Assets/Scripts/Manager/Party/PartyMainCharacterMarker.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/HazardPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassAbilityResources.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/TownArrivalService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalEdgePlacement.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacer.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorGenerator.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonTimeService.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlaceholderSprites.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
@@ -271,9 +276,11 @@
     <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonTimeLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationPipeline.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonTimeRunState.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TrapPopulationPhase.cs" />
@@ -301,6 +308,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultAssetRegistry.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/FloorItemPopulationPhase.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/DungeonEndedDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupHudButton.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/TrapWhileAliveMapEffect.cs" />

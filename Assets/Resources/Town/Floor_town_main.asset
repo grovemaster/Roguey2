@@ -28,6 +28,11 @@ MonoBehaviour:
   arrivalBindings: []
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
+  participatesInDungeonTime: 0
+  baseDayNightCycles: 7
+  additionalDayNightCycles: 0
+  playerTurnsPerDay: 5
+  playerTurnsPerNight: 5
   doorPolicy: 0
   vaults: []
   vaultCatalog: {fileID: 0}

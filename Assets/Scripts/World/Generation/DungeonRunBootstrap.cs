@@ -31,6 +31,9 @@ namespace JRogue.World.Generation
                 runGo.AddComponent<DungeonRunState>();
             }
 
+            if (DungeonTimeService.Instance == null)
+                DungeonRunState.Instance.gameObject.AddComponent<DungeonTimeService>();
+
             if (floorInstanceManager == null)
             {
                 floorInstanceManager = DungeonFloorInstanceManager.Instance;
@@ -55,6 +58,9 @@ namespace JRogue.World.Generation
                 return;
 
             if (party.partyMembers != null && party.partyMembers.Count > 0)
+                return;
+
+            if (RunPartyPersistence.AwaitingTownArrival || RunPartyPersistence.HasLivingParty)
                 return;
 
             if (partyMemberPrefabs == null || partyMemberPrefabs.Length == 0)

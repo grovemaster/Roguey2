@@ -12,6 +12,7 @@ using JRogue.Traps;
 using JRogue.Racial;
 using JRogue.Status;
 using JRogue.Manager.Floor;
+using JRogue.World.Generation;
 using JRogue.World.Lighting;
 using UnityEngine;
 public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY, GAME_OVER }
@@ -66,10 +67,7 @@ namespace JRogue.Manager.Turn
 
             // Check if the WHOLE party is done
             if (IsPartyDone())
-            {
-                EvocableRechargeService.TickPartyAfterPlayerPhase();
-                StartCoroutine(EnemyTurnSequence());
-            }
+                TryCompletePlayerPhase();
             // Switch to Enemy Turn
             //StartCoroutine(EnemyTurnSequence());
         }
@@ -80,10 +78,16 @@ namespace JRogue.Manager.Turn
                 return;
 
             if (currentState == GameState.PLAYER_TURN)
-            {
-                EvocableRechargeService.TickPartyAfterPlayerPhase();
-                StartCoroutine(EnemyTurnSequence());
-            }
+                TryCompletePlayerPhase();
+        }
+
+        void TryCompletePlayerPhase()
+        {
+            if (DungeonTimeService.Instance != null && DungeonTimeService.Instance.TryTickAfterPlayerPhase())
+                return;
+
+            EvocableRechargeService.TickPartyAfterPlayerPhase();
+            StartCoroutine(EnemyTurnSequence());
         }
 
         /// <summary>One rest step player-phase boundary (SP regen → upkeep → statuses → rest HP → hazards).</summary>
@@ -116,6 +120,9 @@ namespace JRogue.Manager.Turn
             }
 
             HazardService.Instance?.TickOccupancyOnPlayerPhaseStart();
+
+            if (DungeonTimeService.Instance != null && DungeonTimeService.Instance.TryTickAfterPlayerPhase())
+                return;
 
             EvocableRechargeService.TickPartyAfterPlayerPhase();
 
@@ -217,12 +224,18 @@ namespace JRogue.Manager.Turn
         private bool IsPartyDone()
         {
             var party = PartyManager.Instance.partyMembers;
+            bool anyLiving = false;
             foreach (var member in party)
             {
-                if (!charactersWhoActed.Contains(member.gameObject)) return false;
+                if (member == null || member.stats == null || member.stats.currentHP <= 0)
+                    continue;
+
+                anyLiving = true;
+                if (!charactersWhoActed.Contains(member.gameObject))
+                    return false;
             }
 
-            return true;
+            return anyLiving;
         }
 
         public bool CanActorTakeAction(GameObject actor)

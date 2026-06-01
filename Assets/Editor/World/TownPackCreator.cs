@@ -272,6 +272,7 @@ namespace JRogue.Editor.World
             so.FindProperty("arrivalBindings").arraySize = 0;
             so.FindProperty("orthogonalEdgePortalCount").intValue = 0;
             so.FindProperty("orthogonalEdgeInset").intValue = 2;
+            so.FindProperty("participatesInDungeonTime").boolValue = false;
             so.FindProperty("doorPolicy").enumValueIndex = (int)DungeonDoorPolicy.None;
             so.FindProperty("vaults").arraySize = 0;
             so.FindProperty("vaultCatalog").objectReferenceValue = null;

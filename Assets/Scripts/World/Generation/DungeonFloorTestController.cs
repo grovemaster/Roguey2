@@ -70,10 +70,7 @@ namespace JRogue.World.Generation
                 runBootstrap = FindAnyObjectByType<DungeonRunBootstrap>();
 
             if (runBootstrap != null)
-            {
                 runBootstrap.EnsureDungeonRunObjects();
-                runBootstrap.EnsurePartyRoster();
-            }
             else
                 DungeonGenerationLog.Warn("DungeonRunBootstrap missing on Party — cannot spawn roster.");
 
@@ -93,9 +90,24 @@ namespace JRogue.World.Generation
             else
                 DungeonGenerationLog.Warn("No floor catalog — using floorDefinitions on DungeonFloorInstanceManager only.");
 
-            bool ok = manager.TryBeginRunAtFloor(startFloorId, runSeed);
-            _runStarted = ok;
-            if (!ok)
+            bool fromForcedExit = RunPartyPersistence.ConsumeAwaitingTownArrival();
+            if (fromForcedExit)
+            {
+                bool ok = TownArrivalService.TryCompleteArrival(manager, startFloorId, runSeed);
+                _runStarted = ok;
+                if (!ok)
+                    DungeonGenerationLog.Error($"Failed town arrival at '{startFloorId}'.");
+                else
+                    LogHierarchyHint(manager);
+                return;
+            }
+
+            if (runBootstrap != null)
+                runBootstrap.EnsurePartyRoster();
+
+            bool started = manager.TryBeginRunAtFloor(startFloorId, runSeed);
+            _runStarted = started;
+            if (!started)
             {
                 DungeonGenerationLog.Error($"Failed to start at '{startFloorId}'.");
                 return;

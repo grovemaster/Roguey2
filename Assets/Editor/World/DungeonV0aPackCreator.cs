@@ -459,7 +459,48 @@ namespace JRogue.Editor.World
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             ConfigureV0bFloorDefinitions();
+            ConfigureDungeonTimeOnFloors();
             Debug.Log($"[Dungeon] v0a/v0b data at {DataRoot}. Floors: {floor01.FloorId}, {floor02.FloorId}");
+        }
+
+        static void ConfigureDungeonTimeOnFloors()
+        {
+            ApplyDungeonTime(
+                $"{DataRoot}/Floor_dungeon_floor_01.asset",
+                participates: true,
+                baseCycles: 7,
+                additional: 0,
+                turnsDay: 5,
+                turnsNight: 5);
+            ApplyDungeonTime(
+                $"{DataRoot}/Floor_dungeon_floor_02.asset",
+                participates: true,
+                baseCycles: 7,
+                additional: 3,
+                turnsDay: 3,
+                turnsNight: 4);
+        }
+
+        static void ApplyDungeonTime(
+            string path,
+            bool participates,
+            int baseCycles,
+            int additional,
+            int turnsDay,
+            int turnsNight)
+        {
+            var def = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(path);
+            if (def == null)
+                return;
+
+            SerializedObject so = new SerializedObject(def);
+            so.FindProperty("participatesInDungeonTime").boolValue = participates;
+            so.FindProperty("baseDayNightCycles").intValue = baseCycles;
+            so.FindProperty("additionalDayNightCycles").intValue = additional;
+            so.FindProperty("playerTurnsPerDay").intValue = turnsDay;
+            so.FindProperty("playerTurnsPerNight").intValue = turnsNight;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(def);
         }
 
         static void ConfigureV0bFloorDefinitions()

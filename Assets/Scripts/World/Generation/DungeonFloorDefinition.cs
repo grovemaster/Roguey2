@@ -39,6 +39,12 @@ namespace JRogue.World.Generation
         [Header("Portal heuristics (v0b)")]
         [SerializeField] int orthogonalEdgePortalCount;
         [SerializeField] int orthogonalEdgeInset = 2;
+        [Header("Dungeon time (StGaaB-style)")]
+        [SerializeField] bool participatesInDungeonTime = true;
+        [Min(1)] [SerializeField] int baseDayNightCycles = 7;
+        [Min(0)] [SerializeField] int additionalDayNightCycles;
+        [Min(1)] [SerializeField] int playerTurnsPerDay = 5;
+        [Min(1)] [SerializeField] int playerTurnsPerNight = 5;
         [Header("Future / v0b+")]
         [SerializeField] DungeonDoorPolicy doorPolicy = DungeonDoorPolicy.None;
         [SerializeField] List<DungeonVaultReference> vaults = new List<DungeonVaultReference>();
@@ -63,6 +69,11 @@ namespace JRogue.World.Generation
         public DungeonDoorPolicy DoorPolicy => doorPolicy;
         public IReadOnlyList<DungeonVaultReference> Vaults => vaults;
         public DungeonVaultCatalog VaultCatalog => vaultCatalog;
+        public bool ParticipatesInDungeonTime => participatesInDungeonTime;
+        public int BaseDayNightCycles => baseDayNightCycles;
+        public int AdditionalDayNightCycles => additionalDayNightCycles;
+        public int PlayerTurnsPerDay => playerTurnsPerDay;
+        public int PlayerTurnsPerNight => playerTurnsPerNight;
 
         public bool TryGetArrivalBinding(string portalLinkId, out PortalArrivalBinding binding)
         {

@@ -55,6 +55,10 @@ namespace JRogue.World.Generation
             DungeonRunState run = EnsureRunState();
             run.BeginRun(runSeed);
             DestroyAllFloors();
+
+            DungeonFloorDefinition startDef = FindDefinition(startFloorId);
+            EnsureDungeonTimeService().BeginDungeonRun(startDef, floorDefinitions);
+
             return TryActivateFloor(startFloorId, null, isFirstVisitSpawn: true);
         }
 
@@ -94,6 +98,7 @@ namespace JRogue.World.Generation
 
             ParkActiveFloor();
 
+            bool firstVisit = !_instances.ContainsKey(floorId);
             if (!_instances.TryGetValue(floorId, out DungeonFloorInstance instance))
             {
                 instance = FindOrCreateFloorInstance(def);
@@ -129,6 +134,7 @@ namespace JRogue.World.Generation
                 DungeonGenerationLog.Warn("PartySpawnService failed — check party roster and walkable cells.");
 
             run.SetActiveFloor(floorId);
+            EnsureDungeonTimeService().OnFloorActivated(def, firstVisit);
             BindVisibilityToActiveFloor(map);
             RefreshLighting();
             RefreshVisibility();
@@ -193,6 +199,8 @@ namespace JRogue.World.Generation
             DungeonGenerationLog.Info("ExitDungeon — all floor instances destroyed.");
         }
 
+        public DungeonFloorDefinition TryFindDefinition(string floorId) => FindDefinition(floorId);
+
         DungeonFloorDefinition FindDefinition(string floorId)
         {
             if (floorDefinitions == null)
@@ -206,6 +214,19 @@ namespace JRogue.World.Generation
             }
 
             return null;
+        }
+
+        static DungeonTimeService EnsureDungeonTimeService()
+        {
+            if (DungeonTimeService.Instance != null)
+                return DungeonTimeService.Instance;
+
+            if (DungeonRunState.Instance != null)
+                return DungeonRunState.Instance.gameObject.AddComponent<DungeonTimeService>();
+
+            var go = new GameObject("DungeonRunState");
+            go.AddComponent<DungeonRunState>();
+            return go.AddComponent<DungeonTimeService>();
         }
 
         DungeonRunState EnsureRunState()
