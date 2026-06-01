@@ -27,7 +27,14 @@ namespace JRogue.World.Generation
         readonly Dictionary<string, PortalArrivalBinding> _arrivalBindings =
             new Dictionary<string, PortalArrivalBinding>();
         readonly List<PortalInteractable> _portals = new List<PortalInteractable>();
+        readonly List<PortalVisual> _portalVisuals = new List<PortalVisual>();
         readonly DungeonFloorFeatureSnapshot _featureSnapshot = new DungeonFloorFeatureSnapshot();
+
+        struct PortalVisual
+        {
+            public Vector3Int Cell;
+            public SpriteRenderer Renderer;
+        }
 
         bool _isGenerated;
         Vector3Int _playerStart;
@@ -217,6 +224,7 @@ namespace JRogue.World.Generation
 
             SpriteRenderer renderer = portalGo.AddComponent<SpriteRenderer>();
             renderer.sprite = sprite;
+            renderer.enabled = false;
             if (floorMap != null && floorMap.TryGetComponent(out TilemapRenderer floorRenderer))
             {
                 renderer.sortingLayerID = floorRenderer.sortingLayerID;
@@ -224,6 +232,20 @@ namespace JRogue.World.Generation
             }
             else
                 renderer.sortingOrder = 10;
+
+            _portalVisuals.Add(new PortalVisual { Cell = cell, Renderer = renderer });
+        }
+
+        public void ApplyPortalVisibility(VisibilityManager visibility)
+        {
+            for (int i = 0; i < _portalVisuals.Count; i++)
+            {
+                PortalVisual visual = _portalVisuals[i];
+                if (visual.Renderer == null)
+                    continue;
+
+                visual.Renderer.enabled = visibility != null && visibility.IsVisible(visual.Cell);
+            }
         }
 
         public void BindToMapManager(MapManager mapManager)

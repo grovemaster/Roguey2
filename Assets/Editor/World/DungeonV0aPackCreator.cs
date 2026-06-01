@@ -55,8 +55,9 @@ namespace JRogue.Editor.World
         {
             CreateV0aTestDataInternal();
             ConfigureV0bFloorDefinitions();
+            DungeonVaultPackCreator.CreateFloor1VaultPack();
             AssetDatabase.SaveAssets();
-            Debug.Log("[Dungeon] v0b floor data applied (edge portals, hazard/trap population).");
+            Debug.Log("[Dungeon] v0b floor data applied (edge portals, hazard/trap population, floor 1 vaults).");
         }
 
         [MenuItem("JRogue/Dungeon/Create DungeonFloor Production Scene")]

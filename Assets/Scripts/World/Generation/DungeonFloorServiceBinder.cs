@@ -69,10 +69,15 @@ namespace JRogue.World.Generation
             }
 
             if (DoorService.Instance != null)
+            {
                 DoorService.Instance.SetOverlayMap(maps.DoorOverlayMap);
+                DoorService.Instance.RefreshAllOverlays();
+            }
 
             HazardService.Instance?.RefreshAllOverlayVisuals();
             TrapService.Instance?.RefreshOverlayVisibility();
+            DoorService.Instance?.RefreshOverlayVisibility();
+            InteractableTileService.Instance?.RefreshAllOverlayVisuals();
         }
 
         public static void ClearSingletonServices()
@@ -81,6 +86,7 @@ namespace JRogue.World.Generation
             TrapService.Instance?.ClearAllRegistrations();
             InteractableTileService.Instance?.ClearAllRegistrations();
             FloorItemPileService.Instance?.ClearAllPiles();
+            DoorService.Instance?.ClearAllRegistrations();
         }
     }
 }

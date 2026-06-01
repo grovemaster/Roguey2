@@ -255,6 +255,21 @@ namespace JRogue.World.Generation
 
             TrapService traps = TrapService.Instance;
             traps?.RefreshOverlayVisibility();
+
+            Manager.Door.DoorService.Instance?.RefreshOverlayVisibility();
+            Interactables.InteractableTileService.Instance?.RefreshAllOverlayVisuals();
+            Instance?.ApplyPortalVisibilityOnActiveFloor();
+        }
+
+        public void ApplyPortalVisibilityOnActiveFloor(VisibilityManager visibility = null)
+        {
+            if (_activeFloor == null)
+                return;
+
+            if (visibility == null)
+                visibility = Object.FindAnyObjectByType<VisibilityManager>();
+
+            _activeFloor.ApplyPortalVisibility(visibility);
         }
 
         DungeonFloorInstance FindOrCreateFloorInstance(DungeonFloorDefinition def)

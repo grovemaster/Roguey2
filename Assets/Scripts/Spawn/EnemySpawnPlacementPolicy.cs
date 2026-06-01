@@ -10,5 +10,8 @@ namespace JRogue.Spawn
 
         /// <summary>Skip primary offset; search outward from origin only.</summary>
         NearestUnoccupiedFloorFromOrigin = 1,
+
+        /// <summary>Place with footprint anchor exactly on <c>originCell</c> (vault AT lines).</summary>
+        AtExactCell = 2,
     }
 }

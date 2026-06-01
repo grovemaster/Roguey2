@@ -5,6 +5,7 @@ using JRogue.Interactables;
 using JRogue.Item;
 using JRogue.Spawn;
 using JRogue.Traps;
+using JRogue.World.Generation.Vaults;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -41,6 +42,7 @@ namespace JRogue.World.Generation
         [Header("Future / v0b+")]
         [SerializeField] DungeonDoorPolicy doorPolicy = DungeonDoorPolicy.None;
         [SerializeField] List<DungeonVaultReference> vaults = new List<DungeonVaultReference>();
+        [SerializeField] DungeonVaultCatalog vaultCatalog;
 
         public string FloorId => floorId;
         public DungeonLayoutStamp LayoutStamp => layoutStamp;
@@ -60,6 +62,7 @@ namespace JRogue.World.Generation
         public int OrthogonalEdgeInset => orthogonalEdgeInset;
         public DungeonDoorPolicy DoorPolicy => doorPolicy;
         public IReadOnlyList<DungeonVaultReference> Vaults => vaults;
+        public DungeonVaultCatalog VaultCatalog => vaultCatalog;
 
         public bool TryGetArrivalBinding(string portalLinkId, out PortalArrivalBinding binding)
         {

@@ -61,6 +61,7 @@
     <Compile Include="Assets/Tests/JRogueTestsRootSetupFixture.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/LightingQaPlacementResolverTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/ConeSightFootprintTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/VaultSourceTextTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantsRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/BowEquipmentLegalityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/FloorEssenceLifetimeTests.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Assets/Tests/UnitTests/Combat/TrapServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Doors/DoorServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputHandlerTest.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/VaultFileParserTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/EnvironmentalHazardTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/PlayerCommandTest.cs" />
   </ItemGroup>

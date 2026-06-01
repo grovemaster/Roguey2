@@ -103,12 +103,15 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultCellKind.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyMeleeCombat.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/AlwaysTruePrecondition.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableBumpResult.cs" />
     <Compile Include="Assets/Scripts/Item/EvocableChargeRules.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacementUtility.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/HazardConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartySpawnService.cs" />
@@ -122,6 +125,7 @@
     <Compile Include="Assets/Scripts/Manager/Party/GameOverService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonLayoutStamp.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultBlueprint.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardMoveGate.cs" />
     <Compile Include="Assets/Scripts/Abilities/Heal/HealingPotionAbility.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingCellMarker.cs" />
@@ -167,7 +171,9 @@
     <Compile Include="Assets/Scripts/Controller/BaseActor.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarPlacement.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultStamper.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileMarker.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultTileGlyph.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingDebugOverlay.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadNecroticSustenancePassive.cs" />
@@ -176,6 +182,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberDeathDialogUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Loot/ManaStoneAutoPickupService.cs" />
     <Compile Include="Assets/Scripts/Core/Targeting/TargetingResolver.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultSourceText.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableLeverContent.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/InteractablePopulationPhase.cs" />
     <Compile Include="Assets/Scripts/Abilities/ThrowingKnife/ThrowingKnifeAbility.cs" />
@@ -229,6 +236,7 @@
     <Compile Include="Assets/Scripts/Racial/HumanClassAbilityResources.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalEdgePlacement.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacer.cs" />
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorGenerator.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
@@ -273,6 +281,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/EnemyPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotDefinition.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTile.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/DungeonVaultCatalog.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotState.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardDefinition.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
@@ -289,6 +298,7 @@
     <Compile Include="Assets/Scripts/Abilities/Fireball/FIreballAbility.cs" />
     <Compile Include="Assets/Scripts/Item/World/FloorEssenceWorldView.cs" />
     <Compile Include="Assets/Scripts/Manager/Loot/EnemyLootService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultAssetRegistry.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/FloorItemPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinition.cs" />

@@ -184,10 +184,22 @@ namespace JRogue.Interactables
             }
         }
 
+        public void RefreshAllOverlayVisuals()
+        {
+            foreach (KeyValuePair<Vector3Int, InteractableTileInstance> entry in _byCell)
+                RefreshOverlayVisual(entry.Value);
+        }
+
         void RefreshOverlayVisual(InteractableTileInstance instance)
         {
             if (interactableOverlayMap == null || instance?.Definition == null)
                 return;
+
+            if (!IsCellVisibleToPlayer(instance.Cell))
+            {
+                GridOverlayPainter.Clear(interactableOverlayMap, instance.Cell);
+                return;
+            }
 
             Sprite sprite = instance.IsOn
                 ? instance.Definition.spriteOn
@@ -205,6 +217,15 @@ namespace JRogue.Interactables
             }
 
             GridOverlayPainter.Paint(interactableOverlayMap, instance.Cell, tile: null, sprite: sprite);
+        }
+
+        static bool IsCellVisibleToPlayer(Vector3Int cell)
+        {
+            VisibilityManager visibility = UnityEngine.Object.FindAnyObjectByType<VisibilityManager>();
+            if (visibility == null)
+                return true;
+
+            return visibility.IsVisible(cell);
         }
 
         void EnsureOverlayMap()

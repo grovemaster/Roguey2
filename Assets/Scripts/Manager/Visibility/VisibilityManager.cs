@@ -8,7 +8,10 @@ using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Visibility.Algorithm;
 using JRogue.Hazards;
+using JRogue.Interactables;
+using JRogue.Manager.Door;
 using JRogue.Traps;
+using JRogue.World.Generation;
 using JRogue.World.Lighting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -48,6 +51,9 @@ public class VisibilityManager : MonoBehaviour
     public Color darkTileColor = new Color(0.2f, 0.22f, 0.28f, 1f);
     public Color unseenColor = new Color(0.15f, 0.15f, 0.2f, 1.0f);
     public Color memColor = new Color(0.48f, 0.48f, 0.58f, 1.0f);
+
+    /// <summary>Terrain tiles never seen are fully hidden (DCSS void), not dimmed silhouettes.</summary>
+    static readonly Color HiddenUnseenTileColor = new Color(1f, 1f, 1f, 0f);
 
     public int viewRange = 8;
     [Min(0)] public int baseVisibilityThreshold = 3;
@@ -123,7 +129,7 @@ public class VisibilityManager : MonoBehaviour
                 _knownCells.Add(p);
 
                 tm.SetTileFlags(pos, TileFlags.None);
-                tm.SetColor(pos, unseenColor);
+                tm.SetColor(pos, HiddenUnseenTileColor);
             }
         }
     }
@@ -215,7 +221,7 @@ public class VisibilityManager : MonoBehaviour
             }
             else
             {
-                TintCell(cell, unseenColor);
+                TintCellUnseen(cell);
             }
         }
 
@@ -232,7 +238,7 @@ public class VisibilityManager : MonoBehaviour
     void ApplyUnseenToAllKnownCells()
     {
         foreach (Vector3Int cell in _knownCells)
-            TintCell(cell, unseenColor);
+            TintCellUnseen(cell);
     }
 
     bool HasPaintedTilesInBoundTilemaps()
@@ -430,6 +436,8 @@ public class VisibilityManager : MonoBehaviour
         }
     }
 
+    void TintCellUnseen(Vector3Int pos) => TintCell(pos, HiddenUnseenTileColor);
+
     void ApplyEntityVisibility()
     {
         EnemyController[] enemies = FindObjectsByType<EnemyController>();
@@ -446,6 +454,9 @@ public class VisibilityManager : MonoBehaviour
 
         TrapService.Instance?.RefreshOverlayVisibility();
         HazardService.Instance?.RefreshAllOverlayVisuals();
+        DoorService.Instance?.RefreshOverlayVisibility();
+        InteractableTileService.Instance?.RefreshAllOverlayVisuals();
+        DungeonFloorInstanceManager.Instance?.ApplyPortalVisibilityOnActiveFloor(this);
     }
 
     void ApplyEnemyVisibility(EnemyController enemy)

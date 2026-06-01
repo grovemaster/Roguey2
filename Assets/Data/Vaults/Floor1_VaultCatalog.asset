@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba29bc4d43de2b6ac826a79f640476a9, type: 3}
+  m_Name: Floor1_VaultCatalog
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Vaults.DungeonVaultCatalog
+  assetRegistry: {fileID: 11400000, guid: fdead48dd6033fcc38bfad8f468561e5, type: 2}
+  entries:
+  - vaultId: vault_shrine_5x5
+    sourceFile: {fileID: 0}
+    sourceAssetPath: Data/Vaults/Floor1/vault_shrine_5x5.vault
+    weight: 1
+    maxPerFloor: 1
+    minDistanceFromPlayerStart: 6
+  - vaultId: vault_ambush_corridor_7x4
+    sourceFile: {fileID: 0}
+    sourceAssetPath: Data/Vaults/Floor1/vault_ambush_corridor_7x4.vault
+    weight: 1
+    maxPerFloor: 1
+    minDistanceFromPlayerStart: 6

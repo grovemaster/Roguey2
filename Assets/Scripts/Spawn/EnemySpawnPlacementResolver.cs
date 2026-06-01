@@ -31,6 +31,25 @@ namespace JRogue.Spawn
             if (map == null || grid == null)
                 return false;
 
+            if (policy == EnemySpawnPlacementPolicy.AtExactCell)
+            {
+                if (CanPlaceFootprintAt(
+                        originCell,
+                        footprintLayout,
+                        footprintWidth,
+                        footprintHeight,
+                        footprintFacing,
+                        map,
+                        grid,
+                        interactables))
+                {
+                    anchor = originCell;
+                    return true;
+                }
+
+                return false;
+            }
+
             if (policy == EnemySpawnPlacementPolicy.NorthOfOriginThenNearestUnoccupiedFloor)
             {
                 Vector3Int primary = originCell + primaryOffset;

@@ -1,0 +1,18 @@
+# Ambush: snow-themed corridor; D = closed unlocked doors at west/east ends (x=0,6 y=2); lava center.
+VAULT vault_ambush_corridor_7x4
+WEIGHT 1
+MIN_DISTANCE_FROM_PLAYER_START 6
+ORIGIN 3 1
+TILES .=SnowTheme:32;W=SnowTheme:48;D=door_corridor
+MAP
+WWWWWWW
+W.....W
+D.....D
+W.....W
+WWWWWWW
+ENDMAP
+HAZARD lava AT 2 2
+HAZARD lava AT 4 2
+ENEMY skeleton AT 1 2
+ENEMY skeleton AT 5 2
+END

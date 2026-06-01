@@ -139,22 +139,26 @@ namespace JRogue.Manager.Map
             doorOverlayMap?.ClearAllTiles();
         }
 
-        public void SetCellFloor(Vector3Int cell)
+        public void SetCellFloor(Vector3Int cell) => SetCellFloor(cell, floorPaintTile);
+
+        public void SetCellWall(Vector3Int cell) => SetCellWall(cell, wallPaintTile);
+
+        public void SetCellFloor(Vector3Int cell, TileBase tile)
         {
-            if (floorMap == null || floorPaintTile == null)
+            if (floorMap == null || tile == null)
                 return;
 
-            PaintCell(floorMap, cell, floorPaintTile);
+            PaintCell(floorMap, cell, tile);
             wallMap?.SetTile(cell, null);
             wallMap?.SetTransformMatrix(cell, Matrix4x4.identity);
         }
 
-        public void SetCellWall(Vector3Int cell)
+        public void SetCellWall(Vector3Int cell, TileBase tile)
         {
-            if (wallMap == null || wallPaintTile == null)
+            if (wallMap == null || tile == null)
                 return;
 
-            PaintCell(wallMap, cell, wallPaintTile);
+            PaintCell(wallMap, cell, tile);
             floorMap?.SetTile(cell, null);
             floorMap?.SetTransformMatrix(cell, Matrix4x4.identity);
         }

@@ -1,0 +1,16 @@
+# Shrine: sand-themed 5x5 room, healing potion NW, lever center (spawn on activate).
+VAULT vault_shrine_5x5
+WEIGHT 1
+MIN_DISTANCE_FROM_PLAYER_START 6
+ORIGIN 2 2
+TILES .=SandTheme:32;W=SandTheme:50
+MAP
+WWWWW
+W...W
+W...W
+W...W
+WW.WW
+ENDMAP
+ITEM healing_potion AT 1 3
+INTERACTABLE lever_shrine AT 2 2
+END

@@ -40,7 +40,30 @@ namespace JRogue.Manager.Door
                 Instance = null;
         }
 
-        public void SetOverlayMap(Tilemap overlay) => doorOverlayMap = overlay;
+        public void SetOverlayMap(Tilemap overlay)
+        {
+            doorOverlayMap = overlay;
+            if (doorOverlayMap != null)
+                GridOverlayPainter.ConfigureRenderer(doorOverlayMap, sortingOrder: 5);
+        }
+
+        public void ClearAllRegistrations()
+        {
+            _byCell.Clear();
+            _byId.Clear();
+        }
+
+        /// <summary>Repaint every registered door on the current overlay (after bind or regen).</summary>
+        public void RefreshAllOverlays() => RefreshOverlayVisibility();
+
+        public void RefreshOverlayVisibility()
+        {
+            if (doorOverlayMap == null)
+                return;
+
+            foreach (DoorInstance instance in _byCell.Values)
+                RefreshOverlay(instance);
+        }
 
         public bool TryGetAtCell(Vector3Int cell, out DoorInstance instance) =>
             _byCell.TryGetValue(cell, out instance);
@@ -175,6 +198,12 @@ namespace JRogue.Manager.Door
             if (doorOverlayMap == null || instance?.Definition == null)
                 return;
 
+            if (!IsCellVisibleToPlayer(instance.Cell))
+            {
+                GridOverlayPainter.Clear(doorOverlayMap, instance.Cell);
+                return;
+            }
+
             Sprite sprite = instance.Definition.GetSprite(instance.State, instance.Orientation);
             if (sprite == null)
             {
@@ -194,6 +223,15 @@ namespace JRogue.Manager.Door
             }
 
             GridOverlayPainter.Paint(doorOverlayMap, instance.Cell, tile: null, sprite: sprite);
+        }
+
+        static bool IsCellVisibleToPlayer(Vector3Int cell)
+        {
+            VisibilityManager visibility = UnityEngine.Object.FindAnyObjectByType<VisibilityManager>();
+            if (visibility == null)
+                return true;
+
+            return visibility.IsVisible(cell);
         }
 
         void EnsureOverlayMap()

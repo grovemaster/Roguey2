@@ -58,6 +58,7 @@
     <Compile Include="Assets/Editor/Essence/EssenceAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/SampleScenePrefabInstanceRepair.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioQaPack.cs" />
+    <Compile Include="Assets/Editor/World/DungeonVaultPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/ThrowingKnifeSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingQaSampleSceneEditor.cs" />
     <Compile Include="Assets/Editor/Traps/TrapAssetPackCreator.cs" />

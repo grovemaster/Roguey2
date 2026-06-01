@@ -52,3 +52,4 @@ MonoBehaviour:
   orthogonalEdgeInset: 2
   doorPolicy: 0
   vaults: []
+  vaultCatalog: {fileID: 0}

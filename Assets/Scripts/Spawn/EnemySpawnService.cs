@@ -14,7 +14,38 @@ namespace JRogue.Spawn
             EnemySpawnDefinition definition,
             Vector3Int originCell,
             out EnemyController spawned,
-            Transform parent = null)
+            Transform parent = null) =>
+            TrySpawnWithPolicy(
+                definition,
+                originCell,
+                definition != null
+                    ? definition.placementPolicy
+                    : EnemySpawnPlacementPolicy.NorthOfOriginThenNearestUnoccupiedFloor,
+                definition != null ? definition.primaryOffset : Vector3Int.zero,
+                out spawned,
+                parent);
+
+        /// <summary>Vault <c>ENEMY id AT x y</c> — anchor exactly on <paramref name="cell"/> when footprint fits.</summary>
+        public static bool TrySpawnAtExactCell(
+            EnemySpawnDefinition definition,
+            Vector3Int cell,
+            out EnemyController spawned,
+            Transform parent = null) =>
+            TrySpawnWithPolicy(
+                definition,
+                cell,
+                EnemySpawnPlacementPolicy.AtExactCell,
+                Vector3Int.zero,
+                out spawned,
+                parent);
+
+        static bool TrySpawnWithPolicy(
+            EnemySpawnDefinition definition,
+            Vector3Int originCell,
+            EnemySpawnPlacementPolicy policy,
+            Vector3Int primaryOffset,
+            out EnemyController spawned,
+            Transform parent)
         {
             spawned = null;
 
@@ -35,8 +66,8 @@ namespace JRogue.Spawn
             EnemyController prefab = definition.enemyPrefab;
             if (!EnemySpawnPlacementResolver.TryResolveAnchor(
                     originCell,
-                    definition.placementPolicy,
-                    definition.primaryOffset,
+                    policy,
+                    primaryOffset,
                     prefab.footprintLayout,
                     prefab.footprintWidth,
                     prefab.footprintHeight,
