@@ -11,6 +11,7 @@ using JRogue.Manager.Turn;
 using JRogue.Spawn;
 using JRogue.UI.Targeting;
 using JRogue.View;
+using JRogue.Manager.Door;
 using JRogue.World.Generation;
 using JRogue.World.Lighting;
 using JRogue.World.MapInteract;
@@ -105,6 +106,9 @@ namespace JRogue.Editor.World
                 systems.AddComponent<PortalEntryService>();
 
             DungeonWorldFeatureServices.EnsureOn(systems);
+
+            if (systems.GetComponent<DoorService>() == null)
+                systems.AddComponent<DoorService>();
 
             EnsureLightingOnSystems(systems);
             EnsureGameplayUiFromSampleScene(EditorSceneManager.GetActiveScene());
@@ -668,6 +672,9 @@ namespace JRogue.Editor.World
             systems.AddComponent<AdjacentMapInteractableService>();
             systems.AddComponent<VisibilityManager>();
             systems.AddComponent<PortalEntryService>();
+            DungeonWorldFeatureServices.EnsureOn(systems);
+            if (systems.GetComponent<DoorService>() == null)
+                systems.AddComponent<DoorService>();
             EnsureLightingOnSystems(systems);
 
             DungeonFloorInstanceManager floorManager = systems.AddComponent<DungeonFloorInstanceManager>();
