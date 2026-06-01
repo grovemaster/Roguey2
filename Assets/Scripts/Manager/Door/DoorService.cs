@@ -11,6 +11,7 @@ namespace JRogue.Manager.Door
     public sealed class DoorService : MonoBehaviour
     {
         public const string LogPrefix = "[Door]";
+        public const string VaultDoorLogPrefix = "[VaultDoor]";
 
         public static DoorService Instance { get; private set; }
 
@@ -40,11 +41,16 @@ namespace JRogue.Manager.Door
                 Instance = null;
         }
 
-        public void SetOverlayMap(Tilemap overlay)
+        public void SetOverlayMap(Tilemap overlay, string logContext = null)
         {
             doorOverlayMap = overlay;
             if (doorOverlayMap != null)
                 GridOverlayPainter.ConfigureRenderer(doorOverlayMap, sortingOrder: 5);
+
+            Debug.Log(
+                $"{VaultDoorLogPrefix} SetOverlayMap context={logContext ?? "none"} " +
+                $"overlay={(doorOverlayMap != null ? doorOverlayMap.name : "null")} " +
+                $"registeredCells={_byCell.Count}");
         }
 
         public void ClearAllRegistrations()
@@ -54,16 +60,38 @@ namespace JRogue.Manager.Door
         }
 
         /// <summary>Repaint every registered door on the current overlay (after bind or regen).</summary>
-        public void RefreshAllOverlays() => RefreshOverlayVisibility();
+        public void RefreshAllOverlays(string logContext = null) => RefreshOverlayVisibility(logContext);
 
-        public void RefreshOverlayVisibility()
+        public void RefreshOverlayVisibility(string logContext = null)
         {
             if (doorOverlayMap == null)
+            {
+                Debug.LogWarning(
+                    $"{VaultDoorLogPrefix} RefreshOverlayVisibility skipped context={logContext ?? "none"}: doorOverlayMap null.");
                 return;
+            }
 
+            int painted = 0;
+            int clearedVisibility = 0;
+            int clearedMissing = 0;
             foreach (DoorInstance instance in _byCell.Values)
-                RefreshOverlay(instance);
+            {
+                bool? paintedThis = RefreshOverlayCore(instance, logDecisions: false);
+                if (paintedThis == null)
+                    clearedMissing++;
+                else if (paintedThis.Value)
+                    painted++;
+                else
+                    clearedVisibility++;
+            }
+
+            Debug.Log(
+                $"{VaultDoorLogPrefix} RefreshOverlayVisibility context={logContext ?? "none"} " +
+                $"total={_byCell.Count} painted={painted} clearedNotVisible={clearedVisibility} skipped={clearedMissing} " +
+                $"overlay={doorOverlayMap.name}");
         }
+
+        public int RegisteredCellCount => _byCell.Count;
 
         public bool TryGetAtCell(Vector3Int cell, out DoorInstance instance) =>
             _byCell.TryGetValue(cell, out instance);
@@ -80,7 +108,12 @@ namespace JRogue.Manager.Door
         public void Register(DoorPlacement placement)
         {
             if (placement.definition == null || string.IsNullOrEmpty(placement.definition.doorId))
+            {
+                Debug.LogWarning(
+                    $"{VaultDoorLogPrefix} Register rejected cell=({placement.cell.x},{placement.cell.y}): " +
+                    $"missing definition or doorId.");
                 return;
+            }
 
             bool unlocked = placement.overrideLocked
                 ? !placement.startsLocked
@@ -102,7 +135,12 @@ namespace JRogue.Manager.Door
             var instance = new DoorInstance(placement.definition, placement.cell, state, unlocked);
             _byCell[placement.cell] = instance;
             _byId[placement.definition.doorId] = instance;
-            RefreshOverlay(instance);
+            Debug.Log(
+                $"{VaultDoorLogPrefix} Register ok cell=({placement.cell.x},{placement.cell.y}) " +
+                $"doorId={placement.definition.doorId} def={placement.definition.name} state={state} unlocked={unlocked} " +
+                $"orient={instance.Orientation} overlay={(doorOverlayMap != null ? doorOverlayMap.name : "null")} " +
+                $"overrideOpen={placement.overrideOpenState} initial={placement.initialState}");
+            RefreshOverlay(instance, logDecisions: true);
         }
 
         public bool Unlock(string doorId, string source = null)
@@ -193,20 +231,43 @@ namespace JRogue.Manager.Door
             return true;
         }
 
-        public void RefreshOverlay(DoorInstance instance)
+        public void RefreshOverlay(DoorInstance instance, bool logDecisions = false) =>
+            RefreshOverlayCore(instance, logDecisions);
+
+        bool? RefreshOverlayCore(DoorInstance instance, bool logDecisions)
         {
             if (doorOverlayMap == null || instance?.Definition == null)
-                return;
+            {
+                if (logDecisions)
+                {
+                    Debug.LogWarning(
+                        $"{VaultDoorLogPrefix} RefreshOverlay skip cell=({instance?.Cell.x},{instance?.Cell.y}): " +
+                        $"overlay={(doorOverlayMap != null)} def={(instance?.Definition != null)}.");
+                }
 
-            if (!IsCellVisibleToPlayer(instance.Cell))
+                return null;
+            }
+
+            bool visible = IsCellVisibleToPlayer(instance.Cell, out bool visibilityManagerFound);
+            if (!visible)
             {
                 GridOverlayPainter.Clear(doorOverlayMap, instance.Cell);
-                return;
+                if (logDecisions)
+                {
+                    Debug.Log(
+                        $"{VaultDoorLogPrefix} RefreshOverlay CLEAR cell=({instance.Cell.x},{instance.Cell.y}) " +
+                        $"doorId={instance.DoorId} state={instance.State}: not visible " +
+                        $"(visibilityManager={visibilityManagerFound}).");
+                }
+
+                return false;
             }
 
             Sprite sprite = instance.Definition.GetSprite(instance.State, instance.Orientation);
+            bool usedPlaceholder = false;
             if (sprite == null)
             {
+                usedPlaceholder = true;
                 sprite = instance.Orientation == DoorOrientation.Vertical
                     ? instance.State switch
                     {
@@ -223,11 +284,25 @@ namespace JRogue.Manager.Door
             }
 
             GridOverlayPainter.Paint(doorOverlayMap, instance.Cell, tile: null, sprite: sprite);
+            if (logDecisions)
+            {
+                Debug.Log(
+                    $"{VaultDoorLogPrefix} RefreshOverlay PAINT cell=({instance.Cell.x},{instance.Cell.y}) " +
+                    $"doorId={instance.DoorId} state={instance.State} orient={instance.Orientation} " +
+                    $"sprite={(sprite != null ? sprite.name : "null")} placeholder={usedPlaceholder} " +
+                    $"overlay={doorOverlayMap.name} hasTile={doorOverlayMap.HasTile(instance.Cell)}");
+            }
+
+            return true;
         }
 
-        static bool IsCellVisibleToPlayer(Vector3Int cell)
+        static bool IsCellVisibleToPlayer(Vector3Int cell) =>
+            IsCellVisibleToPlayer(cell, out _);
+
+        static bool IsCellVisibleToPlayer(Vector3Int cell, out bool visibilityManagerFound)
         {
             VisibilityManager visibility = UnityEngine.Object.FindAnyObjectByType<VisibilityManager>();
+            visibilityManagerFound = visibility != null;
             if (visibility == null)
                 return true;
 

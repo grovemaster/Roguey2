@@ -1,4 +1,5 @@
 using JRogue.Input;
+using JRogue.Manager.Door;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
@@ -121,6 +122,11 @@ namespace JRogue.World.Generation
             else
                 DungeonGenerationLog.Info("[Scene] OK  LightingService (optional)");
 
+            bool hasDoorService = HasComponent<DoorService>(systems);
+            DungeonGenerationLog.SceneComponent<DoorService>(SystemsObjectName, hasDoorService);
+            if (!hasDoorService)
+                DungeonGenerationLog.Warn("[Scene] MISSING DoorService — vault MAP doors will not register");
+
             AllCriticalPresent = systems != null && party != null &&
                                  hasMap && hasGrid && hasTurn && hasInteract && hasFloorMgr && hasTest &&
                                  hasInputHandler && hasPlayerInput && hasReticle && hasPartyManager &&
@@ -172,6 +178,9 @@ namespace JRogue.World.Generation
                     systems.AddComponent<PortalEntryService>();
                 DungeonWorldFeatureServices.EnsureOn(systems);
             }
+
+            if (systems != null && systems.GetComponent<DoorService>() != null)
+                DungeonGenerationLog.Info("[Scene] Repaired DoorService on DungeonTestSystems.");
 
             if (party == null)
             {

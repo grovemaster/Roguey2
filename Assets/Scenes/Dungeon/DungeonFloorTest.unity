@@ -374,6 +374,7 @@ GameObject:
   - component: {fileID: 434795531}
   - component: {fileID: 434795530}
   - component: {fileID: 434795529}
+  - component: {fileID: 434795533}
   m_Layer: 0
   m_Name: DungeonTestSystems
   m_TagString: Untagged
@@ -600,6 +601,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae57a34642c76e84a53c185a780e9c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.PortalEntryService
+--- !u!114 &434795533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434795518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49a7cf4e288fac83b1790d18eea4bfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Manager.Door.DoorService
+  doorOverlayMap: {fileID: 0}
 --- !u!1 &444116000
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using JRogue.Hazards;
 using JRogue.Interactables;
+using JRogue.Manager.Door;
 using JRogue.Traps;
 using UnityEngine;
 
@@ -23,6 +24,9 @@ namespace JRogue.World.Generation
 
             if (systemsRoot.GetComponent<InteractableTileService>() == null)
                 systemsRoot.AddComponent<InteractableTileService>();
+
+            if (systemsRoot.GetComponent<DoorService>() == null)
+                systemsRoot.AddComponent<DoorService>();
         }
     }
 }

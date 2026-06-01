@@ -48,7 +48,8 @@ namespace JRogue.World.Generation.Vaults
             }
 
             DoorService doors = DoorService.Instance;
-            EnsureDoorOverlay(context, doors);
+            EnsureDoorOverlay(context, doors, blueprint.VaultId, placementOrigin);
+            int mapDoorGlyphs = 0;
 
             foreach (VaultMapCell cell in blueprint.OccupiedCells())
             {
@@ -66,13 +67,23 @@ namespace JRogue.World.Generation.Vaults
                             return false;
                         break;
                     case VaultCellKind.Door:
+                        mapDoorGlyphs++;
                         if (!TryPaintFloor(registry, map, world, glyph.TileKey, out error))
                             return false;
 
-                        RegisterMapDoor(registry, doors, glyph, world, unlocked: true);
+                        Debug.Log(
+                            $"[VaultDoor] MAP 'D' vault={blueprint.VaultId} local=({cell.X},{cell.Y}) " +
+                            $"world=({world.x},{world.y}) registryId={glyph.DoorRegistryId ?? VaultTileGlyph.DefaultDoorRegistryId} " +
+                            $"floorKey={glyph.TileKey}");
+                        RegisterMapDoor(registry, doors, glyph, world, blueprint.VaultId, cell.X, cell.Y, unlocked: true);
                         break;
                 }
             }
+
+            Debug.Log(
+                $"[VaultDoor] Stamp tiles done vault={blueprint.VaultId} origin=({placementOrigin.x},{placementOrigin.y}) " +
+                $"mapDoorGlyphs={mapDoorGlyphs} doorService={(doors != null ? "ok" : "null")} " +
+                $"registeredCells={(doors != null ? doors.RegisteredCellCount : 0)}");
 
             if (!registry.TryResolveTile(defaultFloorKey, out TileBase defaultFloorTile))
             {
@@ -81,7 +92,13 @@ namespace JRogue.World.Generation.Vaults
             }
 
             StampEntities(blueprint, registry, placementOrigin, context, doors, defaultFloorTile);
-            doors?.RefreshAllOverlays();
+            if (doors != null)
+            {
+                doors.RefreshAllOverlays(logContext: $"post-stamp:{blueprint.VaultId}");
+                Debug.Log(
+                    $"[VaultDoor] Post-stamp refresh vault={blueprint.VaultId} registeredCells={doors.RegisteredCellCount}");
+            }
+
             VaultPlacementUtility.ReserveFootprint(blueprint, placementOrigin, context);
             map.FloorMap?.CompressBounds();
             map.WallMap?.CompressBounds();
@@ -124,14 +141,31 @@ namespace JRogue.World.Generation.Vaults
             return true;
         }
 
-        static void EnsureDoorOverlay(DungeonGenerationContext context, DoorService doors)
+        static void EnsureDoorOverlay(
+            DungeonGenerationContext context,
+            DoorService doors,
+            string vaultId,
+            Vector3Int placementOrigin)
         {
             if (doors == null)
+            {
+                Debug.LogWarning($"[VaultDoor] EnsureDoorOverlay vault={vaultId}: DoorService.Instance is null.");
                 return;
+            }
 
             Tilemap overlay = context.Instance?.Tilemaps?.DoorOverlayMap;
             if (overlay != null)
-                doors.SetOverlayMap(overlay);
+            {
+                doors.SetOverlayMap(overlay, logContext: $"vault-stamp:{vaultId}");
+                Debug.Log(
+                    $"[VaultDoor] Bound overlay vault={vaultId} tilemap={overlay.name} origin=({placementOrigin.x},{placementOrigin.y})");
+            }
+            else
+            {
+                Debug.LogWarning(
+                    $"[VaultDoor] No DoorOverlayMap on floor instance vault={vaultId} " +
+                    $"instance={(context.Instance != null ? context.Instance.name : "null")}");
+            }
         }
 
         static void StampEntities(
@@ -224,7 +258,18 @@ namespace JRogue.World.Generation.Vaults
                 if (defaultFloorTile != null)
                     MapManager.Instance?.SetCellFloor(world, defaultFloorTile);
 
-                RegisterDoor(doors, definition, world, placement.Unlocked, startOpen: false);
+                Debug.Log(
+                    $"[VaultDoor] DOOR line vault={blueprint.VaultId} local=({placement.X},{placement.Y}) " +
+                    $"world=({world.x},{world.y}) id={placement.DoorId}");
+                RegisterDoor(
+                    doors,
+                    definition,
+                    world,
+                    blueprint.VaultId,
+                    placement.X,
+                    placement.Y,
+                    placement.Unlocked,
+                    startOpen: false);
             }
 
             Transform enemyParent = context.Instance?.EnemyContainer;
@@ -253,13 +298,24 @@ namespace JRogue.World.Generation.Vaults
             DoorService doors,
             VaultTileGlyph glyph,
             Vector3Int world,
+            string vaultId,
+            int localX,
+            int localY,
             bool unlocked)
         {
             if (doors == null)
+            {
+                Debug.LogWarning($"[VaultDoor] RegisterMapDoor skipped vault={vaultId} local=({localX},{localY}): DoorService null.");
                 return;
+            }
 
-            if (doors.TryGetAtCell(world, out _))
+            if (doors.TryGetAtCell(world, out DoorInstance existing))
+            {
+                Debug.Log(
+                    $"[VaultDoor] RegisterMapDoor skipped vault={vaultId} world=({world.x},{world.y}): " +
+                    $"already has door '{existing.DoorId}' state={existing.State}.");
                 return;
+            }
 
             string doorId = string.IsNullOrEmpty(glyph.DoorRegistryId)
                 ? VaultTileGlyph.DefaultDoorRegistryId
@@ -268,22 +324,38 @@ namespace JRogue.World.Generation.Vaults
             if (!registry.TryResolveDoor(doorId, out DoorDefinition definition) || definition == null)
             {
                 DungeonGenerationLog.Warn($"MAP door glyph references unknown door id '{doorId}'.");
+                Debug.LogWarning(
+                    $"[VaultDoor] Registry miss vault={vaultId} local=({localX},{localY}) world=({world.x},{world.y}) id='{doorId}'.");
                 return;
             }
 
-            RegisterDoor(doors, definition, world, unlocked, startOpen: false);
+            Debug.Log(
+                $"[VaultDoor] Resolved vault={vaultId} id='{doorId}' -> def={definition.name} " +
+                $"doorId={definition.doorId} orient={definition.orientation} startsOpen={definition.startsOpen}");
+            RegisterDoor(doors, definition, world, vaultId, localX, localY, unlocked, startOpen: false);
         }
 
         static void RegisterDoor(
             DoorService doors,
             DoorDefinition definition,
             Vector3Int world,
+            string vaultId,
+            int localX,
+            int localY,
             bool unlocked,
             bool startOpen)
         {
             if (doors == null || definition == null)
+            {
+                Debug.LogWarning(
+                    $"[VaultDoor] RegisterDoor aborted vault={vaultId} local=({localX},{localY}): " +
+                    $"doors={(doors != null)} def={(definition != null)}.");
                 return;
+            }
 
+            Debug.Log(
+                $"[VaultDoor] Register vault={vaultId} local=({localX},{localY}) world=({world.x},{world.y}) " +
+                $"unlocked={unlocked} startOpen={startOpen}");
             doors.Register(new DoorPlacement
             {
                 definition = definition,
