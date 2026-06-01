@@ -235,8 +235,8 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/HazardPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassAbilityResources.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalEdgePlacement.cs" />
-    <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacer.cs" />
+    <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorGenerator.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
