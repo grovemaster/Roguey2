@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JRogue.Combat.FriendlyFire;
 using System.Linq;
 using JRogue.Actors;
 using JRogue.Controller.Enemy;
@@ -138,6 +139,44 @@ namespace JRogue.Combat
             Debug.Log(
                 $"{LogPrefix} Shot at {targetTile} for {damage} with {arrowUsed.itemName} ({targets.Count} target(s)).");
             return true;
+        }
+
+        public static string GetBowShotActionLabel(BaseActor shooter)
+        {
+            EquipmentManager equip = shooter?.GetComponent<EquipmentManager>();
+            ItemData bow = equip?.GetItemFromEquipmentSlot(EquipmentSlot.MainHand);
+            if (bow != null && !string.IsNullOrWhiteSpace(bow.itemName))
+                return $"{bow.itemName.Trim()} shot";
+
+            return "Bow shot";
+        }
+
+        public static bool WouldHarmPartyAlly(
+            BaseActor shooter,
+            Vector3Int targetTile,
+            out List<BaseActor> affectedAllies)
+        {
+            affectedAllies = new List<BaseActor>();
+            if (shooter == null)
+                return false;
+
+            List<IBattleTarget> targets = TargetingResolver.GetTargetsOnTile(targetTile);
+            PartyManager party = PartyManager.Instance;
+            var harmed = new HashSet<BaseActor>();
+
+            for (int i = 0; i < targets.Count; i++)
+            {
+                if (targets[i] is not BaseActor actor)
+                    continue;
+
+                if (!FriendlyFirePreview.IsLivingPartyAlly(shooter, actor, party))
+                    continue;
+
+                harmed.Add(actor);
+            }
+
+            affectedAllies = FriendlyFirePreview.OrderByPartyRoster(harmed, party);
+            return affectedAllies.Count > 0;
         }
 
         public static bool TryConsumeAmmo(BaseActor actor, int amount, out ItemData consumedDefinition)

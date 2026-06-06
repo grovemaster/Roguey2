@@ -6,7 +6,7 @@
 
 **Related:** `Assets/Scripts/Item/Ability/Targeting/TargetingData` (early stub — superseded by this spec), [Telekinesis essence](../Essence/Telekinesis-Essence-Requirements.md) (single-tile targeting, invalid-confirm pattern).
 
-**Explicitly out of scope (v0):** Animated VFX on cast (separate milestone); full line-of-sight gating for splash preview; friendly-fire UI coloring; targeting through walls unless ability adds it later; save/load mid-targeting.
+**Explicitly out of scope (v0):** Animated VFX on cast (separate milestone); full line-of-sight gating for splash preview; friendly-fire **preview coloring** on reticle (see [Friendly fire confirmation](Friendly-Fire-Confirmation-Requirements.md) for confirm dialog); targeting through walls unless ability adds it later; save/load mid-targeting.
 
 ---
 

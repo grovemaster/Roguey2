@@ -434,6 +434,9 @@ namespace JRogue.Input
 
             if (commandProcessor.CurrentState == InputState.Targeting)
             {
+                if (FriendlyFireConfirmDialogUI.BlocksGameplay)
+                    return;
+
                 commandProcessor.TryApply(PlayerCommand.ConfirmTarget());
                 return;
             }
@@ -513,7 +516,8 @@ namespace JRogue.Input
             || EssencePickupConfirmDialogUI.BlocksGameplay
             || NpcDialogBoxUI.BlocksGameplay
             || ShopNpcMenuUI.BlocksGameplay
-            || QuestJournalUI.BlocksGameplay;
+            || QuestJournalUI.BlocksGameplay
+            || FriendlyFireConfirmDialogUI.BlocksGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed

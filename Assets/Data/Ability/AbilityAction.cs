@@ -45,6 +45,13 @@ namespace JRogue.Ability
         [Tooltip("When Execute uses a target tile (targeted abilities), originate sound at targetTile instead of the caster.")]
         public bool noiseOriginAtTargetTile = false;
 
+        [Header("Friendly Fire")]
+        [Tooltip("When true, never prompt before damaging party allies.")]
+        public bool skipFriendlyFireConfirmation;
+
+        /// <summary>Whether this ability would deal damage to <paramref name="target"/> at execute time.</summary>
+        public virtual bool WouldHarm(IBattleTarget target, GameObject caster) => false;
+
         // New Method: Can we actually use this right now?
         public abstract bool CanExecute(GameObject user);
 

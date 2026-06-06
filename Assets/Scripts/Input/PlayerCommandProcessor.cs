@@ -17,6 +17,7 @@ using JRogue.Hazards;
 using JRogue.Traps;
 using JRogue.Interactables;
 using JRogue.Combat;
+using JRogue.Combat.FriendlyFire;
 using JRogue.Manager.Door;
 using JRogue.World.MapInteract;
 using JRogue.Service.Formation;
@@ -500,8 +501,6 @@ namespace JRogue.Input
             if (activeMember == null || reticleView == null) return false;
 
             PendingTargetedAbility pending = pendingTargetedAbility.Value;
-            EssenceSlotManager actorEssence = activeMember.GetComponent<EssenceSlotManager>();
-            EquipmentManager equipManager = activeMember.GetComponent<EquipmentManager>();
 
             if (!TryAllowPendingTargetedAction(pending, out string denyReason))
             {
@@ -510,6 +509,27 @@ namespace JRogue.Input
             }
 
             Vector3Int target = reticleView.Position;
+            TargetedActionContext context = BuildTargetedActionContext(pending);
+
+            if (FriendlyFireTargetGate.TryInterceptConfirm(
+                    activeMember,
+                    context,
+                    target,
+                    () => CompletePendingTargetedAction(activeMember, pending, target)))
+            {
+                return true;
+            }
+
+            return CompletePendingTargetedAction(activeMember, pending, target);
+        }
+
+        bool CompletePendingTargetedAction(
+            BaseActor activeMember,
+            PendingTargetedAbility pending,
+            Vector3Int target)
+        {
+            EssenceSlotManager actorEssence = activeMember.GetComponent<EssenceSlotManager>();
+            EquipmentManager equipManager = activeMember.GetComponent<EquipmentManager>();
             HumanMageSpellsRuntime mageSpells = activeMember.GetComponent<HumanMageSpellsRuntime>();
 
             bool ok = pending.Source switch
@@ -547,6 +567,23 @@ namespace JRogue.Input
 
             Debug.Log($"Targeted ability executed. Leader now at: {activeMember.GridPosition}");
             return true;
+        }
+
+        static TargetedActionContext BuildTargetedActionContext(PendingTargetedAbility pending)
+        {
+            switch (pending.Source)
+            {
+                case PlayerAbilitySource.InventoryItem:
+                    return TargetedActionContext.FromInventory(pending.InventoryAbility);
+                case PlayerAbilitySource.EquipmentItem:
+                    return TargetedActionContext.FromEquipment(pending.SlotIndex, pending.AbilityIndex);
+                case PlayerAbilitySource.HumanMageSpell:
+                    return TargetedActionContext.FromHumanMageSpell(pending.AbilityIndex);
+                case PlayerAbilitySource.BowAim:
+                    return TargetedActionContext.BowAim();
+                default:
+                    return TargetedActionContext.FromEssence(pending.SlotIndex, pending.AbilityIndex);
+            }
         }
 
         bool ApplyAimBow()

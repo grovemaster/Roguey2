@@ -12,6 +12,9 @@ namespace JRogue.Ability.Fireball
         public int fireDamage = 15;
         public bool canHurtCaster = true;
 
+        public override bool WouldHarm(IBattleTarget target, GameObject caster) =>
+            fireDamage > 0 && target is JRogue.Actors.BaseActor;
+
         public override bool CanExecute(GameObject user)
         {
             // Standard Soul Power check (Milestone 13 logic)

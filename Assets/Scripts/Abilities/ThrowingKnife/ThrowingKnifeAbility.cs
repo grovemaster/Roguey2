@@ -16,6 +16,20 @@ namespace JRogue.Ability.ThrowingKnife
         public bool canHurtAllies;
         public bool canHurtCaster;
 
+        public override bool WouldHarm(IBattleTarget target, GameObject caster)
+        {
+            if (pierceDamage <= 0 || target is not BaseActor actor)
+                return false;
+
+            PartyManager party = PartyManager.Instance;
+            if (!canHurtAllies
+                && party != null
+                && party.partyMembers.Contains(actor))
+                return false;
+
+            return true;
+        }
+
         public override bool CanExecute(GameObject user) => true;
 
         protected override bool ExecuteCore(GameObject user)

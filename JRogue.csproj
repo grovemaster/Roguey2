@@ -152,6 +152,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/PopulationPlacementUtility.cs" />
     <Compile Include="Assets/Scripts/Abilities/UndeadGraveTouchAbility.cs" />
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthBuffRuntime.cs" />
+    <Compile Include="Assets/Scripts/Combat/FriendlyFire/FriendlyFirePreview.cs" />
     <Compile Include="Assets/Scripts/World/Altar/SpawnEnemyAltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/World/Generation/IDungeonGenerationPhase.cs" />
     <Compile Include="Assets/Scripts/Dialog/GameStoryFlagService.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryDetailFormatter.cs" />
     <Compile Include="Assets/Scripts/Input/EssenceMoveGate.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryCarriedSorter.cs" />
+    <Compile Include="Assets/Scripts/Combat/FriendlyFire/FriendlyFireTargetGate.cs" />
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarInstance.cs" />
     <Compile Include="Assets/Scripts/Interactables/TownTimeLeverContent.cs" />
@@ -274,6 +276,7 @@
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorGenerator.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/FriendlyFireConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeService.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlaceholderSprites.cs" />
@@ -389,6 +392,7 @@
     <Compile Include="Assets/Scripts/Testing/Essence/EssenceTestHarness.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryListColumnHeaderView.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardCellState.cs" />
+    <Compile Include="Assets/Scripts/Combat/FriendlyFire/TargetedActionContext.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInscriptionGuards.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorServiceBinder.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapInstance.cs" />
@@ -396,6 +400,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownTimeLeverSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorInstanceManager.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyCurrencyLedger.cs" />
+    <Compile Include="Assets/Scripts/Combat/FriendlyFire/TargetedActionResolver.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/MapInteractOrthogonal.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyAiBrain.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarPlacementSet.cs" />

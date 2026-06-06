@@ -115,6 +115,7 @@
     <Compile Include="Assets/Tests/UnitTests/Inventory/EvocableChargeRulesTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/TrapServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Doors/DoorServiceTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Combat/FriendlyFirePreviewTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputHandlerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/VaultFileParserTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/EnvironmentalHazardTests.cs" />
