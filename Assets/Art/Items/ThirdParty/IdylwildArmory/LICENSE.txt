@@ -1,0 +1,12 @@
+Idylwild's Armory (subset)
+
+Source: https://opengameart.org/content/idylwilds-armory
+Archive: idylwilds_armory.zip
+
+Tile used in Roguey2 (items):
+  close_helmet.png — Helmet of Light inventory / world icon
+
+Author: Idylwild — https://idylwild.itch.io/
+
+License: Creative Commons Zero (CC0) — public domain dedication.
+Free to use for any purpose including commercial use without attribution.

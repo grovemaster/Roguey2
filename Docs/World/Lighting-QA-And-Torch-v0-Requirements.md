@@ -199,7 +199,7 @@ Provide a **stable** place to test dim tiles **without** setting global `default
 
 ## 8. Carried torch v1 (specified — next milestone)
 
-> **Not implemented in wall-torch v0 milestone.** Parent [Lighting — Requirements](Lighting-Requirements.md) R10.1 is updated by reference to this section.
+> **Not implemented in wall-torch v0 milestone.** Superseded for full content + Helmet of Light by [Light-Emitting Items](Light-Emitting-Items-Requirements.md). This section remains the original handheld-torch draft; implement from the newer doc.
 
 ### R8.1 — Item
 

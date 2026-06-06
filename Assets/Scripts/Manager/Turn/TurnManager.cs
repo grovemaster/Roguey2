@@ -8,6 +8,7 @@ using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
 using JRogue.Manager.Progression;
 using JRogue.Hazards;
+using JRogue.Item;
 using JRogue.Traps;
 using JRogue.Racial;
 using JRogue.Status;
@@ -62,6 +63,7 @@ namespace JRogue.Manager.Turn
             charactersWhoActed.Add(actor);
 
             FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
+            PartyLightEmitterBridge.RefreshParty();
             LightingService.Instance?.OnPartyVisionActivity();
             CombatThreatCoordinator.Instance?.EvaluateThreat();
 
@@ -87,6 +89,8 @@ namespace JRogue.Manager.Turn
                 return;
 
             EvocableRechargeService.TickPartyAfterPlayerPhase();
+            LightSourceItemRules.TickPartyAfterPlayerPhase();
+            PartyLightEmitterBridge.RefreshParty();
             StartCoroutine(EnemyTurnSequence());
         }
 
@@ -125,6 +129,8 @@ namespace JRogue.Manager.Turn
                 return;
 
             EvocableRechargeService.TickPartyAfterPlayerPhase();
+            LightSourceItemRules.TickPartyAfterPlayerPhase();
+            PartyLightEmitterBridge.RefreshParty();
 
             FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
             LightingService.Instance?.OnPartyVisionActivity();
@@ -218,6 +224,7 @@ namespace JRogue.Manager.Turn
             FloorLifetimeTicker.TickAllOnPlayerPhaseStart();
 
             FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
+            PartyLightEmitterBridge.RefreshParty();
             LightingService.Instance?.OnPartyVisionActivity();
         }
 

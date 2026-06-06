@@ -89,6 +89,7 @@
     <None Include="Assets/Art/NPC/ThirdParty/KenneyToonCharacters/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
     <None Include="Assets/Fonts/OFL.txt" />
+    <None Include="Assets/Art/Items/ThirdParty/IdylwildArmory/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets/Art/Interactables/ThirdParty/DungeonTileset32/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Examples &amp; Extras/Fonts/Roboto-Bold - License.txt" />
@@ -117,6 +118,7 @@
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc" />
     <None Include="Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt" />
     <None Include="Assets/Art/Hazards/ThirdParty/DungeonCrawl32/LICENSE.txt" />
+    <None Include="Assets/Art/Items/ThirdParty/AntumDelugeTorch/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets/Art/Altars/ThirdParty/ElementalShrines/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader" />

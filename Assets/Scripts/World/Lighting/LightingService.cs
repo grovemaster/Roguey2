@@ -28,9 +28,24 @@ namespace JRogue.World.Lighting
         readonly Dictionary<Vector3Int, LightCellData> _cells = new Dictionary<Vector3Int, LightCellData>();
         readonly Dictionary<int, AmbientRegion> _ambientRegions = new Dictionary<int, AmbientRegion>();
         readonly List<PendingRegistration> _pending = new List<PendingRegistration>();
+        readonly Dictionary<string, CarriedEmitterEntry> _carriedEmitters = new Dictionary<string, CarriedEmitterEntry>();
 
         bool _registryFinalized;
         int _playerPhaseTurnCount;
+
+        public readonly struct CarriedEmitterEntry
+        {
+            public CarriedEmitterEntry(Vector3Int cell, LightEmitterDefinition definition, int emitLight)
+            {
+                Cell = cell;
+                Definition = definition;
+                EmitLight = emitLight;
+            }
+
+            public Vector3Int Cell { get; }
+            public LightEmitterDefinition Definition { get; }
+            public int EmitLight { get; }
+        }
 
         struct PendingRegistration
         {
@@ -254,6 +269,94 @@ namespace JRogue.World.Lighting
             RecomputeAll();
         }
 
+        /// <summary>Registers or moves a party-carried virtual emitter (does not overwrite map cells).</summary>
+        public void SetCarriedEmitter(
+            string emitterId,
+            Vector3Int cell,
+            LightEmitterDefinition definition,
+            int initialEmission = -1,
+            string reason = null)
+        {
+            if (string.IsNullOrEmpty(emitterId) || definition == null)
+                return;
+
+            EnsureRegistryFinalized();
+            cell = Flatten(cell);
+
+            int emission = initialEmission < 0
+                ? definition.BaseEmissionMax
+                : LightLevel.ClampEmission(initialEmission, definition);
+
+            _carriedEmitters[emitterId] = new CarriedEmitterEntry(cell, definition, emission);
+            Debug.Log(
+                $"[Lighting:Carried] Set {emitterId} at {cell} emission={emission}"
+                + (string.IsNullOrEmpty(reason) ? "." : $" ({reason})."));
+
+            RecomputeAll();
+        }
+
+        public void RemoveCarriedEmitter(string emitterId, string reason = null)
+        {
+            if (string.IsNullOrEmpty(emitterId))
+                return;
+
+            if (!_carriedEmitters.Remove(emitterId))
+                return;
+
+            Debug.Log(
+                $"[Lighting:Carried] Removed {emitterId}"
+                + (string.IsNullOrEmpty(reason) ? "." : $" ({reason})."));
+
+            if (_registryFinalized)
+                RecomputeAll();
+        }
+
+        public void ClearCarriedEmitters()
+        {
+            if (_carriedEmitters.Count == 0)
+                return;
+
+            _carriedEmitters.Clear();
+            if (_registryFinalized)
+                RecomputeAll();
+        }
+
+        public int CarriedEmitterCount => _carriedEmitters.Count;
+
+        /// <summary>Replaces the carried-emitter set with <paramref name="desired"/> (removes stale ids).</summary>
+        public void SyncCarriedEmitters(System.Collections.Generic.Dictionary<string, CarriedEmitterEntry> desired)
+        {
+            EnsureRegistryFinalized();
+            desired ??= new System.Collections.Generic.Dictionary<string, CarriedEmitterEntry>();
+
+            var stale = new System.Collections.Generic.List<string>();
+            foreach (string existingId in _carriedEmitters.Keys)
+            {
+                if (!desired.ContainsKey(existingId))
+                    stale.Add(existingId);
+            }
+
+            for (int i = 0; i < stale.Count; i++)
+                RemoveCarriedEmitter(stale[i], "unequipped");
+
+            foreach (System.Collections.Generic.KeyValuePair<string, CarriedEmitterEntry> pair in desired)
+            {
+                CarriedEmitterEntry entry = pair.Value;
+                if (entry.Definition == null)
+                    continue;
+
+                if (_carriedEmitters.TryGetValue(pair.Key, out CarriedEmitterEntry existing)
+                    && existing.Cell == entry.Cell
+                    && existing.Definition == entry.Definition
+                    && existing.EmitLight == entry.EmitLight)
+                {
+                    continue;
+                }
+
+                SetCarriedEmitter(pair.Key, entry.Cell, entry.Definition, entry.EmitLight, "sync");
+            }
+        }
+
         public void FinalizeRegistry()
         {
             bool firstTime = !_registryFinalized;
@@ -279,6 +382,7 @@ namespace JRogue.World.Lighting
         {
             _cells.Clear();
             _pending.Clear();
+            _carriedEmitters.Clear();
             _registryFinalized = false;
             EnsureDefaultAmbientRegion();
         }
@@ -444,8 +548,40 @@ namespace JRogue.World.Lighting
 
         int ComputeReceivedLightAt(Vector3Int cell)
         {
+            int fromEmitters = SumEmitterContribution(cell, _cells);
+            fromEmitters += SumCarriedEmitterContribution(cell);
+            int ambient = GetAmbientForCell(cell);
+            return LightLevel.Clamp(fromEmitters + ambient);
+        }
+
+        int SumCarriedEmitterContribution(Vector3Int cell)
+        {
+            if (_carriedEmitters.Count == 0)
+                return 0;
+
+            int total = 0;
+            foreach (KeyValuePair<string, CarriedEmitterEntry> pair in _carriedEmitters)
+            {
+                CarriedEmitterEntry carried = pair.Value;
+                if (carried.Definition == null || carried.EmitLight <= 0)
+                    continue;
+
+                int radius = carried.Definition.FalloffRadius;
+                int falloffPerTile = carried.Definition.FalloffPerTile;
+                int distance = ManhattanDistance(carried.Cell, cell);
+                if (distance > radius)
+                    continue;
+
+                total += Mathf.Max(0, carried.EmitLight - falloffPerTile * distance);
+            }
+
+            return total;
+        }
+
+        static int SumEmitterContribution(Vector3Int cell, Dictionary<Vector3Int, LightCellData> emitters)
+        {
             int fromEmitters = 0;
-            foreach (KeyValuePair<Vector3Int, LightCellData> entry in _cells)
+            foreach (KeyValuePair<Vector3Int, LightCellData> entry in emitters)
             {
                 LightCellData source = entry.Value;
                 if (!source.IsEmitter || source.EmitLight <= 0)
@@ -466,8 +602,7 @@ namespace JRogue.World.Lighting
                 fromEmitters += contrib;
             }
 
-            int ambient = GetAmbientForCell(cell);
-            return LightLevel.Clamp(fromEmitters + ambient);
+            return fromEmitters;
         }
 
         int GetAmbientForCell(Vector3Int cell)

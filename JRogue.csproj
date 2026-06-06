@@ -195,6 +195,7 @@
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadGraveTouchLingerPassive.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
     <Compile Include="Assets/Scripts/Controller/BaseActor.cs" />
+    <Compile Include="Assets/Scripts/Abilities/HelmetOfLight/HelmetOfLightRadianceAbility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarPlacement.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultStamper.cs" />
@@ -315,6 +316,7 @@
     <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/PartyLightEmitterBridge.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationPipeline.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
@@ -342,6 +344,7 @@
     <Compile Include="Assets/Scripts/Interactables/Preconditions/OtherInteractableOnPrecondition.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/ShopNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkCounterService.cs" />
+    <Compile Include="Assets/Scripts/Item/LightSourceItemRules.cs" />
     <Compile Include="Assets/Scripts/Interactables/PartyCarriedLightSource.cs" />
     <Compile Include="Assets/Scripts/Quest/QuestLogic.cs" />
     <Compile Include="Assets/Scripts/Interactables/SampleSceneInteractablePlacements.cs" />
@@ -384,6 +387,7 @@
     <Compile Include="Assets/Scripts/Dialog/DialogParameterResolver.cs" />
     <Compile Include="Assets/Scripts/Combat/BowKitSampleSceneBootstrap.cs" />
     <Compile Include="Assets/Scripts/Dialog/INpcTalkTarget.cs" />
+    <Compile Include="Assets/Scripts/Manager/Inventory/AbilityCooldownService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonPortalVisuals.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorFeatureSnapshot.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimeAdvanceResult.cs" />

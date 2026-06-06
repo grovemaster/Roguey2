@@ -21,3 +21,7 @@ MonoBehaviour:
   initialStock:
   - item: {fileID: 11400000, guid: 29e95ab10b916716ca35b34994f1d920, type: 2}
     quantity: 2
+  - item: {fileID: 11400000, guid: c5b3d13b819646ff8412d91478970ee2, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: 8b5c4d3e2f1a4069b8c7d6e5f4a3b2c1, type: 2}
+    quantity: 1

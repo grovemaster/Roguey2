@@ -7,6 +7,7 @@ using JRogue.Item;
 using JRogue.Manager.Inventory;
 using JRogue.Racial;
 using JRogue.Stats;
+using JRogue.World.Lighting;
 using UnityEngine;
 
 namespace JRogue.Manager.Equipment
@@ -120,6 +121,8 @@ namespace JRogue.Manager.Equipment
             }
 
             JRogue.Quest.QuestService.Instance?.NotifyItemEquipped(GetComponent<BaseActor>(), newItem, slot);
+            PartyLightEmitterBridge.RefreshMember(GetComponent<BaseActor>());
+            LightingService.Instance?.OnPartyVisionActivity();
         }
 
         void TryClearIllegalOffHandForBow(InventoryManager inv)
@@ -245,6 +248,8 @@ namespace JRogue.Manager.Equipment
                 return false;
 
             Debug.Log($"[Unequip] Moved {inst.Definition.itemName} from {slot} to bag ({inst.Id}).");
+            PartyLightEmitterBridge.RefreshMember(GetComponent<BaseActor>());
+            LightingService.Instance?.OnPartyVisionActivity();
             return true;
         }
 

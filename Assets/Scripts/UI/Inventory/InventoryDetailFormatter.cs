@@ -47,6 +47,9 @@ namespace JRogue.UI.Inventory
             if (item is EvocableItemData evocable)
                 AppendEvocableInspect(sb, evocable, selectedRow.Instance);
 
+            if (item is LightSourceItemData lightSource)
+                AppendLightSourceInspect(sb, lightSource, selectedRow.Instance);
+
             if (item.damageModules is { Count: > 0 })
             {
                 sb.AppendLine("<color=#cfd6dd><b>Damage</b></color>");
@@ -105,6 +108,15 @@ namespace JRogue.UI.Inventory
             }
 
             return sb.ToString().TrimEnd();
+        }
+
+        static void AppendLightSourceInspect(StringBuilder sb, LightSourceItemData lightSource, ItemInstance instance)
+        {
+            string line = LightSourceItemRules.FormatInspectSubtitle(instance, lightSource);
+            if (string.IsNullOrEmpty(line))
+                return;
+
+            sb.AppendLine($"<color=#cfd6dd><b>Light</b></color> {line}");
         }
 
         static void AppendEvocableInspect(StringBuilder sb, EvocableItemData evocable, ItemInstance instance)

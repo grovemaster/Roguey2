@@ -6,9 +6,9 @@
 
 **Depends on:** [Lighting — Requirements](Lighting-Requirements.md) (`LightingService`, `LightEmitterDefinition`, `LightCellData`, `VisibilityManager`, `LightLevel`), [Lighting QA and Torch v0](Lighting-QA-And-Torch-v0-Requirements.md) (wall torch + emitter math; SampleScene harness), [Town time & calendar](Town-Time-And-Calendar-Requirements.md) (`TownTimeService`, `TownTimePhase`), [Fog of War](Fog-Of-War-Requirements.md), [Interactable tiles](../Combat/Interactable-Tiles-Requirements.md), `MapManager` wall/floor tilemaps, `LightingInitPhase`, `TownNpcSetupPhase` / `Stamp_TownPlaza_20x20`.
 
-**Related:** [Lighting — Future backlog](Lighting-Future-Backlog.md) (Phase E day/night, Phase F emitters, item **#40** torch VFX). [Dynamic dungeon floors](Dynamic-Dungeon-Floor-Generation-Requirements.md) (dungeon torch pass deferred here §11).
+**Related:** [Lighting — Future backlog](Lighting-Future-Backlog.md) (Phase E day/night, Phase F emitters, item **#40** torch VFX). [Dynamic dungeon floors](Dynamic-Dungeon-Floor-Generation-Requirements.md) (dungeon torch pass deferred here §11). **Player-carried light items:** [Light-Emitting Items](Light-Emitting-Items-Requirements.md).
 
-**Explicitly out of scope (this milestone):** Carried torch accessory (see [Lighting QA §8](Lighting-QA-And-Torch-v0-Requirements.md)); player **ignite unlit** wall torch gameplay (town torches ship **pre-lit**); URP 2D Light components as gameplay truth; colored/mood lighting; enemy alert from party light; magical darkness zones; save/load of per-torch on/off state beyond run persistence; more than **three** town torches; full dungeon torch population (see §11).
+**Explicitly out of scope (this milestone):** Carried torch accessory (see [Light-Emitting Items](Light-Emitting-Items-Requirements.md)); player **ignite unlit** wall torch gameplay (town torches ship **pre-lit**); URP 2D Light components as gameplay truth; colored/mood lighting; enemy alert from party light; magical darkness zones; save/load of per-torch on/off state beyond run persistence; more than **three** town torches; full dungeon torch population (see §11).
 
 ---
 

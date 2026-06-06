@@ -292,6 +292,7 @@ namespace JRogue.Actors
                 if (PartyManager.Instance != null
                     && PartyManager.Instance.partyMembers.Contains(this))
                 {
+                    PartyLightEmitterBridge.RefreshParty();
                     LightingService.Instance?.OnPartyVisionActivity();
                 }
             }

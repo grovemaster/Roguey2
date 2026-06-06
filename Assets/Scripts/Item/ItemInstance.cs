@@ -33,6 +33,10 @@ namespace JRogue.Item
 
         [SerializeField] int rechargePhasesAccumulated;
 
+        [SerializeField] int helmetLightTurnsRemaining;
+
+        [SerializeField] int helmetCooldownTurnsRemaining;
+
         public const int MaxInscriptionLength = 280;
 
         public ItemInstance(ItemData def, int qty = 1)
@@ -110,6 +114,18 @@ namespace JRogue.Item
         {
             get => rechargePhasesAccumulated;
             set => rechargePhasesAccumulated = Mathf.Max(0, value);
+        }
+
+        public int HelmetLightTurnsRemaining
+        {
+            get => helmetLightTurnsRemaining;
+            set => helmetLightTurnsRemaining = Mathf.Max(0, value);
+        }
+
+        public int HelmetCooldownTurnsRemaining
+        {
+            get => helmetCooldownTurnsRemaining;
+            set => helmetCooldownTurnsRemaining = Mathf.Max(0, value);
         }
 
         public void SetCharges(int current, int max)

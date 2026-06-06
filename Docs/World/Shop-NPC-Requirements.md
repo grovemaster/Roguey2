@@ -115,15 +115,15 @@ Examples:
 
 Species id does **not** affect sell price in v0 (tier only).
 
-### 5.3 — Giant's Blade (NPC 5 stock)
+### 5.3 — Greta shop stock (NPC 5)
 
 User-facing name **"Giant's Sword"** maps to existing item **`Giants_Blade`** (`Assets/Resources/Item/Weapon/Giants_Blade.asset`) unless a separate item is authored.
 
-| Field | v0 content |
-|-------|------------|
-| **buyValue** | **2** |
-| **sellValue** | **1** (default 50%) |
-| **Shop stock** | Quantity **2** on NPC 5 only |
+| Item | v0 stock | Notes |
+|------|----------|-------|
+| **Giant's Sword** (`Giants_Blade`) | **2** | `buyValue` **2**, `sellValue` **1** |
+| **Handheld Torch** (`Accessory_HandheldTorch`) | **2** | See [Light-Emitting Items](Light-Emitting-Items-Requirements.md) §8.2 |
+| **Helmet of Light** (`Armor_HelmetOfLight`) | **1** | See [Light-Emitting Items](Light-Emitting-Items-Requirements.md) §8.2 |
 
 ---
 
@@ -147,7 +147,7 @@ User-facing name **"Giant's Sword"** maps to existing item **`Giants_Blade`** (`
 |----------|--------|
 | **Capabilities** | **`AllowPlayerBuy = true`**, **`AllowPlayerSell = false`** |
 | **Starting gold** | **100** (unused in v0 buy-only flow; persisted for future) |
-| **Starting stock** | **2 × Giants_Blade** |
+| **Starting stock** | **2 × Giants_Blade**, **2 × Handheld Torch**, **1 × Helmet of Light** |
 | **Prices** | Each blade sells for **`buyValue` (2 gold)** |
 | **Player buy rule** | Allowed while stock > 0 and player **`PartyCurrencyLedger`** has enough gold |
 

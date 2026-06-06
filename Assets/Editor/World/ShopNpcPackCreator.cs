@@ -18,6 +18,8 @@ namespace JRogue.Editor.World
         const string ResourcesShopFolder = "Assets/Resources/Shop";
         const string ResourcesPortraitsFolder = "Assets/Resources/Dialog/Portraits";
         const string GiantsBladePath = "Assets/Resources/Item/Weapon/Giants_Blade.asset";
+        const string HandheldTorchPath = "Assets/Resources/Item/Accessory/Accessory_HandheldTorch.asset";
+        const string HelmetOfLightPath = "Assets/Resources/Item/Armor/Armor_HelmetOfLight.asset";
         const string GoldCoinPath = "Assets/Resources/Item/Currency/GoldCoin.asset";
 
         [MenuItem("JRogue/Town/Create Shop NPC Pack")]
@@ -48,7 +50,7 @@ namespace JRogue.Editor.World
             PortraitDefinition gretaPortrait = CreatePortrait("Portrait_Greta", "Assets/Art/Portraits/NPC/Portrait_Greta.png");
 
             ShopNpcDefinition fennShop = CreateFennShop(fennPortrait);
-            ShopNpcDefinition gretaShop = CreateGretaShop(giantsBlade, gretaPortrait);
+            ShopNpcDefinition gretaShop = CreateGretaShop(gretaPortrait);
 
             GameObject humanNpc = AssetDatabase.LoadAssetAtPath<GameObject>(HumanNpcPrefabPath);
             if (humanNpc == null)
@@ -92,7 +94,7 @@ namespace JRogue.Editor.World
             return shop;
         }
 
-        static ShopNpcDefinition CreateGretaShop(ItemData giantsBlade, PortraitDefinition gretaPortrait)
+        static ShopNpcDefinition CreateGretaShop(PortraitDefinition gretaPortrait)
         {
             var shop = LoadOrCreate<ShopNpcDefinition>($"{ResourcesShopFolder}/ShopNpc_Greta.asset");
             shop.shopNpcId = TownShopNpcIds.Npc5;
@@ -101,9 +103,21 @@ namespace JRogue.Editor.World
             shop.allowPlayerBuy = true;
             shop.allowPlayerSell = false;
             shop.initialGold = 100;
-            shop.initialStock = giantsBlade != null
-                ? new[] { new ShopStockEntry { item = giantsBlade, quantity = 2 } }
-                : System.Array.Empty<ShopStockEntry>();
+
+            var stock = new System.Collections.Generic.List<ShopStockEntry>();
+            ItemData giantsBlade = AssetDatabase.LoadAssetAtPath<ItemData>(GiantsBladePath);
+            if (giantsBlade != null)
+                stock.Add(new ShopStockEntry { item = giantsBlade, quantity = 2 });
+
+            ItemData handheldTorch = AssetDatabase.LoadAssetAtPath<ItemData>(HandheldTorchPath);
+            if (handheldTorch != null)
+                stock.Add(new ShopStockEntry { item = handheldTorch, quantity = 2 });
+
+            ItemData helmetOfLight = AssetDatabase.LoadAssetAtPath<ItemData>(HelmetOfLightPath);
+            if (helmetOfLight != null)
+                stock.Add(new ShopStockEntry { item = helmetOfLight, quantity = 1 });
+
+            shop.initialStock = stock.ToArray();
             EditorUtility.SetDirty(shop);
             return shop;
         }

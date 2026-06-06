@@ -52,6 +52,7 @@
     <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadLichBargainBenefit.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/TieflingImplantsRuntime.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintDevActiveInvoker.cs" />
+    <Compile Include="Assets/Data/Item/LightSource/LightSourceItemData.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritActiveEntry.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanClassSkillTreeDefinition.cs" />
     <Compile Include="Assets/Data/Enemy/EnemySpeciesDefinition.cs" />

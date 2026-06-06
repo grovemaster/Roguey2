@@ -348,6 +348,7 @@ namespace JRogue.World.Generation
 
             lighting.FinalizeRegistry();
             lighting.SyncFloorReceiversFromMap();
+            PartyLightEmitterBridge.RefreshParty();
 
             if (def != null && def.FloorId == Phases.TownTorchSetupPhase.TownFloorId)
                 TownLightingSync.ApplyForCurrentPhase();
