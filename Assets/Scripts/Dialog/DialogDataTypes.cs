@@ -1,6 +1,7 @@
 using JRogue.Actors;
 using System;
 using System.Collections.Generic;
+using JRogue.Quest;
 using UnityEngine;
 
 namespace JRogue.Dialog
@@ -15,6 +16,7 @@ namespace JRogue.Dialog
         Line = 0,
         Choice = 1,
         Conditional = 2,
+        Action = 3,
     }
 
     public enum DialogConditionKind
@@ -23,6 +25,16 @@ namespace JRogue.Dialog
         StoryFlag = 1,
         NpcTalkCount = 2,
         AnyNpcTalked = 3,
+        QuestState = 4,
+        QuestNotStarted = 5,
+        QuestReadyToTurnIn = 6,
+    }
+
+    public enum DialogActionKind
+    {
+        None = 0,
+        OfferQuest = 1,
+        CompleteQuest = 2,
     }
 
     [Serializable]
@@ -55,6 +67,10 @@ namespace JRogue.Dialog
         public string[] anyTalkedNpcIds = Array.Empty<string>();
         public int trueNodeIndex = DialogGraph.NoNode;
         public int falseNodeIndex = DialogGraph.NoNode;
+        public string questId;
+        public QuestConditionState expectedQuestState = QuestConditionState.Active;
+        public DialogActionKind actionKind = DialogActionKind.None;
+        public string actionQuestId;
     }
 
     public sealed class DialogContext
@@ -64,6 +80,7 @@ namespace JRogue.Dialog
         public NpcDialogProfile Profile { get; set; }
         public GameStoryFlagService Flags { get; set; }
         public NpcTalkCounterService Counters { get; set; }
+        public IReadOnlyDictionary<string, QuestInstance> QuestInstances { get; set; }
     }
 
     public enum DialogStepKind

@@ -37,6 +37,7 @@ namespace JRogue.World.Generation
 
             TownShopStateService.EnsureRunService();
             TownTimeService.EnsureRunService();
+            JRogue.Quest.QuestService.EnsureRunService();
 
             if (floorInstanceManager == null)
             {

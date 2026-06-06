@@ -115,6 +115,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "ToggleQuestJournal",
+                    "type": "Button",
+                    "id": "e7ef5f9a-8382-4f92-bc19-ecd3299070ea",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "PickupFloorItems",
                     "type": "Button",
                     "id": "f8a2c1d4-9e3b-4a7f-b2d1-8c5e6f0a1b2c",
@@ -1247,6 +1256,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "ToggleInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "80311314-5d8b-4134-8b15-2f00cb1ec27d",
+                    "path": "<Keyboard>/j",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleQuestJournal",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

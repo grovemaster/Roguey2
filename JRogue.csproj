@@ -58,6 +58,7 @@
     <Compile Include="Assets/Scripts/Abilities/Passive/HeroicSpirit.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/AcousticsService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePrecondition.cs" />
+    <Compile Include="Assets/Scripts/Quest/QuestDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/ItemCategoryRegistry.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInterfaces.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalInteractable.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyMeleeCombat.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
+    <Compile Include="Assets/Scripts/Actors/PartyMemberId.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimePhase.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/AlwaysTruePrecondition.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableBumpResult.cs" />
@@ -166,6 +168,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonWorldFeatureServices.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/TownTimeLeverEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
+    <Compile Include="Assets/Scripts/Quest/QuestService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/EvocableRechargeService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
@@ -256,6 +259,7 @@
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarInstance.cs" />
     <Compile Include="Assets/Scripts/Interactables/TownTimeLeverContent.cs" />
+    <Compile Include="Assets/Scripts/UI/Quest/QuestJournalUI.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEvaluator.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyMainCharacterMarker.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/HazardPopulationPhase.cs" />
@@ -314,6 +318,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/TrapPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementSet.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/EnemyPopulationPhase.cs" />
+    <Compile Include="Assets/Scripts/Quest/QuestTypes.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotDefinition.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTile.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/DungeonVaultCatalog.cs" />
@@ -330,6 +335,7 @@
     <Compile Include="Assets/Scripts/Controller/Npc/ShopNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkCounterService.cs" />
     <Compile Include="Assets/Scripts/Interactables/PartyCarriedLightSource.cs" />
+    <Compile Include="Assets/Scripts/Quest/QuestLogic.cs" />
     <Compile Include="Assets/Scripts/Interactables/SampleSceneInteractablePlacements.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTestController.cs" />
     <Compile Include="Assets/Scripts/Abilities/Fireball/FIreballAbility.cs" />

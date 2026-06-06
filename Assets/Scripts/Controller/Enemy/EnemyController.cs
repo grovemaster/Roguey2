@@ -160,6 +160,10 @@ namespace JRogue.Controller.Enemy
 
             EnemyLootService.Instance?.SpawnDeathLoot(this);
 
+            string speciesId = species != null ? species.speciesId : null;
+            BaseActor killerActor = killer != null ? killer.GetComponent<BaseActor>() : null;
+            JRogue.Quest.QuestService.Instance?.NotifyEnemyKilled(speciesId, killerActor);
+
             if (gridManager != null)
                 gridManager.UnregisterFootprint(this);
             Debug.Log($"{gameObject.name} was defeated!");

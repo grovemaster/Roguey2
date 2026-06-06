@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f3c9a2e4b1d8f6a0e5c3d7b9a1f4e2c, type: 3}
+  m_Name: quest_skeleton_proof
+  m_EditorClassIdentifier: JRogue::JRogue.Quest.QuestDefinition
+  questId: quest_skeleton_proof
+  displayTitle: Hunt Skeletons
+  journalDescription: The town guard wants proof you can handle the undead in the dungeon.
+  giverNpcId: town_npc_1
+  giverDisplayName: Guard
+  acceptPrerequisites: []
+  objectives:
+  - objectiveId: kill_skeletons
+    journalText: Slay skeletons
+    optional: 0
+    actorRequirement:
+      kind: 0
+      partyMemberId: 
+    kind: 0
+    speciesId: skeleton
+    killCount: 3
+    flagId: 
+    npcId: 
+    item: {fileID: 0}
+    itemQuantity: 1
+    equipSlot: 0
+    acceptGenericStacks: 0
+  rewards:
+    gold: 30
+    items: []
+    itemQuantities: 
+    setFlagsOnComplete: []
+    partyExperience: 0
+  autoCompleteOnObjectives: 0
+  setFlagsOnAccept: []
+  setFlagsOnComplete: []
+  sortOrder: 0

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JRogue.Ability;
+using JRogue.Actors;
 using JRogue.Combat;
 using JRogue.Item;
 using JRogue.Manager.Inventory;
@@ -117,6 +118,8 @@ namespace JRogue.Manager.Equipment
                 if (slot == EquipmentSlot.OffHand && newItem.Definition.IsBowAmmo)
                     BowRangedCombatService.LogDefaultAmmo(newItem.Definition, newItem.Quantity);
             }
+
+            JRogue.Quest.QuestService.Instance?.NotifyItemEquipped(GetComponent<BaseActor>(), newItem, slot);
         }
 
         void TryClearIllegalOffHandForBow(InventoryManager inv)

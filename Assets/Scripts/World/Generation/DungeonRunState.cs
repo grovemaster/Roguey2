@@ -30,6 +30,7 @@ namespace JRogue.World.Generation
         {
             runSeed = seed;
             activeFloorId = null;
+            JRogue.Quest.QuestService.Instance?.ResetForNewRun();
         }
 
         public void SetActiveFloor(string floorId) => activeFloorId = floorId;

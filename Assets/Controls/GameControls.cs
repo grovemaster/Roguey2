@@ -201,6 +201,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""ToggleQuestJournal"",
+                    ""type"": ""Button"",
+                    ""id"": ""e7ef5f9a-8382-4f92-bc19-ecd3299070ea"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""PickupFloorItems"",
                     ""type"": ""Button"",
                     ""id"": ""f8a2c1d4-9e3b-4a7f-b2d1-8c5e6f0a1b2c"",
@@ -1338,6 +1347,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""80311314-5d8b-4134-8b15-2f00cb1ec27d"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleQuestJournal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
                     ""path"": ""<Keyboard>/comma"",
                     ""interactions"": """",
@@ -1399,6 +1419,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_SelectPartyMember = m_Player.FindAction("SelectPartyMember", throwIfNotFound: true);
         m_Player_ToggleFormation = m_Player.FindAction("ToggleFormation", throwIfNotFound: true);
         m_Player_ToggleInventory = m_Player.FindAction("ToggleInventory", throwIfNotFound: true);
+        m_Player_ToggleQuestJournal = m_Player.FindAction("ToggleQuestJournal", throwIfNotFound: true);
         m_Player_PickupFloorItems = m_Player.FindAction("PickupFloorItems", throwIfNotFound: true);
         m_Player_AimBow = m_Player.FindAction("AimBow", throwIfNotFound: true);
         m_Player_OpenDoor = m_Player.FindAction("OpenDoor", throwIfNotFound: true);
@@ -1496,6 +1517,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SelectPartyMember;
     private readonly InputAction m_Player_ToggleFormation;
     private readonly InputAction m_Player_ToggleInventory;
+    private readonly InputAction m_Player_ToggleQuestJournal;
     private readonly InputAction m_Player_PickupFloorItems;
     private readonly InputAction m_Player_AimBow;
     private readonly InputAction m_Player_OpenDoor;
@@ -1560,6 +1582,10 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/ToggleInventory".
         /// </summary>
         public InputAction @ToggleInventory => m_Wrapper.m_Player_ToggleInventory;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ToggleQuestJournal".
+        /// </summary>
+        public InputAction @ToggleQuestJournal => m_Wrapper.m_Player_ToggleQuestJournal;
         /// <summary>
         /// Provides access to the underlying input action "Player/PickupFloorItems".
         /// </summary>
@@ -1642,6 +1668,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ToggleInventory.started += instance.OnToggleInventory;
             @ToggleInventory.performed += instance.OnToggleInventory;
             @ToggleInventory.canceled += instance.OnToggleInventory;
+            @ToggleQuestJournal.started += instance.OnToggleQuestJournal;
+            @ToggleQuestJournal.performed += instance.OnToggleQuestJournal;
+            @ToggleQuestJournal.canceled += instance.OnToggleQuestJournal;
             @PickupFloorItems.started += instance.OnPickupFloorItems;
             @PickupFloorItems.performed += instance.OnPickupFloorItems;
             @PickupFloorItems.canceled += instance.OnPickupFloorItems;
@@ -1704,6 +1733,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ToggleInventory.started -= instance.OnToggleInventory;
             @ToggleInventory.performed -= instance.OnToggleInventory;
             @ToggleInventory.canceled -= instance.OnToggleInventory;
+            @ToggleQuestJournal.started -= instance.OnToggleQuestJournal;
+            @ToggleQuestJournal.performed -= instance.OnToggleQuestJournal;
+            @ToggleQuestJournal.canceled -= instance.OnToggleQuestJournal;
             @PickupFloorItems.started -= instance.OnPickupFloorItems;
             @PickupFloorItems.performed -= instance.OnPickupFloorItems;
             @PickupFloorItems.canceled -= instance.OnPickupFloorItems;
@@ -1843,6 +1875,13 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleInventory(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleQuestJournal" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleQuestJournal(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "PickupFloorItems" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

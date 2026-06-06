@@ -36,12 +36,16 @@ namespace JRogue.Manager.Inventory
             if (index < 0 || index >= carriedItems.Count)
                 return false;
             carriedItems.RemoveAt(index);
+            JRogue.Quest.QuestService.Instance?.NotifyInventoryChanged();
             return true;
         }
 
         public bool TryRemoveCarried(ItemInstance instance)
         {
-            return instance != null && carriedItems.Remove(instance);
+            bool removed = instance != null && carriedItems.Remove(instance);
+            if (removed)
+                JRogue.Quest.QuestService.Instance?.NotifyInventoryChanged();
+            return removed;
         }
 
         /// <summary>Removes up to <paramref name="amount"/> from a carried stack; removes the instance when quantity reaches 0.</summary>
@@ -240,6 +244,7 @@ namespace JRogue.Manager.Inventory
 
             Debug.Log(
                 $"Inventory: Added {instance.Definition.itemName} [{instance.Id}]. Weight: {GetTotalWeight()}/{stats.EncumbranceLimit}");
+            JRogue.Quest.QuestService.Instance?.NotifyInventoryChanged();
             return true;
         }
 

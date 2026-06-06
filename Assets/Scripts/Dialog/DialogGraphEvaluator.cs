@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JRogue.Quest;
 using UnityEngine;
 
 namespace JRogue.Dialog
@@ -27,6 +28,15 @@ namespace JRogue.Dialog
                 case DialogConditionKind.AnyNpcTalked:
                     return context.Flags != null
                            && context.Flags.IsAnySet(node.anyTalkedNpcIds);
+
+                case DialogConditionKind.QuestState:
+                case DialogConditionKind.QuestNotStarted:
+                case DialogConditionKind.QuestReadyToTurnIn:
+                    return QuestLogic.EvaluateDialogQuestCondition(
+                        node.conditionKind,
+                        node.questId,
+                        node.expectedQuestState,
+                        context.QuestInstances);
 
                 default:
                     return true;

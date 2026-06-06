@@ -6,6 +6,7 @@ using JRogue.Manager.Progression;
 using JRogue.Manager.Turn;
 using JRogue.UI.Gameplay;
 using JRogue.UI.Inventory;
+using JRogue.UI.Quest;
 using JRogue.UI.Targeting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,6 +17,7 @@ namespace JRogue.Input
     {
         private GameControls controls;
         private InputAction toggleInventoryAction;
+        private InputAction toggleQuestJournalAction;
         private InputAction pickupFloorItemsAction;
         private InputAction aimBowAction;
         private InputAction restAction;
@@ -73,6 +75,21 @@ namespace JRogue.Input
             else
             {
                 toggleInventoryAction.performed += OnToggleInventoryPerformed;
+            }
+
+            toggleQuestJournalAction = playerInput != null
+                ? playerInput.actions.FindAction("ToggleQuestJournal", throwIfNotFound: false)
+                : null;
+
+            if (toggleQuestJournalAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>ToggleQuestJournal</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (binding <Keyboard>/j).");
+            }
+            else
+            {
+                toggleQuestJournalAction.performed += OnToggleQuestJournalPerformed;
             }
 
             pickupFloorItemsAction = playerInput != null
@@ -167,6 +184,7 @@ namespace JRogue.Input
             AdjacentInteractPickerModalUI.EnsureInstance();
             AltarOfferingModalUI.EnsureInstance();
             AltarUsedModalUI.EnsureInstance();
+            QuestJournalUI.EnsureInstance();
 
             FloorPickupHudButton.EnsureInstance();
         }
@@ -180,6 +198,12 @@ namespace JRogue.Input
             {
                 toggleInventoryAction.performed -= OnToggleInventoryPerformed;
                 toggleInventoryAction = null;
+            }
+
+            if (toggleQuestJournalAction != null)
+            {
+                toggleQuestJournalAction.performed -= OnToggleQuestJournalPerformed;
+                toggleQuestJournalAction = null;
             }
 
             if (pickupFloorItemsAction != null)
@@ -299,6 +323,17 @@ namespace JRogue.Input
                 return;
 
             InventoryUI.TogglePanelFromGameplayInput();
+        }
+
+        void OnToggleQuestJournalPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            if (!QuestJournalUI.BlocksGameplay && BlocksFloorGameplay())
+                return;
+
+            QuestJournalUI.TogglePanelFromGameplayInput();
         }
 
         void OnAimBowPerformed(InputAction.CallbackContext context)
@@ -477,7 +512,8 @@ namespace JRogue.Input
             || AltarUsedModalUI.BlocksGameplay
             || EssencePickupConfirmDialogUI.BlocksGameplay
             || NpcDialogBoxUI.BlocksGameplay
-            || ShopNpcMenuUI.BlocksGameplay;
+            || ShopNpcMenuUI.BlocksGameplay
+            || QuestJournalUI.BlocksGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed
