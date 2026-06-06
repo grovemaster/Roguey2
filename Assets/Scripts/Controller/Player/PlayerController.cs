@@ -4,6 +4,7 @@ using JRogue.Controller.Enemy;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Party;
 using JRogue.Stats;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Controller.Player
@@ -32,6 +33,12 @@ namespace JRogue.Controller.Player
             Debug.Log($"{gameObject.name} bumped into {target.gameObject.name} at {target.GridPosition}.");
             if (target is EnemyController enemy)
             {
+                if (!SafeZonePolicyService.TryAllowHostileAction(out string denyReason))
+                {
+                    Debug.Log($"{SafeZonePolicyService.LogPrefix} {denyReason}");
+                    return;
+                }
+
                 if (BowRangedCombatService.HasBowEquipped(this))
                 {
                     equipment?.TryEnsureDefaultAmmoEquipped();

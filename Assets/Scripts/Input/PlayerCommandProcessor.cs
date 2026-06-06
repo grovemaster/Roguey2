@@ -25,6 +25,7 @@ using JRogue.Stats;
 using JRogue.Stats.Racial;
 using JRogue.UI.Targeting;
 using JRogue.Core.Targeting;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Input
@@ -98,6 +99,13 @@ namespace JRogue.Input
             if (!turnManager.CanActorTakeAction(activeMember.gameObject))
                 return false;
 
+            ItemData itemDef = itemInstance?.Definition;
+            if (itemDef != null && !SafeZonePolicyService.TryAllowInventoryUse(itemDef, out string safeDenyReason))
+            {
+                Debug.Log($"{SafeZonePolicyService.LogPrefix} {safeDenyReason}");
+                return false;
+            }
+
             currentState = InputState.Targeting;
             pendingTargetedAbility = new PendingTargetedAbility
             {
@@ -130,6 +138,12 @@ namespace JRogue.Input
 
             if (!turnManager.CanActorTakeAction(activeMember.gameObject))
                 return false;
+
+            if (!SafeZonePolicyService.TryAllowHostileAction(out string denyReason))
+            {
+                Debug.Log($"{SafeZonePolicyService.LogPrefix} {denyReason}");
+                return false;
+            }
 
             if (!BowRangedCombatService.HasBowEquipped(activeMember))
             {
@@ -489,6 +503,12 @@ namespace JRogue.Input
             EssenceSlotManager actorEssence = activeMember.GetComponent<EssenceSlotManager>();
             EquipmentManager equipManager = activeMember.GetComponent<EquipmentManager>();
 
+            if (!TryAllowPendingTargetedAction(pending, out string denyReason))
+            {
+                Debug.Log($"{SafeZonePolicyService.LogPrefix} {denyReason}");
+                return false;
+            }
+
             Vector3Int target = reticleView.Position;
             HumanMageSpellsRuntime mageSpells = activeMember.GetComponent<HumanMageSpellsRuntime>();
 
@@ -752,6 +772,12 @@ namespace JRogue.Input
 
             if (abilityToTry == null) return false;
 
+            if (!TryAllowPlayerAbilitySource(source, out string denyReason))
+            {
+                Debug.Log($"{SafeZonePolicyService.LogPrefix} {denyReason}");
+                return false;
+            }
+
             if (abilityToTry.requiresTarget)
             {
                 if (source == PlayerAbilitySource.HumanMageSpell)
@@ -886,6 +912,31 @@ namespace JRogue.Input
                 return;
 
             ExitTargetingMode();
+        }
+
+        static bool TryAllowPlayerAbilitySource(PlayerAbilitySource source, out string denyReason)
+        {
+            denyReason = null;
+            if (source == PlayerAbilitySource.InventoryItem)
+                return true;
+
+            if (source == PlayerAbilitySource.Essence)
+                return SafeZonePolicyService.TryAllowEssenceAbility(out denyReason);
+
+            return SafeZonePolicyService.TryAllowHostileAction(out denyReason);
+        }
+
+        static bool TryAllowPendingTargetedAction(PendingTargetedAbility pending, out string denyReason)
+        {
+            denyReason = null;
+
+            if (pending.Source == PlayerAbilitySource.InventoryItem)
+            {
+                ItemData item = pending.InventoryItemInstance?.Definition;
+                return SafeZonePolicyService.TryAllowInventoryUse(item, out denyReason);
+            }
+
+            return TryAllowPlayerAbilitySource(pending.Source, out denyReason);
         }
     }
 }

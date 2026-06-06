@@ -55,6 +55,7 @@
     <Compile Include="Assets/Tests/UnitTests/World/MapPresenceTrapUnregisterTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/MultiTileEnemyGridTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputTestSceneBuilder.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/SafeZonePolicyLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Party/PartyMemberDeathTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/EssencePickupEligibilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Shop/ShopPriceResolverTests.cs" />

@@ -7,6 +7,7 @@ using JRogue.Manager.Door;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.UI.Inventory;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Manager.Inventory
@@ -21,6 +22,9 @@ namespace JRogue.Manager.Inventory
 
             if (row.Instance != null && row.Instance.StorageLocation == ItemStorageLocation.OnGround)
                 return InventoryUseResult.Fail("Pick up the item before using it.");
+
+            if (!SafeZonePolicyService.TryAllowInventoryUse(row.Item, out string safeDenyReason))
+                return InventoryUseResult.Fail(safeDenyReason);
 
             if (row.Item.IsBowAmmo)
                 return TryUseBowArrow(row, inCombat);

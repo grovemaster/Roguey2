@@ -182,6 +182,7 @@
     <Compile Include="Assets/Scripts/Status/StatusImmunity.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/VaultPlacementPhase.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadGraveTouchLingerPassive.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
@@ -279,6 +280,7 @@
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupQuery.cs" />
     <Compile Include="Assets/Scripts/Item/ItemUserMark.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/SenseSightService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyLogic.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/PartySkillDetection.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimeLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/LightingInitPhase.cs" />

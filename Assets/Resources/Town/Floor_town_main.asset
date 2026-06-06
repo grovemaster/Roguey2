@@ -34,5 +34,7 @@ MonoBehaviour:
   playerTurnsPerDay: 5
   playerTurnsPerNight: 5
   doorPolicy: 0
+  combatPolicy: 1
+  safeZoneRegions: []
   vaults: []
   vaultCatalog: {fileID: 0}

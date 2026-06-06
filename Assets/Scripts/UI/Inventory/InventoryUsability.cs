@@ -5,6 +5,7 @@ using JRogue.Manager.Door;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
 using JRogue.Stats;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.UI.Inventory
@@ -19,6 +20,10 @@ namespace JRogue.UI.Inventory
                 return false;
 
             if (row.Instance != null && row.Instance.StorageLocation == ItemStorageLocation.OnGround)
+                return false;
+
+            if (SafeZonePolicyService.IsSafeZoneForActiveParty()
+                && !SafeZonePolicyService.IsUtilityInventoryUse(item))
                 return false;
 
             if (item.IsBowAmmo)

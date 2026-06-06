@@ -9,6 +9,7 @@ using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
 using JRogue.Stats;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Combat
@@ -94,6 +95,12 @@ namespace JRogue.Combat
         {
             if (shooter == null || ammoCount < 1)
                 return false;
+
+            if (!SafeZonePolicyService.TryAllowHostileAction(out string denyReason))
+            {
+                Debug.Log($"{SafeZonePolicyService.LogPrefix} {denyReason}");
+                return false;
+            }
 
             EquipmentManager equip = shooter.GetComponent<EquipmentManager>();
             ItemData bow = equip?.GetItemFromEquipmentSlot(EquipmentSlot.MainHand);

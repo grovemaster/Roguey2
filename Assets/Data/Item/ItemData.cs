@@ -150,6 +150,11 @@ namespace JRogue.Item
         [Tooltip("Optional debug log prefix when using from inventory with targeting (e.g. Scroll:Fireball).")]
         public string inventoryTargetedUseLogTag;
 
+        [Tooltip("When true, inventory Use is allowed in gameplay safe zones (e.g. quest pass). Door keys are always utility.")]
+        public bool allowUseInSafeZone;
+
+        public bool AllowUseInSafeZone => allowUseInSafeZone;
+
         void Awake()
         {
             damageModules ??= new List<DamageEntry>();

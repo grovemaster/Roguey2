@@ -19,6 +19,30 @@ namespace JRogue.World.Generation
         StampOnly,
     }
 
+    /// <summary>Runtime combat rules for a floor instance (distinct from spawn exclusion radius).</summary>
+    public enum FloorCombatPolicy
+    {
+        Normal = 0,
+        SafeZone = 1,
+    }
+
+    [Serializable]
+    public struct SafeZoneRegion
+    {
+        public string regionId;
+        public Vector2Int minInclusive;
+        public Vector2Int maxInclusive;
+        public FloorCombatPolicy policy;
+
+        public bool Contains(Vector3Int cell) =>
+            cell.x >= minInclusive.x && cell.x <= maxInclusive.x
+            && cell.y >= minInclusive.y && cell.y <= maxInclusive.y;
+
+        public int Area =>
+            Mathf.Max(0, maxInclusive.x - minInclusive.x + 1)
+            * Mathf.Max(0, maxInclusive.y - minInclusive.y + 1);
+    }
+
     [CreateAssetMenu(fileName = "DungeonFloorDefinition", menuName = "JRogue/World/Dungeon Floor Definition")]
     public sealed class DungeonFloorDefinition : ScriptableObject
     {
@@ -45,6 +69,10 @@ namespace JRogue.World.Generation
         [Min(0)] [SerializeField] int additionalDayNightCycles;
         [Min(1)] [SerializeField] int playerTurnsPerDay = 5;
         [Min(1)] [SerializeField] int playerTurnsPerNight = 5;
+        [Header("Gameplay safe zone")]
+        [SerializeField] FloorCombatPolicy combatPolicy = FloorCombatPolicy.Normal;
+        [SerializeField] SafeZoneRegion[] safeZoneRegions = Array.Empty<SafeZoneRegion>();
+
         [Header("Future / v0b+")]
         [SerializeField] DungeonDoorPolicy doorPolicy = DungeonDoorPolicy.None;
         [SerializeField] List<DungeonVaultReference> vaults = new List<DungeonVaultReference>();
@@ -69,6 +97,8 @@ namespace JRogue.World.Generation
         public DungeonDoorPolicy DoorPolicy => doorPolicy;
         public IReadOnlyList<DungeonVaultReference> Vaults => vaults;
         public DungeonVaultCatalog VaultCatalog => vaultCatalog;
+        public FloorCombatPolicy CombatPolicy => combatPolicy;
+        public IReadOnlyList<SafeZoneRegion> SafeZoneRegions => safeZoneRegions;
         public bool ParticipatesInDungeonTime => participatesInDungeonTime;
         public int BaseDayNightCycles => baseDayNightCycles;
         public int AdditionalDayNightCycles => additionalDayNightCycles;

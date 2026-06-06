@@ -2,6 +2,7 @@ using System;
 using JRogue.Manager.Essence;
 using JRogue.Racial;
 using JRogue.Stats;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Actors.Components
@@ -33,6 +34,9 @@ namespace JRogue.Actors.Components
 
         public void TakeDamage(int rawDamage, DamageType type, GameObject damageSource = null)
         {
+            if (SafeZonePolicyService.ShouldSuppressPlayerDamage(gameObject, damageSource))
+                return;
+
             if (damageSource != null)
                 LastDamageSource = damageSource;
 
