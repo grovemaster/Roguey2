@@ -42,5 +42,6 @@ MonoBehaviour:
     partyExperience: 0
   autoCompleteOnObjectives: 0
   setFlagsOnAccept: []
-  setFlagsOnComplete: []
+  setFlagsOnComplete:
+  - quest_skeleton_proof
   sortOrder: 0

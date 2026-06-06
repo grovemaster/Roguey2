@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a3184f6006149da9725621404d6b512, type: 3}
+  m_Name: Portrait_ShamanBarbarian
+  m_EditorClassIdentifier: JRogue::JRogue.Dialog.PortraitDefinition
+  portrait: {fileID: -3460265688235847335, guid: 4969f82d7a43b10ed9f3915a8ffd3341, type: 3}
+  displayOffset: {x: 0, y: 0}

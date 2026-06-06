@@ -40,6 +40,7 @@ namespace JRogue.UI.Gameplay
         TextMeshProUGUI _hintText;
         GameObject _choiceContainer;
         readonly List<Button> _choiceButtons = new List<Button>();
+        readonly List<DialogChoiceOptionData> _choiceOptions = new List<DialogChoiceOptionData>();
         bool _blocking;
         bool _suppressConfirmUntilReleased;
         Action _onAdvance;
@@ -219,17 +220,17 @@ namespace JRogue.UI.Gameplay
             if (_choiceContainer == null || options == null)
                 return;
 
-            int selectedIndex = 0;
             for (int i = 0; i < options.Count; i++)
             {
                 DialogChoiceOptionData option = options[i];
-                Button button = CreateChoiceButton(_choiceContainer.transform, option.label, i);
+                Button button = CreateChoiceButton(_choiceContainer.transform, option.label, option.enabled, i);
                 int captured = i;
                 button.onClick.AddListener(() => SelectChoice(options[captured]));
                 _choiceButtons.Add(button);
+                _choiceOptions.Add(option);
             }
 
-            HighlightChoice(selectedIndex);
+            HighlightChoice(FindFirstEnabledChoiceIndex());
         }
 
         void ClearChoiceButtons()
@@ -241,6 +242,34 @@ namespace JRogue.UI.Gameplay
             }
 
             _choiceButtons.Clear();
+            _choiceOptions.Clear();
+        }
+
+        int FindFirstEnabledChoiceIndex()
+        {
+            for (int i = 0; i < _choiceOptions.Count; i++)
+            {
+                if (_choiceOptions[i].enabled)
+                    return i;
+            }
+
+            return 0;
+        }
+
+        int FindNextEnabledChoiceIndex(int from, int delta)
+        {
+            if (_choiceOptions.Count == 0)
+                return 0;
+
+            int count = _choiceOptions.Count;
+            for (int step = 1; step <= count; step++)
+            {
+                int next = (from + delta * step + count) % count;
+                if (_choiceOptions[next].enabled)
+                    return next;
+            }
+
+            return from;
         }
 
         void MoveChoiceSelection(int delta)
@@ -249,7 +278,7 @@ namespace JRogue.UI.Gameplay
                 return;
 
             int current = GetSelectedChoiceIndex();
-            int next = (current + delta + _choiceButtons.Count) % _choiceButtons.Count;
+            int next = FindNextEnabledChoiceIndex(current, delta);
             HighlightChoice(next);
         }
 
@@ -258,7 +287,11 @@ namespace JRogue.UI.Gameplay
             if (_choiceButtons.Count == 0)
                 return;
 
-            _choiceButtons[GetSelectedChoiceIndex()].onClick.Invoke();
+            int index = GetSelectedChoiceIndex();
+            if (index < 0 || index >= _choiceOptions.Count || !_choiceOptions[index].enabled)
+                return;
+
+            _choiceButtons[index].onClick.Invoke();
         }
 
         int GetSelectedChoiceIndex()
@@ -289,6 +322,9 @@ namespace JRogue.UI.Gameplay
 
         void SelectChoice(DialogChoiceOptionData option)
         {
+            if (option == null || !option.enabled)
+                return;
+
             Action<DialogChoiceOptionData> act = _onChoice;
             _onChoice = null;
             _onDismiss = null;
@@ -296,7 +332,7 @@ namespace JRogue.UI.Gameplay
             act?.Invoke(option);
         }
 
-        Button CreateChoiceButton(Transform parent, string label, int index)
+        Button CreateChoiceButton(Transform parent, string label, bool enabled, int index)
         {
             var go = new GameObject($"Choice_{index}", typeof(RectTransform), typeof(Image), typeof(Button));
             go.transform.SetParent(parent, false);
@@ -309,6 +345,7 @@ namespace JRogue.UI.Gameplay
 
             Button button = go.GetComponent<Button>();
             button.targetGraphic = bg;
+            button.interactable = enabled;
 
             var textGo = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
             textGo.transform.SetParent(go.transform, false);
@@ -322,7 +359,7 @@ namespace JRogue.UI.Gameplay
             tmp.text = label;
             tmp.fontSize = 18f;
             tmp.alignment = TextAlignmentOptions.MidlineLeft;
-            tmp.color = Color.white;
+            tmp.color = enabled ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1f);
 
             return button;
         }

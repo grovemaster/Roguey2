@@ -16,18 +16,26 @@ MonoBehaviour:
   nodes:
   - nodeId: imprint_root
     displayName: Spirit Imprint (dormant)
-    description: Rank 0 — empty payload (D2.0).
+    description: "Rank 0 \u2014 empty payload (D2.0)."
     parentNodeId: 
     siblingExclusivityGroup: 0
+    unlockCost:
+      gold: 0
+      items: []
+      storyFlags: []
     statModifiers: []
     resistanceModifiers: []
     passiveEffects: []
     activeAbilities: []
   - nodeId: tier1_str
-    displayName: First Mark — Strength
+    displayName: "First Mark \u2014 Strength"
     description: +1 Strength from the imprint path.
     parentNodeId: imprint_root
     siblingExclusivityGroup: 1
+    unlockCost:
+      gold: 30
+      items: []
+      storyFlags: []
     statModifiers:
     - attribute: 0
       value: 1
@@ -35,10 +43,16 @@ MonoBehaviour:
     passiveEffects: []
     activeAbilities: []
   - nodeId: tier1_dex
-    displayName: First Mark — Dexterity
+    displayName: "First Mark \u2014 Dexterity"
     description: +1 Dexterity (exclusive with Strength first mark).
     parentNodeId: imprint_root
     siblingExclusivityGroup: 1
+    unlockCost:
+      gold: 20
+      items:
+      - item: {fileID: 11400000, guid: 29e95ab10b916716ca35b34994f1d920, type: 2}
+        quantity: 1
+      storyFlags: []
     statModifiers:
     - attribute: 1
       value: 1
@@ -46,10 +60,17 @@ MonoBehaviour:
     passiveEffects: []
     activeAbilities: []
   - nodeId: tier2_constitution
-    displayName: Second Mark — Constitution
-    description: +1 Constitution; child of the Strength first mark (deepen after tier1_str).
+    displayName: "Second Mark \u2014 Constitution"
+    description: +1 Constitution; child of the Strength first mark (deepen after
+      tier1_str).
     parentNodeId: tier1_str
     siblingExclusivityGroup: 0
+    unlockCost:
+      gold: 50
+      items: []
+      storyFlags:
+      - flagId: quest_skeleton_proof
+        expectedValue: 1
     statModifiers:
     - attribute: 3
       value: 1

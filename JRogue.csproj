@@ -91,6 +91,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/ShopNpcMenuUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/GridMover.cs" />
+    <Compile Include="Assets/Scripts/Dialog/SpiritImprintShamanDialogSession.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupMenuUI.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/MapCellOccupancy.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/EnemyDoorInteraction.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Assets/Scripts/Shop/ShopNpcDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySessionPersistence.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardPassageEvaluator.cs" />
+    <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeLogic.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/UnlockDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Dialog/DialogGraphEvaluator.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/GrantPartyExperienceEffect.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinitionCatalog.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceService.cs" />
+    <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeService.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
@@ -368,6 +371,7 @@
     <Compile Include="Assets/Scripts/World/Lighting/AmbientRegion.cs" />
     <Compile Include="Assets/Scripts/Manager/Map/MapManager.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementSet.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/SpiritImprintShamanNpcController.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/OpenDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/NpcController.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardMarker.cs" />

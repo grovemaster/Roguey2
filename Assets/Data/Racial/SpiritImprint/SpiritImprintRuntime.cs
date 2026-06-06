@@ -216,17 +216,8 @@ namespace JRogue.Racial
             }
         }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        /// <summary>Dev/test: replace path and re-apply. Stripped from non-development player builds.</summary>
-        public void DevSetPathAndReapply(IReadOnlyList<string> newPath)
-        {
-            if (graph == null) return;
-            chosenPathNodeIds = newPath == null ? new List<string>() : new List<string>(newPath);
-            TryApplyFromSerializedState();
-        }
-
-        /// <summary>Dev/test: append one child of the current leaf if valid (single-node advance).</summary>
-        public bool DevTryAppendChild(string childNodeId, out string failureReason)
+        /// <summary>Append one child of the current leaf if valid (single-node advance).</summary>
+        public bool TryAppendChild(string childNodeId, out string failureReason)
         {
             failureReason = null;
             if (graph == null)
@@ -238,8 +229,8 @@ namespace JRogue.Racial
             if (chosenPathNodeIds == null || chosenPathNodeIds.Count == 0)
                 chosenPathNodeIds = new List<string> { graph.rootNodeId };
 
-            var tail = chosenPathNodeIds[chosenPathNodeIds.Count - 1];
-            if (!graph.TryFindNode(childNodeId, out var child))
+            string tail = chosenPathNodeIds[chosenPathNodeIds.Count - 1];
+            if (!graph.TryFindNode(childNodeId, out SpiritImprintNodeData child))
             {
                 failureReason = $"Unknown child id '{childNodeId}'.";
                 return false;
@@ -252,7 +243,7 @@ namespace JRogue.Racial
             }
 
             var trial = new List<string>(chosenPathNodeIds) { childNodeId };
-            if (graph.ValidateAndNormalizePath(trial, out var err) == null)
+            if (graph.ValidateAndNormalizePath(trial, out string err) == null)
             {
                 failureReason = err;
                 return false;
@@ -262,6 +253,19 @@ namespace JRogue.Racial
             TryApplyFromSerializedState();
             return true;
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary>Dev/test: replace path and re-apply. Stripped from non-development player builds.</summary>
+        public void DevSetPathAndReapply(IReadOnlyList<string> newPath)
+        {
+            if (graph == null) return;
+            chosenPathNodeIds = newPath == null ? new List<string>() : new List<string>(newPath);
+            TryApplyFromSerializedState();
+        }
+
+        /// <summary>Dev/test alias for <see cref="TryAppendChild"/>.</summary>
+        public bool DevTryAppendChild(string childNodeId, out string failureReason) =>
+            TryAppendChild(childNodeId, out failureReason);
 #endif
     }
 }

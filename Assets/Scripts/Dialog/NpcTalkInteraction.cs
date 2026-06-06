@@ -143,7 +143,8 @@ namespace JRogue.Dialog
             if (owner == null)
                 return;
 
-            INpcTalkTarget talkTarget = owner.GetComponent<ShopNpcController>() as INpcTalkTarget
+            INpcTalkTarget talkTarget = owner.GetComponent<SpiritImprintShamanNpcController>() as INpcTalkTarget
+                ?? owner.GetComponent<ShopNpcController>() as INpcTalkTarget
                 ?? owner.GetComponent<NpcController>() as INpcTalkTarget;
             if (talkTarget == null)
                 return;

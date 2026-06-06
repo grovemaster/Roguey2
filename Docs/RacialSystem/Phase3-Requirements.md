@@ -53,7 +53,7 @@ Chosen nodes and rank (or equivalent) serialize with the actor or save blob you 
 - **`chosenPathNodeIds`:** **Ordered list** of node ids from **root → deepest chosen** (see §7.7). This is the canonical spine save.
 - **`imprintRank`:** **Derived invariant:** must always equal the number of **non-root** nodes on the path — i.e. `imprintRank == chosenPathNodeIds.Count - 1` when the list always starts with the root id. **Rank never runs ahead** of picks: each **non-root** node on the path represents one **committed** step along the imprint; there is no separate XP pool that raises rank without extending the path.
 - **Phase 3 v0 — where the path comes from:** For this phase, each Barbarian’s imprint **path is fixed before play**: set via **prefab / serialized component / preset asset** (authoring-time), not by a runtime “pick UI” or world gate. You **compile**, place the actor with the desired `chosenPathNodeIds`, and **enter play mode** — the runtime **resolves and applies** imprint effects from that list only.
-- **Later phase (not Phase 3):** A **special NPC** (or event) will **authorize the next single-node** extension of the path; that gate and persistence flow are **implemented with the NPC**, not required for Phase 3 delivery.
+- **Later phase (not Phase 3):** A **special NPC** (or event) will **authorize the next single-node** extension of the path; that gate and persistence flow are **implemented with the NPC**, not required for Phase 3 delivery. **See:** [Barbarian Spirit Imprint — Shaman NPC](Barbarian-Spirit-Imprint-Shaman-NPC-Requirements.md).
 - **Single-node advancement (when dynamic progression exists):** A Barbarian gains **at most one new node per progression event** — never append two or more new ids in one unlock transaction.
 - **Commitment policy** = `Permanent` for Barbarian (no respec UI this phase).
 
@@ -80,7 +80,7 @@ Chosen nodes and rank (or equivalent) serialize with the actor or save blob you 
 
 - **Invariant:** `imprintRank == chosenPathNodeIds.Count - 1` (root first in list). **Rank never runs ahead** of the path.
 - **Phase 3 v0:** `chosenPathNodeIds` is **authored before play** (prefab / component / preset). No in-world **NPC gate** or runtime branch-picker is required for this phase. **Debug** may still mutate the path in-editor or via dev-only hooks to test mechanics.
-- **Later (with special NPC):** Each progression event grants **at most one** new node — append **exactly one** child id along a valid forward edge, then re-apply effects and save. No batch multi-node unlock in a single transaction.
+- **Later (with special NPC):** Each progression event grants **at most one** new node — append **exactly one** child id along a valid forward edge, then re-apply effects and save. No batch multi-node unlock in a single transaction. **Shaman NPC spec:** [Barbarian Spirit Imprint — Shaman NPC](Barbarian-Spirit-Imprint-Shaman-NPC-Requirements.md).
 - **Forward-only:** The stored path is always a valid root-to-leaf walk in the tree; no backward moves or mid-tree swaps.
 
 **F3.2b — Depth / rank gates**
@@ -157,7 +157,7 @@ Any in-scene or hotkey path that fires an imprint **active** for development **m
 ### 7.3 Imprint progression — **Phase 3 v0: preset path; NPC + single-node advance later; no numeric formula**
 
 - **This phase:** Imprint **state is authored** before running the game (serialized `chosenPathNodeIds` on the actor or a linked preset). The code **validates** the path against the tree and **applies** Pattern B effects at runtime. **No** special-NPC gate, no runtime “pick next node” flow required for Phase 3 completion.
-- **Later phase (with NPC):** A dedicated **NPC / event** authorizes extending the path by **exactly one** child node per interaction (no multi-node batch). **No XP / imprint score formula** is required then either; story gating is enough.
+- **Later phase (with NPC):** A dedicated **NPC / event** authorizes extending the path by **exactly one** child node per interaction (no multi-node batch). **No XP / imprint score formula** is required then either; story gating is enough. **Shaman NPC spec:** [Barbarian Spirit Imprint — Shaman NPC](Barbarian-Spirit-Imprint-Shaman-NPC-Requirements.md).
 - **Rank rule (hard):** `imprintRank` **always** equals non-root count on the spine (`chosenPathNodeIds.Count - 1` with root leading the list).
 
 ### 7.4 UI — **Resolved: debug for now; race-specific character sheet later**

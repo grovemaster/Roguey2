@@ -26,6 +26,9 @@ namespace JRogue.Racial
         [Tooltip("0 = none. Among direct children of the same parent sharing this id, at most one may appear on a valid path.")]
         public int siblingExclusivityGroup;
 
+        [Tooltip("Price to append this node from its parent. Ignored on root.")]
+        public SpiritImprintUnlockCost unlockCost;
+
         public List<AttributeModifier> statModifiers;
         public List<DamageResistanceModifier> resistanceModifiers;
         public List<PassiveEffect> passiveEffects;

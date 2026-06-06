@@ -16,6 +16,23 @@ namespace JRogue.Racial
 
         public List<SpiritImprintNodeData> nodes = new List<SpiritImprintNodeData>();
 
+        /// <summary>Direct children of <paramref name="parentNodeId"/> in graph asset order.</summary>
+        public List<SpiritImprintNodeData> GetDirectChildren(string parentNodeId)
+        {
+            var result = new List<SpiritImprintNodeData>();
+            if (nodes == null || string.IsNullOrEmpty(parentNodeId))
+                return result;
+
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                SpiritImprintNodeData node = nodes[i];
+                if (node != null && node.parentNodeId == parentNodeId)
+                    result.Add(node);
+            }
+
+            return result;
+        }
+
         public bool TryFindNode(string nodeId, out SpiritImprintNodeData node)
         {
             node = null;

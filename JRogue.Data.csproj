@@ -122,6 +122,7 @@
     <Compile Include="Assets/Data/Racial/Undead/UndeadRacialEffectTracker.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeNodeData.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritLevelData.cs" />
+    <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintUnlockCost.cs" />
     <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadLichBargainRestriction.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />

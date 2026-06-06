@@ -49,6 +49,8 @@ namespace JRogue.Dialog
     {
         public string label = string.Empty;
         public int responseNodeIndex = DialogGraph.NoNode;
+        public bool enabled = true;
+        public string payload = string.Empty;
     }
 
     [Serializable]
