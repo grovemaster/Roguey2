@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Sprites/Environment/Town/KenneyTinyTown/ATTRIBUTION.txt" />
+    <None Include="Assets/Art/NPC/ThirdParty/KenneyToonCharacters/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
     <None Include="Assets/Fonts/OFL.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader" />
@@ -95,6 +96,7 @@
     <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader" />
     <None Include="Assets/TextMesh Pro/Examples &amp; Extras/Fonts/Oswald-Bold - OFL.txt" />
     <None Include="Assets/TextMesh Pro/Examples &amp; Extras/Fonts/Roboto-Bold - AFL.txt" />
+    <None Include="Assets/Art/Portraits/ThirdParty/OpenGameArt-FaceSets/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Examples &amp; Extras/Fonts/Anton OFL.txt" />
     <None Include="Assets/Art/Essence/ThirdParty/ElementalShrines/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />

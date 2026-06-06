@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Actors.Components;
 using JRogue.Controller.Enemy;
+using JRogue.Controller.Npc;
 using JRogue.Core.Actor;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
@@ -268,6 +269,7 @@ namespace JRogue.World.Generation
             DungeonFloorServiceBinder.BindActiveFloor(this);
             gridManager?.ClearAllOccupancy();
             ReregisterEnemyOccupancy(gridManager);
+            ReregisterNpcOccupancy(gridManager);
             RegisterPortalsWithService();
         }
 
@@ -292,6 +294,27 @@ namespace JRogue.World.Generation
 
                 IBattleTarget target = enemy.GetComponent<IBattleTarget>();
                 GridMover mover = enemy.GetComponent<GridMover>();
+                if (target == null || mover == null)
+                    continue;
+
+                gridManager.RegisterActor(mover.GridPosition, target);
+            }
+        }
+
+        public void ReregisterNpcOccupancy(GridManager gridManager)
+        {
+            if (gridManager == null || dynamicViewsRoot == null)
+                return;
+
+            NpcController[] npcs = dynamicViewsRoot.GetComponentsInChildren<NpcController>(true);
+            for (int i = 0; i < npcs.Length; i++)
+            {
+                NpcController npc = npcs[i];
+                if (npc == null)
+                    continue;
+
+                IBattleTarget target = npc.GetComponent<IBattleTarget>();
+                GridMover mover = npc.GetComponent<GridMover>();
                 if (target == null || mover == null)
                     continue;
 

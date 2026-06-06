@@ -21,3 +21,9 @@ MonoBehaviour:
     cell: {x: 10, y: 8, z: 0}
   - markerId: town_dungeon_portal
     cell: {x: 10, y: 10, z: 0}
+  - markerId: town_npc_1
+    cell: {x: 4, y: 8, z: 0}
+  - markerId: town_npc_2
+    cell: {x: 6, y: 8, z: 0}
+  - markerId: town_npc_3
+    cell: {x: 8, y: 8, z: 0}

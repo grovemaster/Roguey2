@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c00b93224db4501a69a199f254dd92d, type: 3}
+  m_Name: NpcDialog_Edda
+  m_EditorClassIdentifier: JRogue::JRogue.Dialog.NpcDialogProfile
+  npcId: town_npc_3
+  rootNodeIndex: 0
+  nodes:
+  - kind: 2
+    line:
+      textTemplate: 
+    nextNodeIndex: -1
+    choices: []
+    conditionKind: 3
+    flagId: 
+    expectedFlagValue: 1
+    npcIdForTalkCount: 
+    talkCountMin: 0
+    talkCountMax: 2147483647
+    anyTalkedNpcIds:
+    - talked_npc_1
+    - talked_npc_2
+    trueNodeIndex: 1
+    falseNodeIndex: 2
+  - kind: 0
+    line:
+      textTemplate: Greetings.
+    nextNodeIndex: -1
+    choices: []
+    conditionKind: 0
+    flagId: 
+    expectedFlagValue: 1
+    npcIdForTalkCount: 
+    talkCountMin: 0
+    talkCountMax: 2147483647
+    anyTalkedNpcIds: []
+    trueNodeIndex: -1
+    falseNodeIndex: -1
+  - kind: 0
+    line:
+      textTemplate: Hello World.
+    nextNodeIndex: -1
+    choices: []
+    conditionKind: 0
+    flagId: 
+    expectedFlagValue: 1
+    npcIdForTalkCount: 
+    talkCountMin: 0
+    talkCountMax: 2147483647
+    anyTalkedNpcIds: []
+    trueNodeIndex: -1
+    falseNodeIndex: -1
+  completionFlagId: 
+  incrementTalkCountOnStart: 0

@@ -16,6 +16,7 @@ namespace JRogue.World.Generation
             new PortalPlacementPhase(),
             new PortalSetupPhase(),
             new TownPortalSetupPhase(),
+            new TownNpcSetupPhase(),
             new LightingInitPhase(),
             new DoorPlacementPhase(),
             new HazardPopulationPhase(),

@@ -249,6 +249,9 @@ namespace JRogue.Editor.World
             stamp.InitializeGrid(width, height, borderWalls: true);
             stamp.SetMarker(StampMarkerIds.PlayerStart, playerStart);
             stamp.SetMarker(StampMarkerIds.TownDungeonPortal, dungeonPortalCell);
+            stamp.SetMarker(StampMarkerIds.TownNpc1, new Vector3Int(4, 8, 0));
+            stamp.SetMarker(StampMarkerIds.TownNpc2, new Vector3Int(6, 8, 0));
+            stamp.SetMarker(StampMarkerIds.TownNpc3, new Vector3Int(8, 8, 0));
             EditorUtility.SetDirty(stamp);
             return stamp;
         }

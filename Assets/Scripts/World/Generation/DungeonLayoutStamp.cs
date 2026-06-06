@@ -121,5 +121,8 @@ namespace JRogue.World.Generation
         public const string PortalSouth = "portal_south";
         public const string PortalNorth = "portal_north";
         public const string TownDungeonPortal = "town_dungeon_portal";
+        public const string TownNpc1 = "town_npc_1";
+        public const string TownNpc2 = "town_npc_2";
+        public const string TownNpc3 = "town_npc_3";
     }
 }

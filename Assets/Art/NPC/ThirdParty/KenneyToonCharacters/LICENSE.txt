@@ -1,0 +1,2 @@
+CC0 1.0 Universal — placeholder sprites generated for this project.
+See README.md for recommended third-party replacement packs.

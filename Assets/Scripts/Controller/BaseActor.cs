@@ -34,12 +34,17 @@ namespace JRogue.Actors
         [SerializeField, Tooltip("Shown in party inventory and menus (fallback: GameObject name).")]
         private string displayName;
 
+        [SerializeField, Tooltip("Optional portrait override for dialog and future character UI.")]
+        private JRogue.Dialog.PortraitDefinition portraitOverride;
+
         [SerializeField, Tooltip("Categorical 'kind' of this actor for detection filters (radar etc.). Set a single bit per actor.")]
         private EssenceType essenceType = EssenceType.Life;
         public EssenceType EssenceType => essenceType;
 
         public string DisplayName =>
             string.IsNullOrWhiteSpace(displayName) ? gameObject.name : displayName.Trim();
+
+        public JRogue.Dialog.PortraitDefinition PortraitOverride => portraitOverride;
 
         protected MapManager mapManager;
         protected EssenceSlotManager essenceManager;

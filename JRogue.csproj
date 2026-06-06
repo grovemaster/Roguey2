@@ -92,6 +92,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupMenuUI.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/MapCellOccupancy.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/EnemyDoorInteraction.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/NpcDialogBoxUI.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapWallTopology.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRule.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapService.cs" />
@@ -117,10 +118,12 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/HazardConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartySpawnService.cs" />
+    <Compile Include="Assets/Scripts/Dialog/DialogDataTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/PortalPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightLevel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorInstance.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceHost.cs" />
+    <Compile Include="Assets/Scripts/Dialog/NpcDialogProfile.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceEffect.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryTelemetry.cs" />
@@ -142,11 +145,13 @@
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthBuffRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Altar/SpawnEnemyAltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/World/Generation/IDungeonGenerationPhase.cs" />
+    <Compile Include="Assets/Scripts/Dialog/GameStoryFlagService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryPolicy.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentLegalityEvaluator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySessionPersistence.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardPassageEvaluator.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/UnlockDoorEffect.cs" />
+    <Compile Include="Assets/Scripts/Dialog/DialogGraphEvaluator.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/GrantPartyExperienceEffect.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTestSceneValidator.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameOverModalUI.cs" />
@@ -187,6 +192,7 @@
     <Compile Include="Assets/Scripts/Manager/Loot/ManaStoneAutoPickupService.cs" />
     <Compile Include="Assets/Scripts/Core/Targeting/TargetingResolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/RunPartyPersistence.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownNpcSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultSourceText.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableLeverContent.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/InteractablePopulationPhase.cs" />
@@ -200,6 +206,7 @@
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryTargetedUseLog.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementEntry.cs" />
+    <Compile Include="Assets/Scripts/Dialog/PortraitDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/HealthRegenerationService.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceEntry.cs" />
@@ -211,6 +218,7 @@
     <Compile Include="Assets/Scripts/World/Lighting/LightingScenarioController.cs" />
     <Compile Include="Assets/Scripts/Status/PartyStatusQueries.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardBootstrap.cs" />
+    <Compile Include="Assets/Scripts/Dialog/NpcDialogSession.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileService.cs" />
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationLog.cs" />
@@ -264,6 +272,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/LightingInitPhase.cs" />
     <Compile Include="Assets/Scripts/Item/World/FloorItemWorldView.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInstance.cs" />
+    <Compile Include="Assets/Scripts/Dialog/PartyRacePortraitCatalog.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarBootstrap.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/ElementalSpiritStatPassive.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPresentationModel.cs" />
@@ -284,6 +293,7 @@
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeRunState.cs" />
+    <Compile Include="Assets/Scripts/Dialog/NpcTalkInteraction.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TrapPopulationPhase.cs" />
@@ -302,6 +312,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/AltarOfferingModalUI.cs" />
     <Compile Include="Assets/Scripts/Abilities/Progression/GrantPartyExperienceAbility.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/OtherInteractableOnPrecondition.cs" />
+    <Compile Include="Assets/Scripts/Dialog/NpcTalkCounterService.cs" />
     <Compile Include="Assets/Scripts/Interactables/PartyCarriedLightSource.cs" />
     <Compile Include="Assets/Scripts/Interactables/SampleSceneInteractablePlacements.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTestController.cs" />
@@ -335,9 +346,12 @@
     <Compile Include="Assets/Scripts/Manager/Map/MapManager.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementSet.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/OpenDoorEffect.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/NpcController.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardMarker.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarManaStoneOffering.cs" />
+    <Compile Include="Assets/Scripts/Dialog/DialogParameterResolver.cs" />
     <Compile Include="Assets/Scripts/Combat/BowKitSampleSceneBootstrap.cs" />
+    <Compile Include="Assets/Scripts/Dialog/INpcTalkTarget.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonPortalVisuals.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorFeatureSnapshot.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommand.cs" />

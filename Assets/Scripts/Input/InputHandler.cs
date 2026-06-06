@@ -1,6 +1,7 @@
 using JRogue.Actors;
 using JRogue.Ability;
 using JRogue.Item;
+using JRogue.Manager.Party;
 using JRogue.Manager.Progression;
 using JRogue.Manager.Turn;
 using JRogue.UI.Gameplay;
@@ -393,8 +394,23 @@ namespace JRogue.Input
 
         public void OnConfirm(InputAction.CallbackContext context)
         {
-            if (!context.performed || commandProcessor.CurrentState != InputState.Targeting) return;
-            commandProcessor.TryApply(PlayerCommand.ConfirmTarget());
+            if (!context.performed)
+                return;
+
+            if (commandProcessor.CurrentState == InputState.Targeting)
+            {
+                commandProcessor.TryApply(PlayerCommand.ConfirmTarget());
+                return;
+            }
+
+            if (BlocksFloorGameplay())
+                return;
+
+            BaseActor leader = PartyManager.Instance != null
+                ? PartyManager.Instance.GetActiveMember()
+                : null;
+            if (leader != null && JRogue.Dialog.NpcTalkInteraction.TryTalkFacing(leader))
+                return;
         }
 
         public void OnCancel(InputAction.CallbackContext context)
@@ -459,7 +475,8 @@ namespace JRogue.Input
             || AdjacentInteractPickerModalUI.BlocksGameplay
             || AltarOfferingModalUI.BlocksGameplay
             || AltarUsedModalUI.BlocksGameplay
-            || EssencePickupConfirmDialogUI.BlocksGameplay;
+            || EssencePickupConfirmDialogUI.BlocksGameplay
+            || NpcDialogBoxUI.BlocksGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed

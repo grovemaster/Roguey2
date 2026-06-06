@@ -133,6 +133,8 @@ namespace JRogue.World.Generation
             if (!PartySpawnService.TrySpawnFormationAtAnchor(anchor, profile, out _))
                 DungeonGenerationLog.Warn("PartySpawnService failed — check party roster and walkable cells.");
 
+            instance.ReregisterNpcOccupancy(grid);
+
             run.SetActiveFloor(floorId);
             EnsureDungeonTimeService().OnFloorActivated(def, firstVisit);
             BindVisibilityToActiveFloor(map);
