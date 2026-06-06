@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Controller.Enemy;
+using JRogue.Controller.Npc;
 using JRogue.Core.Actor;
 using JRogue.Item.World;
 using JRogue.Manager.Floor;
@@ -60,6 +61,7 @@ public class VisibilityManager : MonoBehaviour
     [SerializeField] bool verboseSightLogs;
     [SerializeField] bool verboseDarkTileLogs;
     [SerializeField] bool verboseFogLogs;
+    [SerializeField] bool verboseGateLogs;
 
     readonly Dictionary<Vector3Int, CellKnowledge> _knowledge =
         new Dictionary<Vector3Int, CellKnowledge>();
@@ -138,8 +140,10 @@ public class VisibilityManager : MonoBehaviour
 
     public void RefreshVision()
     {
-        HashSet<Vector3Int> currentVisible = ComputeCurrentVisibleSet(out HashSet<Vector3Int> currentLitVisible);
-        if (currentVisible.Count == 0)
+        HashSet<Vector3Int> currentVisible = ComputeCurrentVisibleSet(
+            out HashSet<Vector3Int> currentLitVisible,
+            out HashSet<Vector3Int> losUnlit);
+        if (currentVisible.Count == 0 && losUnlit.Count == 0)
         {
             ApplyUnseenToAllKnownCells();
             _currentlyVisible.Clear();
@@ -196,7 +200,7 @@ public class VisibilityManager : MonoBehaviour
             {
                 TintCell(cell, darkTileColor);
                 if (verboseDarkTileLogs)
-                    Debug.Log($"[Lighting:DarkTile] {cell} LOS-visible but under threshold.");
+                    Debug.Log($"[Lighting:DarkTile] {cell} live-visible but under threshold.");
             }
 
             if (verboseFogLogs)
@@ -213,6 +217,12 @@ public class VisibilityManager : MonoBehaviour
         {
             if (currentVisible.Contains(cell))
                 continue;
+
+            if (losUnlit.Contains(cell))
+            {
+                TintCell(cell, unseenColor);
+                continue;
+            }
 
             if (_knowledge.TryGetValue(cell, out CellKnowledge knowledge)
                 && knowledge.state == TileKnowledgeState.Explored)
@@ -262,15 +272,19 @@ public class VisibilityManager : MonoBehaviour
         return false;
     }
 
-    HashSet<Vector3Int> ComputeCurrentVisibleSet(out HashSet<Vector3Int> litVisible)
+    HashSet<Vector3Int> ComputeCurrentVisibleSet(
+        out HashSet<Vector3Int> litVisible,
+        out HashSet<Vector3Int> losUnlit)
     {
         ShadowCaster.IsOpaque isOpaque =
             pos => MapManager.Instance != null && !MapManager.Instance.IsWalkable(pos);
 
         var visible = new HashSet<Vector3Int>();
         litVisible = new HashSet<Vector3Int>();
+        losUnlit = new HashSet<Vector3Int>();
         PartyManager party = PartyManager.Instance;
         LightingService lighting = LightingService.Instance;
+        MapManager map = MapManager.Instance;
 
         if (party != null && party.partyMembers != null && party.partyMembers.Count > 0)
         {
@@ -289,6 +303,16 @@ public class VisibilityManager : MonoBehaviour
                 for (int j = 0; j < memberVisible.Count; j++)
                 {
                     Vector3Int cell = memberVisible[j];
+                    if (!IsCellLiveVisibleForMember(cell, lighting, map))
+                    {
+                        if (map == null || !map.IsWall(cell))
+                            losUnlit.Add(cell);
+
+                        if (verboseGateLogs)
+                            Debug.Log($"[Lighting:Gate] {cell} in LOS but receivedLight=0 — excluded.");
+                        continue;
+                    }
+
                     visible.Add(cell);
                     if (IsCellFullyVisibleForMember(member, cell, lighting))
                         litVisible.Add(cell);
@@ -310,32 +334,32 @@ public class VisibilityManager : MonoBehaviour
         return visible;
     }
 
+    bool IsCellLiveVisibleForMember(Vector3Int cell, LightingService lighting, MapManager map)
+    {
+        bool occupied = IlluminationVisibilityLogic.IsPartyMemberOccupyingCell(cell);
+        if (lighting == null)
+            return true;
+
+        bool isWallInLos = map != null && map.IsWall(cell);
+        int emit = lighting.GetEmitLight(cell);
+        int received = lighting.GetReceivedLight(cell);
+        return IlluminationVisibilityLogic.IsCellLiveVisible(emit, received, occupied, isWallInLos);
+    }
+
     bool IsCellFullyVisibleForMember(BaseActor member, Vector3Int cell, LightingService lighting)
     {
         if (member == null)
             return false;
 
-        // R7.1 occupied party member cell is always fully bright.
-        if (PartyManager.Instance != null)
-        {
-            for (int i = 0; i < PartyManager.Instance.partyMembers.Count; i++)
-            {
-                BaseActor partyMember = PartyManager.Instance.partyMembers[i];
-                if (partyMember != null && partyMember.GridPosition == cell)
-                    return true;
-            }
-        }
+        bool occupied = IlluminationVisibilityLogic.IsPartyMemberOccupyingCell(cell);
 
         if (lighting == null)
             return true;
 
-        // R7.1 emitter in LOS with active emission is always fully bright.
-        if (lighting.GetEmitLight(cell) > 0)
-            return true;
-
+        int emit = lighting.GetEmitLight(cell);
         int received = lighting.GetReceivedLight(cell);
         int threshold = GetEffectiveLightThreshold(member, cell);
-        return received >= threshold;
+        return IlluminationVisibilityLogic.IsCellFullyBright(emit, received, occupied, threshold);
     }
 
     public int GetEffectiveSightRange(BaseActor member, Vector3Int originCell)
@@ -444,6 +468,10 @@ public class VisibilityManager : MonoBehaviour
         for (int i = 0; i < enemies.Length; i++)
             ApplyEnemyVisibility(enemies[i]);
 
+        NpcController[] npcs = FindObjectsByType<NpcController>();
+        for (int i = 0; i < npcs.Length; i++)
+            ApplyNpcVisibility(npcs[i]);
+
         FloorItemPileService piles = FloorItemPileService.Instance;
         if (piles != null)
             piles.ApplyVisibility(this);
@@ -465,9 +493,25 @@ public class VisibilityManager : MonoBehaviour
             return;
 
         bool anyVisible = IsEnemyVisible(enemy);
-        SpriteRenderer[] renderers = enemy.GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
+        SetActorSpriteVisibility(enemy, anyVisible);
+    }
+
+    void ApplyNpcVisibility(NpcController npc)
+    {
+        if (npc == null)
+            return;
+
+        SetActorSpriteVisibility(npc, IsVisible(npc.GridPosition));
+    }
+
+    static void SetActorSpriteVisibility(BaseActor actor, bool visible)
+    {
+        if (actor == null)
+            return;
+
+        SpriteRenderer[] renderers = actor.GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
         for (int i = 0; i < renderers.Length; i++)
-            renderers[i].enabled = anyVisible;
+            renderers[i].enabled = visible;
     }
 
     bool IsEnemyVisible(EnemyController enemy)

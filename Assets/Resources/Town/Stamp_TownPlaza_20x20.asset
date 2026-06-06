@@ -37,3 +37,9 @@ MonoBehaviour:
     cell: {x: 8, y: 6, z: 0}
   - markerId: town_time_lever_b
     cell: {x: 9, y: 6, z: 0}
+  - markerId: town_torch_w
+    cell: {x: 0, y: 10, z: 0}
+  - markerId: town_torch_n
+    cell: {x: 10, y: 19, z: 0}
+  - markerId: town_torch_e
+    cell: {x: 19, y: 10, z: 0}

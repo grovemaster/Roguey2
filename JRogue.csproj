@@ -104,6 +104,7 @@
     <Compile Include="Assets/Scripts/World/Generation/TownToDungeonPortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedStatModifierRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarOfferingService.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/IlluminationVisibilityLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopDataTypes.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationState.cs" />
@@ -284,6 +285,7 @@
     <Compile Include="Assets/Scripts/Input/AutoPickupMoveGate.cs" />
     <Compile Include="Assets/Scripts/Collector/InventoryCollector.cs" />
     <Compile Include="Assets/Scripts/Abilities/Heal/HealAbility.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownTorchSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupQuery.cs" />
     <Compile Include="Assets/Scripts/Item/ItemUserMark.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/SenseSightService.cs" />
@@ -397,6 +399,7 @@
     <Compile Include="Assets/Scripts/World/MapInteract/MapInteractOrthogonal.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyAiBrain.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarPlacementSet.cs" />
+    <Compile Include="Assets/Scripts/World/Lighting/TownLightingSync.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryValueDisplay.cs" />
   </ItemGroup>
   <ItemGroup>

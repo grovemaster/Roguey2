@@ -1,4 +1,7 @@
+using JRogue.World.Generation;
+using JRogue.World.Generation.Phases;
 using JRogue.World.Lighting;
+using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
 {
@@ -8,7 +11,7 @@ namespace JRogue.World.Generation.Phases
         {
             LightingService lighting = LightingService.Instance != null
                 ? LightingService.Instance
-                : UnityEngine.Object.FindAnyObjectByType<LightingService>();
+                : Object.FindAnyObjectByType<LightingService>();
 
             if (lighting == null)
             {
@@ -16,10 +19,21 @@ namespace JRogue.World.Generation.Phases
                 return;
             }
 
+            lighting.FinalizeRegistry();
             lighting.SyncFloorReceiversFromMap();
-            lighting.OnPartyVisionActivity();
-            DungeonGenerationLog.Phase(nameof(LightingInitPhase),
-                $"floor receivers synced ambient={LightLevel.FullDaylightAmbient}");
+
+            if (context.Definition != null && context.Definition.FloorId == TownTorchSetupPhase.TownFloorId)
+                TownLightingSync.ApplyForCurrentPhase();
+            else
+                lighting.OnPartyVisionActivity();
+
+            VisibilityManager visibility = Object.FindAnyObjectByType<VisibilityManager>();
+            visibility?.RefreshPartyVision();
+
+            int ambient = context.Definition != null && context.Definition.FloorId == TownTorchSetupPhase.TownFloorId
+                ? TownLightingSync.AmbientLightForPhase(TownTimeService.Instance?.CurrentPhase ?? TownTimePhase.Day)
+                : LightLevel.FullDaylightAmbient;
+            DungeonGenerationLog.Phase(nameof(LightingInitPhase), $"floor receivers synced ambient={ambient}");
         }
     }
 }

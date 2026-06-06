@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: 1286
-    y: 129
+    x: 1524
+    y: 141
     width: 1859
     height: 1416
   m_ShowMode: 4
-  m_Title: Console
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: ProjectBrowser
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -245,14 +245,14 @@ MonoBehaviour:
     y: 857
     width: 1339
     height: 503
-  m_MinSize: {x: 101, y: 126}
-  m_MaxSize: {x: 4001, y: 4026}
-  m_ActualView: {fileID: 17}
+  m_MinSize: {x: 231, y: 276}
+  m_MaxSize: {x: 10001, y: 10026}
+  m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
   - {fileID: 17}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1176,23 +1176,10 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -9478
-      - m_Data: -9466
-      - m_Data: -9430
-      - m_Data: -9372
-      - m_Data: -9362
-      - m_Data: -9348
-      - m_Data: -9338
-      - m_Data: -9332
-      - m_Data: -9284
-      - m_Data: -9238
-      - m_Data: -9228
-      - m_Data: -9216
-      - m_Data: -9210
-      - m_Data: -2164
+      - m_Data: -8122
+      - m_Data: -1370
       - m_Data: -12
-      - m_Data: 54960
-      - m_Data: 54980
+      - m_Data: 54732
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1240,8 +1227,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Game\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1599
-    y: 193
+    x: 1837
+    y: 205
     width: 1024
     height: 831
   m_SerializedDataModeController:
@@ -1343,8 +1330,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Project\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1286
-    y: 1050
+    x: 0
+    y: 881
     width: 1338
     height: 477
   m_SerializedDataModeController:
@@ -1371,7 +1358,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Prefabs/Actor/Race
+    - Assets/Prefabs/Actor/Player
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1381,39 +1368,20 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 73
   m_LastFolders:
-  - Assets/Prefabs/Actor/Race
+  - Assets/Prefabs/Actor/Player
   m_LastFoldersGridSize: 73
   m_LastProjectPath: /home/jonathan/UnityProjects/Roguey2
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 540}
+    scrollPos: {x: 0, y: 480}
     m_SelectedIDs:
-    - m_Data: 60962
+    - m_Data: 56756
     m_LastClickedID:
-      m_Data: 60962
+      m_Data: 56756
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 55020
-    - m_Data: 55022
-    - m_Data: 55024
-    - m_Data: 55026
-    - m_Data: 55028
-    - m_Data: 55030
-    - m_Data: 55032
-    - m_Data: 55034
-    - m_Data: 55036
-    - m_Data: 55038
-    - m_Data: 55040
-    - m_Data: 55042
-    - m_Data: 55044
-    - m_Data: 55046
-    - m_Data: 55048
-    - m_Data: 55050
-    - m_Data: 55052
-    - m_Data: 55054
-    - m_Data: 55056
     - m_Data: 55058
     - m_Data: 55060
     - m_Data: 55062
@@ -1425,6 +1393,24 @@ MonoBehaviour:
     - m_Data: 55074
     - m_Data: 55076
     - m_Data: 55078
+    - m_Data: 55080
+    - m_Data: 55082
+    - m_Data: 55084
+    - m_Data: 55086
+    - m_Data: 55088
+    - m_Data: 55090
+    - m_Data: 55092
+    - m_Data: 55094
+    - m_Data: 55096
+    - m_Data: 55098
+    - m_Data: 55100
+    - m_Data: 55102
+    - m_Data: 55104
+    - m_Data: 55106
+    - m_Data: 55108
+    - m_Data: 55110
+    - m_Data: 55112
+    - m_Data: 55114
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1459,25 +1445,6 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 55020
-    - m_Data: 55022
-    - m_Data: 55024
-    - m_Data: 55026
-    - m_Data: 55028
-    - m_Data: 55030
-    - m_Data: 55032
-    - m_Data: 55034
-    - m_Data: 55036
-    - m_Data: 55038
-    - m_Data: 55040
-    - m_Data: 55042
-    - m_Data: 55044
-    - m_Data: 55046
-    - m_Data: 55048
-    - m_Data: 55050
-    - m_Data: 55052
-    - m_Data: 55054
-    - m_Data: 55056
     - m_Data: 55058
     - m_Data: 55060
     - m_Data: 55062
@@ -1489,6 +1456,24 @@ MonoBehaviour:
     - m_Data: 55074
     - m_Data: 55076
     - m_Data: 55078
+    - m_Data: 55080
+    - m_Data: 55082
+    - m_Data: 55084
+    - m_Data: 55086
+    - m_Data: 55088
+    - m_Data: 55090
+    - m_Data: 55092
+    - m_Data: 55094
+    - m_Data: 55096
+    - m_Data: 55098
+    - m_Data: 55100
+    - m_Data: 55102
+    - m_Data: 55104
+    - m_Data: 55106
+    - m_Data: 55108
+    - m_Data: 55110
+    - m_Data: 55112
+    - m_Data: 55114
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1578,8 +1563,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Console\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 0
-    y: 881
+    x: 1524
+    y: 1062
     width: 1338
     height: 477
   m_SerializedDataModeController:

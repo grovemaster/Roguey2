@@ -118,6 +118,7 @@ MonoBehaviour:
   stats: {fileID: 0}
   currentFacing: 0
   displayName: 
+  portraitOverride: {fileID: 0}
   essenceType: 1
   baseAttack: 1
   meleeNoiseVolume: 5
@@ -175,14 +176,17 @@ MonoBehaviour:
   humanClass: 0
   racialSubsystem: 0
   bodyCapabilities: 0
+  racialTraits: 0
   gender: 1
   alignment: 0
   age: 25
   height: 1.8
   weight: 80
   renown: 0
+  painTolerance:
+    baseValue: 10
   sight:
-    baseValue: 3
+    baseValue: 8
   hearing:
     baseValue: 10
   smell:

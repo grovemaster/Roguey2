@@ -33,8 +33,9 @@ MonoBehaviour:
   isThrowable: 1
   damageModules:
   - type: 0
-    value: 10
+    value: 1000
   statModifiers: []
   passiveEffects: []
   activeAbilities: []
   inventoryTargetedUseLogTag: 
+  allowUseInSafeZone: 0

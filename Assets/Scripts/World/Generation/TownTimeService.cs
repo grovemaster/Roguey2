@@ -107,6 +107,7 @@ namespace JRogue.World.Generation
                 Debug.Log($"{LogPrefix} Portal window closed — morning ended on day {calendarDayIndex}.");
 
             RefreshTownPortalVisual();
+            JRogue.World.Lighting.TownLightingSync.ApplyForPhase(currentPhase);
             return true;
         }
 
@@ -117,6 +118,7 @@ namespace JRogue.World.Generation
             if (currentPhase == TownTimePhase.Day)
             {
                 RefreshTownPortalVisual();
+                JRogue.World.Lighting.TownLightingSync.ApplyForPhase(currentPhase);
                 return;
             }
 
@@ -125,6 +127,7 @@ namespace JRogue.World.Generation
             Debug.Log(
                 $"{LogPrefix} Dungeon return — phase set to {currentPhase} (day {calendarDayIndex}, was {previousPhase}).");
             RefreshTownPortalVisual();
+            JRogue.World.Lighting.TownLightingSync.ApplyForPhase(currentPhase);
         }
 
         public void OnTimeLeverActivated(InteractableTileId leverId, InteractableTileService service)
@@ -152,6 +155,8 @@ namespace JRogue.World.Generation
             EnsureRunInitialized();
             SyncTimeLeverVisuals();
             RefreshTownPortalVisual(instance);
+            if (instance?.Definition?.FloorId == Phases.TownTorchSetupPhase.TownFloorId)
+                JRogue.World.Lighting.TownLightingSync.ApplyForCurrentPhase();
         }
 
         public void RefreshTownPortalVisual(DungeonFloorInstance instance = null)

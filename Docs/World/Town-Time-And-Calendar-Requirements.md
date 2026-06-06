@@ -6,7 +6,7 @@
 
 **Design north star (post-v0):** Like *Persona 5*, certain **actions** (shops, dialogue, training, dungeons, etc.) advance the town phase and eventually the calendar. v0 replaces that action catalog with **lever bumps** until those systems exist.
 
-**Depends on:** `TownPortalSetupPhase`, `TownToDungeonPortalInteractable`, `PortalEntryService`, `DungeonEntryService`, `DungeonExitService`, `InteractableTileService`, [Interactable tiles (levers)](../Combat/Interactable-Tiles-Requirements.md), [Dungeon time](Dungeon-Time-Requirements.md) (separate clock), [Dynamic dungeon floors](Dynamic-Dungeon-Floor-Generation-Requirements.md) (`town_main` floor instance), [Shop NPCs](Shop-NPC-Requirements.md) (future time-cost hooks), [NPC dialog](NPC-Dialog-Requirements.md), [Lighting](Lighting-Requirements.md) (optional town presentation sync).
+**Depends on:** `TownPortalSetupPhase`, `TownToDungeonPortalInteractable`, `PortalEntryService`, `DungeonEntryService`, `DungeonExitService`, `InteractableTileService`, [Interactable tiles (levers)](../Combat/Interactable-Tiles-Requirements.md), [Dungeon time](Dungeon-Time-Requirements.md) (separate clock), [Dynamic dungeon floors](Dynamic-Dungeon-Floor-Generation-Requirements.md) (`town_main` floor instance), [Shop NPCs](Shop-NPC-Requirements.md) (future time-cost hooks), [NPC dialog](NPC-Dialog-Requirements.md), [Improved Illumination](Improved-Illumination-Requirements.md) (town phase → ambient + plaza torches).
 
 **Related scenes:** `TownTest.unity` / production **Town** scene; `town_main` floor via `TownCatalog`.
 
@@ -283,22 +283,22 @@ Entering dungeon starts a **fresh** [dungeon calendar](Dungeon-Time-Requirements
 
 ---
 
-## 9. Lighting & presentation (optional v0)
+## 9. Lighting & presentation
 
-| Approach | Recommendation |
-|----------|----------------|
-| **A — Town phase drives ambient** | `TownTimeService.PhaseChanged` → town `LightingService` / global tint per phase |
-| **B — Presentation only on demand** | Defer to post-v0 |
+**Implemented in:** [Improved Illumination](Improved-Illumination-Requirements.md) — town phase drives ambient; three plaza wall torches; light-coupled sight range.
 
-**Default for v0:** **B** — logic and portal gate ship first; hook event for lighting backlog.
+| Approach | Status |
+|----------|--------|
+| **A — Town phase drives ambient** | **Specified** — `TownLightingSync` applies §8.2 ambient table on phase change |
+| **B — Presentation only on demand** | Superseded for town by Improved Illumination milestone |
 
-Future mapping (illustrative):
+Mapping (locked in [Improved Illumination §8.2](Improved-Illumination-Requirements.md)):
 
-| Town phase | Ambient feel |
-|------------|--------------|
-| Morning | Warm, low sun |
-| Day | Bright |
-| Night | Cool, dim |
+| Town phase | Ambient |
+|------------|---------|
+| Morning | **8** |
+| Day | **10** |
+| Night | **0** |
 
 ---
 

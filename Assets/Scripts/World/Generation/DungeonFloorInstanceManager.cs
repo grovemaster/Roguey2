@@ -329,7 +329,7 @@ namespace JRogue.World.Generation
             return DungeonFloorInstance.CreateUnder(floorsRoot, def);
         }
 
-        static void RefreshLighting()
+        void RefreshLighting()
         {
             LightingService lighting = LightingService.Instance != null
                 ? LightingService.Instance
@@ -340,8 +340,19 @@ namespace JRogue.World.Generation
                 return;
             }
 
+            lighting.ResetForActiveFloor();
+
+            DungeonFloorDefinition def = _activeFloor?.Definition;
+            if (def != null && def.FloorId == Phases.TownTorchSetupPhase.TownFloorId)
+                Phases.TownTorchSetupPhase.ApplyTownTorches(def);
+
+            lighting.FinalizeRegistry();
             lighting.SyncFloorReceiversFromMap();
-            lighting.OnPartyVisionActivity();
+
+            if (def != null && def.FloorId == Phases.TownTorchSetupPhase.TownFloorId)
+                TownLightingSync.ApplyForCurrentPhase();
+            else
+                lighting.OnPartyVisionActivity();
         }
     }
 }

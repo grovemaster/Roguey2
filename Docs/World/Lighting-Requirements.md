@@ -4,7 +4,7 @@ Per-party-member **sight range** (grid LOS distance) combines with a per-cell **
 
 **Depends on:** `CharacterStats` (`sight` stat), `PartyManager`, `ShadowCaster`, `VisibilityManager`, `MapManager`, `TurnManager`, `EssenceData` / `EssenceSlotManager`, racial trait / `BodyCapabilityFlags` (or dedicated flags), [Fog of War](Fog-Of-War-Requirements.md), [Interactable tiles](../Combat/Interactable-Tiles-Requirements.md) (wall-torch activation), [Inventory](../Inventory/Inventory-UI-Redesign-Requirements.md) (torch items), `EnemyAiBrain` / `SenseSightService` (enemy sight + alert).
 
-**Related:** *Surviving the Game as a Barbarian* — overhead/day–night floors; DCSS — torches, LOS, fog memory (terrain frozen off-screen). **SampleScene QA + wall/carried torch v0:** [Lighting QA and Torch v0](Lighting-QA-And-Torch-v0-Requirements.md).
+**Related:** *Surviving the Game as a Barbarian* — overhead/day–night floors; DCSS — torches, LOS, fog memory (terrain frozen off-screen). **SampleScene QA + wall/carried torch v0:** [Lighting QA and Torch v0](Lighting-QA-And-Torch-v0-Requirements.md). **Town torches + per-cell illumination gating:** [Improved Illumination](Improved-Illumination-Requirements.md) (supersedes draft **`S_eff`** model; **`receivedLight = 0`** → not live-visible).
 
 **Explicitly out of scope (v0):** **Magical darkness** gameplay (zones that override Dark Vision); full save/load of per-cell light state; dynamic light propagation through open doors (optional phase 2); colored light / mood lighting; light-based stealth damage modifiers.
 
@@ -233,6 +233,8 @@ Clamp minimum **0**. **`baseVisibilityThreshold`** — global tuning constant (v
 | **Tint** | `darkTileColor` (serialized, e.g. deep blue-grey ~15–25% brightness). |
 | **Entities** | v0: **hide** or **silhouette** creatures on dark tiles — **locked: hide** non-party entities on underlit cells (player must improve light or move closer). Party members on adjacent lit cells still shown on their own tiles per R7.1. |
 | **Snapshot** | Store `receivedLight` and `emitLight` at full visibility capture even if presentation is dark (for consistency when player gains light later). |
+
+**Improved Illumination milestone:** [Improved Illumination](Improved-Illumination-Requirements.md) §5 narrows this — **`receivedLight = 0`** in geometric LOS is **not live-visible** (not a dark tile). Dark tiles apply only when **`0 < receivedLight < threshold`**. **`S_base`** is unchanged; light gates **which** LOS cells appear, not LOS radius via **`S_eff`**.
 
 ### R7.5 — Outside LOS or sight range
 

@@ -58,6 +58,7 @@
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />
     <Compile Include="Assets/Editor/Interactables/EnemySpawnAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/TownTorchPackCreator.cs" />
     <Compile Include="Assets/Editor/Essence/EssenceAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/SampleScenePrefabInstanceRepair.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioQaPack.cs" />

@@ -256,16 +256,31 @@ namespace JRogue.World.Lighting
 
         public void FinalizeRegistry()
         {
-            if (_registryFinalized)
-                return;
+            bool firstTime = !_registryFinalized;
+            if (firstTime)
+            {
+                BuildFloorReceivers();
+                _registryFinalized = true;
+            }
 
-            BuildFloorReceivers();
-            ApplyPendingRegistrations();
-            _registryFinalized = true;
-            RecomputeAll();
+            bool hadPending = _pending.Count > 0;
+            if (hadPending)
+                ApplyPendingRegistrations();
 
-            if (verboseReceiveLogs)
+            if (firstTime || hadPending)
+                RecomputeAll();
+
+            if (verboseReceiveLogs && (firstTime || hadPending))
                 Debug.Log($"[Lighting:Receive] Registry finalized ({_cells.Count} cells).");
+        }
+
+        /// <summary>Clears cell registry when switching active floor tilemaps.</summary>
+        public void ResetForActiveFloor()
+        {
+            _cells.Clear();
+            _pending.Clear();
+            _registryFinalized = false;
+            EnsureDefaultAmbientRegion();
         }
 
         /// <summary>
@@ -336,14 +351,22 @@ namespace JRogue.World.Lighting
         void BuildFloorReceivers()
         {
             MapManager map = MapManager.Instance;
-            if (map == null || map.FloorMap == null)
+            if (map == null)
                 return;
 
-            Tilemap floor = map.FloorMap;
-            BoundsInt bounds = floor.cellBounds;
+            if (map.FloorMap != null)
+                BuildReceiversFromTilemap(map.FloorMap);
+
+            if (map.WallMap != null)
+                BuildReceiversFromTilemap(map.WallMap);
+        }
+
+        void BuildReceiversFromTilemap(Tilemap tilemap)
+        {
+            BoundsInt bounds = tilemap.cellBounds;
             foreach (Vector3Int pos in bounds.allPositionsWithin)
             {
-                if (!floor.HasTile(pos))
+                if (!tilemap.HasTile(pos))
                     continue;
 
                 Vector3Int cell = Flatten(pos);
