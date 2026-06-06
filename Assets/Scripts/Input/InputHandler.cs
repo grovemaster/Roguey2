@@ -476,7 +476,8 @@ namespace JRogue.Input
             || AltarOfferingModalUI.BlocksGameplay
             || AltarUsedModalUI.BlocksGameplay
             || EssencePickupConfirmDialogUI.BlocksGameplay
-            || NpcDialogBoxUI.BlocksGameplay;
+            || NpcDialogBoxUI.BlocksGameplay
+            || ShopNpcMenuUI.BlocksGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed

@@ -1,6 +1,7 @@
 using JRogue.Actors.Components;
 using JRogue.Controller.Npc;
 using JRogue.Manager.Grid;
+using JRogue.Shop;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -18,6 +19,8 @@ namespace JRogue.World.Generation.Phases
             (StampMarkerIds.TownNpc1, "Town/Npc/TownNpc_Mira", "Assets/Resources/Town/Npc/TownNpc_Mira.prefab"),
             (StampMarkerIds.TownNpc2, "Town/Npc/TownNpc_Luc", "Assets/Resources/Town/Npc/TownNpc_Luc.prefab"),
             (StampMarkerIds.TownNpc3, "Town/Npc/TownNpc_Edda", "Assets/Resources/Town/Npc/TownNpc_Edda.prefab"),
+            (StampMarkerIds.TownNpc4, "Town/Npc/TownNpc_Fenn", "Assets/Resources/Town/Npc/TownNpc_Fenn.prefab"),
+            (StampMarkerIds.TownNpc5, "Town/Npc/TownNpc_Greta", "Assets/Resources/Town/Npc/TownNpc_Greta.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)
@@ -56,6 +59,10 @@ namespace JRogue.World.Generation.Phases
                     DungeonGenerationLog.Warn($"{nameof(TownNpcSetupPhase)} prefab lacks {nameof(NpcController)}.");
                     continue;
                 }
+
+                ShopNpcController shopNpc = instance.GetComponent<ShopNpcController>();
+                if (shopNpc != null && shopNpc.ShopDefinition != null)
+                    TownShopStateService.EnsureRunService();
 
                 GridMover mover = instance.GetComponent<GridMover>();
                 if (mover != null)

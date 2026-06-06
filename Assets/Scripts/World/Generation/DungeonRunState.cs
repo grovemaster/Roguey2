@@ -1,3 +1,4 @@
+using JRogue.Shop;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -38,6 +39,7 @@ namespace JRogue.World.Generation
             DungeonFloorInstanceManager manager = DungeonFloorInstanceManager.Instance;
             manager?.DestroyAllFloors();
             activeFloorId = null;
+            TownShopStateService.Instance?.ClearAll();
         }
     }
 }

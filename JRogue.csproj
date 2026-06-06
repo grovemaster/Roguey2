@@ -87,6 +87,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCategoryTabsView.cs" />
     <Compile Include="Assets/Scripts/Service/Formation/FormationRushService.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotAcceptFilter.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/ShopNpcMenuUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/GridMover.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupMenuUI.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Assets/Scripts/Effects/Timed/TimedStatModifierRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarOfferingService.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
+    <Compile Include="Assets/Scripts/Shop/ShopDataTypes.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationState.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownPortalSetupPhase.cs" />
@@ -122,6 +124,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/PortalPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightLevel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorInstance.cs" />
+    <Compile Include="Assets/Scripts/Shop/ShopGoldUtility.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceHost.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcDialogProfile.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceEffect.cs" />
@@ -148,11 +151,13 @@
     <Compile Include="Assets/Scripts/Dialog/GameStoryFlagService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryPolicy.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentLegalityEvaluator.cs" />
+    <Compile Include="Assets/Scripts/Shop/ShopNpcDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySessionPersistence.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardPassageEvaluator.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/UnlockDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Dialog/DialogGraphEvaluator.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/GrantPartyExperienceEffect.cs" />
+    <Compile Include="Assets/Scripts/Shop/ShopSellableQuery.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTestSceneValidator.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameOverModalUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationContext.cs" />
@@ -220,8 +225,10 @@
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardBootstrap.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcDialogSession.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileService.cs" />
+    <Compile Include="Assets/Scripts/Shop/ShopPriceResolver.cs" />
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationLog.cs" />
+    <Compile Include="Assets/Scripts/Shop/TownShopStateService.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorItemPileService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlacement.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapInstanceMarker.cs" />
@@ -312,6 +319,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/AltarOfferingModalUI.cs" />
     <Compile Include="Assets/Scripts/Abilities/Progression/GrantPartyExperienceAbility.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/OtherInteractableOnPrecondition.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/ShopNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkCounterService.cs" />
     <Compile Include="Assets/Scripts/Interactables/PartyCarriedLightSource.cs" />
     <Compile Include="Assets/Scripts/Interactables/SampleSceneInteractablePlacements.cs" />
@@ -324,6 +332,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/FloorItemPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/DungeonEndedDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinition.cs" />
+    <Compile Include="Assets/Scripts/Shop/ShopTransactionService.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupHudButton.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/TrapWhileAliveMapEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AdjacentInteractPickerModalUI.cs" />

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4e8f2a19b3d4056a7c9e1f0b2d3e5f7, type: 3}
+  m_Name: ShopNpc_Greta
+  m_EditorClassIdentifier: JRogue::JRogue.Shop.ShopNpcDefinition
+  shopNpcId: town_npc_5
+  displayName: Greta
+  portrait: {fileID: 11400000, guid: fa993c924a5fa90bbb111c65b939f075, type: 2}
+  allowPlayerBuy: 1
+  allowPlayerSell: 0
+  initialGold: 100
+  initialStock:
+  - item: {fileID: 11400000, guid: 29e95ab10b916716ca35b34994f1d920, type: 2}
+    quantity: 2

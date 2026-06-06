@@ -44,6 +44,7 @@ namespace JRogue.UI.Gameplay
         bool _suppressConfirmUntilReleased;
         Action _onAdvance;
         Action<DialogChoiceOptionData> _onChoice;
+        Action _onDismiss;
 
         public static bool BlocksGameplay =>
             _instance != null && _instance._blocking;
@@ -132,7 +133,7 @@ namespace JRogue.UI.Gameplay
             _panelRoot.transform.SetAsLastSibling();
         }
 
-        public void ShowChoice(DialogChoiceStep step, Action<DialogChoiceOptionData> onChoice)
+        public void ShowChoice(DialogChoiceStep step, Action<DialogChoiceOptionData> onChoice, Action onDismissed = null)
         {
             if (step == null)
                 return;
@@ -140,6 +141,7 @@ namespace JRogue.UI.Gameplay
             EnsurePanelBuilt();
             _onAdvance = null;
             _onChoice = onChoice;
+            _onDismiss = onDismissed;
             _blocking = true;
 
             if (_nameText != null)
@@ -159,10 +161,14 @@ namespace JRogue.UI.Gameplay
 
         public void Close()
         {
+            if (_onChoice != null)
+                _onDismiss?.Invoke();
+
             _blocking = false;
             _suppressConfirmUntilReleased = false;
             _onAdvance = null;
             _onChoice = null;
+            _onDismiss = null;
             if (_panelRoot != null)
                 _panelRoot.SetActive(false);
         }
@@ -285,6 +291,7 @@ namespace JRogue.UI.Gameplay
         {
             Action<DialogChoiceOptionData> act = _onChoice;
             _onChoice = null;
+            _onDismiss = null;
             SetChoiceMode(false);
             act?.Invoke(option);
         }

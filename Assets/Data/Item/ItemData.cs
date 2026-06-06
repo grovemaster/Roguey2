@@ -70,6 +70,13 @@ namespace JRogue.Item
         [Tooltip("Base gold value per unit. Stack value = goldValue × quantity when appraised.")]
         public int goldValue;
 
+        [Header("Shop economy")]
+        [Tooltip("Gold the player pays when buying from a shop.")]
+        public int buyValue = 2;
+
+        [Tooltip("Gold the player receives when selling to a shop. 0 derives from buyValue × 50%.")]
+        public int sellValue = 1;
+
         [Tooltip("When true, list/inspect show ? until ItemInstance.IsAppraised.")]
         public bool requiresAppraisal = true;
 

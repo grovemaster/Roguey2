@@ -27,3 +27,7 @@ MonoBehaviour:
     cell: {x: 6, y: 8, z: 0}
   - markerId: town_npc_3
     cell: {x: 8, y: 8, z: 0}
+  - markerId: town_npc_4
+    cell: {x: 2, y: 8, z: 0}
+  - markerId: town_npc_5
+    cell: {x: 12, y: 8, z: 0}

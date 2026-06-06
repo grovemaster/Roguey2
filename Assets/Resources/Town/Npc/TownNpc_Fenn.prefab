@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1847359861689544333
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2817757823611772585, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_Name
+      value: TownNpc_Fenn
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5896509806898180168, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -577363764042326570, guid: f41e18645752e7c39b48aa2a98f60ce9, type: 3}
+    m_RemovedComponents:
+    - {fileID: 4648908138768638629, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2817757823611772585, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5264805411148623854}
+  m_SourcePrefab: {fileID: 100100000, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+--- !u!1 &4519797418243715108 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2817757823611772585, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+  m_PrefabInstance: {fileID: 1847359861689544333}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5264805411148623854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4519797418243715108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2a220e93cdd928cab275c9d225d2fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Controller.Npc.ShopNpcController
+  stats: {fileID: 0}
+  currentFacing: 0
+  displayName: Fenn
+  portraitOverride: {fileID: 0}
+  essenceType: 1
+  npcId: town_npc_4
+  dialogProfile: {fileID: 0}
+  portrait: {fileID: 11400000, guid: 6683a623ae69a5d9780aef4e1d3de0a6, type: 2}
+  shopDefinition: {fileID: 11400000, guid: 642f16a56bb2f5ac78e4060831177457, type: 2}

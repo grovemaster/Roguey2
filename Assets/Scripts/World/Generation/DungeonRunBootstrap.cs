@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Actors.Components;
 using JRogue.Manager.Party;
+using JRogue.Shop;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -33,6 +34,8 @@ namespace JRogue.World.Generation
 
             if (DungeonTimeService.Instance == null)
                 DungeonRunState.Instance.gameObject.AddComponent<DungeonTimeService>();
+
+            TownShopStateService.EnsureRunService();
 
             if (floorInstanceManager == null)
             {

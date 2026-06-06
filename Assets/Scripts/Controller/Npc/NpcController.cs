@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace JRogue.Controller.Npc
 {
-    public sealed class NpcController : BaseActor, INpcTalkTarget
+    public class NpcController : BaseActor, INpcTalkTarget
     {
         [Header("NPC")]
         [SerializeField] string npcId;
@@ -26,7 +26,7 @@ namespace JRogue.Controller.Npc
             Debug.Log($"{DisplayName} blocked {target.DisplayName}.");
         }
 
-        public void BeginDialog(BaseActor speaker)
+        public virtual void BeginDialog(BaseActor speaker)
         {
             if (dialogProfile == null)
             {

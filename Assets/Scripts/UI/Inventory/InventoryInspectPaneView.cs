@@ -134,6 +134,13 @@ namespace JRogue.UI.Inventory
             {
                 _heroIcon.sprite = icon;
                 _heroIcon.color = icon != null ? Color.white : new Color(0.45f, 0.45f, 0.48f, 0.9f);
+                LayoutElement iconLe = _heroIcon.GetComponent<LayoutElement>();
+                if (iconLe != null)
+                {
+                    float iconSize = 96f * detailFontScale;
+                    iconLe.minWidth = iconLe.preferredWidth = iconSize;
+                    iconLe.minHeight = iconLe.preferredHeight = iconSize;
+                }
             }
 
             if (_heroText != null)

@@ -52,6 +52,7 @@
     <Compile Include="Assets/Editor/Party/MainCharacterSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/World/NpcDialogPackCreator.cs" />
     <Compile Include="Assets/Editor/World/MapPresencePackEditor.cs" />
+    <Compile Include="Assets/Editor/World/ShopNpcPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/HealingPotionSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />

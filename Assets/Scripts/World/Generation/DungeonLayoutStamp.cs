@@ -124,5 +124,7 @@ namespace JRogue.World.Generation
         public const string TownNpc1 = "town_npc_1";
         public const string TownNpc2 = "town_npc_2";
         public const string TownNpc3 = "town_npc_3";
+        public const string TownNpc4 = "town_npc_4";
+        public const string TownNpc5 = "town_npc_5";
     }
 }

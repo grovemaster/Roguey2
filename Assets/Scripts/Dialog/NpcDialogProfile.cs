@@ -13,6 +13,8 @@ namespace JRogue.Dialog
         public const string Npc1 = "town_npc_1";
         public const string Npc2 = "town_npc_2";
         public const string Npc3 = "town_npc_3";
+        public const string Npc4 = "town_npc_4";
+        public const string Npc5 = "town_npc_5";
     }
 
     [CreateAssetMenu(fileName = "NpcDialogProfile", menuName = "JRogue/Dialog/NPC Dialog Profile")]
