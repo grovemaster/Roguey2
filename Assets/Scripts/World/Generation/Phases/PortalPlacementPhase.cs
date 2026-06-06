@@ -16,9 +16,26 @@ namespace JRogue.World.Generation.Phases
                 return;
 
             MapManager map = MapManager.Instance;
-            DungeonLayoutStamp stamp = def.LayoutStamp;
-            if (map == null || stamp == null)
+            if (map == null)
                 return;
+
+            int mapWidth;
+            int mapHeight;
+            DungeonLayoutStamp stamp = def.LayoutStamp;
+            if (context.UsesZoneComposite)
+            {
+                if (!PopulationPlacementUtility.TryGetMapBounds(context, out mapWidth, out mapHeight))
+                    return;
+            }
+            else if (stamp == null)
+            {
+                return;
+            }
+            else
+            {
+                mapWidth = stamp.Width;
+                mapHeight = stamp.Height;
+            }
 
             int placed = 0;
             MapEdge[] edges = { MapEdge.South, MapEdge.North, MapEdge.East, MapEdge.West };
@@ -26,7 +43,21 @@ namespace JRogue.World.Generation.Phases
 
             for (int i = 0; i < targetCount; i++)
             {
-                if (!PortalEdgePlacement.TryFindEdgePortalCell(stamp, map, edges[i], def.OrthogonalEdgeInset, out Vector3Int cell))
+                bool found = context.UsesZoneComposite
+                    ? PortalEdgePlacement.TryFindEdgePortalCell(
+                        mapWidth,
+                        mapHeight,
+                        map,
+                        edges[i],
+                        def.OrthogonalEdgeInset,
+                        out Vector3Int cell)
+                    : PortalEdgePlacement.TryFindEdgePortalCell(
+                        stamp,
+                        map,
+                        edges[i],
+                        def.OrthogonalEdgeInset,
+                        out cell);
+                if (!found)
                     continue;
 
                 if (context.ReservedCells.Contains(cell))

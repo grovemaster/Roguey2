@@ -64,6 +64,7 @@ namespace JRogue.World.Generation
 
             if (FloorItemPileService.Instance != null)
             {
+                FloorItemPileService.Instance.BindViewRoot(instance.DynamicViewsRoot);
                 FloorItemPileService.Instance.ClearAllPiles();
                 FloorItemPileService.Instance.RestoreSnapshot(instance.FeatureSnapshot.floorItems);
             }

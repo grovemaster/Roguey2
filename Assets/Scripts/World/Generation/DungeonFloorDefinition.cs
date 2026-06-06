@@ -47,7 +47,9 @@ namespace JRogue.World.Generation
     public sealed class DungeonFloorDefinition : ScriptableObject
     {
         [SerializeField] string floorId = "dungeon_floor_01";
+        [SerializeField] FloorLayoutMode layoutMode = FloorLayoutMode.PreBakedStamp;
         [SerializeField] DungeonLayoutStamp layoutStamp;
+        [SerializeField] Zones.DungeonFloorZoneLayout zoneLayout;
         [SerializeField] TileBase floorTile;
         [SerializeField] TileBase wallTile;
         [SerializeField] int playerSafeRadius = 5;
@@ -79,7 +81,9 @@ namespace JRogue.World.Generation
         [SerializeField] DungeonVaultCatalog vaultCatalog;
 
         public string FloorId => floorId;
+        public FloorLayoutMode LayoutMode => layoutMode;
         public DungeonLayoutStamp LayoutStamp => layoutStamp;
+        public Zones.DungeonFloorZoneLayout ZoneLayout => zoneLayout;
         public TileBase FloorTile => floorTile;
         public TileBase WallTile => wallTile;
         public int PlayerSafeRadius => playerSafeRadius;

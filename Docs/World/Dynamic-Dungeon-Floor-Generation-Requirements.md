@@ -2,7 +2,7 @@
 
 **Status:** **v0 locked** — implement as **v0a** (vertical slice) then **v0b** (full v0). Parent spec for layout/portal/lighting; v1+ in §2.4 and §17.
 
-**Purpose:** Move from **hand-authored SampleScene** to **per-run dungeon floors** with **pre-baked layouts** (v0), multi-floor persistence, and Barbarian-style portals. v1 adds procedural room-and-corridor (§17).
+**Purpose:** Move from **hand-authored SampleScene** to **per-run dungeon floors** with **pre-baked layouts** (v0), multi-floor persistence, and Barbarian-style portals. v1 adds procedural room-and-corridor (§17). **Macro habitat zones:** [Dungeon zone layout](Dungeon-Zone-Layout-Requirements.md). **Per-zone population:** [Dungeon zone population](Dungeon-Zone-Population-Requirements.md).
 
 **Depends on:** `MapManager`, `GridManager`, `PartyManager`, `TurnManager`, `VisibilityManager`, `LightingService`, `HazardService`, `TrapService`, `InteractableTileService`, `DoorService`, `EnemySpawnService`, floor economy (`FloorItemPileService`, `FloorEssenceService`), [Fog of War](Fog-Of-War-Requirements.md), [Lighting](Lighting-Requirements.md), [Traps](../Combat/Traps-Requirements.md), [Environmental hazards](../Combat/Environmental-Hazards-Requirements.md), [Interactables](../Combat/Interactable-Tiles-Requirements.md), [Doors](Door-Requirements.md), [Altars](Altar-And-Map-Interact-Requirements.md), [Enemy spawn](../Combat/Conditional-Enemy-Spawn-Requirements.md), [Floor items](../Inventory/Floor-Item-Pile-Requirements.md), [Essence drops](../Essence/Enemy-Essence-Drops-Requirements.md).
 
@@ -176,7 +176,7 @@ Dungeon Crawl Stone Soup does **not** store a finished map per run in a scene fi
 | **Pre-baked layout (v0)** | `DungeonLayoutStamp` ScriptableObject or binary grid — stamped into tilemaps (§2.4). |
 | **Room-and-corridor (post-v0)** | Procedural generator milestone. |
 | **Vaults** | `DungeonVaultDefinition` — stamp of tiles + entity placements; placed 0–N times per floor. |
-| **Population tables** | Scriptable lists: enemy weights, hazard density, trap density, item tables, interactable events. |
+| **Population tables** | Scriptable lists: enemy weights, hazard density, trap density, item tables, interactable events. **ZoneComposite:** per-zone profiles — [Dungeon zone population](Dungeon-Zone-Population-Requirements.md). |
 | **Safe zone around start** | **Chebyshev 5** default on `DungeonFloorDefinition` (§7.1) — applies to enemies, hazards, and traps unless overridden per floor. |
 | **Layout-specific features** | Doors per-floor policy (§6.6); day/night per floor (§6.4); portal heuristics per floor (§8). |
 
@@ -1144,7 +1144,7 @@ Everything in §3–§11 not required for v0a: production scene, full portal set
 |---------|------------------------------------------------------------------------------------------------------------------|
 | **Unchanged from v0** | Multi-floor park/persist, portal bindings, population tables, vaults, Chebyshev safe zone on **first** populate |
 | **v1 must add** | Connectivity validation (reachable floors), portal site reservation on generated maps, `DungeonGeneratorProfile` (room count/size) |
-| **v1.1+** | Cave generator, layout weights (v2), themed regions (v5) |
+| **v1.1+** | Cave generator, layout weights (v2), themed regions (v5) — see [Dungeon zone layout](Dungeon-Zone-Layout-Requirements.md) for macro **zone** composition (habitats, jigsaw, selection rules). |
 
 Author a separate **`Dynamic-Dungeon-Floor-Generation-v1-Requirements.md`** when v0b ships.
 

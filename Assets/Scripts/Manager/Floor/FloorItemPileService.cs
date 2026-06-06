@@ -26,8 +26,27 @@ namespace JRogue.Manager.Floor
         readonly Dictionary<string, FloorItemWorldView> _views = new Dictionary<string, FloorItemWorldView>();
 
         Transform _viewRoot;
+        Transform _boundParent;
 
         public event Action Changed;
+
+        public void BindViewRoot(Transform parent)
+        {
+            _boundParent = parent;
+            EnsureViewRoot();
+            if (_viewRoot != null && parent != null)
+                _viewRoot.SetParent(parent, false);
+        }
+
+        void EnsureViewRoot()
+        {
+            if (_viewRoot != null)
+                return;
+
+            _viewRoot = new GameObject("FloorItems").transform;
+            if (_boundParent != null)
+                _viewRoot.SetParent(_boundParent, false);
+        }
 
         void Awake()
         {
@@ -38,7 +57,7 @@ namespace JRogue.Manager.Floor
             }
 
             Instance = this;
-            _viewRoot = new GameObject("FloorItems").transform;
+            EnsureViewRoot();
         }
 
         void OnDestroy()
@@ -150,6 +169,7 @@ namespace JRogue.Manager.Floor
 
         void SpawnView(Vector3Int tile, FloorItemEntry entry)
         {
+            EnsureViewRoot();
             FloorItemWorldView view = worldViewPrefab != null
                 ? Instantiate(worldViewPrefab, _viewRoot)
                 : FloorItemWorldView.CreateDefault(_viewRoot);

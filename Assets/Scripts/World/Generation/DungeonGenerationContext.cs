@@ -1,22 +1,37 @@
 using System;
 using System.Collections.Generic;
 using JRogue.Spawn;
+using JRogue.World.Generation.Zones;
 using UnityEngine;
 
 namespace JRogue.World.Generation
 {
+    [Serializable]
+    public struct ZoneCellMapEntry
+    {
+        public int x;
+        public int y;
+        public string zoneId;
+    }
+
     public sealed class DungeonGenerationContext
     {
         public DungeonFloorDefinition Definition { get; }
         public DungeonFloorInstance Instance { get; }
+        public int RunSeed { get; }
         public System.Random Rng { get; }
         public Vector3Int PlayerStart { get; set; }
+        public int MapWidth { get; set; }
+        public int MapHeight { get; set; }
         public HashSet<Vector3Int> ReservedCells { get; } = new HashSet<Vector3Int>();
         public HashSet<Vector3Int> SafeZoneCells { get; } = new HashSet<Vector3Int>();
         public Dictionary<string, PortalArrivalBinding> PortalArrivals { get; } =
             new Dictionary<string, PortalArrivalBinding>();
         public List<PortalInteractable> Portals { get; } = new List<PortalInteractable>();
         public List<ResolvedEdgePortal> ResolvedEdgePortals { get; } = new List<ResolvedEdgePortal>();
+        public Dictionary<Vector3Int, string> ZoneCellMap { get; set; }
+        public Dictionary<string, RectInt> ZoneBoundsByInstanceId { get; set; }
+        public ResolvedZonePiece[] ResolvedZonePieces { get; set; }
 
         public DungeonGenerationContext(
             DungeonFloorDefinition definition,
@@ -26,7 +41,27 @@ namespace JRogue.World.Generation
         {
             Definition = definition;
             Instance = instance;
+            RunSeed = runSeed;
             Rng = new System.Random(unchecked(runSeed * 397 ^ floorSalt));
+        }
+
+        public bool UsesZoneComposite =>
+            Definition != null && Definition.LayoutMode == FloorLayoutMode.ZoneComposite;
+
+        public void BuildSafeZoneForFloor(DungeonFloorDefinition def)
+        {
+            SafeZoneCells.Clear();
+            if (def == null)
+                return;
+
+            PartyFormationSpawnProfile profile = def.FormationProfile;
+            if (profile != null && profile.TryGetOffsetsForCount(1, out Vector3Int[] offsets))
+            {
+                BuildSafeZone(new[] { PlayerStart + offsets[0] }, def.PlayerSafeRadius);
+                return;
+            }
+
+            BuildSafeZone(new[] { PlayerStart }, def.PlayerSafeRadius);
         }
 
         public void BuildSafeZone(IReadOnlyList<Vector3Int> formationCells, int chebyshevRadius)
@@ -54,5 +89,14 @@ namespace JRogue.World.Generation
         }
 
         public bool IsInSafeZone(Vector3Int cell) => SafeZoneCells.Contains(cell);
+
+        public bool TryGetZoneId(Vector3Int cell, out string zoneId)
+        {
+            zoneId = null;
+            if (ZoneCellMap == null)
+                return false;
+
+            return ZoneCellMap.TryGetValue(cell, out zoneId);
+        }
     }
 }

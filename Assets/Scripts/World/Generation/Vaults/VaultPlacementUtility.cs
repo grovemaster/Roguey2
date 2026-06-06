@@ -39,8 +39,7 @@ namespace JRogue.World.Generation.Vaults
             if (blueprint == null || context == null || map == null)
                 return false;
 
-            DungeonLayoutStamp stamp = context.Definition?.LayoutStamp;
-            if (stamp == null)
+            if (!PopulationPlacementUtility.TryGetMapBounds(context, out int mapWidth, out int mapHeight))
                 return false;
 
             if (!MeetsMinDistanceFromPlayerStart(
@@ -55,17 +54,17 @@ namespace JRogue.World.Generation.Vaults
                 blueprint.Origin.x,
                 blueprint.Origin.y);
 
-            if (!stamp.IsFloor(anchorWorld.x, anchorWorld.y))
+            if (!IsReplaceableCell(context, map, anchorWorld))
                 return false;
 
             foreach (VaultMapCell cell in blueprint.OccupiedCells())
             {
                 Vector3Int world = blueprint.LocalToWorld(placementOrigin, cell.X, cell.Y);
 
-                if (world.x < 0 || world.y < 0 || world.x >= stamp.Width || world.y >= stamp.Height)
+                if (world.x < 0 || world.y < 0 || world.x >= mapWidth || world.y >= mapHeight)
                     return false;
 
-                if (!IsReplaceableStampCell(stamp, world.x, world.y))
+                if (!IsReplaceableCell(context, map, world))
                     return false;
 
                 if (context.IsInSafeZone(world))
@@ -78,14 +77,30 @@ namespace JRogue.World.Generation.Vaults
             return true;
         }
 
-        /// <summary>Vault may overwrite floor or wall cells; void (neither) is rejected.</summary>
-        static bool IsReplaceableStampCell(DungeonLayoutStamp stamp, int x, int y) =>
-            stamp.IsFloor(x, y) || stamp.IsWall(x, y);
+        static bool IsReplaceableCell(DungeonGenerationContext context, MapManager map, Vector3Int world)
+        {
+            if (context.UsesZoneComposite)
+                return map.IsWalkable(world) || map.IsWall(world);
+
+            DungeonLayoutStamp stamp = context.Definition?.LayoutStamp;
+            if (stamp == null)
+                return false;
+
+            return stamp.IsFloor(world.x, world.y) || stamp.IsWall(world.x, world.y);
+        }
 
         public static List<Vector3Int> CollectOriginCandidates(
             DungeonLayoutStamp stamp,
             DungeonGenerationContext context)
         {
+            if (context != null && context.UsesZoneComposite)
+            {
+                MapManager map = MapManager.Instance;
+                return map != null
+                    ? PopulationPlacementUtility.CollectFloorCandidates(map, context)
+                    : new List<Vector3Int>();
+            }
+
             var candidates = new List<Vector3Int>();
             if (stamp == null)
                 return candidates;
@@ -114,11 +129,13 @@ namespace JRogue.World.Generation.Vaults
             MapManager map,
             int minDistanceFromPlayerStart)
         {
-            DungeonLayoutStamp stamp = context?.Definition?.LayoutStamp;
-            if (stamp == null || map == null)
+            if (context == null || map == null)
                 return 0;
 
-            List<Vector3Int> candidates = CollectOriginCandidates(stamp, context);
+            if (!context.UsesZoneComposite && context.Definition?.LayoutStamp == null)
+                return 0;
+
+            List<Vector3Int> candidates = CollectOriginCandidates(context.Definition?.LayoutStamp, context);
             int valid = 0;
             for (int i = 0; i < candidates.Count; i++)
             {

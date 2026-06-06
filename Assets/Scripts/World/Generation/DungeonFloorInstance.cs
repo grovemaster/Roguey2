@@ -5,6 +5,7 @@ using JRogue.Controller.Npc;
 using JRogue.Core.Actor;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
+using JRogue.World.Generation.Zones;
 using JRogue.World.MapInteract;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -27,6 +28,8 @@ namespace JRogue.World.Generation
 
         readonly Dictionary<string, PortalArrivalBinding> _arrivalBindings =
             new Dictionary<string, PortalArrivalBinding>();
+        readonly List<ZoneCellMapEntry> _zoneCellMapSnapshot = new List<ZoneCellMapEntry>();
+        readonly List<ResolvedZonePiece> _resolvedZonePieces = new List<ResolvedZonePiece>();
         readonly List<PortalInteractable> _portals = new List<PortalInteractable>();
         readonly List<JRogue.World.MapInteract.IAdjacentMapInteractable> _extraMapInteractables =
             new List<JRogue.World.MapInteract.IAdjacentMapInteractable>();
@@ -51,6 +54,24 @@ namespace JRogue.World.Generation
         public Vector3Int PlayerStart => _playerStart;
         public Transform EnemyContainer => enemyContainer;
         public Transform DynamicViewsRoot => dynamicViewsRoot;
+        public IReadOnlyList<ZoneCellMapEntry> ZoneCellMapSnapshot => _zoneCellMapSnapshot;
+        public IReadOnlyList<ResolvedZonePiece> ResolvedZonePieces => _resolvedZonePieces;
+
+        public bool TryGetZoneId(Vector3Int cell, out string zoneId)
+        {
+            zoneId = null;
+            for (int i = 0; i < _zoneCellMapSnapshot.Count; i++)
+            {
+                ZoneCellMapEntry entry = _zoneCellMapSnapshot[i];
+                if (entry.x != cell.x || entry.y != cell.y)
+                    continue;
+
+                zoneId = entry.zoneId;
+                return true;
+            }
+
+            return false;
+        }
 
         public DungeonFloorTilemaps Tilemaps => new DungeonFloorTilemaps(
             floorMap,
@@ -189,16 +210,39 @@ namespace JRogue.World.Generation
 
         public void MarkGenerated(
             Vector3Int playerStart,
-            Dictionary<string, PortalArrivalBinding> arrivals)
+            Dictionary<string, PortalArrivalBinding> arrivals,
+            Dictionary<Vector3Int, string> zoneCellMap = null,
+            ResolvedZonePiece[] resolvedZonePieces = null)
         {
             _isGenerated = true;
             _playerStart = playerStart;
             _arrivalBindings.Clear();
-            if (arrivals == null)
-                return;
+            if (arrivals != null)
+            {
+                foreach (KeyValuePair<string, PortalArrivalBinding> pair in arrivals)
+                    _arrivalBindings[pair.Key] = pair.Value;
+            }
 
-            foreach (KeyValuePair<string, PortalArrivalBinding> pair in arrivals)
-                _arrivalBindings[pair.Key] = pair.Value;
+            _zoneCellMapSnapshot.Clear();
+            if (zoneCellMap != null)
+            {
+                foreach (KeyValuePair<Vector3Int, string> pair in zoneCellMap)
+                {
+                    _zoneCellMapSnapshot.Add(new ZoneCellMapEntry
+                    {
+                        x = pair.Key.x,
+                        y = pair.Key.y,
+                        zoneId = pair.Value,
+                    });
+                }
+            }
+
+            _resolvedZonePieces.Clear();
+            if (resolvedZonePieces != null)
+            {
+                for (int i = 0; i < resolvedZonePieces.Length; i++)
+                    _resolvedZonePieces.Add(resolvedZonePieces[i]);
+            }
         }
 
         public void StoreArrivalBinding(PortalArrivalBinding binding) =>

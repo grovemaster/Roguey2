@@ -55,6 +55,7 @@
     <Compile Include="Assets/Tests/UnitTests/World/IlluminationVisibilityLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryValueDisplayTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/MapPresenceTrapUnregisterTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/ZoneLayoutTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/MultiTileEnemyGridTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/InputTestSceneBuilder.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/SafeZonePolicyLogicTests.cs" />

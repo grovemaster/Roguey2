@@ -9,9 +9,8 @@ namespace JRogue.World.Generation
     /// </summary>
     public static class DungeonGenerationPipeline
     {
-        static readonly IDungeonGenerationPhase[] FirstVisitPhases =
+        static readonly IDungeonGenerationPhase[] SharedTailPhases =
         {
-            new LayoutStampPhase(),
             new VaultPlacementPhase(),
             new PortalPlacementPhase(),
             new PortalSetupPhase(),
@@ -28,7 +27,35 @@ namespace JRogue.World.Generation
             new EnemyPopulationPhase(),
         };
 
-        public static IReadOnlyList<IDungeonGenerationPhase> Phases => FirstVisitPhases;
+        public static IReadOnlyList<IDungeonGenerationPhase> PhasesFor(DungeonFloorDefinition def)
+        {
+            if (def != null && def.LayoutMode == FloorLayoutMode.ZoneComposite)
+                return ZoneCompositePhases;
+
+            return PreBakedPhases;
+        }
+
+        static readonly IDungeonGenerationPhase[] PreBakedPhases = BuildPreBakedPhases();
+        static readonly IDungeonGenerationPhase[] ZoneCompositePhases = BuildZoneCompositePhases();
+
+        static IDungeonGenerationPhase[] BuildPreBakedPhases()
+        {
+            var phases = new IDungeonGenerationPhase[1 + SharedTailPhases.Length];
+            phases[0] = new LayoutStampPhase();
+            for (int i = 0; i < SharedTailPhases.Length; i++)
+                phases[i + 1] = SharedTailPhases[i];
+            return phases;
+        }
+
+        static IDungeonGenerationPhase[] BuildZoneCompositePhases()
+        {
+            var phases = new IDungeonGenerationPhase[2 + SharedTailPhases.Length];
+            phases[0] = new ZoneLayoutPhase();
+            phases[1] = new ZoneFillPhase();
+            for (int i = 0; i < SharedTailPhases.Length; i++)
+                phases[i + 2] = SharedTailPhases[i];
+            return phases;
+        }
 
         public static void GenerateFirstVisit(DungeonFloorInstance instance, int runSeed)
         {
@@ -42,27 +69,25 @@ namespace JRogue.World.Generation
                 return;
             }
 
-            DungeonGenerationLog.Info($"GenerateFirstVisit floorId={def.FloorId} seed={runSeed}");
+            DungeonGenerationLog.Info($"GenerateFirstVisit floorId={def.FloorId} seed={runSeed} layout={def.LayoutMode}");
 
             int floorSalt = def.FloorId != null ? def.FloorId.GetHashCode() : 0;
             var context = new DungeonGenerationContext(def, instance, runSeed, floorSalt);
-            context.PlayerStart = def.LayoutStamp != null
-                ? def.LayoutStamp.PlayerStart
-                : Vector3Int.zero;
 
-            PartyFormationSpawnProfile profile = def.FormationProfile;
-            if (profile != null && profile.TryGetOffsetsForCount(1, out Vector3Int[] offsets))
+            if (def.LayoutMode != FloorLayoutMode.ZoneComposite)
             {
-                var formationCells = new List<Vector3Int> { context.PlayerStart + offsets[0] };
-                context.BuildSafeZone(formationCells, def.PlayerSafeRadius);
-            }
-            else
-            {
-                context.BuildSafeZone(new[] { context.PlayerStart }, def.PlayerSafeRadius);
+                context.PlayerStart = def.LayoutStamp != null
+                    ? def.LayoutStamp.PlayerStart
+                    : Vector3Int.zero;
+                context.BuildSafeZoneForFloor(def);
             }
 
-            RunPhases(context);
-            instance.MarkGenerated(context.PlayerStart, context.PortalArrivals);
+            RunPhases(context, PhasesFor(def));
+            instance.MarkGenerated(
+                context.PlayerStart,
+                context.PortalArrivals,
+                context.ZoneCellMap,
+                context.ResolvedZonePieces);
             DungeonFloorServiceBinder.CaptureFeatureState(instance);
             DungeonGenerationLog.Info(
                 $"GenerateFirstVisit complete playerStart={context.PlayerStart} portals={context.Portals.Count}");
@@ -70,11 +95,16 @@ namespace JRogue.World.Generation
 
         public static void RunPhases(DungeonGenerationContext context)
         {
-            for (int i = 0; i < FirstVisitPhases.Length; i++)
+            RunPhases(context, PhasesFor(context.Definition));
+        }
+
+        public static void RunPhases(DungeonGenerationContext context, IReadOnlyList<IDungeonGenerationPhase> phases)
+        {
+            for (int i = 0; i < phases.Count; i++)
             {
-                string phaseName = FirstVisitPhases[i].GetType().Name;
+                string phaseName = phases[i].GetType().Name;
                 DungeonGenerationLog.Phase(phaseName, "begin");
-                FirstVisitPhases[i].Execute(context);
+                phases[i].Execute(context);
                 DungeonGenerationLog.Phase(phaseName, "done");
             }
         }

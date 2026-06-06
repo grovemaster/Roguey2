@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JRogue.Hazards;
+using JRogue.Manager.Floor;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Traps;
@@ -119,6 +120,7 @@ namespace JRogue.World.Generation
             }
 
             instance.BindToMapManager(map);
+            FloorItemPileService.Instance?.BindViewRoot(instance.DynamicViewsRoot);
 
             if (!instance.IsGenerated)
                 DungeonGenerationPipeline.GenerateFirstVisit(instance, run.RunSeed);

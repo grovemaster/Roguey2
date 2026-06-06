@@ -126,6 +126,9 @@ namespace JRogue.World.Generation
             if (runBootstrap != null)
                 runBootstrap.EnsurePartyRoster();
 
+            if (_runStarted)
+                runSeed = unchecked(runSeed * 48271 + 1);
+
             bool started = manager.TryBeginRunAtFloor(startFloorId, runSeed);
             _runStarted = started;
             if (!started)

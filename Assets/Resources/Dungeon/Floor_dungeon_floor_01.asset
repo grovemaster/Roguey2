@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Floor_dungeon_floor_01
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinition
   floorId: dungeon_floor_01
+  layoutMode: 1
   layoutStamp: {fileID: 11400000, guid: 44ecdb5685a325787bd305a4266c315e, type: 2}
+  zoneLayout: {fileID: 11400000, guid: c7ebde8cbef3d5aa4b9ef8d05ec4c8e1, type: 2}
   floorTile: {fileID: 11400000, guid: a770cea7164a14f4cbe48a9b5e25548f, type: 2}
   wallTile: {fileID: 11400000, guid: 76b8e898b74148f479eecb778c522cf8, type: 2}
   playerSafeRadius: 5
@@ -67,6 +69,8 @@ MonoBehaviour:
   additionalDayNightCycles: 0
   playerTurnsPerDay: 5
   playerTurnsPerNight: 5
+  combatPolicy: 0
+  safeZoneRegions: []
   doorPolicy: 0
   vaults: []
   vaultCatalog: {fileID: 11400000, guid: 5de9a4b1839630877a5988afee25f3aa, type: 2}

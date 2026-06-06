@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Manager.Map;
 using JRogue.World.Generation;
+using JRogue.World.Generation.Phases;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Vaults
@@ -20,8 +21,10 @@ namespace JRogue.World.Generation.Vaults
                 return false;
 
             MapManager map = MapManager.Instance;
-            DungeonLayoutStamp stamp = context.Definition?.LayoutStamp;
-            if (map == null || stamp == null)
+            if (map == null)
+                return false;
+
+            if (!context.UsesZoneComposite && context.Definition?.LayoutStamp == null)
                 return false;
 
             int minDistance = minDistanceOverride > 0
@@ -29,7 +32,7 @@ namespace JRogue.World.Generation.Vaults
                 : blueprint.MinDistanceFromPlayerStart;
 
             List<Vector3Int> candidates =
-                VaultPlacementUtility.CollectOriginCandidates(stamp, context);
+                VaultPlacementUtility.CollectOriginCandidates(context.Definition?.LayoutStamp, context);
             if (candidates.Count == 0)
             {
                 DungeonGenerationLog.Warn(
@@ -56,9 +59,10 @@ namespace JRogue.World.Generation.Vaults
                 return true;
             }
 
+            PopulationPlacementUtility.TryGetMapBounds(context, out int mapWidth, out int mapHeight);
             DungeonGenerationLog.Warn(
                 $"Vault '{blueprint.VaultId}': no valid anchor (minDistance={minDistance}, " +
-                $"candidates={candidates.Count}, map={stamp.Width}x{stamp.Height}, playerStart={context.PlayerStart}).");
+                $"candidates={candidates.Count}, map={mapWidth}x{mapHeight}, playerStart={context.PlayerStart}).");
             return false;
         }
     }

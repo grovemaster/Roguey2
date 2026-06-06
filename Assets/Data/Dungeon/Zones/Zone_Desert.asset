@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 277a8472a8aa7632db30a6b2ea40ea2a, type: 3}
+  m_Name: Zone_Desert
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonZoneDefinition
+  zoneId: desert
+  displayName: Desert
+  floorTile: {fileID: 11400000, guid: 212be23c50d041961a2cca9215dd386c, type: 2}
+  wallTile: {fileID: 11400000, guid: 834b0abad5512a2e3b128154fcf8d52f, type: 2}
+  ambientRegionId: -1
+  defaultAmbientLight: 0
+  minWidth: 8
+  minHeight: 8
+  maxWidth: 24
+  maxHeight: 24
+  tags: []

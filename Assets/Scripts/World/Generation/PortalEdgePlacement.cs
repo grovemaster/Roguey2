@@ -30,28 +30,60 @@ namespace JRogue.World.Generation
             if (stamp == null || map == null)
                 return false;
 
+            return TryFindEdgePortalCell(stamp.Width, stamp.Height, stamp, map, edge, inset, out cell);
+        }
+
+        public static bool TryFindEdgePortalCell(
+            int mapWidth,
+            int mapHeight,
+            MapManager map,
+            MapEdge edge,
+            int inset,
+            out Vector3Int cell)
+        {
+            return TryFindEdgePortalCell(mapWidth, mapHeight, null, map, edge, inset, out cell);
+        }
+
+        static bool TryFindEdgePortalCell(
+            int mapWidth,
+            int mapHeight,
+            DungeonLayoutStamp stamp,
+            MapManager map,
+            MapEdge edge,
+            int inset,
+            out Vector3Int cell)
+        {
+            cell = default;
+            if (map == null || mapWidth <= 0 || mapHeight <= 0)
+                return false;
+
             inset = Mathf.Max(1, inset);
 
             return edge switch
             {
-                MapEdge.South => TryScanRow(stamp, map, inset, out cell),
-                MapEdge.North => TryScanRow(stamp, map, stamp.Height - 1 - inset, out cell),
-                MapEdge.West => TryScanColumn(stamp, map, inset, out cell),
-                MapEdge.East => TryScanColumn(stamp, map, stamp.Width - 1 - inset, out cell),
+                MapEdge.South => TryScanRow(stamp, map, mapWidth, inset, out cell),
+                MapEdge.North => TryScanRow(stamp, map, mapWidth, mapHeight - 1 - inset, out cell),
+                MapEdge.West => TryScanColumn(stamp, map, mapHeight, inset, out cell),
+                MapEdge.East => TryScanColumn(stamp, map, mapHeight, mapWidth - 1 - inset, out cell),
                 _ => false,
             };
         }
 
-        static bool TryScanRow(DungeonLayoutStamp stamp, MapManager map, int y, out Vector3Int cell)
+        static bool TryScanRow(
+            DungeonLayoutStamp stamp,
+            MapManager map,
+            int mapWidth,
+            int y,
+            out Vector3Int cell)
         {
             cell = default;
-            if (y < 0 || y >= stamp.Height)
+            if (y < 0)
                 return false;
 
-            for (int x = 0; x < stamp.Width; x++)
+            for (int x = 0; x < mapWidth; x++)
             {
                 cell = new Vector3Int(x, y, 0);
-                if (stamp.IsFloor(x, y) && map.IsWalkable(cell))
+                if (IsWalkablePortalCell(stamp, map, x, y, cell))
                     return true;
             }
 
@@ -59,21 +91,39 @@ namespace JRogue.World.Generation
             return false;
         }
 
-        static bool TryScanColumn(DungeonLayoutStamp stamp, MapManager map, int x, out Vector3Int cell)
+        static bool TryScanColumn(
+            DungeonLayoutStamp stamp,
+            MapManager map,
+            int mapHeight,
+            int x,
+            out Vector3Int cell)
         {
             cell = default;
-            if (x < 0 || x >= stamp.Width)
+            if (x < 0)
                 return false;
 
-            for (int y = 0; y < stamp.Height; y++)
+            for (int y = 0; y < mapHeight; y++)
             {
                 cell = new Vector3Int(x, y, 0);
-                if (stamp.IsFloor(x, y) && map.IsWalkable(cell))
+                if (IsWalkablePortalCell(stamp, map, x, y, cell))
                     return true;
             }
 
             cell = default;
             return false;
+        }
+
+        static bool IsWalkablePortalCell(
+            DungeonLayoutStamp stamp,
+            MapManager map,
+            int x,
+            int y,
+            Vector3Int cell)
+        {
+            if (stamp != null && !stamp.IsFloor(x, y))
+                return false;
+
+            return map.IsWalkable(cell);
         }
     }
 }

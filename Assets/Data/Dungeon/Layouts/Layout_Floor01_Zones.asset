@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf1bbb5d33abaf1d3b032891137c47f2, type: 3}
+  m_Name: Layout_Floor01_Zones
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonFloorZoneLayout
+  floorWidth: 30
+  floorHeight: 30
+  layoutKind: 0
+  selectionRules:
+  - zoneId: desert
+    weight: 60
+    mandatory: 0
+    requiresAll: []
+    requiresAny: []
+    excludes:
+    - snow
+    maxInstances: 1
+  - zoneId: snow
+    weight: 40
+    mandatory: 0
+    requiresAll: []
+    requiresAny: []
+    excludes:
+    - desert
+    maxInstances: 1
+  pieces:
+  - pieceId: center
+    anchorKind: 1
+    compassDirection: 0
+    normalizedRect:
+      xMin: 0
+      yMin: 0
+      xMax: 0
+      yMax: 0
+    candidates:
+    - zoneId: dungeon
+      weight: 1
+    mandatory: 1
+    connectsTo: []
+    defaultBoundary: 1
+    edgeBoundaries: []
+    isPlayerStartPiece: 1
+  - pieceId: north
+    anchorKind: 1
+    compassDirection: 1
+    normalizedRect:
+      xMin: 0
+      yMin: 0
+      xMax: 0
+      yMax: 0
+    candidates:
+    - zoneId: snow
+      weight: 40
+    - zoneId: empty
+      weight: 60
+    mandatory: 0
+    connectsTo: []
+    defaultBoundary: 1
+    edgeBoundaries: []
+    isPlayerStartPiece: 0
+  - pieceId: east
+    anchorKind: 1
+    compassDirection: 3
+    normalizedRect:
+      xMin: 0
+      yMin: 0
+      xMax: 0
+      yMax: 0
+    candidates:
+    - zoneId: desert
+      weight: 55
+    - zoneId: empty
+      weight: 45
+    mandatory: 0
+    connectsTo: []
+    defaultBoundary: 1
+    edgeBoundaries: []
+    isPlayerStartPiece: 0
+  defaultOuterBoundary: 2
+  fallbackZoneId: rock
+  zoneDefinitions:
+  - {fileID: 11400000, guid: 7159c3ec1bdf1a47299318c0a0152954, type: 2}
+  - {fileID: 11400000, guid: 547055b96074bf3e7b76fdf655cdd385, type: 2}
+  - {fileID: 11400000, guid: 02c425d79d0d361f3b5e24869d9da059, type: 2}
