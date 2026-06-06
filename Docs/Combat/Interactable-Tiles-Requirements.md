@@ -295,42 +295,44 @@ Author four assets + instances at assigned cells (designer-placed).
 
 ---
 
-## 12. Art — options (approval required)
+## 12. Art — imported (CC0)
 
-**Do not import until you confirm.** Lever needs **off (right)** and **on (left)** at **32×32** to match SampleScene / DCSS hazard scale.
+**Status:** **Imported** — lever sprites ship in the repo (2026-06-05).
 
-### Option A — **32×32 Dungeon Tileset** (2024, CC0) — recommended
+| Asset | Path |
+|-------|------|
+| **Off (handle right)** | `Assets/Art/Interactables/Sprites/LeverSwitch_Off.png` |
+| **On (handle left)** | `Assets/Art/Interactables/Sprites/LeverSwitch_On.png` |
+| **Source sheet** | `Assets/Art/Interactables/ThirdParty/DungeonTileset32/dungeon_tileset_source.png` |
+| **License** | `Assets/Art/Interactables/ThirdParty/DungeonTileset32/LICENSE.txt` |
 
-| | |
-|--|--|
-| **License** | CC0 ([OGA page](https://opengameart.org/content/32x32-dungeon-tileset-0)) |
-| **Download** | `dungoen_tileset_png.png` (~38 KB) |
-| **Fit** | Pack lists **“Leavers”** explicitly; orthogonal dungeon style. |
-| **Work** | Slice right/off and left/on frames from sheet after import. |
-
-### Option B — **Dungeon Crawl 32×32** (already used for lava/gas)
+### Source pack — **32×32 Dungeon Tileset** (CC0)
 
 | | |
 |--|--|
-| **License** | Free use ([OGA](https://opengameart.org/content/dungeon-crawl-32x32-tiles)) |
-| **Fit** | No dedicated lever in subset imported; possible **pedestal** / rune press tiles as placeholder — **not ideal** for left/right handle. |
-| **Use** | Only if you want zero new packs. |
+| **Page** | [OpenGameArt — 32×32 Dungeon Tileset](https://opengameart.org/content/32x32-dungeon-tileset-0) |
+| **License** | **CC0 1.0** — no attribution required |
+| **Download** | `dungoen_tileset_png.png` (480×480 sheet, 15×15 tiles @ 32 px) |
+| **Fit** | Pack lists **“Leavers”**; brown wall-mount levers match DCSS-style bump interactables |
 
-### Option C — **pechvogel “Switch”** (CC-BY 3.0)
+### Slice mapping (locked)
 
-| | |
-|--|--|
-| **License** | [CC-BY 3.0](https://opengameart.org/content/switch-0) — attribution required |
-| **Download** | `Switch.zip` — up / down / middle states |
-| **Fit** | Clear switch art; may need rotate to match right/left spec. |
+| Sprite | Sheet cell `(col, row)` | Spec |
+|--------|-------------------------|------|
+| `LeverSwitch_Off.png` | **(4, 9)** | Handle points **right** |
+| `LeverSwitch_On.png` | **(3, 9)** | Handle points **left** |
 
-### Recommended
+Re-slice instructions: `Assets/Art/Interactables/ThirdParty/DungeonTileset32/README.md`.
 
-**Option A** for CC0 + explicit levers; **Option C** if you prefer classic up/down switch look and accept CC-BY.
+### Alternatives considered (not used)
 
-**Import path (after yes):** `Assets/Art/Interactables/ThirdParty/...` + `Assets/Art/Interactables/Sprites/LeverSwitch_Off.png`, `LeverSwitch_On.png` + `LICENSE.txt`.
+| Option | Verdict |
+|--------|---------|
+| **Stealthix 32×32** ([OGA](https://opengameart.org/content/32x32-dungeon-tileset)) | CC0; smaller sheet; lever frames less clear at 32 px |
+| **Colored placeholders** | Replaced — `InteractableAssetPackCreator` no longer overwrites existing PNGs |
+| **Dungeon Crawl 32×32** | No dedicated left/right lever pair in imported subset |
 
-**Please reply** with Option A, B, or C (or mix). On approval, assets will be downloaded and sliced.
+**Town time levers** ([Town time §5](../World/Town-Time-And-Calendar-Requirements.md)) reuse the same `LeverSwitch_Off` / `LeverSwitch_On` sprites on `InteractableTileDefinition` assets.
 
 ---
 
@@ -342,7 +344,7 @@ Author four assets + instances at assigned cells (designer-placed).
 | Precondition / effect SO types | **Done** |
 | Lever 1–4 definitions + SampleScene | **Done** — assets under `Assets/Data/Interactables/` + `PlacementSets/SampleScene_Levers.asset` |
 | `TryMove` bump integration | **Done** — `BaseActor`, `PlayerCommandProcessor`, `FormationRushService` |
-| Lever sprites | **Placeholder** (colored 32×32); §12 art **awaiting approval** |
+| Lever sprites | **Done** — CC0 levers §12; `LeverSwitch_Off` / `LeverSwitch_On` |
 | Door open / unlock effects | **Done** — [Door requirements](../World/Door-Requirements.md) |
 | Status / stat buff effects | **Future** |
 
@@ -359,4 +361,4 @@ Author four assets + instances at assigned cells (designer-placed).
 | Preconditions | §4.3, §6 |
 | Extensible for other tiles | §4 |
 | Four test levers | §9, §11 |
-| Sprites — ask before download | §12 |
+| Sprites — CC0 dungeon tileset levers | §12 |

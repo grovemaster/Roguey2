@@ -28,6 +28,13 @@ namespace JRogue.World.Generation
             if (triggeringMember == null || DungeonEntryService.EntryScheduled)
                 return false;
 
+            TownTimeService townTime = TownTimeService.Instance;
+            if (townTime != null && !townTime.IsDungeonPortalOpen())
+            {
+                Debug.Log($"{TownTimeService.LogPrefix} Portal closed — {townTime.GetPortalClosedMessage()}");
+                return false;
+            }
+
             DungeonEntryService.RequestEnterDungeonFromTown();
             return false;
         }

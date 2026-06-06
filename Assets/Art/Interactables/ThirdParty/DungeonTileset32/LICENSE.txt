@@ -1,0 +1,13 @@
+32×32 Dungeon Tileset (2024)
+
+Source: https://opengameart.org/content/32x32-dungeon-tileset-0
+Archive: dungeon_tileset_source.png (OpenGameArt download: dungoen_tileset_png.png)
+
+License: CC0 1.0 (public domain) — https://creativecommons.org/publicdomain/zero/1.0/
+
+Tiles used in Roguey2 (lever switches):
+  Sheet cell (4, 9) → Assets/Art/Interactables/Sprites/LeverSwitch_Off.png  (handle right / off)
+  Sheet cell (3, 9) → Assets/Art/Interactables/Sprites/LeverSwitch_On.png   (handle left / on)
+
+Attribution not required. Product approval: lever art import — 2026-06-05.
+See Docs/Combat/Interactable-Tiles-Requirements.md §12.

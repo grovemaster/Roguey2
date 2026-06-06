@@ -103,6 +103,19 @@ namespace JRogue.Interactables
             return TryActivate(instance, bumper, source);
         }
 
+        public void ForceSetLeverState(InteractableTileId id, bool on)
+        {
+            if (!TryGetInstanceById(id, out InteractableTileInstance instance))
+                return;
+
+            if (on)
+                instance.SetOn();
+            else
+                instance.SetOff();
+
+            RefreshOverlayVisual(instance);
+        }
+
         InteractableBumpResult TryActivate(
             InteractableTileInstance instance,
             BaseActor bumper,

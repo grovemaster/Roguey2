@@ -36,6 +36,7 @@ namespace JRogue.World.Generation
                 DungeonRunState.Instance.gameObject.AddComponent<DungeonTimeService>();
 
             TownShopStateService.EnsureRunService();
+            TownTimeService.EnsureRunService();
 
             if (floorInstanceManager == null)
             {

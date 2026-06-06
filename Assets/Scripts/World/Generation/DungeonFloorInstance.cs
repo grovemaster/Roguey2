@@ -37,6 +37,7 @@ namespace JRogue.World.Generation
         {
             public Vector3Int Cell;
             public SpriteRenderer Renderer;
+            public bool RequiresTownTimeOpen;
         }
 
         bool _isGenerated;
@@ -214,7 +215,7 @@ namespace JRogue.World.Generation
                 _extraMapInteractables.Add(interactable);
         }
 
-        public void PlacePortalVisual(Vector3Int cell)
+        public void PlacePortalVisual(Vector3Int cell, bool requiresTownTimeOpen = false)
         {
             Sprite sprite = DungeonPortalVisuals.PortalSprite;
             if (sprite == null)
@@ -242,18 +243,40 @@ namespace JRogue.World.Generation
             else
                 renderer.sortingOrder = 10;
 
-            _portalVisuals.Add(new PortalVisual { Cell = cell, Renderer = renderer });
+            _portalVisuals.Add(new PortalVisual
+            {
+                Cell = cell,
+                Renderer = renderer,
+                RequiresTownTimeOpen = requiresTownTimeOpen,
+            });
+        }
+
+        public void RefreshTownDungeonPortalVisual(bool portalOpen)
+        {
+            for (int i = 0; i < _portalVisuals.Count; i++)
+            {
+                PortalVisual visual = _portalVisuals[i];
+                if (!visual.RequiresTownTimeOpen || visual.Renderer == null)
+                    continue;
+
+                visual.Renderer.color = portalOpen ? Color.white : new Color(1f, 1f, 1f, 0.35f);
+            }
         }
 
         public void ApplyPortalVisibility(VisibilityManager visibility)
         {
+            bool townPortalOpen = TownTimeService.Instance == null
+                || TownTimeService.Instance.IsDungeonPortalOpen();
+
             for (int i = 0; i < _portalVisuals.Count; i++)
             {
                 PortalVisual visual = _portalVisuals[i];
                 if (visual.Renderer == null)
                     continue;
 
-                visual.Renderer.enabled = visibility != null && visibility.IsVisible(visual.Cell);
+                bool open = !visual.RequiresTownTimeOpen || townPortalOpen;
+                bool visible = visibility != null && visibility.IsVisible(visual.Cell);
+                visual.Renderer.enabled = open && visible;
             }
         }
 

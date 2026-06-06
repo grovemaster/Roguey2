@@ -17,7 +17,7 @@ Author levers as **ScriptableObject** assets, place them with a **placement set*
 | `Preconditions/` | Reusable precondition assets |
 | `Effects/` | Reusable effect assets |
 | `PlacementSets/` | Cell + definition lists per level/room |
-| `../../Art/Interactables/Sprites/` | Lever off/on sprites |
+| `../../Art/Interactables/Sprites/` | Lever off/on sprites (CC0 — see `ThirdParty/DungeonTileset32/LICENSE.txt`) |
 
 ## Skeleton spawn on Lever 1 (conditional enemy spawn)
 

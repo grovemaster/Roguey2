@@ -12,6 +12,11 @@ namespace JRogue.Manager.Party
     {
         public static PartyCurrencyLedger Instance { get; private set; }
 
+        const int StartingGoldAmount = 50;
+        const string GoldCoinResourcePath = "Item/Currency/GoldCoin";
+
+        static bool _startingGoldGranted;
+
         public event Action Changed;
 
         readonly Dictionary<ItemData, int> _amounts = new Dictionary<ItemData, int>();
@@ -31,6 +36,30 @@ namespace JRogue.Manager.Party
         {
             if (Instance == this)
                 Instance = null;
+        }
+
+        /// <summary>Grants <see cref="StartingGoldAmount"/> once per play session when the wallet is empty.</summary>
+        public void EnsureStartingGold()
+        {
+            if (_startingGoldGranted)
+                return;
+
+            if (GetTotalCount() > 0)
+            {
+                _startingGoldGranted = true;
+                return;
+            }
+
+            ItemData gold = Resources.Load<ItemData>(GoldCoinResourcePath);
+            if (gold == null)
+            {
+                Debug.LogWarning(
+                    $"[Currency] Missing GoldCoin at Resources/{GoldCoinResourcePath} — starting gold not granted.");
+                return;
+            }
+
+            Add(gold, StartingGoldAmount);
+            _startingGoldGranted = true;
         }
 
         public void Add(ItemData currencyDefinition, int amount)

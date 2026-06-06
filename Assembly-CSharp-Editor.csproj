@@ -68,6 +68,7 @@
     <Compile Include="Assets/Editor/Inventory/BowSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Inventory/FireballScrollSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Doors/DoorPackEditor.cs" />
+    <Compile Include="Assets/Editor/Interactables/TownTimeLeverAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/EvocableItemPackEditor.cs" />
     <Compile Include="Assets/Editor/World/DungeonV0aPackCreator.cs" />
     <Compile Include="Assets/Editor/Targeting/SplashZoneAssetPackCreator.cs" />

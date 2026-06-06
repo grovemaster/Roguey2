@@ -62,6 +62,120 @@ namespace JRogue.Manager.Inventory
             return false;
         }
 
+        /// <summary>Whether carried stacks with the same <see cref="ItemData"/> may combine (e.g. on unequip).</summary>
+        public static bool CanMergeCarriedStacks(ItemData definition)
+        {
+            if (definition == null)
+                return false;
+
+            if (definition.category == ItemCategory.Evocable)
+                return false;
+
+            return definition.category != ItemCategory.Currency && definition is not ManaStoneItemData;
+        }
+
+        /// <summary>
+        /// Removes one unit from a carried stack for equipping. Bow ammo equips the whole stack instead
+        /// (caller should use <see cref="TryRemoveCarried"/>).
+        /// </summary>
+        public bool TrySplitCarriedForEquip(ItemInstance stack, out ItemInstance equipInstance)
+        {
+            equipInstance = null;
+            if (stack == null || stack.Definition == null || !carriedItems.Contains(stack))
+                return false;
+
+            if (stack.Definition.IsBowAmmo)
+                return false;
+
+            if (stack.Quantity <= 1)
+            {
+                if (!TryRemoveCarried(stack))
+                    return false;
+
+                equipInstance = stack;
+                equipInstance.Quantity = 1;
+                return true;
+            }
+
+            stack.Quantity -= 1;
+            equipInstance = CreateSplitInstance(stack, 1);
+            return true;
+        }
+
+        /// <summary>
+        /// Returns an equipped or loose item to the bag, merging into an existing stack when allowed.
+        /// </summary>
+        public bool TryStowCarriedItem(ItemInstance instance)
+        {
+            if (instance == null || instance.Definition == null)
+            {
+                Debug.LogWarning("[Inventory] TryStowCarriedItem rejected: null instance or definition.");
+                return false;
+            }
+
+            if (instance.IsManaStone || instance.IsCurrency)
+                return AddItem(instance);
+
+            if (!CanCarry(instance))
+            {
+                Debug.LogWarning($"Too heavy! Cannot stow {instance.Definition.itemName}");
+                return false;
+            }
+
+            instance.StorageLocation = ItemStorageLocation.Carried;
+
+            if (CanMergeCarriedStacks(instance.Definition))
+            {
+                for (int i = 0; i < carriedItems.Count; i++)
+                {
+                    ItemInstance existing = carriedItems[i];
+                    if (existing?.Definition != instance.Definition)
+                        continue;
+
+                    existing.Quantity += instance.Quantity;
+                    Debug.Log(
+                        $"Inventory: Stowed {instance.Quantity} × {instance.Definition.itemName} into existing stack [{existing.Id}]. Weight: {GetTotalWeight()}/{stats.EncumbranceLimit}");
+                    return true;
+                }
+            }
+
+            if (instance.Definition is EvocableItemData evocable)
+            {
+                instance.Quantity = 1;
+                if (instance.MaxCharges < 1)
+                    EvocableChargeRules.InitializeCharges(instance, evocable);
+                else
+                    EvocableChargeRules.ClampCharges(instance);
+            }
+
+            carriedItems.Add(instance);
+
+            if (automationProfile != null)
+            {
+                if (automationProfile.ShouldAutoJunk(instance.Definition.category))
+                    instance.UserMarks |= ItemUserMark.Junk;
+
+                if (automationProfile.sortCarriedAfterEveryPickup)
+                    InventoryCarriedSorter.SortInPlace(carriedItems);
+            }
+
+            Debug.Log(
+                $"Inventory: Stowed {instance.Definition.itemName} [{instance.Id}]. Weight: {GetTotalWeight()}/{stats.EncumbranceLimit}");
+            return true;
+        }
+
+        static ItemInstance CreateSplitInstance(ItemInstance source, int quantity)
+        {
+            var split = new ItemInstance(source.Definition, quantity)
+            {
+                IsAppraised = source.IsAppraised,
+                UserMarks = source.UserMarks,
+                UserInscription = source.UserInscription,
+                StorageLocation = ItemStorageLocation.Equipped,
+            };
+            return split;
+        }
+
         public bool AddItem(ItemInstance instance)
         {
             if (instance == null || instance.Definition == null)

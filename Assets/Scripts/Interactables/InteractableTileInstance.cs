@@ -19,5 +19,10 @@ namespace JRogue.Interactables
         {
             IsOn = true;
         }
+
+        public void SetOff()
+        {
+            IsOn = false;
+        }
     }
 }

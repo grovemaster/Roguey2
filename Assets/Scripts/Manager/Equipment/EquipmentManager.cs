@@ -59,7 +59,22 @@ namespace JRogue.Manager.Equipment
                     return;
                 }
 
-                inv.TryRemoveCarried(newItem);
+                if (newItem.Definition.IsBowAmmo)
+                {
+                    inv.TryRemoveCarried(newItem);
+                }
+                else if (newItem.Quantity > 1)
+                {
+                    if (!inv.TrySplitCarriedForEquip(newItem, out ItemInstance single))
+                        return;
+
+                    newItem = single;
+                }
+                else
+                {
+                    inv.TryRemoveCarried(newItem);
+                }
+
                 newItem.StorageLocation = ItemStorageLocation.Equipped;
             }
 
@@ -79,7 +94,7 @@ namespace JRogue.Manager.Equipment
                 if (inv != null && oldItem.Definition != null)
                 {
                     oldItem.StorageLocation = ItemStorageLocation.Carried;
-                    inv.AddItem(oldItem);
+                    inv.TryStowCarriedItem(oldItem);
                 }
             }
 
@@ -223,7 +238,9 @@ namespace JRogue.Manager.Equipment
 
             _equipment.Remove(slot);
             inst.StorageLocation = ItemStorageLocation.Carried;
-            inv.AddItem(inst);
+            if (!inv.TryStowCarriedItem(inst))
+                return false;
+
             Debug.Log($"[Unequip] Moved {inst.Definition.itemName} from {slot} to bag ({inst.Id}).");
             return true;
         }

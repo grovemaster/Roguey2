@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace JRogue.Interactables
 {
-    /// <summary>Procedural lever placeholders until art is approved (§12).</summary>
+    /// <summary>Procedural lever placeholders when art PNGs are missing (§12).</summary>
     static class InteractablePlaceholderSprites
     {
         static Sprite _offRight;

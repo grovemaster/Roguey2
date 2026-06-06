@@ -69,6 +69,7 @@
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarPlaceListBuilderTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Targeting/SplashZoneResolverTests.cs" />
     <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/TownTimeLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Progression/RestSessionTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DwarfAncestryRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarDepletedStateTests.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Assets/Tests/Controller/BaseActorTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Loot/AutoPickupConfirmationTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/WarriorWillpowerHealingPotionTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Equipment/EquipmentStackSplitTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/SuddenStrengthAbilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Status/StatusEffectPolarityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/BowRangedCombatTests.cs" />

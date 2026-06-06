@@ -29,6 +29,9 @@ namespace JRogue.World.Generation
                 return false;
             }
 
+            TownTimeService.EnsureRunService();
+            TownTimeService.Instance?.ApplyDungeonReturnPhase();
+
             TurnManager turn = TurnManager.Instance;
             if (turn != null)
                 turn.currentState = GameState.PLAYER_TURN;

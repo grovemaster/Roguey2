@@ -16,7 +16,7 @@ namespace JRogue.World.Generation.Phases
                 return;
 
             Vector3Int portalCell = ResolvePortalCell(context);
-            context.Instance.PlacePortalVisual(portalCell);
+            context.Instance.PlacePortalVisual(portalCell, requiresTownTimeOpen: true);
 
             var portal = new TownToDungeonPortalInteractable(portalCell);
             context.Instance.RegisterMapInteractable(portal);

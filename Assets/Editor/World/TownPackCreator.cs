@@ -89,6 +89,7 @@ namespace JRogue.Editor.World
 
             EnsureTownSpriteSheetImported();
             EnsureTownTiles();
+            JRogue.Editor.Interactables.TownTimeLeverAssetPackCreator.CreateTownTimeLeverAssets();
 
             TileBase floorTile = AssetDatabase.LoadAssetAtPath<TileBase>(FloorTilePath);
             TileBase wallTile = AssetDatabase.LoadAssetAtPath<TileBase>(WallTilePath);
@@ -252,6 +253,8 @@ namespace JRogue.Editor.World
             stamp.SetMarker(StampMarkerIds.TownNpc1, new Vector3Int(4, 8, 0));
             stamp.SetMarker(StampMarkerIds.TownNpc2, new Vector3Int(6, 8, 0));
             stamp.SetMarker(StampMarkerIds.TownNpc3, new Vector3Int(8, 8, 0));
+            stamp.SetMarker(StampMarkerIds.TownTimeLeverA, new Vector3Int(8, 6, 0));
+            stamp.SetMarker(StampMarkerIds.TownTimeLeverB, new Vector3Int(9, 6, 0));
             EditorUtility.SetDirty(stamp);
             return stamp;
         }

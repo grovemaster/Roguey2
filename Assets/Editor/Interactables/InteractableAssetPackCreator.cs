@@ -33,6 +33,7 @@ namespace JRogue.Editor.Interactables
             Sprite spriteOn = LoadOrCreateSprite(
                 SpritesPath + "/LeverSwitch_On.png",
                 new Color(0.2f, 0.55f, 0.75f, 1f));
+            // LoadOrCreateSprite keeps existing PNGs (CC0 art in Sprites/); placeholders only if missing.
 
             AlwaysTruePrecondition alwaysTrue = GetOrCreate<AlwaysTruePrecondition>(
                 PreconditionsPath + "/AlwaysTrue.asset");

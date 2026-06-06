@@ -140,9 +140,22 @@ namespace JRogue.World.Generation
             BindVisibilityToActiveFloor(map);
             RefreshLighting();
             RefreshVisibility();
+            if (floorId == Phases.TownPortalSetupPhase.TownFloorId)
+                TownTimeService.Instance?.OnTownFloorActivated(_activeFloor);
+
             DungeonGenerationLog.Info($"ActivateFloor complete floorId={floorId}");
             return true;
         }
+
+        public bool TryGetActiveTownFloor(out DungeonFloorInstance instance)
+        {
+            instance = _activeFloor;
+            return instance != null
+                && instance.Definition != null
+                && instance.Definition.FloorId == Phases.TownPortalSetupPhase.TownFloorId;
+        }
+
+        public DungeonFloorInstance GetActiveFloorInstance() => _activeFloor;
 
         void ActivateInstance(DungeonFloorInstance instance, GridManager grid)
         {

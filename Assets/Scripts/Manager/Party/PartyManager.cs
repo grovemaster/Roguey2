@@ -136,6 +136,7 @@ namespace JRogue.Manager.Party
             }
 
             SnapHistoryToCurrentPositions();
+            PartyCurrencyLedger.Instance?.EnsureStartingGold();
             ManaStoneAutoPickupService.Instance?.SubscribePartyMembers();
             BootstrapMainCharacterDesignation();
             RefreshCameraFollow();
@@ -147,6 +148,7 @@ namespace JRogue.Manager.Party
         /// </summary>
         public void InitializeRosterAfterDeferredSpawn()
         {
+            PartyCurrencyLedger.Instance?.EnsureStartingGold();
             ManaStoneAutoPickupService.Instance?.SubscribePartyMembers();
             BootstrapMainCharacterDesignation();
         }
