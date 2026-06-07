@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JRogue.Manager.Map;
+using JRogue.World.Generation.MonsterSpawn;
 using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Zones;
 using UnityEngine;
@@ -91,6 +92,7 @@ namespace JRogue.World.Generation
                 context.PortalArrivals,
                 context.ZoneCellMap,
                 context.ResolvedZonePieces);
+            ApplyInitialMonsterSpawnSchedule(instance, runSeed);
             DungeonFloorServiceBinder.CaptureFeatureState(instance);
             instance.MarkFeaturesLiveOnServices();
             ZoneGenerationDiagnostics.LogCheckpoint(context, "after all phases (pre-activation)");
@@ -118,6 +120,18 @@ namespace JRogue.World.Generation
                 phases[i].Execute(context);
                 DungeonGenerationLog.Phase(phaseName, "done");
             }
+        }
+
+        static void ApplyInitialMonsterSpawnSchedule(DungeonFloorInstance instance, int runSeed)
+        {
+            int dungeonDay = MonsterSpawnScheduleService.GetCurrentDungeonDay();
+            MonsterSpawnApplyResult result = MonsterSpawnScheduleService.ApplyForDungeonDay(
+                instance,
+                dungeonDay,
+                runSeed);
+            DungeonGenerationLog.Phase(
+                nameof(MonsterSpawnSchedulePhase),
+                $"day={dungeonDay} spawned={result.Spawned} skippedRows={result.SkippedRows} failures={result.FailedSpawns}");
         }
     }
 }

@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f4c2a1b9d3e4f5a6b7c8d9e0f1a2b3c, type: 3}
   m_Name: Population_Dungeon_Floor01
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonZonePopulationProfile
-  enemyPopulation:
-  - spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
-    minCount: 4
-    maxCount: 6
-    weight: 0
+  enemyPopulation: []
   floorItemPopulation:
   - itemData: {fileID: 11400000, guid: c5b3d13b819646ff8412d91478970ee2, type: 2}
     minCount: 0

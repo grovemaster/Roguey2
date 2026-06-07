@@ -151,7 +151,10 @@ namespace JRogue.World.Generation
             }
 
             if (result.CycleCompleted)
+            {
                 WarnIfNearDeadline();
+                TryApplyMonsterSpawnScheduleForNewDay();
+            }
 
             if (result.TimeExpired)
             {
@@ -182,6 +185,16 @@ namespace JRogue.World.Generation
                 Debug.Log($"{LogPrefix} Warning: 2 day–night cycles remaining.");
             else if (remaining == 1)
                 Debug.Log($"{LogPrefix} Warning: 1 day–night cycle remaining.");
+        }
+
+        void TryApplyMonsterSpawnScheduleForNewDay()
+        {
+            if (!_dungeonRunActive || _state.CurrentPhase != DungeonTimePhase.Day)
+                return;
+
+            int dungeonDay = _state.ElapsedCycles + 1;
+            int runSeed = DungeonRunState.Instance != null ? DungeonRunState.Instance.RunSeed : 0;
+            MonsterSpawn.MonsterSpawnScheduleService.ApplyForActiveFloorOnDayStarted(dungeonDay, runSeed);
         }
 
         void SyncLightingPhase()

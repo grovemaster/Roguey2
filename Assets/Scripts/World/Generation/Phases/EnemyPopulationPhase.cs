@@ -3,6 +3,7 @@ using JRogue.Controller.Enemy;
 using JRogue.Manager.Map;
 using JRogue.Spawn;
 using JRogue.World.Generation;
+using JRogue.World.Generation.MonsterSpawn;
 using JRogue.World.Generation.Zones;
 using UnityEngine;
 
@@ -53,6 +54,9 @@ namespace JRogue.World.Generation.Phases
             for (int i = 0; i < instances.Count; i++)
             {
                 ResolvedZonePiece instance = instances[i];
+                if (MonsterSpawnScheduleService.UsesScheduledEnemyGroups(def, layout, instance.ZoneId))
+                    continue;
+
                 IReadOnlyList<ZoneEnemyPopulationEntry> entries =
                     ZonePopulationUtility.ResolveEnemyEntries(def, layout, instance.ZoneId);
                 if (entries == null || entries.Count == 0)
@@ -106,6 +110,9 @@ namespace JRogue.World.Generation.Phases
             DungeonFloorDefinition def,
             MapManager map)
         {
+            if (def.MonsterPopulationMode == MonsterSpawn.MonsterPopulationMode.ScheduledGroups)
+                return;
+
             if (def.EnemyPopulation == null || def.EnemyPopulation.Count == 0)
                 return;
 

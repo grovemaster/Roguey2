@@ -1,0 +1,149 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b3c4d5e6f6478890a1b2c3d4e5f602, type: 3}
+  m_Name: Schedule_Floor01_Dungeon
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.MonsterSpawn.MonsterSpawnScheduleProfile
+  groups:
+  - groupId: hall_a
+    displayName: hall_a
+    areaBinding:
+      kind: 0
+      zoneInstanceId: center:dungeon
+      zoneId: 
+      markerIds: []
+    anchors: []
+    anchorPolicy: 1
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 3
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: hall_b
+    displayName: hall_b
+    areaBinding:
+      kind: 0
+      zoneInstanceId: center:dungeon
+      zoneId: 
+      markerIds: []
+    anchors: []
+    anchorPolicy: 1
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 3
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: hall_c
+    displayName: hall_c
+    areaBinding:
+      kind: 0
+      zoneInstanceId: center:dungeon
+      zoneId: 
+      markerIds: []
+    anchors: []
+    anchorPolicy: 1
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 3
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: hall_d
+    displayName: hall_d
+    areaBinding:
+      kind: 0
+      zoneInstanceId: center:dungeon
+      zoneId: 
+      markerIds: []
+    anchors: []
+    anchorPolicy: 1
+    daySchedules:
+    - dungeonDay: 2
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: skeleton
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: boss_antechamber
+    displayName: boss_antechamber
+    areaBinding:
+      kind: 0
+      zoneInstanceId: center:dungeon
+      zoneId: 
+      markerIds: []
+    anchors: []
+    anchorPolicy: 1
+    daySchedules:
+    - dungeonDay: 2
+      composition:
+      - rowId: giant_once
+        spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+        targetCount: 1
+        fillPolicy: 1
+        speciesFilter: 

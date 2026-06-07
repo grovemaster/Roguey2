@@ -18,6 +18,9 @@ namespace JRogue.World.Generation.Zones
         [Min(1)] [SerializeField] int maxHeight = 24;
         [SerializeField] ZoneFillProfile fillProfile = new ZoneFillProfile { mode = ZoneFillMode.SolidRect };
         [SerializeField] DungeonZonePopulationProfile populationProfile;
+        [SerializeField] MonsterSpawn.MonsterPopulationMode monsterPopulationMode =
+            MonsterSpawn.MonsterPopulationMode.Scatter;
+        [SerializeField] MonsterSpawn.MonsterSpawnScheduleProfile monsterSpawnSchedule;
         [SerializeField] string[] tags;
 
         public string ZoneId => zoneId;
@@ -32,6 +35,8 @@ namespace JRogue.World.Generation.Zones
         public int MaxHeight => maxHeight;
         public ZoneFillProfile FillProfile => fillProfile;
         public DungeonZonePopulationProfile PopulationProfile => populationProfile;
+        public MonsterSpawn.MonsterPopulationMode MonsterPopulationMode => monsterPopulationMode;
+        public MonsterSpawn.MonsterSpawnScheduleProfile MonsterSpawnSchedule => monsterSpawnSchedule;
         public string[] Tags => tags;
     }
 }

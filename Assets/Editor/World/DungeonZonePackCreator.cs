@@ -6,6 +6,7 @@ using JRogue.Item;
 using JRogue.Spawn;
 using JRogue.Traps;
 using JRogue.World.Generation;
+using JRogue.World.Generation.MonsterSpawn;
 using JRogue.World.Generation.Zones;
 using UnityEditor;
 using UnityEngine;
@@ -28,6 +29,8 @@ namespace JRogue.Editor.World
         const string Floor01LayoutPath = LayoutRoot + "/Layout_Floor01_Zones.asset";
         const string Floor03LayoutPath = LayoutRoot + "/Layout_Floor03_Zones.asset";
         const string PopulationRoot = ZoneRoot + "/Population";
+        const string ScheduleRoot = "Assets/Data/Dungeon/SpawnSchedules";
+        const string ScheduleFloor01DungeonPath = ScheduleRoot + "/Schedule_Floor01_Dungeon.asset";
         const string DungeonSubStampPath = "Assets/Resources/Dungeon/Stamp_Floor02_20x20.asset";
         const string SkeletonSpawnPath = "Assets/Resources/Dungeon/Spawn_DungeonTestSkeleton.asset";
         const string HandheldTorchPath = "Assets/Resources/Item/Accessory/Accessory_HandheldTorch.asset";
@@ -41,6 +44,7 @@ namespace JRogue.Editor.World
             EnsureFolder(ZoneRoot);
             EnsureFolder(LayoutRoot);
             EnsureFolder(PopulationRoot);
+            EnsureFolder(ScheduleRoot);
 
             TileBase dungeonFloor = LoadTile(FloorTilePath);
             TileBase dungeonWall = LoadTile(WallTilePath);
@@ -60,9 +64,9 @@ namespace JRogue.Editor.World
 
             DungeonZonePopulationProfile dungeonPopulation = CreateOrUpdatePopulationProfile(
                 PopulationRoot + "/Population_Dungeon_Floor01.asset",
-                spawnDefinition: skeletonSpawn,
-                enemyMin: 4,
-                enemyMax: 6,
+                spawnDefinition: null,
+                enemyMin: 0,
+                enemyMax: 0,
                 itemData: handheldTorch,
                 itemMin: 0,
                 itemMax: 1,
@@ -113,6 +117,9 @@ namespace JRogue.Editor.World
                 interactableMax: 0,
                 enemyForbiddenNearEdge: 2);
 
+            MonsterSpawnScheduleProfile dungeonSchedule =
+                CreateOrUpdateFloor01DungeonSchedule(skeletonSpawn);
+
             DungeonZoneDefinition zoneDungeon = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Dungeon.asset",
                 "dungeon",
@@ -127,7 +134,14 @@ namespace JRogue.Editor.World
                         new ZoneSubStampEntry { stamp = dungeonStamp, weight = 1 },
                     },
                 },
-                dungeonPopulation);
+                dungeonPopulation,
+                tags: null,
+                minWidth: 8,
+                minHeight: 8,
+                maxWidth: 24,
+                maxHeight: 24,
+                monsterPopulationMode: MonsterPopulationMode.ScheduledGroups,
+                monsterSpawnSchedule: dungeonSchedule);
             DungeonZoneDefinition zoneDesert = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Desert.asset",
                 "desert",
@@ -316,7 +330,9 @@ namespace JRogue.Editor.World
             int minWidth = 8,
             int minHeight = 8,
             int maxWidth = 24,
-            int maxHeight = 24)
+            int maxHeight = 24,
+            MonsterPopulationMode monsterPopulationMode = MonsterPopulationMode.Scatter,
+            MonsterSpawnScheduleProfile monsterSpawnSchedule = null)
         {
             var zone = AssetDatabase.LoadAssetAtPath<DungeonZoneDefinition>(path);
             if (zone == null)
@@ -355,6 +371,8 @@ namespace JRogue.Editor.World
                 }
             }
             so.FindProperty("populationProfile").objectReferenceValue = populationProfile;
+            so.FindProperty("monsterPopulationMode").enumValueIndex = (int)monsterPopulationMode;
+            so.FindProperty("monsterSpawnSchedule").objectReferenceValue = monsterSpawnSchedule;
             SerializedProperty tagsProperty = so.FindProperty("tags");
             if (tags == null || tags.Length == 0)
             {
@@ -786,6 +804,184 @@ namespace JRogue.Editor.World
         {
             to.FindProperty(propertyName).objectReferenceValue =
                 from.FindProperty(propertyName).objectReferenceValue;
+        }
+
+        static MonsterSpawnScheduleProfile CreateOrUpdateFloor01DungeonSchedule(
+            EnemySpawnDefinition skeletonSpawn)
+        {
+            var profile = AssetDatabase.LoadAssetAtPath<MonsterSpawnScheduleProfile>(ScheduleFloor01DungeonPath);
+            if (profile == null)
+            {
+                profile = ScriptableObject.CreateInstance<MonsterSpawnScheduleProfile>();
+                AssetDatabase.CreateAsset(profile, ScheduleFloor01DungeonPath);
+            }
+
+            const string zoneInstanceId = "center:dungeon";
+            SerializedObject so = new SerializedObject(profile);
+            SerializedProperty groups = so.FindProperty("groups");
+            groups.arraySize = 5;
+
+            SetHallGroup(
+                groups.GetArrayElementAtIndex(0),
+                "hall_a",
+                zoneInstanceId,
+                skeletonSpawn,
+                day1Target: 1,
+                day2Target: 2,
+                day3Target: 3);
+            SetHallGroup(
+                groups.GetArrayElementAtIndex(1),
+                "hall_b",
+                zoneInstanceId,
+                skeletonSpawn,
+                day1Target: 1,
+                day2Target: 2,
+                day3Target: 3);
+            SetHallGroup(
+                groups.GetArrayElementAtIndex(2),
+                "hall_c",
+                zoneInstanceId,
+                skeletonSpawn,
+                day1Target: 1,
+                day2Target: 2,
+                day3Target: 3);
+            SetHallGroup(
+                groups.GetArrayElementAtIndex(3),
+                "hall_d",
+                zoneInstanceId,
+                skeletonSpawn,
+                day1Target: null,
+                day2Target: 2,
+                day3Target: 2);
+            SetOnceGroup(
+                groups.GetArrayElementAtIndex(4),
+                "boss_antechamber",
+                zoneInstanceId,
+                skeletonSpawn,
+                dungeonDay: 2,
+                rowId: "giant_once");
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(profile);
+            return profile;
+        }
+
+        static void SetHallGroup(
+            SerializedProperty groupElement,
+            string groupId,
+            string zoneInstanceId,
+            EnemySpawnDefinition spawnDefinition,
+            int? day1Target,
+            int? day2Target,
+            int? day3Target)
+        {
+            groupElement.FindPropertyRelative("groupId").stringValue = groupId;
+            groupElement.FindPropertyRelative("displayName").stringValue = groupId;
+            SetAreaBinding(
+                groupElement.FindPropertyRelative("areaBinding"),
+                MonsterSpawnAreaBindingKind.ZoneInstance,
+                zoneInstanceId);
+            groupElement.FindPropertyRelative("anchors").arraySize = 0;
+            groupElement.FindPropertyRelative("anchorPolicy").enumValueIndex =
+                (int)MonsterSpawnAnchorPolicy.RandomInArea;
+
+            int dayCount = 0;
+            if (day1Target.HasValue) dayCount++;
+            if (day2Target.HasValue) dayCount++;
+            if (day3Target.HasValue) dayCount++;
+
+            SerializedProperty daySchedules = groupElement.FindPropertyRelative("daySchedules");
+            daySchedules.arraySize = dayCount;
+            int dayIndex = 0;
+            if (day1Target.HasValue)
+            {
+                SetRefillDaySchedule(
+                    daySchedules.GetArrayElementAtIndex(dayIndex++),
+                    dungeonDay: 1,
+                    spawnDefinition,
+                    day1Target.Value);
+            }
+
+            if (day2Target.HasValue)
+            {
+                SetRefillDaySchedule(
+                    daySchedules.GetArrayElementAtIndex(dayIndex++),
+                    dungeonDay: 2,
+                    spawnDefinition,
+                    day2Target.Value);
+            }
+
+            if (day3Target.HasValue)
+            {
+                SetRefillDaySchedule(
+                    daySchedules.GetArrayElementAtIndex(dayIndex),
+                    dungeonDay: 3,
+                    spawnDefinition,
+                    day3Target.Value);
+            }
+        }
+
+        static void SetOnceGroup(
+            SerializedProperty groupElement,
+            string groupId,
+            string zoneInstanceId,
+            EnemySpawnDefinition spawnDefinition,
+            int dungeonDay,
+            string rowId)
+        {
+            groupElement.FindPropertyRelative("groupId").stringValue = groupId;
+            groupElement.FindPropertyRelative("displayName").stringValue = groupId;
+            SetAreaBinding(
+                groupElement.FindPropertyRelative("areaBinding"),
+                MonsterSpawnAreaBindingKind.ZoneInstance,
+                zoneInstanceId);
+            groupElement.FindPropertyRelative("anchors").arraySize = 0;
+            groupElement.FindPropertyRelative("anchorPolicy").enumValueIndex =
+                (int)MonsterSpawnAnchorPolicy.RandomInArea;
+
+            SerializedProperty daySchedules = groupElement.FindPropertyRelative("daySchedules");
+            daySchedules.arraySize = 1;
+            SerializedProperty daySchedule = daySchedules.GetArrayElementAtIndex(0);
+            daySchedule.FindPropertyRelative("dungeonDay").intValue = dungeonDay;
+
+            SerializedProperty composition = daySchedule.FindPropertyRelative("composition");
+            composition.arraySize = 1;
+            SerializedProperty row = composition.GetArrayElementAtIndex(0);
+            row.FindPropertyRelative("rowId").stringValue = rowId;
+            row.FindPropertyRelative("spawnDefinition").objectReferenceValue = spawnDefinition;
+            row.FindPropertyRelative("targetCount").intValue = 1;
+            row.FindPropertyRelative("fillPolicy").enumValueIndex =
+                (int)MonsterSpawnFillPolicy.OncePerDungeonIfAbsent;
+            row.FindPropertyRelative("speciesFilter").stringValue = string.Empty;
+        }
+
+        static void SetRefillDaySchedule(
+            SerializedProperty daySchedule,
+            int dungeonDay,
+            EnemySpawnDefinition spawnDefinition,
+            int targetCount)
+        {
+            daySchedule.FindPropertyRelative("dungeonDay").intValue = dungeonDay;
+            SerializedProperty composition = daySchedule.FindPropertyRelative("composition");
+            composition.arraySize = 1;
+            SerializedProperty row = composition.GetArrayElementAtIndex(0);
+            row.FindPropertyRelative("rowId").stringValue = "skeleton";
+            row.FindPropertyRelative("spawnDefinition").objectReferenceValue = spawnDefinition;
+            row.FindPropertyRelative("targetCount").intValue = targetCount;
+            row.FindPropertyRelative("fillPolicy").enumValueIndex =
+                (int)MonsterSpawnFillPolicy.RefillToTarget;
+            row.FindPropertyRelative("speciesFilter").stringValue = string.Empty;
+        }
+
+        static void SetAreaBinding(
+            SerializedProperty binding,
+            MonsterSpawnAreaBindingKind kind,
+            string zoneInstanceId)
+        {
+            binding.FindPropertyRelative("kind").enumValueIndex = (int)kind;
+            binding.FindPropertyRelative("zoneInstanceId").stringValue = zoneInstanceId;
+            binding.FindPropertyRelative("zoneId").stringValue = string.Empty;
+            binding.FindPropertyRelative("markerIds").arraySize = 0;
         }
 
         static TileBase LoadTile(string path) =>

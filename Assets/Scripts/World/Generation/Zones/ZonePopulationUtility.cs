@@ -9,6 +9,7 @@ using JRogue.Manager.Map;
 using JRogue.Spawn;
 using JRogue.Traps;
 using JRogue.World.Generation;
+using JRogue.World.Generation.MonsterSpawn;
 using JRogue.World.Generation.Phases;
 using UnityEngine;
 
@@ -68,12 +69,16 @@ namespace JRogue.World.Generation.Zones
             DungeonFloorZoneLayout layout,
             string zoneId)
         {
-            if (layout != null
-                && layout.TryGetZoneDefinition(zoneId, out DungeonZoneDefinition zoneDef)
-                && zoneDef.PopulationProfile != null)
+            if (layout != null && layout.TryGetZoneDefinition(zoneId, out DungeonZoneDefinition zoneDef))
             {
-                return zoneDef.PopulationProfile.EnemyPopulation
-                    ?? Array.Empty<ZoneEnemyPopulationEntry>();
+                if (zoneDef.MonsterPopulationMode == MonsterPopulationMode.ScheduledGroups)
+                    return Array.Empty<ZoneEnemyPopulationEntry>();
+
+                if (zoneDef.PopulationProfile != null)
+                {
+                    return zoneDef.PopulationProfile.EnemyPopulation
+                        ?? Array.Empty<ZoneEnemyPopulationEntry>();
+                }
             }
 
             if (floorDef == null || !floorDef.UseFloorPopulationAsFallback)

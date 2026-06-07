@@ -4,7 +4,7 @@
 
 **Depends on:** [Interactable tiles](Interactable-Tiles-Requirements.md) (`InteractableEffect`, lever activation), `MapManager.IsWalkable`, `GridManager` occupancy, `GridMover` / `EnemyController`, [Multi-tile enemies](Multi-Tile-Enemy-Requirements.md).
 
-**Related:** `EnemySpeciesDefinition`, `CombatThreatCoordinator` (future: re-evaluate tension after spawn). [Offering altars](../World/Altar-And-Map-Interact-Requirements.md) (v0 mana-stone altar uses same placement policy).
+**Related:** `EnemySpeciesDefinition`, `CombatThreatCoordinator` (future: re-evaluate tension after spawn). [Offering altars](../World/Altar-And-Map-Interact-Requirements.md) (v0 mana-stone altar uses same placement policy). [Dungeon monster spawn schedules](../World/Dungeon-Monster-Spawn-Schedule-Requirements.md) (day-driven **groups** — **separate** from conditional spawns; lever skeletons are not schedule members).
 
 **Out of scope (v0):** Save/load spawn ledger, spawn caps per room, patrol routes for spawned enemies, networked replication.
 

@@ -62,6 +62,7 @@
     <Compile Include="Assets/Scripts/Quest/QuestDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/ItemCategoryRegistry.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInterfaces.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/ILootRandom.cs" />
     <Compile Include="Assets/Scripts/Item/ItemStorageLocation.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Assets/Scripts/World/Lighting/LightingCellMarker.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/EnterDungeonDialogUI.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionSettings.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleTypes.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlaceholderSprites.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/PortalSetupPhase.cs" />
@@ -283,6 +285,7 @@
     <Compile Include="Assets/Scripts/Input/EssenceMoveGate.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryCarriedSorter.cs" />
     <Compile Include="Assets/Scripts/Combat/FriendlyFire/FriendlyFireTargetGate.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleService.cs" />
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarInstance.cs" />
     <Compile Include="Assets/Scripts/Interactables/TownTimeLeverContent.cs" />
@@ -299,6 +302,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorGenerator.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FriendlyFireConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleProfile.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlaceholderSprites.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
@@ -336,12 +340,14 @@
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRollResult.cs" />
     <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnGroupMembership.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/PartyLightEmitterBridge.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationPipeline.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnAreaResolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeRunState.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkInteraction.cs" />
@@ -400,6 +406,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonEntryService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/MonsterSpawnSchedulePhase.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceProfile.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonZonePopulationProfile.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/MapInteractPlayerInteraction.cs" />

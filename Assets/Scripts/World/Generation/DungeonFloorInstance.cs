@@ -35,6 +35,7 @@ namespace JRogue.World.Generation
             new List<JRogue.World.MapInteract.IAdjacentMapInteractable>();
         readonly List<PortalVisual> _portalVisuals = new List<PortalVisual>();
         readonly DungeonFloorFeatureSnapshot _featureSnapshot = new DungeonFloorFeatureSnapshot();
+        readonly HashSet<string> _monsterSpawnOnceLedger = new HashSet<string>();
 
         struct PortalVisual
         {
@@ -45,6 +46,7 @@ namespace JRogue.World.Generation
 
         bool _isGenerated;
         bool _featuresLiveOnServices;
+        int _lastAppliedMonsterSpawnDay;
         Vector3Int _playerStart;
 
         public DungeonFloorFeatureSnapshot FeatureSnapshot => _featureSnapshot;
@@ -58,6 +60,13 @@ namespace JRogue.World.Generation
         public Transform DynamicViewsRoot => dynamicViewsRoot;
         public IReadOnlyList<ZoneCellMapEntry> ZoneCellMapSnapshot => _zoneCellMapSnapshot;
         public IReadOnlyList<ResolvedZonePiece> ResolvedZonePieces => _resolvedZonePieces;
+
+        public int GetLastAppliedMonsterSpawnDay() => _lastAppliedMonsterSpawnDay;
+
+        public HashSet<string> GetMonsterSpawnOnceLedger() => _monsterSpawnOnceLedger;
+
+        public void SetLastAppliedMonsterSpawnDay(int dungeonDay) =>
+            _lastAppliedMonsterSpawnDay = dungeonDay;
 
         public bool TryGetZoneId(Vector3Int cell, out string zoneId)
         {
