@@ -15,6 +15,8 @@ namespace JRogue.Input
         InventoryItem = 3,
         /// <summary>Bow aim reticle (ammo from equipped off-hand).</summary>
         BowAim = 4,
+        /// <summary>Racial progression active (Spirit Imprint, elemental spirits, etc.).</summary>
+        RacialActive = 5,
     }
 
     /// <summary>Discriminant for <see cref="PlayerCommand"/>; stable for serialization.</summary>
@@ -25,6 +27,7 @@ namespace JRogue.Input
         ConfirmTarget,
         CancelTarget,
         AbilitySlot,
+        HotbarSlot,
         ToggleFormation,
         SwapPartyMember,
         PickupFloorItems,
@@ -72,6 +75,13 @@ namespace JRogue.Input
                 SlotIndex = slotIndex,
                 AbilitySecondary = secondary,
                 AbilityFromEquipment = fromEquipment,
+            };
+
+        public static PlayerCommand HotbarSlot(int slotIndex) =>
+            new PlayerCommand
+            {
+                Kind = PlayerCommandKind.HotbarSlot,
+                SlotIndex = slotIndex,
             };
 
         public static PlayerCommand ToggleFormation() =>

@@ -28,6 +28,8 @@ namespace JRogue.Combat.FriendlyFire
                 case PlayerAbilitySource.HumanMageSpell:
                     return caster.GetComponent<HumanMageSpellsRuntime>()
                         ?.GetEquippedAbility(context.AbilityIndex);
+                case PlayerAbilitySource.RacialActive:
+                    return context.InventoryAbility;
                 default:
                     return null;
             }

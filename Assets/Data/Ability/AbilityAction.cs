@@ -8,6 +8,10 @@ namespace JRogue.Ability
     {
         public string abilityName;
         [TextArea] public string description;
+
+        [Header("Hotbar")]
+        [Tooltip("Icon shown on the ability hotbar; falls back to item/essence icon when unset.")]
+        public Sprite hotbarIcon;
         public int soulPowerCost;
         public int magicPowerCost;
         public int divinePowerCost;

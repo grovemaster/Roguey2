@@ -168,7 +168,7 @@ namespace JRogue.UI.Gameplay
             Image panelBg = _root.GetComponent<Image>();
             panelBg.color = new Color(0.04f, 0.05f, 0.08f, 0.92f);
 
-            _bodyText = CreateText(_root.transform, "Body", 14f, new Vector2(12f, 28f), new Vector2(-12f, -8f));
+            _bodyText = CreateText(_root.transform, "Body", 16f, new Vector2(12f, 28f), new Vector2(-12f, -8f));
             _bodyText.alignment = TextAlignmentOptions.TopLeft;
             _bodyText.textWrappingMode = TextWrappingModes.Normal;
             _bodyText.overflowMode = TextOverflowModes.Overflow;

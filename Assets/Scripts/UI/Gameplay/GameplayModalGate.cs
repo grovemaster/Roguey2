@@ -25,6 +25,7 @@ namespace JRogue.UI.Gameplay
             || ShopNpcMenuUI.BlocksGameplay
             || QuestJournalUI.BlocksGameplay
             || FriendlyFireConfirmDialogUI.BlocksGameplay
-            || MessageHistoryUI.BlocksGameplay;
+            || MessageHistoryUI.BlocksGameplay
+            || InventoryGivePickerUI.IsOpen;
     }
 }

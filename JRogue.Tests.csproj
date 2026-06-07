@@ -78,6 +78,7 @@
     <Compile Include="Assets/Tests/UnitTests/World/TownTimeLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Progression/RestSessionTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/TargetingSightGateTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/UI/HotbarResolverTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DwarfAncestryRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/PortalPlacementResolverTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarDepletedStateTests.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Assets/Tests/UnitTests/World/DungeonTimeLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/TelekinesisAbilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/AdjacentMapInteractableQueryTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/UI/HotbarEntryTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/EquipmentLegalityEvaluatorTests.cs" />
     <Compile Include="Assets/Tests/Controller/BaseActorTest.cs" />

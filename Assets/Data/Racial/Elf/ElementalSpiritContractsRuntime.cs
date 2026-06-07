@@ -399,7 +399,7 @@ namespace JRogue.Racial
             return null;
         }
 
-        bool TryGetSpiritDefinition(string spiritId, out ElementalSpiritDefinition def)
+        public bool TryGetSpiritDefinition(string spiritId, out ElementalSpiritDefinition def)
         {
             def = null;
             foreach (ElementalSpiritContractPreset preset in contractedSpirits)

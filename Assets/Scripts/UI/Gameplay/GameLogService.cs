@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JRogue.UI.Hotbar;
 using UnityEngine;
 
 namespace JRogue.UI.Gameplay
@@ -60,6 +61,7 @@ namespace JRogue.UI.Gameplay
             DontDestroyOnLoad(gameObject);
             RegisterMirror();
             MessageConsoleUI.EnsureInstance();
+            AbilityHotbarUI.EnsureInstance().RefreshAll();
         }
 
         void OnDestroy()

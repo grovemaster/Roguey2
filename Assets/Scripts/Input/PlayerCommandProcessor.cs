@@ -18,6 +18,7 @@ using JRogue.Traps;
 using JRogue.Interactables;
 using JRogue.Combat;
 using JRogue.Combat.FriendlyFire;
+using JRogue.Manager.Combat;
 using JRogue.Combat.Targeting;
 using JRogue.Manager.Door;
 using JRogue.World.MapInteract;
@@ -26,6 +27,8 @@ using JRogue.UI.Gameplay;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
 using JRogue.UI.Targeting;
+using JRogue.UI.Hotbar;
+using JRogue.UI.Inventory;
 using JRogue.Core.Targeting;
 using JRogue.World.Generation;
 using UnityEngine;
@@ -43,6 +46,7 @@ namespace JRogue.Input
             public int SlotIndex;
             public int AbilityIndex;
             public AbilityAction InventoryAbility;
+            public AbilityAction ResolvedAbility;
             public ItemInstance InventoryItemInstance;
             public BaseActor InventoryOwner;
             public int InventoryResumeSelectionIndex;
@@ -194,7 +198,8 @@ namespace JRogue.Input
                 case PlayerCommandKind.CancelTarget:
                     return ApplyCancelTarget();
                 case PlayerCommandKind.AbilitySlot:
-                    return ApplyAbilitySlot(command.SlotIndex, command.AbilitySecondary, command.AbilityFromEquipment);
+                case PlayerCommandKind.HotbarSlot:
+                    return ApplyHotbarSlot(command.SlotIndex);
                 case PlayerCommandKind.ToggleFormation:
                     return ApplyToggleFormation();
                 case PlayerCommandKind.SwapPartyMember:
@@ -554,6 +559,10 @@ namespace JRogue.Input
                     TryExecuteInventoryItemTargetedUse(pending, activeMember, target),
                 PlayerAbilitySource.BowAim =>
                     BowRangedCombatService.TryExecuteBowShot(activeMember, target, 1),
+                PlayerAbilitySource.RacialActive =>
+                    pending.ResolvedAbility != null
+                    && pending.ResolvedAbility.Execute(activeMember.gameObject, target)
+                    && HumanClassAbilityResources.TrySpend(activeMember.stats, pending.ResolvedAbility),
                 _ => false,
             };
 
@@ -588,6 +597,8 @@ namespace JRogue.Input
                     return TargetedActionContext.FromHumanMageSpell(pending.AbilityIndex);
                 case PlayerAbilitySource.BowAim:
                     return TargetedActionContext.BowAim();
+                case PlayerAbilitySource.RacialActive:
+                    return TargetedActionContext.FromRacial(pending.ResolvedAbility);
                 default:
                     return TargetedActionContext.FromEssence(pending.SlotIndex, pending.AbilityIndex);
             }
@@ -768,12 +779,13 @@ namespace JRogue.Input
             return true;
         }
 
-        private bool ApplyAbilitySlot(int slotIndex, bool isShift, bool isCtrl)
+        private bool ApplyHotbarSlot(int slotIndex)
         {
             EnsureManagers();
 
             BaseActor activeMember = partyManager.GetActiveMember();
-            if (activeMember == null) return false;
+            if (activeMember == null)
+                return false;
 
             if (!turnManager.CanActorTakeAction(activeMember.gameObject))
             {
@@ -781,90 +793,241 @@ namespace JRogue.Input
                 return false;
             }
 
-            int abilityIndex = isShift ? 1 : 0;
-            return ProcessAbilityInput(activeMember, slotIndex, abilityIndex, isCtrl);
+            return TryActivateHotbarMainSlot(slotIndex);
         }
 
-        private bool ProcessAbilityInput(BaseActor actor, int slotIndex, int abilityIndex, bool fromEquipment)
+        public bool TryActivateHotbarMainSlot(int slotIndex)
         {
-            EssenceSlotManager actorEssence = actor.GetComponent<EssenceSlotManager>();
-            EquipmentManager equipManager = actor.GetComponent<EquipmentManager>();
-            HumanMageSpellsRuntime mageSpells = actor.GetComponent<HumanMageSpellsRuntime>();
-            CharacterStats stats = actor.stats;
+            EnsureManagers();
 
-            bool isMage = stats != null && stats.humanClass == HumanClass.Mage;
+            BaseActor activeMember = partyManager.GetActiveMember();
+            if (activeMember == null || slotIndex < 0 || slotIndex >= HotbarLayout.HotbarMainSlotCount)
+                return false;
 
-            AbilityAction abilityToTry;
-            PlayerAbilitySource source;
+            HotbarLayout layout = HotbarLayout.EnsureOn(activeMember);
+            if (layout == null)
+                return false;
 
-            if (fromEquipment)
+            return TryActivateHotbarEntry(activeMember, layout.GetSlot(slotIndex));
+        }
+
+        public bool TryActivateHotbarEntry(BaseActor actor, HotbarEntry entry)
+        {
+            if (actor == null || entry == null || entry.IsEmpty())
+                return false;
+
+            EnsureManagers();
+
+            if (currentState == InputState.Targeting)
+                return false;
+
+            if (!turnManager.CanActorTakeAction(actor.gameObject))
             {
-                abilityToTry = equipManager?.GetItemAbility(slotIndex, abilityIndex);
-                source = PlayerAbilitySource.EquipmentItem;
-            }
-            else if (isMage && mageSpells != null)
-            {
-                abilityToTry = mageSpells.GetEquippedAbility(abilityIndex);
-                source = PlayerAbilitySource.HumanMageSpell;
-                slotIndex = abilityIndex;
-            }
-            else
-            {
-                abilityToTry = actorEssence?.GetAbility(slotIndex, abilityIndex);
-                source = PlayerAbilitySource.Essence;
+                Debug.LogWarning($"[INPUT] {actor.name} has already acted and cannot use abilities.");
+                return false;
             }
 
-            if (abilityToTry == null) return false;
+            HotbarResolvedAction resolved = HotbarResolver.Resolve(actor, entry);
+            if (!resolved.IsValid)
+            {
+                if (!string.IsNullOrEmpty(resolved.DenyReason))
+                    Debug.Log(resolved.DenyReason);
+                return false;
+            }
 
-            if (!TryAllowPlayerAbilitySource(source, out string denyReason))
+            (bool usable, _, string denyReason) = HotbarUsabilityService.Evaluate(actor, resolved);
+            if (!usable)
+            {
+                if (!string.IsNullOrEmpty(denyReason))
+                    Debug.Log(denyReason);
+                return false;
+            }
+
+            if (resolved.Kind == HotbarEntryKind.InventoryUse)
+                return TryExecuteHotbarInventoryUse(actor, resolved);
+
+            AbilityAction ability = resolved.Ability;
+            if (ability == null)
+                return false;
+
+            if (!TryAllowPlayerAbilitySource(resolved.Source, out string safeDeny))
+            {
+                Debug.Log($"{SafeZonePolicyService.LogPrefix} {safeDeny}");
+                return false;
+            }
+
+            if (ability.requiresTarget)
+                return TryBeginHotbarTargetedUse(actor, resolved);
+
+            bool success = ExecuteResolvedUntargeted(actor, resolved);
+            if (success)
+                CompleteActorAction(actor);
+
+            return true;
+        }
+
+        public bool TryBeginHotbarTargetedUse(BaseActor actor, HotbarResolvedAction resolved)
+        {
+            if (actor == null || !resolved.IsValid)
+                return false;
+
+            AbilityAction ability = resolved.Ability;
+            if (ability == null || !ability.requiresTarget)
+                return false;
+
+            EnsureManagers();
+
+            if (currentState == InputState.Targeting)
+                return false;
+
+            if (!turnManager.CanActorTakeAction(actor.gameObject))
+                return false;
+
+            if (resolved.Source == PlayerAbilitySource.InventoryItem)
+            {
+                ItemData itemDef = resolved.ItemInstance?.Definition;
+                if (itemDef != null && !SafeZonePolicyService.TryAllowInventoryUse(itemDef, out string safeDenyReason))
+                {
+                    Debug.Log($"{SafeZonePolicyService.LogPrefix} {safeDenyReason}");
+                    return false;
+                }
+
+                currentState = InputState.Targeting;
+                pendingTargetedAbility = new PendingTargetedAbility
+                {
+                    Source = PlayerAbilitySource.InventoryItem,
+                    InventoryAbility = ability,
+                    InventoryItemInstance = resolved.ItemInstance,
+                    InventoryOwner = resolved.ItemOwner,
+                    InventoryResumeSelectionIndex = -1,
+                    InventoryLogTag = itemDef?.inventoryTargetedUseLogTag ?? string.Empty,
+                };
+
+                ShowTargetingReticle(actor, ability);
+                return true;
+            }
+
+            if (!TryAllowPlayerAbilitySource(resolved.Source, out string denyReason))
             {
                 Debug.Log($"{SafeZonePolicyService.LogPrefix} {denyReason}");
                 return false;
             }
 
-            if (abilityToTry.requiresTarget)
+            currentState = InputState.Targeting;
+            pendingTargetedAbility = new PendingTargetedAbility
             {
-                if (source == PlayerAbilitySource.HumanMageSpell)
-                {
-                    if (mageSpells == null || !mageSpells.CanAffordCast(abilityIndex))
-                    {
-                        Debug.Log("Not enough Magic Power!");
-                        return false;
-                    }
-                }
-                else if (!fromEquipment && actorEssence != null && !actorEssence.CanAfford(slotIndex, abilityIndex))
-                {
-                    Debug.Log("Not enough Soul Power!");
-                    return false;
-                }
-
-                EnterTargetingMode(actor, abilityToTry, source, slotIndex, abilityIndex);
-                return true;
-            }
-
-            bool success = source switch
-            {
-                PlayerAbilitySource.EquipmentItem =>
-                    equipManager != null && equipManager.TryExecuteItemAbility(slotIndex, abilityIndex),
-                PlayerAbilitySource.HumanMageSpell =>
-                    mageSpells != null && mageSpells.TryExecuteEquipped(abilityIndex, actor.gameObject),
-                _ => actorEssence != null && actorEssence.TryExecuteAbility(slotIndex, abilityIndex),
+                Source = resolved.Source,
+                SlotIndex = resolved.SlotIndex,
+                AbilityIndex = resolved.AbilityIndex,
+                ResolvedAbility = resolved.Source == PlayerAbilitySource.RacialActive ? ability : null,
+                InventoryAbility = resolved.Source == PlayerAbilitySource.RacialActive ? ability : null,
             };
 
-            if (success)
+            Debug.Log($"Entered Targeting Mode for {ability.abilityName}. Move reticle, then confirm.");
+            ShowTargetingReticle(actor, ability);
+            return true;
+        }
+
+        bool TryExecuteHotbarInventoryUse(BaseActor actor, HotbarResolvedAction resolved)
+        {
+            if (resolved.ItemInstance == null || resolved.ItemOwner == null)
+                return false;
+
+            InventoryViewModel viewModel = InventoryViewModel.BuildPartyMember(new[] { actor }, resolved.ItemOwner);
+            InventoryViewModel.Row? row = null;
+            foreach (InventoryViewModel.Row candidate in viewModel.Rows)
             {
-                if (partyManager.IsFormationActive)
+                if (candidate.Instance != null && candidate.Instance.Id == resolved.ItemInstance.Id)
                 {
-                    partyManager.RecordNewLeaderPosition(actor.GridPosition);
-                    ProcessFollowerRush();
+                    row = candidate;
+                    break;
                 }
-                else
-                {
-                    turnManager.OnPlayerActionComplete(actor.gameObject);
-                }
+            }
+
+            if (!row.HasValue)
+                return false;
+
+            bool inCombat = CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat;
+            InventoryUseResult result = InventoryItemUse.TryUseCarriedItem(row.Value, inCombat);
+            if (result.Outcome == InventoryUseOutcome.StartedTargeting)
+            {
+                InventoryTargetedUsePending pending = result.TargetingPending;
+                return TryBeginInventoryTargetedUse(
+                    actor,
+                    pending.Ability,
+                    pending.Instance,
+                    pending.Owner,
+                    pending.ResumeSelectionIndex,
+                    pending.LogTag);
+            }
+
+            if (result.Outcome == InventoryUseOutcome.Failed)
+            {
+                if (!string.IsNullOrEmpty(result.FailureReason))
+                    Debug.Log(result.FailureReason);
+                return false;
             }
 
             return true;
+        }
+
+        bool ExecuteResolvedUntargeted(BaseActor actor, HotbarResolvedAction resolved)
+        {
+            EssenceSlotManager actorEssence = actor.GetComponent<EssenceSlotManager>();
+            EquipmentManager equipManager = actor.GetComponent<EquipmentManager>();
+            HumanMageSpellsRuntime mageSpells = actor.GetComponent<HumanMageSpellsRuntime>();
+
+            return resolved.Source switch
+            {
+                PlayerAbilitySource.EquipmentItem =>
+                    equipManager != null
+                    && equipManager.TryExecuteItemAbility(resolved.SlotIndex, resolved.AbilityIndex),
+                PlayerAbilitySource.HumanMageSpell =>
+                    mageSpells != null && mageSpells.TryExecuteEquipped(resolved.AbilityIndex, actor.gameObject),
+                PlayerAbilitySource.RacialActive =>
+                    resolved.Ability != null
+                    && resolved.Ability.Execute(actor.gameObject)
+                    && HumanClassAbilityResources.TrySpend(actor.stats, resolved.Ability),
+                PlayerAbilitySource.InventoryItem =>
+                    TryExecuteHotbarInventoryActiveImmediate(actor, resolved),
+                _ => actorEssence != null && actorEssence.TryExecuteAbility(resolved.SlotIndex, resolved.AbilityIndex),
+            };
+        }
+
+        bool TryExecuteHotbarInventoryActiveImmediate(BaseActor actor, HotbarResolvedAction resolved)
+        {
+            AbilityAction ability = resolved.Ability;
+            BaseActor itemOwner = resolved.ItemOwner ?? actor;
+            if (ability == null || ability.requiresTarget)
+                return false;
+
+            if (!ability.Execute(itemOwner.gameObject))
+                return false;
+
+            InventoryManager inventory = itemOwner.GetComponent<InventoryManager>();
+            ItemInstance itemInstance = resolved.ItemInstance;
+            if (inventory != null && itemInstance != null)
+            {
+                if (EvocableChargeRules.IsEvocable(itemInstance))
+                    EvocableChargeRules.SpendChargeAfterSuccessfulInvoke(inventory, itemInstance);
+                else
+                    inventory.TryConsumeCarriedQuantity(itemInstance, 1);
+            }
+
+            return true;
+        }
+
+        void CompleteActorAction(BaseActor actor)
+        {
+            if (partyManager.IsFormationActive)
+            {
+                partyManager.RecordNewLeaderPosition(actor.GridPosition);
+                ProcessFollowerRush();
+            }
+            else
+            {
+                turnManager.OnPlayerActionComplete(actor.gameObject);
+            }
         }
 
         private bool ApplyToggleFormation()
@@ -979,6 +1142,9 @@ namespace JRogue.Input
                 ItemData item = pending.InventoryItemInstance?.Definition;
                 return SafeZonePolicyService.TryAllowInventoryUse(item, out denyReason);
             }
+
+            if (pending.Source == PlayerAbilitySource.RacialActive)
+                return SafeZonePolicyService.TryAllowHostileAction(out denyReason);
 
             return TryAllowPlayerAbilitySource(pending.Source, out denyReason);
         }

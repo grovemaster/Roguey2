@@ -51,9 +51,7 @@ namespace JRogue.Input
 
             commandProcessor.SetReticleView(reticleView);
 
-            controls.Player.PrimaryAbilities.performed += ctx => OnAbilityPerformed(ctx, false, false);
-            controls.Player.ShiftAbilities.performed += ctx => OnAbilityPerformed(ctx, true, false);
-            controls.Player.CtrlAbilities.performed += ctx => OnAbilityPerformed(ctx, false, true);
+            controls.Player.PrimaryAbilities.performed += OnAbilityPerformed;
             controls.Player.Confirm.performed += OnConfirm;
             controls.Player.Cancel.performed += OnCancel;
 
@@ -464,7 +462,7 @@ namespace JRogue.Input
             commandProcessor.TryApply(PlayerCommand.ToggleFormation());
         }
 
-        private void OnAbilityPerformed(InputAction.CallbackContext context, bool isShift, bool isCtrl)
+        private void OnAbilityPerformed(InputAction.CallbackContext context)
         {
             if (BlocksFloorGameplay()) return;
             if (IsContextInvalid(context)) return;
@@ -473,7 +471,7 @@ namespace JRogue.Input
             if (!int.TryParse(keyName, out int numberPressed)) return;
 
             int slotIndex = numberPressed - 1;
-            commandProcessor.TryApply(PlayerCommand.AbilitySlot(slotIndex, isShift, isCtrl));
+            commandProcessor.TryApply(PlayerCommand.HotbarSlot(slotIndex));
         }
 
         private void SwapTo(InputAction.CallbackContext context)

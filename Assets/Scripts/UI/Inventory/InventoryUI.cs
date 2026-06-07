@@ -10,6 +10,7 @@ using JRogue.Manager.Floor;
 using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
 using JRogue.Stats;
+using JRogue.UI.Hotbar;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -651,7 +652,7 @@ namespace JRogue.UI.Inventory
                 () => { InventoryTelemetry.RecordAction("equip_ui"); TryEquipOrUnequipSelection(); },
                 () => { InventoryTelemetry.RecordAction("use_ui"); TryUseConsumeStub(); },
                 () => { InventoryTelemetry.RecordAction("drop_ui"); BeginDropFlow(); },
-                () => { InventoryTelemetry.RecordAction("give_ui"); GiveToStub(); });
+                () => { InventoryTelemetry.RecordAction("give_ui"); GiveToAlly(); });
         }
 
         void TryEquipOrUnequipSelection()
@@ -2152,7 +2153,7 @@ namespace JRogue.UI.Inventory
             else if (kb.gKey.wasPressedThisFrame)
             {
                 InventoryTelemetry.RecordAction("give_try");
-                GiveToStub();
+                GiveToAlly();
             }
             else if (kb.xKey.wasPressedThisFrame)
             {
@@ -2431,7 +2432,7 @@ namespace JRogue.UI.Inventory
             }
         }
 
-        void GiveToStub()
+        void GiveToAlly()
         {
             if (_presentation == null || _presentation.ItemRows.Count == 0)
                 return;
@@ -2439,13 +2440,30 @@ namespace JRogue.UI.Inventory
             InventoryViewModel.Row row =
                 _presentation.ItemRows[Mathf.Clamp(_selection, 0, _presentation.ItemRows.Count - 1)];
 
-            if (row.Owner == null)
+            if (row.Owner == null || row.Instance == null || row.Item == null)
                 return;
 
-            InventoryPolicy.LogCombatTransferStub(row.Owner);
+            if (row.IsEquipped)
+            {
+                Debug.Log("[Inventory] Unequip the item before giving it away.");
+                return;
+            }
 
-            Debug.Log(
-                $"[Give stub] <b>{row.Item?.itemName}</b>; party transfers + turn-cost still Phase 3 (see InventoryPolicy).");
+            InventoryGivePickerUI.EnsureInstance().Show(row.Owner, recipient =>
+            {
+                if (!PartyInventoryTransferService.TryGiveCarriedItem(
+                        row.Instance,
+                        row.Owner,
+                        recipient,
+                        out string message))
+                {
+                    Debug.Log(message);
+                    return;
+                }
+
+                RefreshInventoryDisplay();
+                AbilityHotbarUI.Instance?.RefreshAll();
+            });
         }
 
         public void RefreshInventoryDisplay()

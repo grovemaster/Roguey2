@@ -45,5 +45,12 @@ namespace JRogue.Combat.FriendlyFire
 
         public static TargetedActionContext BowAim() =>
             new TargetedActionContext { Source = PlayerAbilitySource.BowAim };
+
+        public static TargetedActionContext FromRacial(AbilityAction ability) =>
+            new TargetedActionContext
+            {
+                Source = PlayerAbilitySource.RacialActive,
+                InventoryAbility = ability,
+            };
     }
 }
