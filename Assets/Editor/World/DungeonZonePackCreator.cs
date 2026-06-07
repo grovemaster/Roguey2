@@ -24,7 +24,9 @@ namespace JRogue.Editor.World
         const string SnowFloorPath = "Assets/TileMaps/Vault/SnowTheme_32.asset";
         const string SnowWallPath = "Assets/TileMaps/Vault/SnowTheme_48.asset";
         const string Floor01DefPath = "Assets/Resources/Dungeon/Floor_dungeon_floor_01.asset";
+        const string Floor03DefPath = "Assets/Resources/Dungeon/Floor_dungeon_floor_03.asset";
         const string Floor01LayoutPath = LayoutRoot + "/Layout_Floor01_Zones.asset";
+        const string Floor03LayoutPath = LayoutRoot + "/Layout_Floor03_Zones.asset";
         const string PopulationRoot = ZoneRoot + "/Population";
         const string DungeonSubStampPath = "Assets/Resources/Dungeon/Stamp_Floor02_20x20.asset";
         const string SkeletonSpawnPath = "Assets/Resources/Dungeon/Spawn_DungeonTestSkeleton.asset";
@@ -162,6 +164,146 @@ namespace JRogue.Editor.World
             Debug.Log("[Dungeon] Floor 1 zone pack created. Floor_dungeon_floor_01 set to ZoneComposite.");
         }
 
+        [MenuItem("JRogue/Dungeon/Create Floor 3 Zone Pack (Barbarian Jigsaw)")]
+        public static void CreateFloor3ZonePack()
+        {
+            EnsureFolder(ZoneRoot);
+            EnsureFolder(LayoutRoot);
+            EnsureFolder(PopulationRoot);
+
+            TileBase dungeonFloor = LoadTile(FloorTilePath);
+            TileBase dungeonWall = LoadTile(WallTilePath);
+            TileBase snowFloor = LoadTile(SnowFloorPath);
+            TileBase snowWall = LoadTile(SnowWallPath);
+            TileBase sandFloor = LoadTile(SandFloorPath);
+            TileBase sandWall = LoadTile(SandWallPath);
+            EnemySpawnDefinition skeletonSpawn =
+                AssetDatabase.LoadAssetAtPath<EnemySpawnDefinition>(SkeletonSpawnPath);
+            TrapDefinition spikeTrap = AssetDatabase.LoadAssetAtPath<TrapDefinition>(SpikeTrapPath);
+
+            DungeonZonePopulationProfile orcPopulation = CreateOrUpdatePopulationProfile(
+                PopulationRoot + "/Population_OrcCastle_Floor03.asset",
+                spawnDefinition: skeletonSpawn,
+                enemyMin: 6,
+                enemyMax: 10,
+                itemData: null,
+                itemMin: 0,
+                itemMax: 0,
+                hazardDefinition: null,
+                hazardMin: 0,
+                hazardMax: 0,
+                trapDefinition: spikeTrap,
+                trapMin: 2,
+                trapMax: 4,
+                interactableDefinition: null,
+                interactableMin: 0,
+                interactableMax: 0);
+            DungeonZonePopulationProfile witchPopulation = CreateOrUpdatePopulationProfile(
+                PopulationRoot + "/Population_WitchForest_Floor03.asset",
+                spawnDefinition: skeletonSpawn,
+                enemyMin: 2,
+                enemyMax: 4,
+                itemData: null,
+                itemMin: 0,
+                itemMax: 0,
+                hazardDefinition: null,
+                hazardMin: 0,
+                hazardMax: 0,
+                trapDefinition: null,
+                trapMin: 0,
+                trapMax: 0,
+                interactableDefinition: null,
+                interactableMin: 0,
+                interactableMax: 0,
+                enemyRequiresTag: "outdoor",
+                enemyForbiddenNearEdge: 2);
+            DungeonZonePopulationProfile mountainPopulation = CreateOrUpdatePopulationProfile(
+                PopulationRoot + "/Population_Mountain_Floor03.asset",
+                spawnDefinition: skeletonSpawn,
+                enemyMin: 1,
+                enemyMax: 3,
+                itemData: null,
+                itemMin: 0,
+                itemMax: 0,
+                hazardDefinition: null,
+                hazardMin: 0,
+                hazardMax: 0,
+                trapDefinition: spikeTrap,
+                trapMin: 1,
+                trapMax: 2,
+                interactableDefinition: null,
+                interactableMin: 0,
+                interactableMax: 0,
+                enemyForbiddenNearEdge: 1);
+
+            DungeonZoneDefinition zoneOrcCastle = CreateOrUpdateZone(
+                ZoneRoot + "/Zone_OrcCastle.asset",
+                "orc_castle",
+                "Orc Castle",
+                dungeonFloor,
+                dungeonWall,
+                new ZoneFillProfile
+                {
+                    mode = ZoneFillMode.RoomCorridor,
+                    ensureConnectivity = true,
+                },
+                orcPopulation,
+                minWidth: 12,
+                minHeight: 10,
+                maxWidth: 16,
+                maxHeight: 14);
+            DungeonZoneDefinition zoneWitchForest = CreateOrUpdateZone(
+                ZoneRoot + "/Zone_WitchForest.asset",
+                "witch_forest",
+                "Witch Forest",
+                snowFloor,
+                snowWall,
+                new ZoneFillProfile
+                {
+                    mode = ZoneFillMode.Cave,
+                    innerWallDensity = 35,
+                    ensureConnectivity = true,
+                },
+                witchPopulation,
+                tags: new[] { "outdoor" },
+                minWidth: 12,
+                minHeight: 10,
+                maxWidth: 16,
+                maxHeight: 14);
+            DungeonZoneDefinition zoneMountain = CreateOrUpdateZone(
+                ZoneRoot + "/Zone_Mountain.asset",
+                "mountain",
+                "Mountain Pass",
+                sandFloor,
+                sandWall,
+                new ZoneFillProfile
+                {
+                    mode = ZoneFillMode.OpenPocket,
+                    innerWallDensity = 25,
+                    ensureConnectivity = true,
+                },
+                mountainPopulation,
+                minWidth: 10,
+                minHeight: 10,
+                maxWidth: 14,
+                maxHeight: 14);
+
+            DungeonFloorZoneLayout layout = CreateOrUpdateFloor03Layout(
+                zoneOrcCastle,
+                zoneWitchForest,
+                zoneMountain);
+
+            ApplyFloorDefinition(
+                Floor03DefPath,
+                "dungeon_floor_03",
+                layout,
+                createIfMissing: true);
+            AssetDatabase.SaveAssets();
+            Debug.Log(
+                "[Dungeon] Floor 3 zone pack created. Assign Floor_dungeon_floor_03 to " +
+                "DungeonFloorInstanceManager.floorDefinitions to playtest the jigsaw layout.");
+        }
+
         static DungeonZoneDefinition CreateOrUpdateZone(
             string path,
             string zoneId,
@@ -170,7 +312,11 @@ namespace JRogue.Editor.World
             TileBase wallTile,
             ZoneFillProfile fillProfile,
             DungeonZonePopulationProfile populationProfile = null,
-            string[] tags = null)
+            string[] tags = null,
+            int minWidth = 8,
+            int minHeight = 8,
+            int maxWidth = 24,
+            int maxHeight = 24)
         {
             var zone = AssetDatabase.LoadAssetAtPath<DungeonZoneDefinition>(path);
             if (zone == null)
@@ -184,10 +330,10 @@ namespace JRogue.Editor.World
             so.FindProperty("displayName").stringValue = displayName;
             so.FindProperty("floorTile").objectReferenceValue = floorTile;
             so.FindProperty("wallTile").objectReferenceValue = wallTile;
-            so.FindProperty("minWidth").intValue = 8;
-            so.FindProperty("minHeight").intValue = 8;
-            so.FindProperty("maxWidth").intValue = 24;
-            so.FindProperty("maxHeight").intValue = 24;
+            so.FindProperty("minWidth").intValue = minWidth;
+            so.FindProperty("minHeight").intValue = minHeight;
+            so.FindProperty("maxWidth").intValue = maxWidth;
+            so.FindProperty("maxHeight").intValue = maxHeight;
             SerializedProperty fill = so.FindProperty("fillProfile");
             fill.FindPropertyRelative("mode").enumValueIndex = (int)fillProfile.mode;
             fill.FindPropertyRelative("innerWallDensity").intValue = fillProfile.innerWallDensity;
@@ -395,17 +541,83 @@ namespace JRogue.Editor.World
             return layout;
         }
 
+        static DungeonFloorZoneLayout CreateOrUpdateFloor03Layout(
+            DungeonZoneDefinition zoneOrcCastle,
+            DungeonZoneDefinition zoneWitchForest,
+            DungeonZoneDefinition zoneMountain)
+        {
+            var layout = AssetDatabase.LoadAssetAtPath<DungeonFloorZoneLayout>(Floor03LayoutPath);
+            if (layout == null)
+            {
+                layout = ScriptableObject.CreateInstance<DungeonFloorZoneLayout>();
+                AssetDatabase.CreateAsset(layout, Floor03LayoutPath);
+            }
+
+            SerializedObject so = new SerializedObject(layout);
+            so.FindProperty("floorWidth").intValue = 40;
+            so.FindProperty("floorHeight").intValue = 30;
+            so.FindProperty("layoutKind").enumValueIndex = (int)ZoneLayoutKind.ExplicitPieces;
+            so.FindProperty("fallbackZoneId").stringValue = ZoneIds.Rock;
+            so.FindProperty("defaultOuterBoundary").enumValueIndex = (int)ZoneBoundaryKind.Wall;
+
+            so.FindProperty("zoneDefinitions").arraySize = 3;
+            so.FindProperty("zoneDefinitions").GetArrayElementAtIndex(0).objectReferenceValue = zoneOrcCastle;
+            so.FindProperty("zoneDefinitions").GetArrayElementAtIndex(1).objectReferenceValue = zoneWitchForest;
+            so.FindProperty("zoneDefinitions").GetArrayElementAtIndex(2).objectReferenceValue = zoneMountain;
+
+            SerializedProperty rules = so.FindProperty("selectionRules");
+            rules.arraySize = 1;
+            SetSelectionRule(
+                rules.GetArrayElementAtIndex(0),
+                "witch_forest",
+                weight: 1,
+                requiresAll: new[] { "orc_castle" });
+
+            SerializedProperty pieces = so.FindProperty("pieces");
+            pieces.arraySize = 3;
+            SetExplicitPiece(
+                pieces.GetArrayElementAtIndex(0),
+                "west",
+                mandatory: true,
+                isPlayerStart: true,
+                connectsTo: new[] { "center" },
+                candidates: new[] { ("orc_castle", 1) },
+                defaultBoundary: ZoneBoundaryKind.Open);
+            SetExplicitPiece(
+                pieces.GetArrayElementAtIndex(1),
+                "center",
+                mandatory: true,
+                isPlayerStart: false,
+                connectsTo: new[] { "west", "east" },
+                candidates: new[] { ("witch_forest", 1) },
+                defaultBoundary: ZoneBoundaryKind.Open);
+            SetExplicitPiece(
+                pieces.GetArrayElementAtIndex(2),
+                "east",
+                mandatory: true,
+                isPlayerStart: false,
+                connectsTo: new[] { "center" },
+                candidates: new[] { ("mountain", 1) },
+                defaultBoundary: ZoneBoundaryKind.Wall);
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(layout);
+            return layout;
+        }
+
         static void SetSelectionRule(
             SerializedProperty element,
             string zoneId,
             int weight,
-            string[] excludes = null)
+            string[] excludes = null,
+            string[] requiresAll = null)
         {
             element.FindPropertyRelative("zoneId").stringValue = zoneId;
             element.FindPropertyRelative("weight").intValue = weight;
             element.FindPropertyRelative("mandatory").boolValue = false;
             element.FindPropertyRelative("maxInstances").intValue = 1;
             SetStringArray(element.FindPropertyRelative("excludes"), excludes);
+            SetStringArray(element.FindPropertyRelative("requiresAll"), requiresAll);
         }
 
         static void SetPiece(
@@ -433,6 +645,38 @@ namespace JRogue.Editor.World
             }
         }
 
+        static void SetExplicitPiece(
+            SerializedProperty element,
+            string pieceId,
+            bool mandatory,
+            bool isPlayerStart,
+            string[] connectsTo,
+            (string zoneId, int weight)[] candidates,
+            ZoneBoundaryKind defaultBoundary)
+        {
+            element.FindPropertyRelative("pieceId").stringValue = pieceId;
+            element.FindPropertyRelative("anchorKind").enumValueIndex = (int)ZonePieceAnchorKind.NormalizedRect;
+            element.FindPropertyRelative("mandatory").boolValue = mandatory;
+            element.FindPropertyRelative("isPlayerStartPiece").boolValue = isPlayerStart;
+            element.FindPropertyRelative("defaultBoundary").enumValueIndex = (int)defaultBoundary;
+            SetStringArray(element.FindPropertyRelative("connectsTo"), connectsTo);
+
+            SerializedProperty normalized = element.FindPropertyRelative("normalizedRect");
+            normalized.FindPropertyRelative("xMin").floatValue = 0f;
+            normalized.FindPropertyRelative("yMin").floatValue = 0f;
+            normalized.FindPropertyRelative("xMax").floatValue = 0f;
+            normalized.FindPropertyRelative("yMax").floatValue = 0f;
+
+            SerializedProperty candidateArray = element.FindPropertyRelative("candidates");
+            candidateArray.arraySize = candidates.Length;
+            for (int i = 0; i < candidates.Length; i++)
+            {
+                SerializedProperty candidate = candidateArray.GetArrayElementAtIndex(i);
+                candidate.FindPropertyRelative("zoneId").stringValue = candidates[i].zoneId;
+                candidate.FindPropertyRelative("weight").intValue = candidates[i].weight;
+            }
+        }
+
         static void SetStringArray(SerializedProperty property, string[] values)
         {
             if (values == null || values.Length == 0)
@@ -448,19 +692,69 @@ namespace JRogue.Editor.World
 
         static void ApplyFloor01Definition(DungeonFloorZoneLayout layout)
         {
-            var floorDef = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(Floor01DefPath);
+            ApplyFloorDefinition(Floor01DefPath, "dungeon_floor_01", layout, createIfMissing: false);
+        }
+
+        static void ApplyFloorDefinition(
+            string path,
+            string floorId,
+            DungeonFloorZoneLayout layout,
+            bool createIfMissing)
+        {
+            var floorDef = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(path);
             if (floorDef == null)
             {
-                Debug.LogError($"[Dungeon] Missing {Floor01DefPath}");
-                return;
+                if (!createIfMissing)
+                {
+                    Debug.LogError($"[Dungeon] Missing {path}");
+                    return;
+                }
+
+                floorDef = ScriptableObject.CreateInstance<DungeonFloorDefinition>();
+                AssetDatabase.CreateAsset(floorDef, path);
+                CopyFloorDefinitionBaseline(Floor01DefPath, floorDef);
             }
 
             SerializedObject so = new SerializedObject(floorDef);
+            so.FindProperty("floorId").stringValue = floorId;
             so.FindProperty("layoutMode").enumValueIndex = (int)FloorLayoutMode.ZoneComposite;
             so.FindProperty("zoneLayout").objectReferenceValue = layout;
             so.FindProperty("useFloorPopulationAsFallback").boolValue = true;
+            so.FindProperty("playerSafeRadius").intValue = 5;
+            so.FindProperty("participatesInDungeonTime").boolValue = true;
+            if (floorId == "dungeon_floor_03")
+                so.FindProperty("additionalDayNightCycles").intValue = 4;
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(floorDef);
+        }
+
+        static void CopyFloorDefinitionBaseline(string templatePath, DungeonFloorDefinition target)
+        {
+            var template = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(templatePath);
+            if (template == null)
+                return;
+
+            SerializedObject from = new SerializedObject(template);
+            SerializedObject to = new SerializedObject(target);
+            CopyObjectReference(from, to, "layoutStamp");
+            CopyObjectReference(from, to, "floorTile");
+            CopyObjectReference(from, to, "wallTile");
+            CopyObjectReference(from, to, "formationProfile");
+            CopyObjectReference(from, to, "vaultCatalog");
+            to.FindProperty("baseDayNightCycles").intValue =
+                from.FindProperty("baseDayNightCycles").intValue;
+            to.FindProperty("playerTurnsPerDay").intValue =
+                from.FindProperty("playerTurnsPerDay").intValue;
+            to.FindProperty("playerTurnsPerNight").intValue =
+                from.FindProperty("playerTurnsPerNight").intValue;
+            to.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(target);
+        }
+
+        static void CopyObjectReference(SerializedObject from, SerializedObject to, string propertyName)
+        {
+            to.FindProperty(propertyName).objectReferenceValue =
+                from.FindProperty(propertyName).objectReferenceValue;
         }
 
         static TileBase LoadTile(string path) =>

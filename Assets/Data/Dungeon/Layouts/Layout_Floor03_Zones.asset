@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf1bbb5d33abaf1d3b032891137c47f2, type: 3}
+  m_Name: Layout_Floor03_Zones
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonFloorZoneLayout
+  floorWidth: 40
+  floorHeight: 30
+  layoutKind: 1
+  selectionRules:
+  - zoneId: witch_forest
+    weight: 1
+    mandatory: 0
+    requiresAll:
+    - orc_castle
+    requiresAny: []
+    excludes: []
+    maxInstances: 1
+  pieces:
+  - pieceId: west
+    anchorKind: 0
+    compassDirection: 0
+    normalizedRect:
+      xMin: 0
+      yMin: 0
+      xMax: 0
+      yMax: 0
+    candidates:
+    - zoneId: orc_castle
+      weight: 1
+    mandatory: 1
+    connectsTo:
+    - center
+    defaultBoundary: 1
+    edgeBoundaries: []
+    isPlayerStartPiece: 1
+  - pieceId: center
+    anchorKind: 0
+    compassDirection: 0
+    normalizedRect:
+      xMin: 0
+      yMin: 0
+      xMax: 0
+      yMax: 0
+    candidates:
+    - zoneId: witch_forest
+      weight: 1
+    mandatory: 1
+    connectsTo:
+    - west
+    - east
+    defaultBoundary: 1
+    edgeBoundaries: []
+    isPlayerStartPiece: 0
+  - pieceId: east
+    anchorKind: 0
+    compassDirection: 0
+    normalizedRect:
+      xMin: 0
+      yMin: 0
+      xMax: 0
+      yMax: 0
+    candidates:
+    - zoneId: mountain
+      weight: 1
+    mandatory: 1
+    connectsTo:
+    - center
+    defaultBoundary: 2
+    edgeBoundaries: []
+    isPlayerStartPiece: 0
+  defaultOuterBoundary: 2
+  fallbackZoneId: rock
+  zoneDefinitions:
+  - {fileID: 11400000, guid: a1b2c3d4e5f6478890a1b2c3d4e5f601, type: 2}
+  - {fileID: 11400000, guid: a1b2c3d4e5f6478890a1b2c3d4e5f602, type: 2}
+  - {fileID: 11400000, guid: a1b2c3d4e5f6478890a1b2c3d4e5f603, type: 2}

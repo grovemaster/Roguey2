@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e0224dc9f34f4f92efbfa176094eb2, type: 3}
+  m_Name: Floor_dungeon_floor_03
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinition
+  floorId: dungeon_floor_03
+  layoutMode: 1
+  layoutStamp: {fileID: 11400000, guid: 44ecdb5685a325787bd305a4266c315e, type: 2}
+  zoneLayout: {fileID: 11400000, guid: c1b2c3d4e5f6478890a1b2c3d4e5f603, type: 2}
+  floorTile: {fileID: 11400000, guid: a770cea7164a14f4cbe48a9b5e25548f, type: 2}
+  wallTile: {fileID: 11400000, guid: 76b8e898b74148f479eecb778c522cf8, type: 2}
+  playerSafeRadius: 5
+  formationProfile: {fileID: 11400000, guid: bc9b8ea4cc7eebeef321ff560e79df53, type: 2}
+  enemyPopulation:
+  - spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+    minCount: 4
+    maxCount: 6
+  hazardPopulation: []
+  trapPopulation: []
+  interactablePopulation: []
+  floorItemPopulation: []
+  useFloorPopulationAsFallback: 1
+  portals: []
+  edgePortals: []
+  arrivalBindings: []
+  orthogonalEdgePortalCount: 0
+  orthogonalEdgeInset: 2
+  participatesInDungeonTime: 1
+  baseDayNightCycles: 5
+  additionalDayNightCycles: 4
+  playerTurnsPerDay: 5
+  playerTurnsPerNight: 5
+  combatPolicy: 0
+  safeZoneRegions: []
+  doorPolicy: 0
+  vaults: []
+  vaultCatalog: {fileID: 11400000, guid: 5de9a4b1839630877a5988afee25f3aa, type: 2}

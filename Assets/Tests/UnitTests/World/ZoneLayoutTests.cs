@@ -682,6 +682,7 @@ namespace JRogue.Tests.UnitTests.World
                     {
                         pieceId = "west",
                         mandatory = true,
+                        isPlayerStartPiece = true,
                         connectsTo = new[] { "center" },
                         candidates = new[]
                         {
@@ -692,7 +693,6 @@ namespace JRogue.Tests.UnitTests.World
                     {
                         pieceId = "center",
                         mandatory = true,
-                        isPlayerStartPiece = true,
                         connectsTo = new[] { "west", "east" },
                         candidates = new[]
                         {
@@ -878,6 +878,30 @@ namespace JRogue.Tests.UnitTests.World
             Assert.IsTrue(ContainsZone(result.Pieces, "mountain"));
         }
 
+        [Test]
+        public void Resolve_ExplicitPiecesLayout_PlayerStartOnOrcCastleWest()
+        {
+            DungeonFloorZoneLayout layout = CreateExplicitPiecesLayout();
+            ZoneSelectionResult result = ZoneSelectionSolver.Resolve(layout, new System.Random(12345));
+
+            Assert.IsTrue(result.Success, result.FailureReason);
+            ResolvedZonePiece start = default;
+            bool foundStart = false;
+            for (int i = 0; i < result.Pieces.Length; i++)
+            {
+                if (!result.Pieces[i].IsPlayerStartPiece)
+                    continue;
+
+                start = result.Pieces[i];
+                foundStart = true;
+                break;
+            }
+
+            Assert.IsTrue(foundStart);
+            Assert.AreEqual("west", start.PieceId);
+            Assert.AreEqual("orc_castle", start.ZoneId);
+        }
+
         static bool ContainsZone(ResolvedZonePiece[] pieces, string zoneId)
         {
             for (int i = 0; i < pieces.Length; i++)
@@ -936,6 +960,7 @@ namespace JRogue.Tests.UnitTests.World
                     {
                         pieceId = "west",
                         mandatory = true,
+                        isPlayerStartPiece = true,
                         connectsTo = new[] { "center" },
                         candidates = new[]
                         {
@@ -946,7 +971,6 @@ namespace JRogue.Tests.UnitTests.World
                     {
                         pieceId = "center",
                         mandatory = true,
-                        isPlayerStartPiece = true,
                         connectsTo = new[] { "west", "east" },
                         candidates = new[]
                         {

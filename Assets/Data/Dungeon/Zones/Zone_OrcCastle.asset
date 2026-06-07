@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 277a8472a8aa7632db30a6b2ea40ea2a, type: 3}
+  m_Name: Zone_OrcCastle
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonZoneDefinition
+  zoneId: orc_castle
+  displayName: Orc Castle
+  floorTile: {fileID: 11400000, guid: a770cea7164a14f4cbe48a9b5e25548f, type: 2}
+  wallTile: {fileID: 11400000, guid: 76b8e898b74148f479eecb778c522cf8, type: 2}
+  ambientRegionId: -1
+  defaultAmbientLight: 0
+  minWidth: 12
+  minHeight: 10
+  maxWidth: 16
+  maxHeight: 14
+  fillProfile:
+    mode: 3
+    subStampTable: []
+    innerWallDensity: 0
+    ensureConnectivity: 1
+  tags: []
+  populationProfile: {fileID: 11400000, guid: b1b2c3d4e5f6478890a1b2c3d4e5f601, type: 2}

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f4c2a1b9d3e4f5a6b7c8d9e0f1a2b3c, type: 3}
+  m_Name: Population_OrcCastle_Floor03
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonZonePopulationProfile
+  enemyPopulation:
+  - spawnDefinition: {fileID: 11400000, guid: 5497a467b1fe66318c7221a982048014, type: 2}
+    minCount: 6
+    maxCount: 10
+    weight: 0
+    densityMode: 0
+    requiresTag: 
+    forbiddenNearEdge: 0
+  floorItemPopulation: []
+  hazardPopulation: []
+  trapPopulation:
+  - definition: {fileID: 11400000, guid: 68220db961ef11f9285660299efa3bd8, type: 2}
+    minCount: 2
+    maxCount: 4
+  interactablePopulation: []
