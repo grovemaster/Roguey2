@@ -20,6 +20,7 @@ namespace JRogue.Editor.World
         const string GiantsBladePath = "Assets/Resources/Item/Weapon/Giants_Blade.asset";
         const string HandheldTorchPath = "Assets/Resources/Item/Accessory/Accessory_HandheldTorch.asset";
         const string HelmetOfLightPath = "Assets/Resources/Item/Armor/Armor_HelmetOfLight.asset";
+        const string ThrowingKnifePath = "Assets/Resources/Item/Missile/Missile_ThrowingKnife.asset";
         const string GoldCoinPath = "Assets/Resources/Item/Currency/GoldCoin.asset";
 
         [MenuItem("JRogue/Town/Create Shop NPC Pack")]
@@ -116,6 +117,15 @@ namespace JRogue.Editor.World
             ItemData helmetOfLight = AssetDatabase.LoadAssetAtPath<ItemData>(HelmetOfLightPath);
             if (helmetOfLight != null)
                 stock.Add(new ShopStockEntry { item = helmetOfLight, quantity = 1 });
+
+            ItemData throwingKnife = AssetDatabase.LoadAssetAtPath<ItemData>(ThrowingKnifePath);
+            if (throwingKnife != null)
+            {
+                throwingKnife.buyValue = 3;
+                throwingKnife.sellValue = 1;
+                EditorUtility.SetDirty(throwingKnife);
+                stock.Add(new ShopStockEntry { item = throwingKnife, quantity = 5 });
+            }
 
             shop.initialStock = stock.ToArray();
             EditorUtility.SetDirty(shop);

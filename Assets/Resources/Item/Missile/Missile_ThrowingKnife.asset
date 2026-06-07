@@ -19,6 +19,8 @@ MonoBehaviour:
   weight: 0.1
   icon: {fileID: 21300000, guid: b08192d2e52143708f3c8b1b37ad0dc9, type: 3}
   goldValue: 15
+  buyValue: 3
+  sellValue: 1
   requiresAppraisal: 0
   autoPickupOnStep: 0
   requiresAutoPickupConfirmation: 0

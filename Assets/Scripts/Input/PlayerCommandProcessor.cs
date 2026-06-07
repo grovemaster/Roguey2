@@ -18,6 +18,7 @@ using JRogue.Traps;
 using JRogue.Interactables;
 using JRogue.Combat;
 using JRogue.Combat.FriendlyFire;
+using JRogue.Combat.Targeting;
 using JRogue.Manager.Door;
 using JRogue.World.MapInteract;
 using JRogue.Service.Formation;
@@ -510,6 +511,12 @@ namespace JRogue.Input
 
             Vector3Int target = reticleView.Position;
             TargetedActionContext context = BuildTargetedActionContext(pending);
+
+            if (!TargetingSightGate.TryAllowConfirm(target, out string sightDeny))
+            {
+                Debug.Log($"{TargetingSightGate.LogPrefix} {sightDeny}");
+                return true;
+            }
 
             if (FriendlyFireTargetGate.TryInterceptConfirm(
                     activeMember,

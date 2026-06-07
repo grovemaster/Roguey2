@@ -176,6 +176,16 @@ namespace JRogue.Editor.World
             if (helmet != null)
                 stock.Add(new ShopStockEntry { item = helmet, quantity = 1 });
 
+            ItemData throwingKnife = AssetDatabase.LoadAssetAtPath<ItemData>(
+                "Assets/Resources/Item/Missile/Missile_ThrowingKnife.asset");
+            if (throwingKnife != null)
+            {
+                throwingKnife.buyValue = 3;
+                throwingKnife.sellValue = 1;
+                EditorUtility.SetDirty(throwingKnife);
+                stock.Add(new ShopStockEntry { item = throwingKnife, quantity = 5 });
+            }
+
             shop.initialStock = stock.ToArray();
             EditorUtility.SetDirty(shop);
         }

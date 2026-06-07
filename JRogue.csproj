@@ -120,8 +120,8 @@
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultCellKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationUtility.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingService.cs" />
-    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneJigsawSolver.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneSelectionSolver.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyMeleeCombat.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
@@ -419,6 +419,7 @@
     <Compile Include="Assets/Scripts/Controller/Npc/SpiritImprintShamanNpcController.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/OpenDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/NpcController.cs" />
+    <Compile Include="Assets/Scripts/Combat/Targeting/TargetingSightGate.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardMarker.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarManaStoneOffering.cs" />
     <Compile Include="Assets/Scripts/Dialog/DialogParameterResolver.cs" />
