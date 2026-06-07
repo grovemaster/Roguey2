@@ -88,6 +88,7 @@
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarOfferingServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryConsumeQuantityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Quest/QuestLogicTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/UI/GameLogSessionTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Dialog/NpcDialogTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/DungeonTimeLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/TelekinesisAbilityTests.cs" />

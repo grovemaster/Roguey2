@@ -1,5 +1,6 @@
 using JRogue.Actors;
 using JRogue.Manager.Party;
+using JRogue.UI.Gameplay;
 using UnityEngine;
 
 namespace JRogue.View
@@ -23,6 +24,7 @@ namespace JRogue.View
                 return;
 
             Vector3 desiredPosition = follow.position + offset;
+            desiredPosition.y += PlayfieldLayout.GetCameraVerticalOffsetWorld(GetComponent<Camera>());
             transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
         }
 

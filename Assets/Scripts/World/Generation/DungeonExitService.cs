@@ -79,6 +79,7 @@ namespace JRogue.World.Generation
                 }
 
                 Debug.Log($"{LogPrefix} Loading town scene '{TownSceneName}'.");
+                GameLogService.ClearSession();
                 SceneManager.LoadScene(TownSceneName, LoadSceneMode.Single);
             }
             finally

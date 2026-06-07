@@ -128,6 +128,7 @@
     <Compile Include="Assets/Scripts/Actors/PartyMemberId.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimePhase.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/AlwaysTruePrecondition.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/PlayfieldLayout.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableBumpResult.cs" />
     <Compile Include="Assets/Scripts/Item/EvocableChargeRules.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacementUtility.cs" />
@@ -186,12 +187,14 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonWorldFeatureServices.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/TownTimeLeverEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/GameplayModalGate.cs" />
     <Compile Include="Assets/Scripts/Quest/QuestService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/EvocableRechargeService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinitionCatalog.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceService.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/MessageConsoleUI.cs" />
     <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeService.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
@@ -272,6 +275,7 @@
     <Compile Include="Assets/Scripts/Status/StatusEffectController.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileId.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryManager.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/MessageHistoryUI.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarInteractable.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPhase3SampleContent.cs" />
@@ -403,6 +407,7 @@
     <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableEffect.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableActivationSource.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/GameLogService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonEntryService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
@@ -440,6 +445,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorServiceBinder.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapInstance.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssencePickupEligibility.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/GameLogSession.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownTimeLeverSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorInstanceManager.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyCurrencyLedger.cs" />

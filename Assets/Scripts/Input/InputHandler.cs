@@ -500,24 +500,7 @@ namespace JRogue.Input
             commandProcessor.ProcessFollowerRush();
         }
 
-        static bool BlocksFloorGameplay() =>
-            RestSessionService.IsResting
-            || GameOverModalUI.BlocksGameplay
-            || InventoryUI.BlocksGameplay || AutoPickupConfirmDialogUI.BlocksGameplay
-            || TrapConfirmDialogUI.BlocksGameplay
-            || HazardConfirmDialogUI.BlocksGameplay
-            || FloorPickupMenuUI.BlocksGameplay
-            || PartyMemberDeathDialogUI.BlocksGameplay
-            || DungeonEndedDialogUI.BlocksGameplay
-            || EnterDungeonDialogUI.BlocksGameplay
-            || AdjacentInteractPickerModalUI.BlocksGameplay
-            || AltarOfferingModalUI.BlocksGameplay
-            || AltarUsedModalUI.BlocksGameplay
-            || EssencePickupConfirmDialogUI.BlocksGameplay
-            || NpcDialogBoxUI.BlocksGameplay
-            || ShopNpcMenuUI.BlocksGameplay
-            || QuestJournalUI.BlocksGameplay
-            || FriendlyFireConfirmDialogUI.BlocksGameplay;
+        static bool BlocksFloorGameplay() => GameplayModalGate.BlocksFloorGameplay;
 
         private bool IsContextInvalid(InputAction.CallbackContext context) =>
             !context.performed

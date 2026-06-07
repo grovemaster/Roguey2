@@ -67,6 +67,7 @@ namespace JRogue.World.Generation
                 }
 
                 Debug.Log($"{LogPrefix} Loading dungeon scene '{DungeonSceneName}' (fresh run).");
+                GameLogService.ClearSession();
                 SceneManager.LoadScene(DungeonSceneName, LoadSceneMode.Single);
             }
             finally
