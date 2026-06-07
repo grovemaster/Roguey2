@@ -118,6 +118,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationUtility.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneJigsawSolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneSelectionSolver.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyMeleeCombat.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
@@ -352,6 +353,7 @@
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardDefinition.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRunner.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneRectProcGenerator.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/RestSessionService.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCellMapStats.cs" />

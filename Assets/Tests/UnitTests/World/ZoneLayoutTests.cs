@@ -604,4 +604,376 @@ namespace JRogue.Tests.UnitTests.World
             Object.DestroyImmediate(layout);
         }
     }
+
+    [TestFixture]
+    public sealed class ZoneJigsawSolverTests
+    {
+        readonly List<Object> _assets = new List<Object>();
+
+        [TearDown]
+        public void TearDown()
+        {
+            for (int i = 0; i < _assets.Count; i++)
+            {
+                if (_assets[i] != null)
+                    Object.DestroyImmediate(_assets[i]);
+            }
+
+            _assets.Clear();
+        }
+
+        [Test]
+        public void TryPackPieces_ThreeConnectedMandatoryPieces_DoNotOverlap()
+        {
+            DungeonFloorZoneLayout layout = CreateThreePieceJigsawLayout();
+            var assignments = new List<ZoneJigsawAssignment>
+            {
+                new ZoneJigsawAssignment(layout.Pieces[0], "orc_castle"),
+                new ZoneJigsawAssignment(layout.Pieces[1], "witch_forest"),
+                new ZoneJigsawAssignment(layout.Pieces[2], "mountain"),
+            };
+
+            Assert.IsTrue(
+                ZoneJigsawSolver.TryPackPieces(layout, assignments, new System.Random(42), out ResolvedZonePiece[] resolved));
+            Assert.AreEqual(3, resolved.Length);
+
+            for (int i = 0; i < resolved.Length; i++)
+            {
+                for (int j = i + 1; j < resolved.Length; j++)
+                {
+                    Assert.IsFalse(
+                        ZoneCompassRectResolver.RectsOverlap(resolved[i].Bounds, resolved[j].Bounds),
+                        $"{resolved[i].PieceId} overlaps {resolved[j].PieceId}");
+                }
+            }
+
+            Assert.IsTrue(
+                ZoneJigsawSolver.SharesEdge(FindPiece(resolved, "west").Bounds, FindPiece(resolved, "center").Bounds));
+            Assert.IsTrue(
+                ZoneJigsawSolver.SharesEdge(FindPiece(resolved, "center").Bounds, FindPiece(resolved, "east").Bounds));
+        }
+
+        static ResolvedZonePiece FindPiece(ResolvedZonePiece[] pieces, string pieceId)
+        {
+            for (int i = 0; i < pieces.Length; i++)
+            {
+                if (pieces[i].PieceId == pieceId)
+                    return pieces[i];
+            }
+
+            Assert.Fail($"Missing piece {pieceId}");
+            return default;
+        }
+
+        DungeonFloorZoneLayout CreateThreePieceJigsawLayout()
+        {
+            var layout = ScriptableObject.CreateInstance<DungeonFloorZoneLayout>();
+            _assets.Add(layout);
+
+            layout.ReplaceAuthoringData(
+                40,
+                30,
+                ZoneLayoutKind.ExplicitPieces,
+                ZoneIds.Rock,
+                new ZoneSelectionRule[0],
+                new[]
+                {
+                    new ZoneLayoutPiece
+                    {
+                        pieceId = "west",
+                        mandatory = true,
+                        connectsTo = new[] { "center" },
+                        candidates = new[]
+                        {
+                            new ZoneLayoutPieceCandidate { zoneId = "orc_castle", weight = 1 },
+                        },
+                    },
+                    new ZoneLayoutPiece
+                    {
+                        pieceId = "center",
+                        mandatory = true,
+                        isPlayerStartPiece = true,
+                        connectsTo = new[] { "west", "east" },
+                        candidates = new[]
+                        {
+                            new ZoneLayoutPieceCandidate { zoneId = "witch_forest", weight = 1 },
+                        },
+                    },
+                    new ZoneLayoutPiece
+                    {
+                        pieceId = "east",
+                        mandatory = true,
+                        connectsTo = new[] { "center" },
+                        candidates = new[]
+                        {
+                            new ZoneLayoutPieceCandidate { zoneId = "mountain", weight = 1 },
+                        },
+                    },
+                },
+                new[]
+                {
+                    CreateZoneDefinition("orc_castle", 10, 10, 14, 14),
+                    CreateZoneDefinition("witch_forest", 12, 10, 16, 14),
+                    CreateZoneDefinition("mountain", 10, 10, 14, 14),
+                });
+
+            return layout;
+        }
+
+        DungeonZoneDefinition CreateZoneDefinition(
+            string zoneId,
+            int minWidth,
+            int minHeight,
+            int maxWidth,
+            int maxHeight)
+        {
+            var definition = ScriptableObject.CreateInstance<DungeonZoneDefinition>();
+            _assets.Add(definition);
+            SetField(definition, "zoneId", zoneId);
+            SetField(definition, "minWidth", minWidth);
+            SetField(definition, "minHeight", minHeight);
+            SetField(definition, "maxWidth", maxWidth);
+            SetField(definition, "maxHeight", maxHeight);
+            return definition;
+        }
+
+        static void SetField(Object target, string fieldName, object value)
+        {
+            target.GetType()
+                .GetField(fieldName, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                ?.SetValue(target, value);
+        }
+    }
+
+    [TestFixture]
+    public sealed class ZoneRectProcGeneratorTests
+    {
+        [Test]
+        public void GenerateRoomCorridor_ProducesConnectedWalkableCells()
+        {
+            bool[,] mask = ZoneRectProcGenerator.GenerateRoomCorridor(
+                new RectInt(0, 0, 20, 15),
+                new System.Random(1),
+                ensureConnectivity: true);
+
+            Assert.NotNull(mask);
+            Assert.Greater(CountFloorCells(mask), 24);
+            Assert.AreEqual(1, CountFloorComponents(mask));
+        }
+
+        [Test]
+        public void GenerateCave_SameSeed_ProducesIdenticalMask()
+        {
+            var bounds = new RectInt(0, 0, 18, 14);
+            bool[,] a = ZoneRectProcGenerator.GenerateCave(bounds, new System.Random(77), 35, true);
+            bool[,] b = ZoneRectProcGenerator.GenerateCave(bounds, new System.Random(77), 35, true);
+
+            Assert.NotNull(a);
+            Assert.NotNull(b);
+            Assert.AreEqual(CountFloorCells(a), CountFloorCells(b));
+            Assert.AreEqual(MaskSignature(a), MaskSignature(b));
+        }
+
+        static int CountFloorCells(bool[,] mask)
+        {
+            int count = 0;
+            for (int y = 0; y < mask.GetLength(1); y++)
+            {
+                for (int x = 0; x < mask.GetLength(0); x++)
+                {
+                    if (mask[x, y])
+                        count++;
+                }
+            }
+
+            return count;
+        }
+
+        static int CountFloorComponents(bool[,] mask)
+        {
+            int width = mask.GetLength(0);
+            int height = mask.GetLength(1);
+            var visited = new bool[width, height];
+            int components = 0;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    if (!mask[x, y] || visited[x, y])
+                        continue;
+
+                    components++;
+                    Flood(mask, visited, x, y);
+                }
+            }
+
+            return components;
+        }
+
+        static void Flood(bool[,] mask, bool[,] visited, int startX, int startY)
+        {
+            int width = mask.GetLength(0);
+            int height = mask.GetLength(1);
+            var stack = new Stack<Vector2Int>();
+            stack.Push(new Vector2Int(startX, startY));
+
+            while (stack.Count > 0)
+            {
+                Vector2Int cell = stack.Pop();
+                if (cell.x < 0 || cell.y < 0 || cell.x >= width || cell.y >= height)
+                    continue;
+
+                if (visited[cell.x, cell.y] || !mask[cell.x, cell.y])
+                    continue;
+
+                visited[cell.x, cell.y] = true;
+                stack.Push(cell + Vector2Int.up);
+                stack.Push(cell + Vector2Int.down);
+                stack.Push(cell + Vector2Int.left);
+                stack.Push(cell + Vector2Int.right);
+            }
+        }
+
+        static string MaskSignature(bool[,] mask)
+        {
+            var builder = new System.Text.StringBuilder();
+            for (int y = 0; y < mask.GetLength(1); y++)
+            {
+                for (int x = 0; x < mask.GetLength(0); x++)
+                    builder.Append(mask[x, y] ? '1' : '0');
+            }
+
+            return builder.ToString();
+        }
+    }
+
+    [TestFixture]
+    public sealed class ZoneSelectionExplicitPiecesTests
+    {
+        readonly List<Object> _assets = new List<Object>();
+
+        [TearDown]
+        public void TearDown()
+        {
+            for (int i = 0; i < _assets.Count; i++)
+            {
+                if (_assets[i] != null)
+                    Object.DestroyImmediate(_assets[i]);
+            }
+
+            _assets.Clear();
+        }
+
+        [Test]
+        public void Resolve_ExplicitPiecesLayout_PacksAllMandatoryZones()
+        {
+            DungeonFloorZoneLayout layout = CreateExplicitPiecesLayout();
+            ZoneSelectionResult result = ZoneSelectionSolver.Resolve(layout, new System.Random(12345));
+
+            Assert.IsTrue(result.Success, result.FailureReason);
+            Assert.AreEqual(3, result.Pieces.Length);
+            Assert.IsTrue(ContainsZone(result.Pieces, "orc_castle"));
+            Assert.IsTrue(ContainsZone(result.Pieces, "witch_forest"));
+            Assert.IsTrue(ContainsZone(result.Pieces, "mountain"));
+        }
+
+        static bool ContainsZone(ResolvedZonePiece[] pieces, string zoneId)
+        {
+            for (int i = 0; i < pieces.Length; i++)
+            {
+                if (pieces[i].ZoneId == zoneId)
+                    return true;
+            }
+
+            return false;
+        }
+
+        DungeonFloorZoneLayout CreateExplicitPiecesLayout()
+        {
+            var layout = ScriptableObject.CreateInstance<DungeonFloorZoneLayout>();
+            _assets.Add(layout);
+
+            var orc = ScriptableObject.CreateInstance<DungeonZoneDefinition>();
+            var witch = ScriptableObject.CreateInstance<DungeonZoneDefinition>();
+            var mountain = ScriptableObject.CreateInstance<DungeonZoneDefinition>();
+            _assets.Add(orc);
+            _assets.Add(witch);
+            _assets.Add(mountain);
+
+            SetField(orc, "zoneId", "orc_castle");
+            SetField(witch, "zoneId", "witch_forest");
+            SetField(mountain, "zoneId", "mountain");
+            SetField(orc, "minWidth", 10);
+            SetField(orc, "minHeight", 10);
+            SetField(orc, "maxWidth", 12);
+            SetField(orc, "maxHeight", 12);
+            SetField(witch, "minWidth", 12);
+            SetField(witch, "minHeight", 10);
+            SetField(witch, "maxWidth", 14);
+            SetField(witch, "maxHeight", 12);
+            SetField(mountain, "minWidth", 10);
+            SetField(mountain, "minHeight", 10);
+            SetField(mountain, "maxWidth", 12);
+            SetField(mountain, "maxHeight", 12);
+
+            layout.ReplaceAuthoringData(
+                40,
+                30,
+                ZoneLayoutKind.ExplicitPieces,
+                ZoneIds.Rock,
+                new[]
+                {
+                    new ZoneSelectionRule
+                    {
+                        zoneId = "witch_forest",
+                        requiresAll = new[] { "orc_castle" },
+                    },
+                },
+                new[]
+                {
+                    new ZoneLayoutPiece
+                    {
+                        pieceId = "west",
+                        mandatory = true,
+                        connectsTo = new[] { "center" },
+                        candidates = new[]
+                        {
+                            new ZoneLayoutPieceCandidate { zoneId = "orc_castle", weight = 1 },
+                        },
+                    },
+                    new ZoneLayoutPiece
+                    {
+                        pieceId = "center",
+                        mandatory = true,
+                        isPlayerStartPiece = true,
+                        connectsTo = new[] { "west", "east" },
+                        candidates = new[]
+                        {
+                            new ZoneLayoutPieceCandidate { zoneId = "witch_forest", weight = 1 },
+                        },
+                    },
+                    new ZoneLayoutPiece
+                    {
+                        pieceId = "east",
+                        mandatory = true,
+                        connectsTo = new[] { "center" },
+                        candidates = new[]
+                        {
+                            new ZoneLayoutPieceCandidate { zoneId = "mountain", weight = 1 },
+                        },
+                    },
+                },
+                new[] { orc, witch, mountain });
+
+            return layout;
+        }
+
+        static void SetField(Object target, string fieldName, object value)
+        {
+            target.GetType()
+                .GetField(fieldName, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                ?.SetValue(target, value);
+        }
+    }
 }

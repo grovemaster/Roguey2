@@ -28,6 +28,14 @@ namespace JRogue.World.Generation.Zones
 
         static ZoneSelectionResult TryResolveOnce(DungeonFloorZoneLayout layout, System.Random rng)
         {
+            if (layout.LayoutKind == ZoneLayoutKind.ExplicitPieces)
+                return TryResolveExplicitPieces(layout, rng);
+
+            return TryResolveAnchoredPieces(layout, rng);
+        }
+
+        static ZoneSelectionResult TryResolveAnchoredPieces(DungeonFloorZoneLayout layout, System.Random rng)
+        {
             var selectedZoneIds = new HashSet<string>(StringComparer.Ordinal);
             var resolvedPieces = new List<ResolvedZonePiece>(layout.Pieces.Length);
 
@@ -73,9 +81,69 @@ namespace JRogue.World.Generation.Zones
             return new ZoneSelectionResult(resolvedPieces.ToArray(), true, null);
         }
 
-        static ZoneSelectionResult TryResolveMandatoryOnly(DungeonFloorZoneLayout layout)
+        static ZoneSelectionResult TryResolveExplicitPieces(DungeonFloorZoneLayout layout, System.Random rng)
         {
             var selectedZoneIds = new HashSet<string>(StringComparer.Ordinal);
+            var assignments = new List<ZoneJigsawAssignment>(layout.Pieces.Length);
+
+            for (int i = 0; i < layout.Pieces.Length; i++)
+            {
+                ZoneLayoutPiece piece = layout.Pieces[i];
+                if (string.IsNullOrEmpty(piece.pieceId))
+                    return new ZoneSelectionResult(Array.Empty<ResolvedZonePiece>(), false, "piece missing pieceId");
+
+                if (!TryPickZoneForPiece(piece, layout, selectedZoneIds, rng, out string zoneId))
+                    return new ZoneSelectionResult(Array.Empty<ResolvedZonePiece>(), false, $"no zone for {piece.pieceId}");
+
+                if (!IsZoneAllowed(zoneId, selectedZoneIds, layout.SelectionRules))
+                    return new ZoneSelectionResult(Array.Empty<ResolvedZonePiece>(), false, $"rules rejected {zoneId}");
+
+                if (zoneId == ZoneIds.Empty && !piece.mandatory)
+                    continue;
+
+                if (zoneId != ZoneIds.Empty)
+                    selectedZoneIds.Add(zoneId);
+
+                assignments.Add(new ZoneJigsawAssignment(piece, zoneId));
+            }
+
+            if (!ValidateGlobalRules(selectedZoneIds, layout.SelectionRules))
+                return new ZoneSelectionResult(Array.Empty<ResolvedZonePiece>(), false, "global rules failed");
+
+            if (!ZoneJigsawSolver.TryPackPieces(layout, assignments, rng, out ResolvedZonePiece[] resolvedPieces))
+                return new ZoneSelectionResult(Array.Empty<ResolvedZonePiece>(), false, "jigsaw packing failed");
+
+            return new ZoneSelectionResult(resolvedPieces, true, null);
+        }
+
+        static ZoneSelectionResult TryResolveMandatoryOnly(DungeonFloorZoneLayout layout)
+        {
+            if (layout.LayoutKind == ZoneLayoutKind.ExplicitPieces)
+            {
+                var selectedZoneIds = new HashSet<string>(StringComparer.Ordinal);
+                var assignments = new List<ZoneJigsawAssignment>(layout.Pieces.Length);
+
+                for (int i = 0; i < layout.Pieces.Length; i++)
+                {
+                    ZoneLayoutPiece piece = layout.Pieces[i];
+                    if (!piece.mandatory)
+                        continue;
+
+                    string zoneId = PickMandatoryZone(piece);
+                    if (string.IsNullOrEmpty(zoneId))
+                        return new ZoneSelectionResult(Array.Empty<ResolvedZonePiece>(), false, $"mandatory piece {piece.pieceId} has no zone");
+
+                    selectedZoneIds.Add(zoneId);
+                    assignments.Add(new ZoneJigsawAssignment(piece, zoneId));
+                }
+
+                if (ZoneJigsawSolver.TryPackPieces(layout, assignments, new System.Random(0), out ResolvedZonePiece[] resolved))
+                    return new ZoneSelectionResult(resolved, true, "mandatory fallback");
+
+                return new ZoneSelectionResult(Array.Empty<ResolvedZonePiece>(), false, "mandatory jigsaw fallback failed");
+            }
+
+            var selectedZoneIdsAnchored = new HashSet<string>(StringComparer.Ordinal);
             var resolvedPieces = new List<ResolvedZonePiece>(layout.Pieces.Length);
 
             for (int i = 0; i < layout.Pieces.Length; i++)
@@ -91,7 +159,7 @@ namespace JRogue.World.Generation.Zones
                     return new ZoneSelectionResult(Array.Empty<ResolvedZonePiece>(), false, $"mandatory piece {piece.pieceId} has no zone");
 
                 if (zoneId != ZoneIds.Empty)
-                    selectedZoneIds.Add(zoneId);
+                    selectedZoneIdsAnchored.Add(zoneId);
 
                 resolvedPieces.Add(new ResolvedZonePiece(
                     piece.pieceId,

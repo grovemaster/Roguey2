@@ -101,9 +101,75 @@ namespace JRogue.World.Generation.Zones
                 case ZoneFillMode.OpenPocket:
                     FillOpenPocket(map, floorDef, layout, piece, profile, fillRng, stats);
                     break;
+                case ZoneFillMode.RoomCorridor:
+                    FillFromProcMask(
+                        map,
+                        floorDef,
+                        layout,
+                        piece,
+                        ZoneRectProcGenerator.GenerateRoomCorridor(
+                            piece.Bounds,
+                            fillRng,
+                            profile.ensureConnectivity),
+                        stats);
+                    break;
+                case ZoneFillMode.Cave:
+                    FillFromProcMask(
+                        map,
+                        floorDef,
+                        layout,
+                        piece,
+                        ZoneRectProcGenerator.GenerateCave(
+                            piece.Bounds,
+                            fillRng,
+                            profile.innerWallDensity,
+                            profile.ensureConnectivity),
+                        stats);
+                    break;
                 default:
                     FillSolidRect(map, floorDef, layout, piece, stats);
                     break;
+            }
+        }
+
+        static void FillFromProcMask(
+            JRogue.Manager.Map.MapManager map,
+            DungeonFloorDefinition floorDef,
+            DungeonFloorZoneLayout layout,
+            ResolvedZonePiece piece,
+            bool[,] floorMask,
+            ZonePaintStats stats)
+        {
+            RectInt bounds = piece.Bounds;
+            if (floorMask == null)
+            {
+                FillSolidRect(map, floorDef, layout, piece, stats);
+                return;
+            }
+
+            int width = floorMask.GetLength(0);
+            int height = floorMask.GetLength(1);
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int worldX = bounds.xMin + x;
+                    int worldY = bounds.yMin + y;
+                    if (ZoneTilePainter.IsMapOuterEdge(worldX, worldY, layout.FloorWidth, layout.FloorHeight))
+                        continue;
+
+                    Vector3Int cell = new Vector3Int(worldX, worldY, 0);
+                    if (floorMask[x, y])
+                    {
+                        ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId);
+                        Increment(stats.FloorCellsByZone, piece.ZoneId);
+                    }
+                    else
+                    {
+                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, piece.ZoneId);
+                        Increment(stats.WallCellsByZone, piece.ZoneId);
+                    }
+                }
             }
         }
 
