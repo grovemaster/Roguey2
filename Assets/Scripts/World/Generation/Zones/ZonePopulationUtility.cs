@@ -195,6 +195,8 @@ namespace JRogue.World.Generation.Zones
             PopulationPlacementUtility.Shuffle(candidates, rng);
             int candidateIndex = 0;
             int spawnedTotal = 0;
+            DungeonFloorZoneLayout layout = context.Definition?.ZoneLayout;
+            RectInt bounds = zoneInstance.Bounds;
 
             for (int entryIndex = 0; entryIndex < entries.Count; entryIndex++)
             {
@@ -202,13 +204,40 @@ namespace JRogue.World.Generation.Zones
                 if (entry.spawnDefinition == null)
                     continue;
 
-                int count = rng.Next(entry.minCount, entry.maxCount + 1);
+                if (!ZonePopulationEntryRules.MeetsTagRequirement(
+                        layout,
+                        zoneInstance.ZoneId,
+                        entry.requiresTag))
+                {
+                    continue;
+                }
+
+                int eligible = ZonePopulationEntryRules.CountEligibleCandidates(
+                    candidates,
+                    candidateIndex,
+                    bounds,
+                    entry.forbiddenNearEdge,
+                    cell => PopulationPlacementUtility.IsPopulationCell(map, context, cell));
+                int count = ZonePopulationEntryRules.RollSpawnCount(
+                    entry.densityMode,
+                    entry.minCount,
+                    entry.maxCount,
+                    eligible,
+                    rng);
                 for (int spawnIndex = 0; spawnIndex < count; spawnIndex++)
                 {
                     bool placed = false;
                     while (candidateIndex < candidates.Count)
                     {
                         Vector3Int origin = candidates[candidateIndex++];
+                        if (!ZonePopulationEntryRules.MeetsEdgeRequirement(
+                                origin,
+                                bounds,
+                                entry.forbiddenNearEdge))
+                        {
+                            continue;
+                        }
+
                         if (!PopulationPlacementUtility.IsPopulationCell(map, context, origin))
                             continue;
 
@@ -257,6 +286,8 @@ namespace JRogue.World.Generation.Zones
             PopulationPlacementUtility.Shuffle(candidates, rng);
             int candidateIndex = 0;
             int placed = 0;
+            DungeonFloorZoneLayout layout = context.Definition?.ZoneLayout;
+            RectInt bounds = zoneInstance.Bounds;
 
             for (int entryIndex = 0; entryIndex < entries.Count; entryIndex++)
             {
@@ -264,12 +295,40 @@ namespace JRogue.World.Generation.Zones
                 if (entry.itemData == null)
                     continue;
 
-                int count = rng.Next(entry.minCount, entry.maxCount + 1);
+                if (!ZonePopulationEntryRules.MeetsTagRequirement(
+                        layout,
+                        zoneInstance.ZoneId,
+                        entry.requiresTag))
+                {
+                    continue;
+                }
+
+                int eligible = ZonePopulationEntryRules.CountEligibleCandidates(
+                    candidates,
+                    candidateIndex,
+                    bounds,
+                    entry.forbiddenNearEdge,
+                    cell => PopulationPlacementUtility.IsPopulationCell(map, context, cell)
+                            && piles.GetEntries(cell).Count == 0);
+                int count = ZonePopulationEntryRules.RollSpawnCount(
+                    entry.densityMode,
+                    entry.minCount,
+                    entry.maxCount,
+                    eligible,
+                    rng);
                 for (int i = 0; i < count; i++)
                 {
                     while (candidateIndex < candidates.Count)
                     {
                         Vector3Int cell = candidates[candidateIndex++];
+                        if (!ZonePopulationEntryRules.MeetsEdgeRequirement(
+                                cell,
+                                bounds,
+                                entry.forbiddenNearEdge))
+                        {
+                            continue;
+                        }
+
                         if (!PopulationPlacementUtility.IsPopulationCell(map, context, cell))
                             continue;
 
@@ -313,6 +372,8 @@ namespace JRogue.World.Generation.Zones
             PopulationPlacementUtility.Shuffle(candidates, rng);
             int candidateIndex = 0;
             int placed = 0;
+            DungeonFloorZoneLayout layout = context.Definition?.ZoneLayout;
+            RectInt bounds = zoneInstance.Bounds;
 
             for (int entryIndex = 0; entryIndex < entries.Count; entryIndex++)
             {
@@ -320,12 +381,40 @@ namespace JRogue.World.Generation.Zones
                 if (entry.definition == null)
                     continue;
 
-                int count = rng.Next(entry.minCount, entry.maxCount + 1);
+                if (!ZonePopulationEntryRules.MeetsTagRequirement(
+                        layout,
+                        zoneInstance.ZoneId,
+                        entry.requiresTag))
+                {
+                    continue;
+                }
+
+                int eligible = ZonePopulationEntryRules.CountEligibleCandidates(
+                    candidates,
+                    candidateIndex,
+                    bounds,
+                    entry.forbiddenNearEdge,
+                    cell => PopulationPlacementUtility.IsPopulationCell(map, context, cell)
+                            && !hazards.HasHazardAt(cell));
+                int count = ZonePopulationEntryRules.RollSpawnCount(
+                    entry.densityMode,
+                    entry.minCount,
+                    entry.maxCount,
+                    eligible,
+                    rng);
                 for (int i = 0; i < count; i++)
                 {
                     while (candidateIndex < candidates.Count)
                     {
                         Vector3Int cell = candidates[candidateIndex++];
+                        if (!ZonePopulationEntryRules.MeetsEdgeRequirement(
+                                cell,
+                                bounds,
+                                entry.forbiddenNearEdge))
+                        {
+                            continue;
+                        }
+
                         if (!PopulationPlacementUtility.IsPopulationCell(map, context, cell))
                             continue;
 
@@ -360,6 +449,8 @@ namespace JRogue.World.Generation.Zones
             PopulationPlacementUtility.Shuffle(candidates, rng);
             int candidateIndex = 0;
             int placed = 0;
+            DungeonFloorZoneLayout layout = context.Definition?.ZoneLayout;
+            RectInt bounds = zoneInstance.Bounds;
 
             for (int entryIndex = 0; entryIndex < entries.Count; entryIndex++)
             {
@@ -367,12 +458,40 @@ namespace JRogue.World.Generation.Zones
                 if (entry.definition == null || entry.definition.placement != TrapPlacement.Floor)
                     continue;
 
-                int count = rng.Next(entry.minCount, entry.maxCount + 1);
+                if (!ZonePopulationEntryRules.MeetsTagRequirement(
+                        layout,
+                        zoneInstance.ZoneId,
+                        entry.requiresTag))
+                {
+                    continue;
+                }
+
+                int eligible = ZonePopulationEntryRules.CountEligibleCandidates(
+                    candidates,
+                    candidateIndex,
+                    bounds,
+                    entry.forbiddenNearEdge,
+                    cell => PopulationPlacementUtility.IsPopulationCell(map, context, cell)
+                            && !traps.IsFloorTrapAt(cell));
+                int count = ZonePopulationEntryRules.RollSpawnCount(
+                    entry.densityMode,
+                    entry.minCount,
+                    entry.maxCount,
+                    eligible,
+                    rng);
                 for (int i = 0; i < count; i++)
                 {
                     while (candidateIndex < candidates.Count)
                     {
                         Vector3Int cell = candidates[candidateIndex++];
+                        if (!ZonePopulationEntryRules.MeetsEdgeRequirement(
+                                cell,
+                                bounds,
+                                entry.forbiddenNearEdge))
+                        {
+                            continue;
+                        }
+
                         if (!PopulationPlacementUtility.IsPopulationCell(map, context, cell))
                             continue;
 
@@ -407,6 +526,8 @@ namespace JRogue.World.Generation.Zones
             PopulationPlacementUtility.Shuffle(candidates, rng);
             int candidateIndex = 0;
             int placed = 0;
+            DungeonFloorZoneLayout layout = context.Definition?.ZoneLayout;
+            RectInt bounds = zoneInstance.Bounds;
 
             for (int entryIndex = 0; entryIndex < entries.Count; entryIndex++)
             {
@@ -414,12 +535,40 @@ namespace JRogue.World.Generation.Zones
                 if (entry.definition == null)
                     continue;
 
-                int count = rng.Next(entry.minCount, entry.maxCount + 1);
+                if (!ZonePopulationEntryRules.MeetsTagRequirement(
+                        layout,
+                        zoneInstance.ZoneId,
+                        entry.requiresTag))
+                {
+                    continue;
+                }
+
+                int eligible = ZonePopulationEntryRules.CountEligibleCandidates(
+                    candidates,
+                    candidateIndex,
+                    bounds,
+                    entry.forbiddenNearEdge,
+                    cell => PopulationPlacementUtility.IsPopulationCell(map, context, cell)
+                            && !interactables.TryGetInstance(cell, out _));
+                int count = ZonePopulationEntryRules.RollSpawnCount(
+                    entry.densityMode,
+                    entry.minCount,
+                    entry.maxCount,
+                    eligible,
+                    rng);
                 for (int i = 0; i < count; i++)
                 {
                     while (candidateIndex < candidates.Count)
                     {
                         Vector3Int cell = candidates[candidateIndex++];
+                        if (!ZonePopulationEntryRules.MeetsEdgeRequirement(
+                                cell,
+                                bounds,
+                                entry.forbiddenNearEdge))
+                        {
+                            continue;
+                        }
+
                         if (!PopulationPlacementUtility.IsPopulationCell(map, context, cell))
                             continue;
 

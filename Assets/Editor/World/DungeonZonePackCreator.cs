@@ -89,7 +89,9 @@ namespace JRogue.Editor.World
                 trapMax: 0,
                 interactableDefinition: null,
                 interactableMin: 0,
-                interactableMax: 0);
+                interactableMax: 0,
+                enemyDensityMode: ZonePopulationDensityMode.DensityPer100Tiles,
+                enemyRequiresTag: "outdoor");
             DungeonZonePopulationProfile snowPopulation = CreateOrUpdatePopulationProfile(
                 PopulationRoot + "/Population_Snow_Floor01.asset",
                 spawnDefinition: skeletonSpawn,
@@ -106,7 +108,8 @@ namespace JRogue.Editor.World
                 trapMax: 0,
                 interactableDefinition: null,
                 interactableMin: 0,
-                interactableMax: 0);
+                interactableMax: 0,
+                enemyForbiddenNearEdge: 2);
 
             DungeonZoneDefinition zoneDungeon = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Dungeon.asset",
@@ -134,7 +137,8 @@ namespace JRogue.Editor.World
                     mode = ZoneFillMode.OpenPocket,
                     innerWallDensity = 10,
                 },
-                desertPopulation);
+                desertPopulation,
+                tags: new[] { "outdoor" });
             DungeonZoneDefinition zoneSnow = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Snow.asset",
                 "snow",
@@ -165,7 +169,8 @@ namespace JRogue.Editor.World
             TileBase floorTile,
             TileBase wallTile,
             ZoneFillProfile fillProfile,
-            DungeonZonePopulationProfile populationProfile = null)
+            DungeonZonePopulationProfile populationProfile = null,
+            string[] tags = null)
         {
             var zone = AssetDatabase.LoadAssetAtPath<DungeonZoneDefinition>(path);
             if (zone == null)
@@ -204,6 +209,18 @@ namespace JRogue.Editor.World
                 }
             }
             so.FindProperty("populationProfile").objectReferenceValue = populationProfile;
+            SerializedProperty tagsProperty = so.FindProperty("tags");
+            if (tags == null || tags.Length == 0)
+            {
+                tagsProperty.arraySize = 0;
+            }
+            else
+            {
+                tagsProperty.arraySize = tags.Length;
+                for (int i = 0; i < tags.Length; i++)
+                    tagsProperty.GetArrayElementAtIndex(i).stringValue = tags[i];
+            }
+
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(zone);
             return zone;
@@ -225,7 +242,10 @@ namespace JRogue.Editor.World
             int trapMax,
             InteractableTileDefinition interactableDefinition,
             int interactableMin,
-            int interactableMax)
+            int interactableMax,
+            ZonePopulationDensityMode enemyDensityMode = ZonePopulationDensityMode.ScatterCount,
+            string enemyRequiresTag = null,
+            int enemyForbiddenNearEdge = 0)
         {
             var profile = AssetDatabase.LoadAssetAtPath<DungeonZonePopulationProfile>(path);
             if (profile == null)
@@ -244,6 +264,9 @@ namespace JRogue.Editor.World
                 enemy.FindPropertyRelative("minCount").intValue = enemyMin;
                 enemy.FindPropertyRelative("maxCount").intValue = enemyMax;
                 enemy.FindPropertyRelative("weight").intValue = 0;
+                enemy.FindPropertyRelative("densityMode").enumValueIndex = (int)enemyDensityMode;
+                enemy.FindPropertyRelative("requiresTag").stringValue = enemyRequiresTag ?? string.Empty;
+                enemy.FindPropertyRelative("forbiddenNearEdge").intValue = enemyForbiddenNearEdge;
             }
             else
             {

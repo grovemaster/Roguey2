@@ -25,6 +25,9 @@ namespace JRogue.World.Generation.Zones
         [Min(0)] public int minCount;
         [Min(0)] public int maxCount;
         [Min(0)] public int weight;
+        public ZonePopulationDensityMode densityMode;
+        public string requiresTag;
+        [Min(0)] public int forbiddenNearEdge;
     }
 
     [Serializable]
@@ -35,6 +38,9 @@ namespace JRogue.World.Generation.Zones
         [Min(0)] public int maxCount;
         [Min(1)] public int minQuantity;
         [Min(1)] public int maxQuantity;
+        public ZonePopulationDensityMode densityMode;
+        public string requiresTag;
+        [Min(0)] public int forbiddenNearEdge;
     }
 
     [Serializable]
@@ -44,6 +50,9 @@ namespace JRogue.World.Generation.Zones
         [Min(0)] public int minCount;
         [Min(0)] public int maxCount;
         public bool startHidden;
+        public ZonePopulationDensityMode densityMode;
+        public string requiresTag;
+        [Min(0)] public int forbiddenNearEdge;
     }
 
     [Serializable]
@@ -52,6 +61,9 @@ namespace JRogue.World.Generation.Zones
         public TrapDefinition definition;
         [Min(0)] public int minCount;
         [Min(0)] public int maxCount;
+        public ZonePopulationDensityMode densityMode;
+        public string requiresTag;
+        [Min(0)] public int forbiddenNearEdge;
     }
 
     [Serializable]
@@ -60,6 +72,9 @@ namespace JRogue.World.Generation.Zones
         public InteractableTileDefinition definition;
         [Min(0)] public int minCount;
         [Min(0)] public int maxCount;
+        public ZonePopulationDensityMode densityMode;
+        public string requiresTag;
+        [Min(0)] public int forbiddenNearEdge;
     }
 
     [CreateAssetMenu(

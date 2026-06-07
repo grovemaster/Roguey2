@@ -67,6 +67,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/DoorPlacementPhase.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationEntryRules.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyFormationSpawnProfile.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyRestState.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryConsumePolicy.cs" />

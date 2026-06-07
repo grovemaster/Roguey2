@@ -374,4 +374,124 @@ namespace JRogue.Tests.UnitTests.World
             field.SetValue(target, value);
         }
     }
+
+    [TestFixture]
+    public sealed class ZonePopulationEntryRulesTests
+    {
+        readonly List<Object> _assets = new List<Object>();
+
+        [TearDown]
+        public void TearDown()
+        {
+            for (int i = 0; i < _assets.Count; i++)
+            {
+                if (_assets[i] != null)
+                    Object.DestroyImmediate(_assets[i]);
+            }
+
+            _assets.Clear();
+        }
+
+        [Test]
+        public void ChebyshevDistanceToAabbEdge_MeasuresInsetFromBounds()
+        {
+            var bounds = new RectInt(0, 0, 10, 10);
+
+            Assert.AreEqual(0, ZonePopulationEntryRules.ChebyshevDistanceToAabbEdge(new Vector3Int(0, 0, 0), bounds));
+            Assert.AreEqual(2, ZonePopulationEntryRules.ChebyshevDistanceToAabbEdge(new Vector3Int(2, 5, 0), bounds));
+            Assert.AreEqual(4, ZonePopulationEntryRules.ChebyshevDistanceToAabbEdge(new Vector3Int(4, 4, 0), bounds));
+        }
+
+        [Test]
+        public void MeetsTagRequirement_SkipsEntryWhenRequiredTagMissing()
+        {
+            DungeonFloorZoneLayout layout = CreateLayoutWithTaggedZone("desert", tags: null);
+
+            Assert.IsFalse(ZonePopulationEntryRules.MeetsTagRequirement(layout, "desert", "outdoor"));
+            Assert.IsTrue(ZonePopulationEntryRules.MeetsTagRequirement(layout, "desert", null));
+        }
+
+        [Test]
+        public void MeetsTagRequirement_AllowsEntryWhenRequiredTagPresent()
+        {
+            DungeonFloorZoneLayout layout = CreateLayoutWithTaggedZone("desert", tags: new[] { "outdoor" });
+
+            Assert.IsTrue(ZonePopulationEntryRules.MeetsTagRequirement(layout, "desert", "outdoor"));
+        }
+
+        [Test]
+        public void RollSpawnCount_DensityModeScalesWithEligibleCells()
+        {
+            var rng = new System.Random(42);
+
+            int scatter = ZonePopulationEntryRules.RollSpawnCount(
+                ZonePopulationDensityMode.ScatterCount,
+                2,
+                4,
+                100,
+                rng);
+            Assert.GreaterOrEqual(scatter, 2);
+            Assert.LessOrEqual(scatter, 4);
+
+            int density = ZonePopulationEntryRules.RollSpawnCount(
+                ZonePopulationDensityMode.DensityPer100Tiles,
+                2,
+                4,
+                200,
+                new System.Random(42));
+            Assert.AreEqual(8, density);
+        }
+
+        [Test]
+        public void CountEligibleCandidates_ExcludesCellsNearZoneEdge()
+        {
+            var bounds = new RectInt(0, 20, 30, 10);
+            var candidates = new List<Vector3Int>
+            {
+                new Vector3Int(0, 20, 0),
+                new Vector3Int(5, 25, 0),
+                new Vector3Int(10, 27, 0),
+            };
+
+            int eligible = ZonePopulationEntryRules.CountEligibleCandidates(
+                candidates,
+                startIndex: 0,
+                bounds,
+                forbiddenNearEdge: 2,
+                cell => true);
+
+            Assert.AreEqual(2, eligible);
+            Assert.IsFalse(ZonePopulationEntryRules.MeetsEdgeRequirement(candidates[0], bounds, 2));
+            Assert.IsTrue(ZonePopulationEntryRules.MeetsEdgeRequirement(candidates[1], bounds, 2));
+        }
+
+        DungeonFloorZoneLayout CreateLayoutWithTaggedZone(string zoneId, string[] tags)
+        {
+            var layout = ScriptableObject.CreateInstance<DungeonFloorZoneLayout>();
+            _assets.Add(layout);
+
+            var zoneDef = ScriptableObject.CreateInstance<DungeonZoneDefinition>();
+            _assets.Add(zoneDef);
+
+            FieldInfo zoneIdField = typeof(DungeonZoneDefinition).GetField(
+                "zoneId",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo tagsField = typeof(DungeonZoneDefinition).GetField(
+                "tags",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            zoneIdField.SetValue(zoneDef, zoneId);
+            tagsField.SetValue(zoneDef, tags ?? System.Array.Empty<string>());
+
+            layout.ReplaceAuthoringData(
+                30,
+                30,
+                ZoneLayoutKind.CompassSlots,
+                ZoneIds.Rock,
+                new ZoneSelectionRule[0],
+                new ZoneLayoutPiece[0],
+                new[] { zoneDef });
+
+            return layout;
+        }
+    }
 }

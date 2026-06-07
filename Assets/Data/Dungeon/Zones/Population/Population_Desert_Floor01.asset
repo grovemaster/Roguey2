@@ -17,6 +17,9 @@ MonoBehaviour:
     minCount: 2
     maxCount: 4
     weight: 0
+    densityMode: 1
+    requiresTag: outdoor
+    forbiddenNearEdge: 0
   floorItemPopulation: []
   hazardPopulation: []
   trapPopulation: []
