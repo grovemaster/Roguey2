@@ -27,6 +27,7 @@ namespace JRogue.Quest
         EquipItem = 3,
         CollectItem = 4,
         DeliverItem = 5,
+        EnterZone = 6,
     }
 
     public enum QuestPrerequisiteKind
@@ -80,6 +81,7 @@ namespace JRogue.Quest
         [Min(1)] public int itemQuantity;
         public EquipmentSlot equipSlot;
         public bool acceptGenericStacks;
+        public string zoneId;
     }
 
     [Serializable]

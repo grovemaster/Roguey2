@@ -420,6 +420,41 @@ namespace JRogue.Quest
             }
         }
 
+        public static void NotifyZoneEntered(
+            QuestDefinition definition,
+            QuestInstance instance,
+            string zoneId,
+            PartyManager party)
+        {
+            if (definition?.objectives == null || instance?.progress == null || string.IsNullOrWhiteSpace(zoneId))
+                return;
+
+            for (int i = 0; i < definition.objectives.Length; i++)
+            {
+                QuestObjectiveDefinition objective = definition.objectives[i];
+                if (objective.kind != QuestObjectiveKind.EnterZone)
+                    continue;
+
+                if (!string.Equals(objective.zoneId, zoneId.Trim(), StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (!ActorMatchesRequirement(objective.actorRequirement, party?.GetActiveMember(), party))
+                    continue;
+
+                string objectiveId = ResolveObjectiveId(objective, i);
+                int progressIndex = FindProgressIndex(instance.progress, objectiveId);
+                if (progressIndex < 0)
+                    continue;
+
+                QuestObjectiveProgress entry = instance.progress[progressIndex];
+                if (entry.completed)
+                    continue;
+
+                LatchObjective(ref entry, 1);
+                instance.progress[progressIndex] = entry;
+            }
+        }
+
         public static void NotifyItemEquipped(
             QuestDefinition definition,
             QuestInstance instance,

@@ -30,12 +30,42 @@ namespace JRogue.World.Generation.Phases
             }
 
             context.ResolvedZonePieces = selection.Pieces;
-            context.ZoneCellMap = ZoneCellMapBuilder.Build(
-                layout.FloorWidth,
-                layout.FloorHeight,
-                layout.FallbackZoneId,
-                selection.Pieces);
-            context.ZoneBoundsByInstanceId = ZoneCellMapBuilder.BuildZoneBounds(selection.Pieces);
+            if (layout.LayoutKind == ZoneLayoutKind.Hybrid)
+            {
+                DungeonLayoutStamp skeleton = layout.SkeletonStamp ?? def.LayoutStamp;
+                if (skeleton == null)
+                {
+                    DungeonGenerationLog.Warn(
+                        "ZoneLayoutPhase: Hybrid layout missing skeleton stamp; using rectangular zone map.");
+                    context.ZoneCellMap = ZoneCellMapBuilder.Build(
+                        layout.FloorWidth,
+                        layout.FloorHeight,
+                        layout.FallbackZoneId,
+                        selection.Pieces);
+                }
+                else
+                {
+                    context.ZoneCellMap = ZoneHybridCellAssigner.Assign(
+                        skeleton,
+                        layout.FloorWidth,
+                        layout.FloorHeight,
+                        layout.FallbackZoneId,
+                        selection.Pieces,
+                        out ResolvedZonePiece[] rebuiltPieces);
+                    context.ResolvedZonePieces = rebuiltPieces;
+                }
+            }
+            else
+            {
+                context.ZoneCellMap = ZoneCellMapBuilder.Build(
+                    layout.FloorWidth,
+                    layout.FloorHeight,
+                    layout.FallbackZoneId,
+                    selection.Pieces);
+            }
+
+            context.ZoneBoundsByInstanceId = ZoneCellMapBuilder.BuildZoneBounds(context.ResolvedZonePieces);
+            context.ZoneBoundsByZoneId = ZoneCellMapBuilder.BuildZoneBoundsByZoneId(context.ResolvedZonePieces);
             context.MapWidth = layout.FloorWidth;
             context.MapHeight = layout.FloorHeight;
 

@@ -12,6 +12,7 @@ namespace JRogue.World.Generation.Zones
         [SerializeField] ZoneLayoutPiece[] pieces = new ZoneLayoutPiece[0];
         [SerializeField] ZoneBoundaryKind defaultOuterBoundary = ZoneBoundaryKind.Wall;
         [SerializeField] string fallbackZoneId = ZoneIds.Rock;
+        [SerializeField] DungeonLayoutStamp skeletonStamp;
         [SerializeField] DungeonZoneDefinition[] zoneDefinitions = new DungeonZoneDefinition[0];
 
         public int FloorWidth => floorWidth;
@@ -21,6 +22,7 @@ namespace JRogue.World.Generation.Zones
         public ZoneLayoutPiece[] Pieces => pieces;
         public ZoneBoundaryKind DefaultOuterBoundary => defaultOuterBoundary;
         public string FallbackZoneId => fallbackZoneId;
+        public DungeonLayoutStamp SkeletonStamp => skeletonStamp;
         public DungeonZoneDefinition[] ZoneDefinitions => zoneDefinitions;
 
         public bool TryGetLayoutPiece(string pieceId, out ZoneLayoutPiece piece)

@@ -1,5 +1,7 @@
+using JRogue.Manager.Map;
 using JRogue.World.Generation;
 using JRogue.World.Generation.Phases;
+using JRogue.World.Generation.Zones;
 using JRogue.World.Lighting;
 using UnityEngine;
 
@@ -21,6 +23,18 @@ namespace JRogue.World.Generation.Phases
 
             lighting.FinalizeRegistry();
             lighting.SyncFloorReceiversFromMap();
+
+            MapManager map = MapManager.Instance;
+            if (context.UsesZoneComposite && map != null)
+            {
+                int zoneAmbientCells = ZoneAmbientApplicator.Apply(context, map, lighting);
+                if (zoneAmbientCells > 0)
+                {
+                    DungeonGenerationLog.Phase(
+                        nameof(LightingInitPhase),
+                        $"zoneAmbientCells={zoneAmbientCells}");
+                }
+            }
 
             if (context.Definition != null && context.Definition.FloorId == TownTorchSetupPhase.TownFloorId)
                 TownLightingSync.ApplyForCurrentPhase();

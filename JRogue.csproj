@@ -109,6 +109,7 @@
     <Compile Include="Assets/Scripts/World/Lighting/IlluminationVisibilityLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopDataTypes.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneDebugOverlay.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationState.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownPortalSetupPhase.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/HazardConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartySpawnService.cs" />
     <Compile Include="Assets/Scripts/Dialog/DialogDataTypes.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneEnterTracker.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/PortalPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightLevel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorInstance.cs" />
@@ -169,6 +171,7 @@
     <Compile Include="Assets/Scripts/Shop/ShopNpcDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySessionPersistence.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardPassageEvaluator.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneMinimapLabels.cs" />
     <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeLogic.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/UnlockDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Dialog/DialogGraphEvaluator.cs" />
@@ -205,6 +208,7 @@
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadGraveTouchLingerPassive.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneHybridCellAssigner.cs" />
     <Compile Include="Assets/Scripts/Controller/BaseActor.cs" />
     <Compile Include="Assets/Scripts/Abilities/HelmetOfLight/HelmetOfLightRadianceAbility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarPlacement.cs" />
@@ -349,6 +353,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotDefinition.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTile.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/DungeonVaultCatalog.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneAmbientApplicator.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotState.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardDefinition.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />

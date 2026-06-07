@@ -351,6 +351,33 @@ namespace JRogue.Quest
                 NotifyChanged();
         }
 
+        public void NotifyZoneEntered(string zoneId)
+        {
+            if (string.IsNullOrWhiteSpace(zoneId))
+                return;
+
+            PartyManager party = PartyManager.Instance;
+            bool changed = false;
+            foreach (KeyValuePair<string, QuestInstance> pair in _instances)
+            {
+                QuestDefinition definition = GetDefinition(pair.Key);
+                QuestInstance instance = pair.Value;
+                if (definition == null
+                    || instance.state == QuestRuntimeState.Completed
+                    || instance.state == QuestRuntimeState.Failed)
+                {
+                    continue;
+                }
+
+                QuestObjectiveProgress[] before = CloneProgress(instance.progress);
+                QuestLogic.NotifyZoneEntered(definition, instance, zoneId.Trim(), party);
+                changed |= RefreshQuest(definition, instance, before);
+            }
+
+            if (changed)
+                NotifyChanged();
+        }
+
         public void NotifyItemEquipped(BaseActor actor, ItemInstance item, EquipmentSlot slot)
         {
             PartyManager party = PartyManager.Instance;

@@ -43,7 +43,10 @@ namespace JRogue.World.Generation.Phases
                 context.ResolvedZonePieces,
                 context.ZoneCellMap,
                 context.RunSeed,
-                def.FloorId);
+                def.FloorId,
+                layout.LayoutKind == ZoneLayoutKind.Hybrid
+                    ? layout.SkeletonStamp ?? def.LayoutStamp
+                    : null);
 
             Dictionary<string, int> mapCounts = ZoneCellMapStats.CountByZone(context.ZoneCellMap);
             DungeonGenerationLog.Phase(nameof(ZoneFillPhase),

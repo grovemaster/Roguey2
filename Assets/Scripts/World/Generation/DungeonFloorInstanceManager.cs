@@ -5,6 +5,7 @@ using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Traps;
 using JRogue.World.Lighting;
+using JRogue.World.Generation.Zones;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -163,6 +164,7 @@ namespace JRogue.World.Generation
         {
             _activeFloor = instance;
             instance.FinishActivation(grid);
+            ZoneEnterTracker.Instance?.ResetTracking();
             // Party grid registration is done in PartySpawnService after formation placement.
         }
 

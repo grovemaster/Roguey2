@@ -976,4 +976,58 @@ namespace JRogue.Tests.UnitTests.World
                 ?.SetValue(target, value);
         }
     }
+
+    [TestFixture]
+    public sealed class ZoneHybridCellAssignerTests
+    {
+        readonly List<Object> _assets = new List<Object>();
+
+        [TearDown]
+        public void TearDown()
+        {
+            for (int i = 0; i < _assets.Count; i++)
+            {
+                if (_assets[i] != null)
+                    Object.DestroyImmediate(_assets[i]);
+            }
+
+            _assets.Clear();
+        }
+
+        [Test]
+        public void Assign_SplitsSkeletonWalkableBetweenSeedPieces()
+        {
+            var stamp = ScriptableObject.CreateInstance<DungeonLayoutStamp>();
+            _assets.Add(stamp);
+            stamp.InitializeGrid(20, 10, borderWalls: true);
+            for (int x = 1; x < 19; x++)
+                stamp.SetCell(x, 4, floor: true, wall: false);
+
+            var west = new ResolvedZonePiece("west", "dungeon", new RectInt(1, 1, 8, 8), false);
+            var east = new ResolvedZonePiece("east", "desert", new RectInt(11, 1, 8, 8), false);
+            var seeds = new[] { west, east };
+
+            Dictionary<Vector3Int, string> map = ZoneHybridCellAssigner.Assign(
+                stamp,
+                20,
+                10,
+                ZoneIds.Rock,
+                seeds,
+                out ResolvedZonePiece[] rebuilt);
+
+            int dungeonCells = 0;
+            int desertCells = 0;
+            foreach (KeyValuePair<Vector3Int, string> entry in map)
+            {
+                if (entry.Value == "dungeon")
+                    dungeonCells++;
+                else if (entry.Value == "desert")
+                    desertCells++;
+            }
+
+            Assert.Greater(dungeonCells, 0);
+            Assert.Greater(desertCells, 0);
+            Assert.AreEqual(2, rebuilt.Length);
+        }
+    }
 }

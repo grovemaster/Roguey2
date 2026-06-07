@@ -13,7 +13,8 @@ namespace JRogue.World.Generation.Zones
             IReadOnlyList<ResolvedZonePiece> pieces,
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             int runSeed,
-            string floorId)
+            string floorId,
+            DungeonLayoutStamp hybridSkeleton = null)
         {
             var stats = new ZonePaintStats
             {
@@ -28,11 +29,15 @@ namespace JRogue.World.Generation.Zones
 
             int width = layout.FloorWidth;
             int height = layout.FloorHeight;
-            PaintBaseline(map, floorDef, layout, zoneCellMap, width, height, stats);
+            if (layout.LayoutKind == ZoneLayoutKind.Hybrid && hybridSkeleton != null)
+                PaintSkeletonBaseline(map, floorDef, layout, hybridSkeleton, zoneCellMap, width, height, stats);
+            else
+                PaintBaseline(map, floorDef, layout, zoneCellMap, width, height, stats);
 
             if (pieces == null)
                 return stats;
 
+            bool maskByZoneMap = layout.LayoutKind == ZoneLayoutKind.Hybrid;
             for (int i = 0; i < pieces.Count; i++)
             {
                 ResolvedZonePiece piece = pieces[i];
@@ -45,7 +50,16 @@ namespace JRogue.World.Generation.Zones
                     : new ZoneFillProfile { mode = ZoneFillMode.SolidRect };
 
                 System.Random fillRng = ZoneGenerationRng.CreateZoneFillRng(runSeed, floorId, piece.PieceId);
-                FillPiece(map, floorDef, layout, piece, profile, fillRng, stats);
+                FillPiece(
+                    map,
+                    floorDef,
+                    layout,
+                    piece,
+                    profile,
+                    fillRng,
+                    zoneCellMap,
+                    maskByZoneMap,
+                    stats);
             }
 
             map.FloorMap?.CompressBounds();
@@ -84,6 +98,53 @@ namespace JRogue.World.Generation.Zones
             }
         }
 
+        static void PaintSkeletonBaseline(
+            JRogue.Manager.Map.MapManager map,
+            DungeonFloorDefinition floorDef,
+            DungeonFloorZoneLayout layout,
+            DungeonLayoutStamp skeleton,
+            IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
+            int width,
+            int height,
+            ZonePaintStats stats)
+        {
+            int stampWidth = Mathf.Min(skeleton.Width, width);
+            int stampHeight = Mathf.Min(skeleton.Height, height);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Vector3Int cell = new Vector3Int(x, y, 0);
+                    zoneCellMap.TryGetValue(cell, out string zoneId);
+                    if (string.IsNullOrEmpty(zoneId))
+                        zoneId = layout.FallbackZoneId;
+
+                    if (x >= stampWidth || y >= stampHeight || skeleton.IsWall(x, y) || !skeleton.IsFloor(x, y))
+                    {
+                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, zoneId);
+                        Increment(stats.WallCellsByZone, zoneId);
+                        continue;
+                    }
+
+                    ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, zoneId);
+                    Increment(stats.FloorCellsByZone, zoneId);
+                }
+            }
+        }
+
+        static bool CellBelongsToPiece(
+            Vector3Int cell,
+            ResolvedZonePiece piece,
+            IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
+            bool maskByZoneMap)
+        {
+            if (!maskByZoneMap)
+                return piece.Bounds.Contains(new Vector2Int(cell.x, cell.y));
+
+            return zoneCellMap.TryGetValue(cell, out string zoneId) && zoneId == piece.ZoneId;
+        }
+
         static void FillPiece(
             JRogue.Manager.Map.MapManager map,
             DungeonFloorDefinition floorDef,
@@ -91,15 +152,35 @@ namespace JRogue.World.Generation.Zones
             ResolvedZonePiece piece,
             ZoneFillProfile profile,
             System.Random fillRng,
+            IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
+            bool maskByZoneMap,
             ZonePaintStats stats)
         {
             switch (profile.mode)
             {
                 case ZoneFillMode.SubStamp:
-                    FillSubStamp(map, floorDef, layout, piece, profile, fillRng, stats);
+                    FillSubStamp(
+                        map,
+                        floorDef,
+                        layout,
+                        piece,
+                        profile,
+                        fillRng,
+                        zoneCellMap,
+                        maskByZoneMap,
+                        stats);
                     break;
                 case ZoneFillMode.OpenPocket:
-                    FillOpenPocket(map, floorDef, layout, piece, profile, fillRng, stats);
+                    FillOpenPocket(
+                        map,
+                        floorDef,
+                        layout,
+                        piece,
+                        profile,
+                        fillRng,
+                        zoneCellMap,
+                        maskByZoneMap,
+                        stats);
                     break;
                 case ZoneFillMode.RoomCorridor:
                     FillFromProcMask(
@@ -111,6 +192,8 @@ namespace JRogue.World.Generation.Zones
                             piece.Bounds,
                             fillRng,
                             profile.ensureConnectivity),
+                        zoneCellMap,
+                        maskByZoneMap,
                         stats);
                     break;
                 case ZoneFillMode.Cave:
@@ -124,10 +207,12 @@ namespace JRogue.World.Generation.Zones
                             fillRng,
                             profile.innerWallDensity,
                             profile.ensureConnectivity),
+                        zoneCellMap,
+                        maskByZoneMap,
                         stats);
                     break;
                 default:
-                    FillSolidRect(map, floorDef, layout, piece, stats);
+                    FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, stats);
                     break;
             }
         }
@@ -138,12 +223,14 @@ namespace JRogue.World.Generation.Zones
             DungeonFloorZoneLayout layout,
             ResolvedZonePiece piece,
             bool[,] floorMask,
+            IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
+            bool maskByZoneMap,
             ZonePaintStats stats)
         {
             RectInt bounds = piece.Bounds;
             if (floorMask == null)
             {
-                FillSolidRect(map, floorDef, layout, piece, stats);
+                FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, stats);
                 return;
             }
 
@@ -159,6 +246,9 @@ namespace JRogue.World.Generation.Zones
                         continue;
 
                     Vector3Int cell = new Vector3Int(worldX, worldY, 0);
+                    if (!CellBelongsToPiece(cell, piece, zoneCellMap, maskByZoneMap))
+                        continue;
+
                     if (floorMask[x, y])
                     {
                         ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId);
@@ -178,6 +268,8 @@ namespace JRogue.World.Generation.Zones
             DungeonFloorDefinition floorDef,
             DungeonFloorZoneLayout layout,
             ResolvedZonePiece piece,
+            IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
+            bool maskByZoneMap,
             ZonePaintStats stats)
         {
             RectInt bounds = piece.Bounds;
@@ -187,6 +279,9 @@ namespace JRogue.World.Generation.Zones
                 {
                     Vector3Int cell = new Vector3Int(x, y, 0);
                     if (ZoneTilePainter.IsMapOuterEdge(x, y, layout.FloorWidth, layout.FloorHeight))
+                        continue;
+
+                    if (!CellBelongsToPiece(cell, piece, zoneCellMap, maskByZoneMap))
                         continue;
 
                     ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId);
@@ -202,6 +297,8 @@ namespace JRogue.World.Generation.Zones
             ResolvedZonePiece piece,
             ZoneFillProfile profile,
             System.Random fillRng,
+            IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
+            bool maskByZoneMap,
             ZonePaintStats stats)
         {
             RectInt bounds = piece.Bounds;
@@ -215,6 +312,9 @@ namespace JRogue.World.Generation.Zones
                         continue;
 
                     Vector3Int cell = new Vector3Int(x, y, 0);
+                    if (!CellBelongsToPiece(cell, piece, zoneCellMap, maskByZoneMap))
+                        continue;
+
                     bool interior = x > bounds.xMin && x < bounds.xMax - 1
                         && y > bounds.yMin && y < bounds.yMax - 1;
                     bool placePillar = interior && density > 0 && fillRng.Next(100) < density;
@@ -240,9 +340,11 @@ namespace JRogue.World.Generation.Zones
             ResolvedZonePiece piece,
             ZoneFillProfile profile,
             System.Random fillRng,
+            IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
+            bool maskByZoneMap,
             ZonePaintStats stats)
         {
-            FillSolidRect(map, floorDef, layout, piece, stats);
+            FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, stats);
 
             DungeonLayoutStamp stamp = PickSubStamp(profile.subStampTable, fillRng);
             if (stamp == null)
@@ -269,6 +371,9 @@ namespace JRogue.World.Generation.Zones
                         continue;
 
                     Vector3Int cell = new Vector3Int(worldX, worldY, 0);
+                    if (!CellBelongsToPiece(cell, piece, zoneCellMap, maskByZoneMap))
+                        continue;
+
                     if (stamp.IsWall(sx, sy))
                     {
                         if (IsSubStampBorderCell(sx, sy, stamp.Width, stamp.Height))

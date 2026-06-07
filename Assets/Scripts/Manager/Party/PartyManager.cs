@@ -5,6 +5,7 @@ using JRogue.Manager.Floor;
 using JRogue.Manager.Loot;
 using JRogue.Manager.Progression;
 using JRogue.View;
+using JRogue.World.Generation.Zones;
 using UnityEngine;
 
 namespace JRogue.Manager.Party
@@ -107,6 +108,11 @@ namespace JRogue.Manager.Party
             EnsureComponent<ManaStoneAutoPickupService>();
             EnsureComponent<PartyRestState>();
             EnsureComponent<RestSessionService>();
+            EnsureComponent<ZoneEnterTracker>();
+            EnsureComponent<ZoneMinimapLabels>();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            EnsureComponent<ZoneDebugOverlay>();
+#endif
         }
 
         void EnsureComponent<T>() where T : Component

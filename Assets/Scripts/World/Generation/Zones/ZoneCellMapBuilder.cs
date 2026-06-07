@@ -78,5 +78,38 @@ namespace JRogue.World.Generation.Zones
 
             return bounds;
         }
+
+        public static Dictionary<string, RectInt> BuildZoneBoundsByZoneId(IReadOnlyList<ResolvedZonePiece> pieces)
+        {
+            var bounds = new Dictionary<string, RectInt>(System.StringComparer.Ordinal);
+            if (pieces == null)
+                return bounds;
+
+            for (int i = 0; i < pieces.Count; i++)
+            {
+                ResolvedZonePiece piece = pieces[i];
+                if (piece.ZoneId == ZoneIds.Empty || piece.ZoneId == ZoneIds.Rock)
+                    continue;
+
+                if (bounds.TryGetValue(piece.ZoneId, out RectInt existing))
+                {
+                    int xMin = Mathf.Min(existing.xMin, piece.Bounds.xMin);
+                    int yMin = Mathf.Min(existing.yMin, piece.Bounds.yMin);
+                    int xMax = Mathf.Max(existing.xMax, piece.Bounds.xMax);
+                    int yMax = Mathf.Max(existing.yMax, piece.Bounds.yMax);
+                    bounds[piece.ZoneId] = ZoneCompassRectResolver.FromInclusiveBounds(
+                        xMin,
+                        yMin,
+                        xMax,
+                        yMax);
+                }
+                else
+                {
+                    bounds[piece.ZoneId] = piece.Bounds;
+                }
+            }
+
+            return bounds;
+        }
     }
 }

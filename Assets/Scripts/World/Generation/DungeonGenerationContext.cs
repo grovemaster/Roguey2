@@ -31,6 +31,7 @@ namespace JRogue.World.Generation
         public List<ResolvedEdgePortal> ResolvedEdgePortals { get; } = new List<ResolvedEdgePortal>();
         public Dictionary<Vector3Int, string> ZoneCellMap { get; set; }
         public Dictionary<string, RectInt> ZoneBoundsByInstanceId { get; set; }
+        public Dictionary<string, RectInt> ZoneBoundsByZoneId { get; set; }
         public ResolvedZonePiece[] ResolvedZonePieces { get; set; }
         public Dictionary<string, ZonePopulationScatterCounts> ZoneScatterCountsByInstance { get; } =
             new Dictionary<string, ZonePopulationScatterCounts>();
