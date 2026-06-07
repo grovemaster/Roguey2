@@ -78,6 +78,7 @@
     <Compile Include="Assets/Tests/UnitTests/Progression/RestSessionTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DwarfAncestryRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarDepletedStateTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/ZonePopulationTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/PlayerCommandProcessorTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Party/MainCharacterGameOverTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/Phase0RacialContractTests.cs" />

@@ -87,7 +87,7 @@ namespace JRogue.World.Generation.Zones
             Vector3Int[] samples =
             {
                 new Vector3Int(10, 5, 0),
-                new Vector3Int(21, 10, 0),
+                new Vector3Int(15, 25, 0),
                 new Vector3Int(25, 10, 0),
                 new Vector3Int(28, 10, 0),
             };
@@ -194,6 +194,57 @@ namespace JRogue.World.Generation.Zones
             }
 
             Debug.Log($"{Tag} {phaseName} candidates={candidates.Count} {ZoneCellMapStats.FormatCounts(byZone)}");
+        }
+
+        public static void LogZoneInstancePopulationCandidates(
+            DungeonGenerationContext context,
+            string phaseName)
+        {
+            if (context == null || !context.UsesZoneComposite)
+                return;
+
+            MapManager map = MapManager.Instance;
+            if (map == null)
+                return;
+
+            IReadOnlyList<ResolvedZonePiece> instances = ZonePopulationUtility.GetHabitatInstances(context);
+            if (instances.Count == 0)
+                return;
+
+            var log = new StringBuilder();
+            log.Append(phaseName).Append(" zoneInstances=[");
+            DungeonFloorZoneLayout layout = context.Definition?.ZoneLayout;
+
+            for (int i = 0; i < instances.Count; i++)
+            {
+                ResolvedZonePiece instance = instances[i];
+                if (i > 0)
+                    log.Append("; ");
+
+                List<Vector3Int> candidates = PopulationPlacementUtility.CollectZoneInstanceCandidates(
+                    map,
+                    context,
+                    instance.ZoneInstanceId);
+                int enemyRows = ZonePopulationUtility.ResolveEnemyEntries(
+                    context.Definition,
+                    layout,
+                    instance.ZoneId).Count;
+                int itemRows = ZonePopulationUtility.ResolveFloorItemEntries(
+                    context.Definition,
+                    layout,
+                    instance.ZoneId).Count;
+
+                log.Append(instance.ZoneInstanceId)
+                    .Append(" candidates=")
+                    .Append(candidates.Count)
+                    .Append(" enemyRows=")
+                    .Append(enemyRows)
+                    .Append(" itemRows=")
+                    .Append(itemRows);
+            }
+
+            log.Append(']');
+            Debug.Log($"{Tag} {log}");
         }
 
         static void CountWalkableByZone(

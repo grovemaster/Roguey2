@@ -11,5 +11,23 @@ namespace JRogue.World.Generation.Zones
                 ^ (floorId != null ? floorId.GetHashCode() : 0)
                 ^ (pieceId != null ? pieceId.GetHashCode() : 0)
                 ^ 0xF117));
+
+        public static System.Random CreatePopulationRng(int runSeed, string floorId) =>
+            new System.Random(unchecked(
+                runSeed * 397
+                ^ (floorId != null ? floorId.GetHashCode() : 0)
+                ^ 0x5EED));
+
+        public static System.Random CreateZonePopulationRng(
+            int runSeed,
+            string floorId,
+            string zoneInstanceId,
+            string category) =>
+            new System.Random(unchecked(
+                runSeed * 397
+                ^ (floorId != null ? floorId.GetHashCode() : 0)
+                ^ (zoneInstanceId != null ? zoneInstanceId.GetHashCode() : 0)
+                ^ (category != null ? category.GetHashCode() : 0)
+                ^ 0x5EE1));
     }
 }

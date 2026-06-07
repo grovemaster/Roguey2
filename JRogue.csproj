@@ -114,6 +114,7 @@
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultCellKind.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationUtility.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneSelectionSolver.cs" />
@@ -390,6 +391,7 @@
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceProfile.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonZonePopulationProfile.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/MapInteractPlayerInteraction.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/GridOverlayPainter.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingQaPlacementResolver.cs" />

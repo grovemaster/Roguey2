@@ -28,3 +28,4 @@ MonoBehaviour:
     innerWallDensity: 10
     ensureConnectivity: 0
   tags: []
+  populationProfile: {fileID: 11400000, guid: 6c0d3e4f5061728394a5b6c7d8e9f0a1, type: 2}

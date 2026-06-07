@@ -59,6 +59,7 @@ namespace JRogue.World.Generation
         [SerializeField] TrapPopulationEntry[] trapPopulation = Array.Empty<TrapPopulationEntry>();
         [SerializeField] InteractablePopulationEntry[] interactablePopulation = Array.Empty<InteractablePopulationEntry>();
         [SerializeField] FloorItemPopulationEntry[] floorItemPopulation = Array.Empty<FloorItemPopulationEntry>();
+        [SerializeField] bool useFloorPopulationAsFallback = true;
         [SerializeField] List<DungeonPortalSpec> portals = new List<DungeonPortalSpec>();
         [SerializeField] List<EdgePortalSpec> edgePortals = new List<EdgePortalSpec>();
         [SerializeField] List<PortalArrivalBinding> arrivalBindings = new List<PortalArrivalBinding>();
@@ -93,6 +94,7 @@ namespace JRogue.World.Generation
         public IReadOnlyList<TrapPopulationEntry> TrapPopulation => trapPopulation;
         public IReadOnlyList<InteractablePopulationEntry> InteractablePopulation => interactablePopulation;
         public IReadOnlyList<FloorItemPopulationEntry> FloorItemPopulation => floorItemPopulation;
+        public bool UseFloorPopulationAsFallback => useFloorPopulationAsFallback;
         public IReadOnlyList<DungeonPortalSpec> Portals => portals;
         public IReadOnlyList<EdgePortalSpec> EdgePortals => edgePortals;
         public IReadOnlyList<PortalArrivalBinding> ArrivalBindings => arrivalBindings;

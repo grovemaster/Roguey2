@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
 using System.IO;
+using JRogue.Item;
+using JRogue.Spawn;
 using JRogue.World.Generation;
 using JRogue.World.Generation.Zones;
 using UnityEditor;
@@ -20,13 +22,17 @@ namespace JRogue.Editor.World
         const string SnowWallPath = "Assets/TileMaps/Vault/SnowTheme_48.asset";
         const string Floor01DefPath = "Assets/Resources/Dungeon/Floor_dungeon_floor_01.asset";
         const string Floor01LayoutPath = LayoutRoot + "/Layout_Floor01_Zones.asset";
+        const string PopulationRoot = ZoneRoot + "/Population";
         const string DungeonSubStampPath = "Assets/Resources/Dungeon/Stamp_Floor02_20x20.asset";
+        const string SkeletonSpawnPath = "Assets/Resources/Dungeon/Spawn_DungeonTestSkeleton.asset";
+        const string HandheldTorchPath = "Assets/Resources/Item/Accessory/Accessory_HandheldTorch.asset";
 
         [MenuItem("JRogue/Dungeon/Create Floor 1 Zone Pack")]
         public static void CreateFloor1ZonePack()
         {
             EnsureFolder(ZoneRoot);
             EnsureFolder(LayoutRoot);
+            EnsureFolder(PopulationRoot);
 
             TileBase dungeonFloor = LoadTile(FloorTilePath);
             TileBase dungeonWall = LoadTile(WallTilePath);
@@ -35,6 +41,34 @@ namespace JRogue.Editor.World
             TileBase snowFloor = LoadTile(SnowFloorPath);
             TileBase snowWall = LoadTile(SnowWallPath);
             DungeonLayoutStamp dungeonStamp = AssetDatabase.LoadAssetAtPath<DungeonLayoutStamp>(DungeonSubStampPath);
+            EnemySpawnDefinition skeletonSpawn =
+                AssetDatabase.LoadAssetAtPath<EnemySpawnDefinition>(SkeletonSpawnPath);
+            ItemData handheldTorch = AssetDatabase.LoadAssetAtPath<ItemData>(HandheldTorchPath);
+
+            DungeonZonePopulationProfile dungeonPopulation = CreateOrUpdatePopulationProfile(
+                PopulationRoot + "/Population_Dungeon_Floor01.asset",
+                skeletonSpawn,
+                enemyMin: 4,
+                enemyMax: 6,
+                handheldTorch,
+                itemMin: 0,
+                itemMax: 1);
+            DungeonZonePopulationProfile desertPopulation = CreateOrUpdatePopulationProfile(
+                PopulationRoot + "/Population_Desert_Floor01.asset",
+                skeletonSpawn,
+                enemyMin: 2,
+                enemyMax: 4,
+                itemData: null,
+                itemMin: 0,
+                itemMax: 0);
+            DungeonZonePopulationProfile snowPopulation = CreateOrUpdatePopulationProfile(
+                PopulationRoot + "/Population_Snow_Floor01.asset",
+                skeletonSpawn,
+                enemyMin: 1,
+                enemyMax: 3,
+                itemData: null,
+                itemMin: 0,
+                itemMax: 0);
 
             DungeonZoneDefinition zoneDungeon = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Dungeon.asset",
@@ -49,7 +83,8 @@ namespace JRogue.Editor.World
                     {
                         new ZoneSubStampEntry { stamp = dungeonStamp, weight = 1 },
                     },
-                });
+                },
+                dungeonPopulation);
             DungeonZoneDefinition zoneDesert = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Desert.asset",
                 "desert",
@@ -60,7 +95,8 @@ namespace JRogue.Editor.World
                 {
                     mode = ZoneFillMode.OpenPocket,
                     innerWallDensity = 10,
-                });
+                },
+                desertPopulation);
             DungeonZoneDefinition zoneSnow = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Snow.asset",
                 "snow",
@@ -71,7 +107,8 @@ namespace JRogue.Editor.World
                 {
                     mode = ZoneFillMode.OpenPocket,
                     innerWallDensity = 10,
-                });
+                },
+                snowPopulation);
 
             DungeonFloorZoneLayout layout = CreateOrUpdateFloor01Layout(
                 zoneDungeon,
@@ -89,7 +126,8 @@ namespace JRogue.Editor.World
             string displayName,
             TileBase floorTile,
             TileBase wallTile,
-            ZoneFillProfile fillProfile)
+            ZoneFillProfile fillProfile,
+            DungeonZonePopulationProfile populationProfile = null)
         {
             var zone = AssetDatabase.LoadAssetAtPath<DungeonZoneDefinition>(path);
             if (zone == null)
@@ -127,9 +165,63 @@ namespace JRogue.Editor.World
                     entry.FindPropertyRelative("weight").intValue = table[i].weight;
                 }
             }
+            so.FindProperty("populationProfile").objectReferenceValue = populationProfile;
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(zone);
             return zone;
+        }
+
+        static DungeonZonePopulationProfile CreateOrUpdatePopulationProfile(
+            string path,
+            EnemySpawnDefinition spawnDefinition,
+            int enemyMin,
+            int enemyMax,
+            ItemData itemData,
+            int itemMin,
+            int itemMax)
+        {
+            var profile = AssetDatabase.LoadAssetAtPath<DungeonZonePopulationProfile>(path);
+            if (profile == null)
+            {
+                profile = ScriptableObject.CreateInstance<DungeonZonePopulationProfile>();
+                AssetDatabase.CreateAsset(profile, path);
+            }
+
+            SerializedObject so = new SerializedObject(profile);
+            SerializedProperty enemies = so.FindProperty("enemyPopulation");
+            if (spawnDefinition != null)
+            {
+                enemies.arraySize = 1;
+                SerializedProperty enemy = enemies.GetArrayElementAtIndex(0);
+                enemy.FindPropertyRelative("spawnDefinition").objectReferenceValue = spawnDefinition;
+                enemy.FindPropertyRelative("minCount").intValue = enemyMin;
+                enemy.FindPropertyRelative("maxCount").intValue = enemyMax;
+                enemy.FindPropertyRelative("weight").intValue = 0;
+            }
+            else
+            {
+                enemies.arraySize = 0;
+            }
+
+            SerializedProperty items = so.FindProperty("floorItemPopulation");
+            if (itemData != null)
+            {
+                items.arraySize = 1;
+                SerializedProperty item = items.GetArrayElementAtIndex(0);
+                item.FindPropertyRelative("itemData").objectReferenceValue = itemData;
+                item.FindPropertyRelative("minCount").intValue = itemMin;
+                item.FindPropertyRelative("maxCount").intValue = itemMax;
+                item.FindPropertyRelative("minQuantity").intValue = 1;
+                item.FindPropertyRelative("maxQuantity").intValue = 1;
+            }
+            else
+            {
+                items.arraySize = 0;
+            }
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(profile);
+            return profile;
         }
 
         static DungeonFloorZoneLayout CreateOrUpdateFloor01Layout(
@@ -253,6 +345,7 @@ namespace JRogue.Editor.World
             SerializedObject so = new SerializedObject(floorDef);
             so.FindProperty("layoutMode").enumValueIndex = (int)FloorLayoutMode.ZoneComposite;
             so.FindProperty("zoneLayout").objectReferenceValue = layout;
+            so.FindProperty("useFloorPopulationAsFallback").boolValue = true;
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(floorDef);
         }

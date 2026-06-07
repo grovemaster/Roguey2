@@ -13,11 +13,93 @@ namespace JRogue.World.Generation.Phases
         public void Execute(DungeonGenerationContext context)
         {
             DungeonFloorDefinition def = context.Definition;
-            if (def?.EnemyPopulation == null || def.EnemyPopulation.Count == 0)
+            if (def == null)
                 return;
 
             MapManager map = MapManager.Instance;
             if (map == null)
+                return;
+
+            if (context.UsesZoneComposite)
+            {
+                ExecuteZoneComposite(context, def, map);
+                return;
+            }
+
+            ExecuteFloorWide(context, def, map);
+        }
+
+        static void ExecuteZoneComposite(
+            DungeonGenerationContext context,
+            DungeonFloorDefinition def,
+            MapManager map)
+        {
+            ZoneGenerationDiagnostics.LogPopulationByZone(nameof(EnemyPopulationPhase), map, context);
+            ZoneGenerationDiagnostics.LogZoneInstancePopulationCandidates(context, "before EnemyPopulationPhase");
+
+            IReadOnlyList<ResolvedZonePiece> instances = ZonePopulationUtility.GetHabitatInstances(context);
+            if (instances.Count == 0)
+            {
+                DungeonGenerationLog.Warn($"{nameof(EnemyPopulationPhase)}: no habitat zone instances.");
+                return;
+            }
+
+            int spawnedTotal = 0;
+            int spawnAttempts = 0;
+            int spawnFailures = 0;
+            int candidateTotal = 0;
+            DungeonFloorZoneLayout layout = def.ZoneLayout;
+
+            for (int i = 0; i < instances.Count; i++)
+            {
+                ResolvedZonePiece instance = instances[i];
+                IReadOnlyList<ZoneEnemyPopulationEntry> entries =
+                    ZonePopulationUtility.ResolveEnemyEntries(def, layout, instance.ZoneId);
+                if (entries == null || entries.Count == 0)
+                    continue;
+
+                List<Vector3Int> candidates = PopulationPlacementUtility.CollectZoneInstanceCandidates(
+                    map,
+                    context,
+                    instance.ZoneInstanceId);
+                if (candidates.Count == 0)
+                {
+                    DungeonGenerationLog.Warn(
+                        $"{nameof(EnemyPopulationPhase)}: no candidates for {instance.ZoneInstanceId}.");
+                    continue;
+                }
+
+                candidateTotal += candidates.Count;
+                System.Random rng = ZoneGenerationRng.CreateZonePopulationRng(
+                    context.RunSeed,
+                    def.FloorId,
+                    instance.ZoneInstanceId,
+                    "Enemy");
+
+                spawnedTotal += ZonePopulationUtility.ScatterEnemies(
+                    context,
+                    map,
+                    entries,
+                    candidates,
+                    rng,
+                    instance,
+                    out int zoneAttempts,
+                    out int zoneFailures);
+                spawnAttempts += zoneAttempts;
+                spawnFailures += zoneFailures;
+            }
+
+            DungeonGenerationLog.Phase(nameof(EnemyPopulationPhase),
+                $"zoneComposite spawned={spawnedTotal} instances={instances.Count} " +
+                $"candidates={candidateTotal} attempts={spawnAttempts} failures={spawnFailures}");
+        }
+
+        static void ExecuteFloorWide(
+            DungeonGenerationContext context,
+            DungeonFloorDefinition def,
+            MapManager map)
+        {
+            if (def.EnemyPopulation == null || def.EnemyPopulation.Count == 0)
                 return;
 
             ZoneGenerationDiagnostics.LogPopulationByZone(nameof(EnemyPopulationPhase), map, context);
@@ -69,9 +151,11 @@ namespace JRogue.World.Generation.Phases
                     }
 
                     if (!placed)
+                    {
                         DungeonGenerationLog.Warn(
                             $"Could not place enemy #{spawnIndex + 1} on {def.FloorId} " +
                             $"(attempts={spawnAttempts} failures={spawnFailures}).");
+                    }
                 }
             }
 
@@ -79,6 +163,5 @@ namespace JRogue.World.Generation.Phases
                 $"spawned={spawnedTotal} candidates={candidates.Count} " +
                 $"attempts={spawnAttempts} failures={spawnFailures}");
         }
-
     }
 }

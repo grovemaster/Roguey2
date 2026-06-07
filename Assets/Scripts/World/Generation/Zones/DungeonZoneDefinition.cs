@@ -17,6 +17,7 @@ namespace JRogue.World.Generation.Zones
         [Min(1)] [SerializeField] int maxWidth = 24;
         [Min(1)] [SerializeField] int maxHeight = 24;
         [SerializeField] ZoneFillProfile fillProfile = new ZoneFillProfile { mode = ZoneFillMode.SolidRect };
+        [SerializeField] DungeonZonePopulationProfile populationProfile;
         [SerializeField] string[] tags;
 
         public string ZoneId => zoneId;
@@ -30,6 +31,7 @@ namespace JRogue.World.Generation.Zones
         public int MaxWidth => maxWidth;
         public int MaxHeight => maxHeight;
         public ZoneFillProfile FillProfile => fillProfile;
+        public DungeonZonePopulationProfile PopulationProfile => populationProfile;
         public string[] Tags => tags;
     }
 }

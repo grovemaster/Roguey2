@@ -48,6 +48,7 @@ MonoBehaviour:
     maxCount: 1
     minQuantity: 1
     maxQuantity: 1
+  useFloorPopulationAsFallback: 1
   portals:
   - portalLinkId: link_floor01_to_floor02
     targetFloorId: dungeon_floor_02

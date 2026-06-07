@@ -125,6 +125,60 @@ namespace JRogue.World.Generation.Phases
             return candidates;
         }
 
+        public static List<Vector3Int> CollectZoneInstanceCandidates(
+            MapManager map,
+            DungeonGenerationContext context,
+            string zoneInstanceId,
+            bool excludeReserved = true)
+        {
+            var candidates = new List<Vector3Int>();
+            if (map == null || context == null || string.IsNullOrEmpty(zoneInstanceId))
+                return candidates;
+
+            if (!ZonePopulationUtility.TryGetZoneInstanceBounds(context, zoneInstanceId, out RectInt bounds))
+                return candidates;
+
+            string expectedZoneId = ResolveZoneIdForInstance(context, zoneInstanceId);
+            if (string.IsNullOrEmpty(expectedZoneId))
+                return candidates;
+
+            List<Vector3Int> floorCandidates = CollectFloorCandidates(map, context, excludeReserved);
+            for (int i = 0; i < floorCandidates.Count; i++)
+            {
+                Vector3Int cell = floorCandidates[i];
+                if (!ContainsCell(bounds, cell))
+                    continue;
+
+                if (!context.TryGetZoneId(cell, out string cellZoneId) || cellZoneId != expectedZoneId)
+                    continue;
+
+                candidates.Add(cell);
+            }
+
+            return candidates;
+        }
+
+        static string ResolveZoneIdForInstance(DungeonGenerationContext context, string zoneInstanceId)
+        {
+            if (context?.ResolvedZonePieces == null)
+                return null;
+
+            for (int i = 0; i < context.ResolvedZonePieces.Length; i++)
+            {
+                ResolvedZonePiece piece = context.ResolvedZonePieces[i];
+                if (piece.ZoneInstanceId == zoneInstanceId)
+                    return piece.ZoneId;
+            }
+
+            return null;
+        }
+
+        static bool ContainsCell(RectInt bounds, Vector3Int cell) =>
+            cell.x >= bounds.xMin
+            && cell.x < bounds.xMax
+            && cell.y >= bounds.yMin
+            && cell.y < bounds.yMax;
+
         public static bool TryGetMapBounds(DungeonGenerationContext context, out int width, out int height)
         {
             width = 0;
