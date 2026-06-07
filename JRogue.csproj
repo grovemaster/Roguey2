@@ -106,6 +106,7 @@
     <Compile Include="Assets/Scripts/World/Generation/TownPhaseAdvanceSource.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRule.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapService.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/SpiritImprintTimelineView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonZoneDefinition.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/StatMinimumPrecondition.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownToDungeonPortalInteractable.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/PlayfieldLayout.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableBumpResult.cs" />
     <Compile Include="Assets/Scripts/Item/EvocableChargeRules.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/RacialAbilitiesPartyStripView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacementUtility.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/PartyInventoryTransferService.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
@@ -274,6 +276,7 @@
     <Compile Include="Assets/Scripts/World/Altar/ManaStoneTierAcceptFilter.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TrapConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingScenarioController.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/BarbarianSpiritImprintViewModel.cs" />
     <Compile Include="Assets/Scripts/Status/PartyStatusQueries.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardBootstrap.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcDialogSession.cs" />
@@ -359,6 +362,7 @@
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/HealingPotionRules.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarItemLookup.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/RacialUiTheme.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceResolver.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SetTileEmissionEffect.cs" />
@@ -373,8 +377,8 @@
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationPipeline.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
-    <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TownTransitionCurtainUI.cs" />
+    <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnAreaResolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeRunState.cs" />
@@ -397,6 +401,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneRectProcGenerator.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/RestSessionService.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/RacialAbilitiesUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCellMapStats.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/ScriptOnlyPrecondition.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarIconResolver.cs" />
@@ -431,8 +436,8 @@
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentManager.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneTilePainter.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorInstance.cs" />
-    <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingFacadeOverlay.cs" />
+    <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableEffect.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableActivationSource.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameLogService.cs" />

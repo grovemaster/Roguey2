@@ -7,6 +7,7 @@ using JRogue.Manager.Turn;
 using JRogue.UI.Gameplay;
 using JRogue.UI.Inventory;
 using JRogue.UI.Quest;
+using JRogue.UI.Racial;
 using JRogue.UI.Targeting;
 using JRogue.World.Generation;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace JRogue.Input
         private GameControls controls;
         private InputAction toggleInventoryAction;
         private InputAction toggleQuestJournalAction;
+        private InputAction toggleRacialAbilitiesAction;
         private InputAction pickupFloorItemsAction;
         private InputAction aimBowAction;
         private InputAction restAction;
@@ -89,6 +91,21 @@ namespace JRogue.Input
             else
             {
                 toggleQuestJournalAction.performed += OnToggleQuestJournalPerformed;
+            }
+
+            toggleRacialAbilitiesAction = playerInput != null
+                ? playerInput.actions.FindAction("ToggleRacialAbilities", throwIfNotFound: false)
+                : null;
+
+            if (toggleRacialAbilitiesAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>ToggleRacialAbilities</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (binding <Keyboard>/k).");
+            }
+            else
+            {
+                toggleRacialAbilitiesAction.performed += OnToggleRacialAbilitiesPerformed;
             }
 
             pickupFloorItemsAction = playerInput != null
@@ -184,6 +201,7 @@ namespace JRogue.Input
             AltarOfferingModalUI.EnsureInstance();
             AltarUsedModalUI.EnsureInstance();
             QuestJournalUI.EnsureInstance();
+            RacialAbilitiesUI.EnsureInstance();
 
             FloorPickupHudButton.EnsureInstance();
         }
@@ -203,6 +221,12 @@ namespace JRogue.Input
             {
                 toggleQuestJournalAction.performed -= OnToggleQuestJournalPerformed;
                 toggleQuestJournalAction = null;
+            }
+
+            if (toggleRacialAbilitiesAction != null)
+            {
+                toggleRacialAbilitiesAction.performed -= OnToggleRacialAbilitiesPerformed;
+                toggleRacialAbilitiesAction = null;
             }
 
             if (pickupFloorItemsAction != null)
@@ -333,6 +357,29 @@ namespace JRogue.Input
                 return;
 
             QuestJournalUI.TogglePanelFromGameplayInput();
+        }
+
+        void OnToggleRacialAbilitiesPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            if (GameOverService.IsGameOver)
+                return;
+
+            if (RacialAbilitiesUI.BlocksGameplay)
+            {
+                RacialAbilitiesUI.TogglePanelFromGameplayInput();
+                return;
+            }
+
+            InventoryUI.ForceCloseIfOpen();
+            QuestJournalUI.ForceCloseIfOpen();
+
+            if (BlocksFloorGameplay())
+                return;
+
+            RacialAbilitiesUI.TogglePanelFromGameplayInput();
         }
 
         void OnAimBowPerformed(InputAction.CallbackContext context)

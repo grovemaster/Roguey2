@@ -3,6 +3,7 @@ using System.Text;
 using JRogue.Item;
 using JRogue.Manager.Party;
 using JRogue.Quest;
+using JRogue.UI.Inventory;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -53,6 +54,12 @@ namespace JRogue.UI.Quest
 
         public static bool BlocksGameplay =>
             _instance != null && _instance._open;
+
+        public static void ForceCloseIfOpen()
+        {
+            if (_instance != null && _instance._open)
+                _instance.Close();
+        }
 
         public static void TogglePanelFromGameplayInput()
         {
@@ -130,6 +137,9 @@ namespace JRogue.UI.Quest
 
         public void Open()
         {
+            InventoryUI.ForceCloseIfOpen();
+            JRogue.UI.Racial.RacialAbilitiesUI.ForceCloseIfOpen();
+
             EnsurePanelBuilt();
             _open = true;
             _panelRoot.SetActive(true);

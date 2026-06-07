@@ -1,6 +1,7 @@
 using JRogue.Manager.Progression;
 using JRogue.UI.Inventory;
 using JRogue.UI.Quest;
+using JRogue.UI.Racial;
 
 namespace JRogue.UI.Gameplay
 {
@@ -24,6 +25,7 @@ namespace JRogue.UI.Gameplay
             || NpcDialogBoxUI.BlocksGameplay
             || ShopNpcMenuUI.BlocksGameplay
             || QuestJournalUI.BlocksGameplay
+            || RacialAbilitiesUI.BlocksGameplay
             || FriendlyFireConfirmDialogUI.BlocksGameplay
             || MessageHistoryUI.BlocksGameplay
             || InventoryGivePickerUI.IsOpen;

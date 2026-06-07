@@ -150,6 +150,12 @@ namespace JRogue.UI.Inventory
                 _instance.inventoryPanel.SetActive(false);
         }
 
+        public static void ForceCloseIfOpen()
+        {
+            if (_instance?.inventoryPanel != null && _instance.inventoryPanel.activeSelf)
+                _instance.inventoryPanel.SetActive(false);
+        }
+
         public static void TogglePanelFromGameplayInput()
         {
             if (_instance == null)
@@ -868,6 +874,9 @@ namespace JRogue.UI.Inventory
                 return;
 
             bool willOpen = !inventoryPanel.activeSelf;
+            if (willOpen)
+                JRogue.UI.Racial.RacialAbilitiesUI.ForceCloseIfOpen();
+
             inventoryPanel.SetActive(willOpen);
 
             if (IsOpen)
