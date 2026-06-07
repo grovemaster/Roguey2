@@ -29,6 +29,7 @@ namespace JRogue.World.Generation
             new Dictionary<string, PortalArrivalBinding>();
         public List<PortalInteractable> Portals { get; } = new List<PortalInteractable>();
         public List<ResolvedEdgePortal> ResolvedEdgePortals { get; } = new List<ResolvedEdgePortal>();
+        public List<ResolvedPortalPlacement> ResolvedPortals { get; } = new List<ResolvedPortalPlacement>();
         public Dictionary<Vector3Int, string> ZoneCellMap { get; set; }
         public Dictionary<string, RectInt> ZoneBoundsByInstanceId { get; set; }
         public Dictionary<string, RectInt> ZoneBoundsByZoneId { get; set; }

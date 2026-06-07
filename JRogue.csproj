@@ -56,6 +56,7 @@
     <Compile Include="Assets/Scripts/Interactables/Preconditions/CarriedLitTorchPrecondition.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlacementSet.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/HeroicSpirit.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/PortalPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/AcousticsService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePrecondition.cs" />
     <Compile Include="Assets/Scripts/Quest/QuestDefinition.cs" />
@@ -234,6 +235,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneSolidPainter.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyPlayerActionCompletion.cs" />
     <Compile Include="Assets/Scripts/Hazards/SampleSceneHazardPlacements.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/PortalPlacementTypes.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceContext.cs" />
     <Compile Include="Assets/Scripts/Manager/Turn/TurnManager.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionEvaluator.cs" />

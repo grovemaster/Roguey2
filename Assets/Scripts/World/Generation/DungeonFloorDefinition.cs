@@ -66,6 +66,7 @@ namespace JRogue.World.Generation
         [Header("Portal heuristics (v0b)")]
         [SerializeField] int orthogonalEdgePortalCount;
         [SerializeField] int orthogonalEdgeInset = 2;
+        [SerializeField] List<PortalPlacementRule> portalPlacementRules = new List<PortalPlacementRule>();
         [Header("Dungeon time (StGaaB-style)")]
         [SerializeField] bool participatesInDungeonTime = true;
         [Min(1)] [SerializeField] int baseDayNightCycles = 7;
@@ -100,6 +101,7 @@ namespace JRogue.World.Generation
         public IReadOnlyList<PortalArrivalBinding> ArrivalBindings => arrivalBindings;
         public int OrthogonalEdgePortalCount => orthogonalEdgePortalCount;
         public int OrthogonalEdgeInset => orthogonalEdgeInset;
+        public IReadOnlyList<PortalPlacementRule> PortalPlacementRules => portalPlacementRules;
         public DungeonDoorPolicy DoorPolicy => doorPolicy;
         public IReadOnlyList<DungeonVaultReference> Vaults => vaults;
         public DungeonVaultCatalog VaultCatalog => vaultCatalog;

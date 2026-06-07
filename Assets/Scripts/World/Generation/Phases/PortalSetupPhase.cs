@@ -23,35 +23,24 @@ namespace JRogue.World.Generation.Phases
             int placed = 0;
             var usedCells = new System.Collections.Generic.HashSet<Vector3Int>();
 
+            for (int i = 0; i < context.ResolvedPortals.Count; i++)
+            {
+                ResolvedPortalPlacement resolved = context.ResolvedPortals[i];
+                var spec = new DungeonPortalSpec
+                {
+                    portalLinkId = resolved.portalLinkId,
+                    targetFloorId = resolved.targetFloorId,
+                    portalCell = resolved.cell,
+                    listLabel = resolved.listLabel,
+                };
+                TryPlacePortal(context, spec, usedCells, ref placed);
+            }
+
             for (int i = 0; i < def.Portals.Count; i++)
                 TryPlacePortal(context, def.Portals[i], usedCells, ref placed);
 
-            for (int i = 0; i < context.ResolvedEdgePortals.Count; i++)
-            {
-                ResolvedEdgePortal edgePortal = context.ResolvedEdgePortals[i];
-                if (!usedCells.Add(edgePortal.cell))
-                    continue;
-
-                def.TryGetEdgePortalSpec(edgePortal.edge, out EdgePortalSpec edgeSpec);
-                if (!string.IsNullOrEmpty(edgeSpec.targetFloorId))
-                {
-                    var spec = new DungeonPortalSpec
-                    {
-                        portalLinkId = edgeSpec.portalLinkId,
-                        targetFloorId = edgeSpec.targetFloorId,
-                        portalCell = edgePortal.cell,
-                        listLabel = edgeSpec.listLabel,
-                    };
-                    TryPlacePortal(context, spec, usedCells, ref placed);
-                }
-                else
-                {
-                    context.Instance.PlacePortalVisual(edgePortal.cell);
-                }
-            }
-
             DungeonGenerationLog.Phase(nameof(PortalSetupPhase),
-                $"portals={placed} arrivalBindings={def.ArrivalBindings.Count}");
+                $"portals={placed} arrivalBindings={def.ArrivalBindings.Count} resolved={context.ResolvedPortals.Count}");
         }
 
         static void TryPlacePortal(
@@ -60,8 +49,8 @@ namespace JRogue.World.Generation.Phases
             System.Collections.Generic.HashSet<Vector3Int> usedCells,
             ref int placed)
         {
-            Vector3Int portalCell = ResolvePortalCell(context.Definition.LayoutStamp, spec);
-            if (portalCell == new Vector3Int(int.MinValue, int.MinValue, 0))
+            Vector3Int portalCell = ResolvePortalCell(context, spec);
+            if (portalCell == InvalidCell())
                 return;
 
             if (!usedCells.Add(portalCell))
@@ -86,13 +75,17 @@ namespace JRogue.World.Generation.Phases
             placed++;
         }
 
-        static Vector3Int ResolvePortalCell(DungeonLayoutStamp stamp, DungeonPortalSpec spec)
+        static Vector3Int ResolvePortalCell(DungeonGenerationContext context, DungeonPortalSpec spec)
         {
-            if (!string.IsNullOrEmpty(spec.portalMarkerId) && stamp != null &&
-                stamp.TryGetMarker(spec.portalMarkerId, out Vector3Int markerCell))
-                return markerCell;
+            Vector3Int resolved = PortalPlacementResolver.ResolveStampPortalCell(
+                context.Definition.LayoutStamp,
+                spec);
+            if (resolved != InvalidCell())
+                return resolved;
 
             return spec.portalCell;
         }
+
+        static Vector3Int InvalidCell() => new Vector3Int(int.MinValue, int.MinValue, 0);
     }
 }

@@ -723,9 +723,40 @@ namespace JRogue.Editor.World
             so.FindProperty("playerSafeRadius").intValue = 5;
             so.FindProperty("participatesInDungeonTime").boolValue = true;
             if (floorId == "dungeon_floor_03")
+            {
                 so.FindProperty("additionalDayNightCycles").intValue = 4;
+                SetTaggedRegionPortalRule(
+                    so.FindProperty("portalPlacementRules"),
+                    zoneId: "witch_forest",
+                    metric: TaggedRegionPortalMetric.MaxY,
+                    portalLinkId: "link_floor03_to_floor04",
+                    targetFloorId: "dungeon_floor_04",
+                    listLabel: "Portal (Forest Depth)",
+                    minChebyshevFromStart: 3);
+            }
+
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(floorDef);
+        }
+
+        static void SetTaggedRegionPortalRule(
+            SerializedProperty rules,
+            string zoneId,
+            TaggedRegionPortalMetric metric,
+            string portalLinkId,
+            string targetFloorId,
+            string listLabel,
+            int minChebyshevFromStart)
+        {
+            rules.arraySize = 1;
+            SerializedProperty rule = rules.GetArrayElementAtIndex(0);
+            rule.FindPropertyRelative("kind").enumValueIndex = (int)PortalPlacementRuleKind.TaggedRegionEdge;
+            rule.FindPropertyRelative("portalLinkId").stringValue = portalLinkId;
+            rule.FindPropertyRelative("targetFloorId").stringValue = targetFloorId;
+            rule.FindPropertyRelative("listLabel").stringValue = listLabel;
+            rule.FindPropertyRelative("zoneId").stringValue = zoneId;
+            rule.FindPropertyRelative("metric").enumValueIndex = (int)metric;
+            rule.FindPropertyRelative("minChebyshevFromStart").intValue = minChebyshevFromStart;
         }
 
         static void CopyFloorDefinitionBaseline(string templatePath, DungeonFloorDefinition target)

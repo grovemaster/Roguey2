@@ -44,3 +44,16 @@ MonoBehaviour:
   doorPolicy: 0
   vaults: []
   vaultCatalog: {fileID: 11400000, guid: 5de9a4b1839630877a5988afee25f3aa, type: 2}
+  portalPlacementRules:
+  - kind: 2
+    portalLinkId: link_floor03_to_floor04
+    targetFloorId: dungeon_floor_04
+    listLabel: Portal (Forest Depth)
+    edge: 0
+    insetFromEdge: 2
+    portalMarkerId: 
+    portalCell: {x: 0, y: 0, z: 0}
+    zoneId: witch_forest
+    regionTag: 
+    metric: 1
+    minChebyshevFromStart: 3

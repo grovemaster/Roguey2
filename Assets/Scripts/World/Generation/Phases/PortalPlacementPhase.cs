@@ -1,78 +1,64 @@
-using System.Collections.Generic;
 using JRogue.Manager.Map;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
 {
     /// <summary>
-    /// Resolves portal cells from orthogonal edge heuristics before <see cref="PortalSetupPhase"/>.
+    /// Resolves portal cells from orthogonal edge, stamp marker, and tagged-region rules
+    /// before <see cref="PortalSetupPhase"/>.
     /// </summary>
     public sealed class PortalPlacementPhase : IDungeonGenerationPhase
     {
         public void Execute(DungeonGenerationContext context)
         {
-            DungeonFloorDefinition def = context.Definition;
-            if (def == null || def.OrthogonalEdgePortalCount <= 0)
+            DungeonFloorDefinition def = context?.Definition;
+            if (def == null)
                 return;
 
-            MapManager map = MapManager.Instance;
-            if (map == null)
+            if (MapManager.Instance == null && !HasStampOnlyRules(def))
                 return;
 
-            int mapWidth;
-            int mapHeight;
-            DungeonLayoutStamp stamp = def.LayoutStamp;
-            if (context.UsesZoneComposite)
+            int legacyOrthogonal = PortalPlacementResolver.PlaceLegacyOrthogonalEdgePortals(context);
+            int rulePlaced = 0;
+            for (int i = 0; i < def.PortalPlacementRules.Count; i++)
             {
-                if (!PopulationPlacementUtility.TryGetMapBounds(context, out mapWidth, out mapHeight))
-                    return;
-            }
-            else if (stamp == null)
-            {
-                return;
-            }
-            else
-            {
-                mapWidth = stamp.Width;
-                mapHeight = stamp.Height;
+                if (PortalPlacementResolver.TryPlaceRule(context, def.PortalPlacementRules[i]))
+                    rulePlaced++;
             }
 
-            int placed = 0;
-            MapEdge[] edges = { MapEdge.South, MapEdge.North, MapEdge.East, MapEdge.West };
-            int targetCount = Mathf.Clamp(def.OrthogonalEdgePortalCount, 0, edges.Length);
+            SyncLegacyEdgePortalList(context);
 
-            for (int i = 0; i < targetCount; i++)
+            DungeonGenerationLog.Phase(
+                nameof(PortalPlacementPhase),
+                $"resolved={context.ResolvedPortals.Count} legacyOrthogonal={legacyOrthogonal} rules={rulePlaced}");
+        }
+
+        static bool HasStampOnlyRules(DungeonFloorDefinition def)
+        {
+            for (int i = 0; i < def.PortalPlacementRules.Count; i++)
             {
-                bool found = context.UsesZoneComposite
-                    ? PortalEdgePlacement.TryFindEdgePortalCell(
-                        mapWidth,
-                        mapHeight,
-                        map,
-                        edges[i],
-                        def.OrthogonalEdgeInset,
-                        out Vector3Int cell)
-                    : PortalEdgePlacement.TryFindEdgePortalCell(
-                        stamp,
-                        map,
-                        edges[i],
-                        def.OrthogonalEdgeInset,
-                        out cell);
-                if (!found)
-                    continue;
+                if (def.PortalPlacementRules[i].kind == PortalPlacementRuleKind.FixedStampMarker)
+                    return true;
+            }
 
-                if (context.ReservedCells.Contains(cell))
+            return false;
+        }
+
+        static void SyncLegacyEdgePortalList(DungeonGenerationContext context)
+        {
+            context.ResolvedEdgePortals.Clear();
+            for (int i = 0; i < context.ResolvedPortals.Count; i++)
+            {
+                ResolvedPortalPlacement portal = context.ResolvedPortals[i];
+                if (portal.sourceKind != PortalPlacementRuleKind.OrthogonalMapEdge)
                     continue;
 
                 context.ResolvedEdgePortals.Add(new ResolvedEdgePortal
                 {
-                    cell = cell,
-                    edge = edges[i],
+                    cell = portal.cell,
+                    edge = portal.edge,
                 });
-                context.ReservedCells.Add(cell);
-                placed++;
             }
-
-            DungeonGenerationLog.Phase(nameof(PortalPlacementPhase), $"edgePortals={placed}");
         }
     }
 }
