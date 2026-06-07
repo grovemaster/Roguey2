@@ -35,6 +35,14 @@ namespace JRogue.World.Generation
             if (triggeringMember == null)
                 return false;
 
+            if (IsBuildingPortal(PortalLinkId))
+            {
+                return TownTransitionService.TryTransitionBuilding(
+                    PortalLinkId,
+                    TargetFloorId,
+                    triggeringMember);
+            }
+
             DungeonFloorInstanceManager manager = DungeonFloorInstanceManager.Instance;
             if (manager == null)
                 return false;
@@ -49,5 +57,8 @@ namespace JRogue.World.Generation
 
             return transitioned;
         }
+
+        static bool IsBuildingPortal(string portalLinkId) =>
+            !string.IsNullOrEmpty(portalLinkId) && portalLinkId.StartsWith("building_");
     }
 }

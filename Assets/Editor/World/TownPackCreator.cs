@@ -7,10 +7,14 @@ using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.Data.Progression;
+using JRogue.Dialog;
+using JRogue.Controller.Npc;
+using JRogue.Controller.Player;
 using JRogue.UI.Targeting;
 using JRogue.View;
 using JRogue.Manager.Door;
 using JRogue.World.Generation;
+using JRogue.World.Generation.Phases;
 using JRogue.World.Lighting;
 using JRogue.World.MapInteract;
 using UnityEditor;
@@ -37,13 +41,25 @@ namespace JRogue.Editor.World
         const string TileFolder = "Assets/TileMaps/Town";
         const string FloorTilePath = TileFolder + "/Town_FloorPavement.asset";
         const string WallTilePath = TileFolder + "/Town_WallBuilding.asset";
+        const string BuildingStoneWallTilePath = TileFolder + "/Town_Building_StoneWall.asset";
+        const string BuildingStoneCornerTilePath = TileFolder + "/Town_Building_StoneCorner.asset";
+        const string BuildingStoneWindowTilePath = TileFolder + "/Town_Building_StoneWindow.asset";
+        const string BuildingRoofTilePath = TileFolder + "/Town_Building_Roof.asset";
+        const string BuildingRoofLeftTilePath = TileFolder + "/Town_Building_RoofLeft.asset";
+        const string BuildingRoofRightTilePath = TileFolder + "/Town_Building_RoofRight.asset";
+        const string BuildingDoorTilePath = TileFolder + "/Town_Building_Door.asset";
+        const string FacadeOverlayPath = DataRoot + "/FacadeOverlay_town_main.asset";
         const string PartyFormationPath = "Assets/Resources/Dungeon/PartyFormation_Default.asset";
         const string GameControlsPath = "Assets/Controls/GameControls.inputactions";
         const string ExperienceCurvePath = "Assets/Resources/Progression/DefaultExperienceCurve.asset";
         const string SampleScenePath = "Assets/Scenes/SampleScene.unity";
         const string BarbarianPrefabPath = "Assets/Prefabs/Actor/Race/BarbarianPlayer.prefab";
         const string HumanPrefabPath = "Assets/Prefabs/Actor/Race/HumanPlayer.prefab";
-        const string ElfPrefabPath = "Assets/Prefabs/Actor/Race/ElfPlayer.prefab";
+        const string HumanNpcPrefabPath = "Assets/Prefabs/Actor/Npc/HumanNpc.prefab";
+        const string ResourcesDialogProfilesFolder = "Assets/Resources/Dialog/Profiles";
+        const string ResourcesNpcFolder = "Assets/Resources/Town/Npc";
+        const string DemoHostSpritePath = "Assets/Art/NPC/Sprites/NPC_Edda.png";
+        const string DemoHostPortraitPath = "Assets/Art/Portraits/NPC/Portrait_Edda.png";
 
         const int SheetColumns = 12;
         const int SheetRows = 11;
@@ -52,6 +68,20 @@ namespace JRogue.Editor.World
         const int FloorSpriteRow = 3;
         const int WallSpriteCol = 0;
         const int WallSpriteRow = 4;
+        const int BuildingStoneWallCol = 1;
+        const int BuildingStoneWallRow = 4;
+        const int BuildingStoneCornerCol = 0;
+        const int BuildingStoneCornerRow = 4;
+        const int BuildingStoneWindowCol = 3;
+        const int BuildingStoneWindowRow = 4;
+        const int BuildingRoofCol = 5;
+        const int BuildingRoofRow = 4;
+        const int BuildingRoofLeftCol = 4;
+        const int BuildingRoofLeftRow = 4;
+        const int BuildingRoofRightCol = 6;
+        const int BuildingRoofRightRow = 4;
+        const int BuildingDoorCol = 8;
+        const int BuildingDoorRow = 4;
 
         [MenuItem("JRogue/Town/Create Town Test Data")]
         public static void CreateTownTestData() => CreateTownTestDataInternal();
@@ -89,6 +119,7 @@ namespace JRogue.Editor.World
 
             EnsureTownSpriteSheetImported();
             EnsureTownTiles();
+            EnsureTownBuildingTiles();
             JRogue.Editor.Interactables.TownTimeLeverAssetPackCreator.CreateTownTimeLeverAssets();
 
             TileBase floorTile = AssetDatabase.LoadAssetAtPath<TileBase>(FloorTilePath);
@@ -103,24 +134,90 @@ namespace JRogue.Editor.World
                 playerStart: new Vector3Int(10, 8, 0),
                 dungeonPortalCell: new Vector3Int(10, 10, 0));
 
+            const int demoBuildingOriginX = 12;
+            const int demoBuildingOriginY = 8;
+            const int demoBuildingWidth = 5;
+            const int demoBuildingDepth = 3;
+            const int demoDoorLocalX = 2;
+            Vector3Int demoDoorCell = new Vector3Int(demoBuildingOriginX + demoDoorLocalX, demoBuildingOriginY, 0);
+            DungeonLayoutStamp interiorStamp = CreateDemoInteriorStamp(
+                $"{DataRoot}/Stamp_TownInteriorDemo_5x5.asset");
+
+            EnsureDemoHostNpcAssets();
+
+            DungeonFloorDefinition interiorFloor = CreatePeacefulFloorDefinition(
+                $"{DataRoot}/Floor_town_interior_demo.asset",
+                floorId: TownBuildingIds.DemoInteriorFloorId,
+                interiorStamp,
+                floorTile,
+                wallTile,
+                formation,
+                portals: new[]
+                {
+                    new DungeonPortalSpec
+                    {
+                        portalLinkId = TownBuildingIds.DemoExitLink,
+                        targetFloorId = TownPortalSetupPhase.TownFloorId,
+                        portalMarkerId = StampMarkerIds.BuildingDemoExit,
+                        listLabel = "Exit",
+                    },
+                },
+                arrivals: new[]
+                {
+                    new PortalArrivalBinding
+                    {
+                        portalLinkId = TownBuildingIds.DemoEnterLink,
+                        arrivalAnchor = new Vector3Int(2, 1, 0),
+                    },
+                });
+
             DungeonFloorDefinition townFloor = CreatePeacefulFloorDefinition(
                 $"{DataRoot}/Floor_town_main.asset",
                 floorId: "town_main",
                 stamp,
                 floorTile,
                 wallTile,
-                formation);
+                formation,
+                portals: new[]
+                {
+                    new DungeonPortalSpec
+                    {
+                        portalLinkId = TownBuildingIds.DemoEnterLink,
+                        targetFloorId = TownBuildingIds.DemoInteriorFloorId,
+                        portalMarkerId = StampMarkerIds.BuildingDemoDoor,
+                        listLabel = "Demo building",
+                    },
+                },
+                arrivals: new[]
+                {
+                    new PortalArrivalBinding
+                    {
+                        portalLinkId = TownBuildingIds.DemoExitLink,
+                        arrivalAnchor = demoDoorCell,
+                    },
+                });
+
+            EnsureDemoBuildingFacadeOverlay(
+                demoBuildingOriginX,
+                demoBuildingOriginY,
+                demoBuildingWidth,
+                demoBuildingDepth,
+                demoDoorLocalX);
 
             var catalog = LoadOrCreate<DungeonFloorDefinitionCatalog>($"{DataRoot}/TownCatalog.asset");
             SerializedObject catalogSo = new SerializedObject(catalog);
-            catalogSo.FindProperty("floors").arraySize = 1;
+            catalogSo.FindProperty("floors").arraySize = 2;
             catalogSo.FindProperty("floors").GetArrayElementAtIndex(0).objectReferenceValue = townFloor;
+            catalogSo.FindProperty("floors").GetArrayElementAtIndex(1).objectReferenceValue = interiorFloor;
             catalogSo.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(catalog);
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log($"[Town] Data at {DataRoot}. Floor: {townFloor.FloorId} (20×20, no enemies/hazards/traps/vaults).");
+            Debug.Log(
+                $"[Town] Data at {DataRoot}. Floors: town_main + {TownBuildingIds.DemoInteriorFloorId}. " +
+                $"Demo building (stone house + red roof) east of NPCs, door at ({demoDoorCell.x},{demoDoorCell.y}). " +
+                "Run Fix TownTest Scene before Play.");
         }
 
         static void EnsureTownSpriteSheetImported()
@@ -207,6 +304,17 @@ namespace JRogue.Editor.World
             EnsureTileAsset(WallTilePath, SpriteName(WallSpriteCol, WallSpriteRow));
         }
 
+        static void EnsureTownBuildingTiles()
+        {
+            EnsureTileAsset(BuildingStoneCornerTilePath, SpriteName(BuildingStoneCornerCol, BuildingStoneCornerRow));
+            EnsureTileAsset(BuildingStoneWallTilePath, SpriteName(BuildingStoneWallCol, BuildingStoneWallRow));
+            EnsureTileAsset(BuildingStoneWindowTilePath, SpriteName(BuildingStoneWindowCol, BuildingStoneWindowRow));
+            EnsureTileAsset(BuildingRoofLeftTilePath, SpriteName(BuildingRoofLeftCol, BuildingRoofLeftRow));
+            EnsureTileAsset(BuildingRoofTilePath, SpriteName(BuildingRoofCol, BuildingRoofRow));
+            EnsureTileAsset(BuildingRoofRightTilePath, SpriteName(BuildingRoofRightCol, BuildingRoofRightRow));
+            EnsureTileAsset(BuildingDoorTilePath, SpriteName(BuildingDoorCol, BuildingDoorRow));
+        }
+
         static string SpriteName(int col, int row) => $"Town_{col}_{row}";
 
         static void EnsureTileAsset(string assetPath, string spriteName)
@@ -255,8 +363,195 @@ namespace JRogue.Editor.World
             stamp.SetMarker(StampMarkerIds.TownNpc3, new Vector3Int(8, 8, 0));
             stamp.SetMarker(StampMarkerIds.TownTimeLeverA, new Vector3Int(8, 6, 0));
             stamp.SetMarker(StampMarkerIds.TownTimeLeverB, new Vector3Int(9, 6, 0));
+            PaintDemoBuildingFacade(stamp, originX: 12, originY: 8, width: 5, depth: 3, doorLocalX: 2, doorLocalY: 0);
             EditorUtility.SetDirty(stamp);
             return stamp;
+        }
+
+        static DungeonLayoutStamp CreateDemoInteriorStamp(string path)
+        {
+            var stamp = LoadOrCreate<DungeonLayoutStamp>(path);
+            stamp.InitializeGrid(5, 5, borderWalls: true);
+            stamp.SetMarker(StampMarkerIds.BuildingDemoArrival, new Vector3Int(2, 1, 0));
+            stamp.SetMarker(StampMarkerIds.BuildingDemoExit, new Vector3Int(2, 3, 0));
+            stamp.SetMarker(StampMarkerIds.BuildingDemoNpc, new Vector3Int(2, 2, 0));
+            EditorUtility.SetDirty(stamp);
+            return stamp;
+        }
+
+        static void PaintDemoBuildingFacade(
+            DungeonLayoutStamp stamp,
+            int originX,
+            int originY,
+            int width,
+            int depth,
+            int doorLocalX,
+            int doorLocalY)
+        {
+            for (int dy = 0; dy < depth; dy++)
+            {
+                for (int dx = 0; dx < width; dx++)
+                {
+                    int x = originX + dx;
+                    int y = originY + dy;
+                    bool isDoor = dx == doorLocalX && dy == doorLocalY;
+                    if (isDoor)
+                        stamp.SetCell(x, y, floor: true, wall: false);
+                    else
+                        stamp.SetCell(x, y, floor: false, wall: true);
+                }
+            }
+
+            stamp.SetMarker(
+                StampMarkerIds.BuildingDemoDoor,
+                new Vector3Int(originX + doorLocalX, originY + doorLocalY, 0));
+        }
+
+        static void EnsureDemoBuildingFacadeOverlay(
+            int originX,
+            int originY,
+            int width,
+            int depth,
+            int doorLocalX)
+        {
+            TileBase stoneCorner = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingStoneCornerTilePath);
+            TileBase stoneWall = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingStoneWallTilePath);
+            TileBase stoneWindow = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingStoneWindowTilePath);
+            TileBase roofLeft = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingRoofLeftTilePath);
+            TileBase roof = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingRoofTilePath);
+            TileBase roofRight = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingRoofRightTilePath);
+            TileBase door = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingDoorTilePath);
+            if (stoneCorner == null || stoneWall == null || stoneWindow == null
+                || roofLeft == null || roof == null || roofRight == null || door == null)
+            {
+                Debug.LogWarning("[Town] Building facade tiles missing — re-run sprite import.");
+                return;
+            }
+
+            var cells = new List<TownFacadePaintCell>(width * depth);
+            for (int dy = 0; dy < depth; dy++)
+            {
+                for (int dx = 0; dx < width; dx++)
+                {
+                    int x = originX + dx;
+                    int y = originY + dy;
+                    var cell = new Vector3Int(x, y, 0);
+                    bool isDoor = dx == doorLocalX && dy == 0;
+                    if (isDoor)
+                    {
+                        cells.Add(new TownFacadePaintCell
+                        {
+                            cell = cell,
+                            tile = door,
+                            layer = TownFacadePaintLayer.Floor,
+                        });
+                        continue;
+                    }
+
+                    TileBase wallTile = ResolveFacadeWallTile(
+                        dx,
+                        dy,
+                        width,
+                        depth,
+                        stoneCorner,
+                        stoneWall,
+                        stoneWindow,
+                        roofLeft,
+                        roof,
+                        roofRight);
+                    cells.Add(new TownFacadePaintCell
+                    {
+                        cell = cell,
+                        tile = wallTile,
+                        layer = TownFacadePaintLayer.Wall,
+                    });
+                }
+            }
+
+            TownBuildingFacadeOverlay overlay = LoadOrCreate<TownBuildingFacadeOverlay>(FacadeOverlayPath);
+            overlay.Configure("town_main", cells.ToArray());
+            EditorUtility.SetDirty(overlay);
+        }
+
+        static TileBase ResolveFacadeWallTile(
+            int dx,
+            int dy,
+            int width,
+            int depth,
+            TileBase stoneCorner,
+            TileBase stoneWall,
+            TileBase stoneWindow,
+            TileBase roofLeft,
+            TileBase roof,
+            TileBase roofRight)
+        {
+            bool isRoofRow = dy == depth - 1;
+            if (isRoofRow)
+            {
+                if (dx == 0)
+                    return roofLeft;
+                if (dx == width - 1)
+                    return roofRight;
+                return roof;
+            }
+
+            if (dx == 0 || dx == width - 1)
+                return stoneCorner;
+
+            return dy == 1 && (dx == 1 || dx == width - 2) ? stoneWindow : stoneWall;
+        }
+
+        static void EnsureDemoHostNpcAssets()
+        {
+            EnsureFolder(ResourcesDialogProfilesFolder);
+            EnsureFolder(ResourcesNpcFolder);
+
+            NpcDialogProfile profile = LoadOrCreate<NpcDialogProfile>(
+                $"{ResourcesDialogProfilesFolder}/NpcDialog_DemoHost.asset");
+            profile.npcId = TownNpcIds.DemoHost;
+            profile.rootNodeIndex = 0;
+            profile.nodes = new[]
+            {
+                new DialogNodeData
+                {
+                    kind = DialogNodeKind.Line,
+                    line = new DialogLineData { textTemplate = "Hello." },
+                },
+            };
+            EditorUtility.SetDirty(profile);
+
+            PortraitDefinition portrait =
+                AssetDatabase.LoadAssetAtPath<PortraitDefinition>(DemoHostPortraitPath);
+            GameObject humanNpc = AssetDatabase.LoadAssetAtPath<GameObject>(HumanNpcPrefabPath);
+            if (humanNpc == null)
+            {
+                Debug.LogWarning(
+                    $"[Town] Missing {HumanNpcPrefabPath}. Run JRogue/Town/Create NPC Dialog Pack first.");
+                return;
+            }
+
+            string prefabPath = $"{ResourcesNpcFolder}/TownNpc_DemoHost.prefab";
+            GameObject instance = PrefabUtility.InstantiatePrefab(humanNpc) as GameObject;
+            instance.name = "TownNpc_DemoHost";
+
+            NpcController npc = instance.GetComponent<NpcController>();
+            SerializedObject npcSo = new SerializedObject(npc);
+            npcSo.FindProperty("npcId").stringValue = TownNpcIds.DemoHost;
+            npcSo.FindProperty("dialogProfile").objectReferenceValue = profile;
+            npcSo.FindProperty("portrait").objectReferenceValue = portrait;
+            npcSo.ApplyModifiedPropertiesWithoutUndo();
+
+            SerializedObject actorSo = new SerializedObject(npc);
+            actorSo.FindProperty("displayName").stringValue = "Host";
+            actorSo.ApplyModifiedPropertiesWithoutUndo();
+
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(DemoHostSpritePath);
+            SpriteRenderer renderer = instance.GetComponent<SpriteRenderer>();
+            if (renderer != null && sprite != null)
+                renderer.sprite = sprite;
+
+            PrefabUtility.SaveAsPrefabAsset(instance, prefabPath);
+            Object.DestroyImmediate(instance);
         }
 
         static DungeonFloorDefinition CreatePeacefulFloorDefinition(
@@ -265,7 +560,9 @@ namespace JRogue.Editor.World
             DungeonLayoutStamp stamp,
             TileBase floorTile,
             TileBase wallTile,
-            PartyFormationSpawnProfile formation)
+            PartyFormationSpawnProfile formation,
+            DungeonPortalSpec[] portals = null,
+            PortalArrivalBinding[] arrivals = null)
         {
             var def = LoadOrCreate<DungeonFloorDefinition>(path);
             SerializedObject so = new SerializedObject(def);
@@ -280,9 +577,9 @@ namespace JRogue.Editor.World
             so.FindProperty("trapPopulation").arraySize = 0;
             so.FindProperty("interactablePopulation").arraySize = 0;
             so.FindProperty("floorItemPopulation").arraySize = 0;
-            so.FindProperty("portals").arraySize = 0;
+            WritePortalSpecs(so.FindProperty("portals"), portals);
             so.FindProperty("edgePortals").arraySize = 0;
-            so.FindProperty("arrivalBindings").arraySize = 0;
+            WriteArrivalBindings(so.FindProperty("arrivalBindings"), arrivals);
             so.FindProperty("orthogonalEdgePortalCount").intValue = 0;
             so.FindProperty("orthogonalEdgeInset").intValue = 2;
             so.FindProperty("participatesInDungeonTime").boolValue = false;
@@ -292,6 +589,34 @@ namespace JRogue.Editor.World
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(def);
             return def;
+        }
+
+        static void WritePortalSpecs(SerializedProperty portalsProp, DungeonPortalSpec[] portals)
+        {
+            portals ??= System.Array.Empty<DungeonPortalSpec>();
+            portalsProp.arraySize = portals.Length;
+            for (int i = 0; i < portals.Length; i++)
+            {
+                SerializedProperty element = portalsProp.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("portalLinkId").stringValue = portals[i].portalLinkId;
+                element.FindPropertyRelative("targetFloorId").stringValue = portals[i].targetFloorId;
+                element.FindPropertyRelative("portalMarkerId").stringValue = portals[i].portalMarkerId;
+                element.FindPropertyRelative("portalCell").vector3IntValue = portals[i].portalCell;
+                element.FindPropertyRelative("listLabel").stringValue = portals[i].listLabel;
+                element.FindPropertyRelative("adjacentConfirmOnly").boolValue = portals[i].adjacentConfirmOnly;
+            }
+        }
+
+        static void WriteArrivalBindings(SerializedProperty arrivalsProp, PortalArrivalBinding[] arrivals)
+        {
+            arrivals ??= System.Array.Empty<PortalArrivalBinding>();
+            arrivalsProp.arraySize = arrivals.Length;
+            for (int i = 0; i < arrivals.Length; i++)
+            {
+                SerializedProperty element = arrivalsProp.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("portalLinkId").stringValue = arrivals[i].portalLinkId;
+                element.FindPropertyRelative("arrivalAnchor").vector3IntValue = arrivals[i].arrivalAnchor;
+            }
         }
 
         static void CreateOrUpdateTownScene()
@@ -337,6 +662,8 @@ namespace JRogue.Editor.World
 
             DungeonFloorDefinition townDef =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_town_main.asset");
+            DungeonFloorDefinition interiorDef =
+                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_town_interior_demo.asset");
             DungeonFloorDefinitionCatalog townCatalog =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>($"{DataRoot}/TownCatalog.asset");
 
@@ -346,12 +673,14 @@ namespace JRogue.Editor.World
 
             SerializedObject managerSo = new SerializedObject(floorManager);
             managerSo.FindProperty("useDontDestroyOnLoad").boolValue = false;
-            managerSo.FindProperty("floorDefinitions").arraySize = 1;
+            managerSo.FindProperty("floorDefinitions").arraySize = 2;
             managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(0).objectReferenceValue = townDef;
+            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(1).objectReferenceValue = interiorDef;
             Transform floorsRoot = EnsureFloorsRoot(systems, floorManager);
 
-            RemoveChildFloorsExcept(floorsRoot, "town_main");
+            RemoveChildFloorsExcept(floorsRoot, "town_main", TownBuildingIds.DemoInteriorFloorId);
             EnsureFloorScaffold(floorsRoot, "town_main", townDef);
+            EnsureFloorScaffold(floorsRoot, TownBuildingIds.DemoInteriorFloorId, interiorDef);
             managerSo.ApplyModifiedPropertiesWithoutUndo();
 
             if (systems.GetComponent<DungeonFloorTestController>() == null)
@@ -387,15 +716,16 @@ namespace JRogue.Editor.World
             EnsureGameplayUiFromSampleScene(EditorSceneManager.GetActiveScene());
         }
 
-        static void RemoveChildFloorsExcept(Transform floorsRoot, string keepFloorId)
+        static void RemoveChildFloorsExcept(Transform floorsRoot, params string[] keepFloorIds)
         {
-            if (floorsRoot == null)
+            if (floorsRoot == null || keepFloorIds == null || keepFloorIds.Length == 0)
                 return;
 
+            var keep = new HashSet<string>(keepFloorIds);
             for (int i = floorsRoot.childCount - 1; i >= 0; i--)
             {
                 Transform child = floorsRoot.GetChild(i);
-                if (child.name == keepFloorId)
+                if (keep.Contains(child.name))
                     continue;
 
                 Object.DestroyImmediate(child.gameObject);

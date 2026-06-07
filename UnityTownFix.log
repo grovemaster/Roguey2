@@ -1,0 +1,35 @@
+Unity Editor version:    6000.3.12f1 (fca03ac9b0d5)
+Branch:                  6000.3/staging
+Build type:              Release
+Batch mode:              YES
+System name:             Linux
+Distro version:          #35~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 19:30:42 UTC 2
+Kernel version:          6.17.0-35-generic
+Architecture:            x86_64
+Available memory:        95923 MB
+Date:                    2026-06-07T21:50:01Z
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Initialize udev device monitor.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-jonathan" at "2026-06-07T21:50:01.143393Z"
+[SignatureVerifier] Application signature verification not supported on this platform.
+
+COMMAND LINE ARGUMENTS:
+/home/jonathan/Unity/Hub/Editor/6000.3.12f1/Editor/Unity
+-batchmode
+-nographics
+-projectPath
+/home/jonathan/UnityProjects/Roguey2
+-executeMethod
+JRogue.Editor.World.TownPackCreator.FixTownTestScene
+-quit
+-logFile
+/home/jonathan/UnityProjects/Roguey2/UnityTownFix.log
+[Licensing::Client] Error: HandshakeResponse reported an error:
+	ResponseCode: 505
+	ResponseStatus: Unsupported protocol version '1.18.1'.
+Successfully changed project path to: /home/jonathan/UnityProjects/Roguey2
+[Licensing::Module] Error: Failed to handshake to channel: "LicenseClient-jonathan"
+[Licensing::IpcConnector] LicenseClient-jonathan channel disconnected successfully.
+[Licensing::IpcConnector] Channel LicenseClient-jonathan-6000.3.12 doesn't exist
+[Licensing::Module] Successfully launched the LicensingClient (PId: 53655)
+/home/jonathan/UnityProjects/Roguey2

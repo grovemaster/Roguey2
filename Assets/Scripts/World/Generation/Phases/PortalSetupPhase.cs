@@ -49,6 +49,17 @@ namespace JRogue.World.Generation.Phases
             System.Collections.Generic.HashSet<Vector3Int> usedCells,
             ref int placed)
         {
+            if (spec.adjacentConfirmOnly)
+            {
+                Vector3Int doorCell = ResolvePortalCell(context, spec);
+                if (doorCell == InvalidCell())
+                    return;
+
+                usedCells.Add(doorCell);
+                context.ReservedCells.Add(doorCell);
+                return;
+            }
+
             Vector3Int portalCell = ResolvePortalCell(context, spec);
             if (portalCell == InvalidCell())
                 return;
@@ -59,7 +70,8 @@ namespace JRogue.World.Generation.Phases
             context.ReservedCells.Add(portalCell);
             context.AddChebyshevDisk(portalCell, context.Definition.PlayerSafeRadius);
 
-            context.Instance.PlacePortalVisual(portalCell);
+            if (!IsBuildingPortal(spec.portalLinkId))
+                context.Instance.PlacePortalVisual(portalCell);
 
             if (string.IsNullOrEmpty(spec.targetFloorId))
                 return;
@@ -87,5 +99,8 @@ namespace JRogue.World.Generation.Phases
         }
 
         static Vector3Int InvalidCell() => new Vector3Int(int.MinValue, int.MinValue, 0);
+
+        static bool IsBuildingPortal(string portalLinkId) =>
+            !string.IsNullOrEmpty(portalLinkId) && portalLinkId.StartsWith("building_");
     }
 }

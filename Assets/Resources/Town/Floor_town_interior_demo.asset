@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41e0224dc9f34f4f92efbfa176094eb2, type: 3}
-  m_Name: Floor_town_main
+  m_Name: Floor_town_interior_demo
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinition
-  floorId: town_main
+  floorId: town_interior_demo
   layoutMode: 0
-  layoutStamp: {fileID: 11400000, guid: c3d4e5f6a7b84990a1b2c3d4e5f67801, type: 2}
+  layoutStamp: {fileID: 11400000, guid: d5428ec59b9c7b958a426fd4499ca7db, type: 2}
   zoneLayout: {fileID: 0}
   floorTile: {fileID: 11400000, guid: c3d4e5f6a7b84990a1b2c3d4e5f67811, type: 2}
   wallTile: {fileID: 11400000, guid: c3d4e5f6a7b84990a1b2c3d4e5f67812, type: 2}
@@ -29,16 +29,16 @@ MonoBehaviour:
   monsterPopulationMode: 0
   monsterSpawnSchedule: {fileID: 0}
   portals:
-  - portalLinkId: building_demo_enter
-    targetFloorId: town_interior_demo
-    portalMarkerId: building_demo_door
+  - portalLinkId: building_demo_exit
+    targetFloorId: town_main
+    portalMarkerId: building_demo_exit
     portalCell: {x: 0, y: 0, z: 0}
-    listLabel: Demo building
+    listLabel: Exit
     adjacentConfirmOnly: 0
   edgePortals: []
   arrivalBindings:
-  - portalLinkId: building_demo_exit
-    arrivalAnchor: {x: 14, y: 8, z: 0}
+  - portalLinkId: building_demo_enter
+    arrivalAnchor: {x: 2, y: 1, z: 0}
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
   portalPlacementRules: []
@@ -47,7 +47,7 @@ MonoBehaviour:
   additionalDayNightCycles: 0
   playerTurnsPerDay: 5
   playerTurnsPerNight: 5
-  combatPolicy: 1
+  combatPolicy: 0
   safeZoneRegions: []
   doorPolicy: 0
   vaults: []

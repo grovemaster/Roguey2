@@ -132,5 +132,9 @@ namespace JRogue.World.Generation
         public const string TownTorchEast = "town_torch_e";
         public const string TownTimeLeverA = "town_time_lever_a";
         public const string TownTimeLeverB = "town_time_lever_b";
+        public const string BuildingDemoDoor = "building_demo_door";
+        public const string BuildingDemoArrival = "building_demo_arrival";
+        public const string BuildingDemoExit = "building_demo_exit";
+        public const string BuildingDemoNpc = "building_demo_npc";
     }
 }

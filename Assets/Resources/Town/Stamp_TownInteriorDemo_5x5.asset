@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 658a6d51a2924a0e89209a57ac010acf, type: 3}
+  m_Name: Stamp_TownInteriorDemo_5x5
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonLayoutStamp
+  width: 5
+  height: 5
+  floorCells: 00000000000001010100000101010000010101000000000000
+  wallCells: 01010101010100000001010000000101000000010101010101
+  markers:
+  - markerId: building_demo_arrival
+    cell: {x: 2, y: 1, z: 0}
+  - markerId: building_demo_exit
+    cell: {x: 2, y: 3, z: 0}
+  - markerId: building_demo_npc
+    cell: {x: 2, y: 2, z: 0}
+  - markerId: playerStart
+    cell: {x: 2, y: 2, z: 0}

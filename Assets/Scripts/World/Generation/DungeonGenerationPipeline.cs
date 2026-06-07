@@ -18,8 +18,10 @@ namespace JRogue.World.Generation
             new PortalPlacementPhase(),
             new PortalSetupPhase(),
             new TownPortalSetupPhase(),
+            new TownBuildingDoorSetupPhase(),
             new TownTimeLeverSetupPhase(),
             new TownNpcSetupPhase(),
+            new TownInteriorNpcSetupPhase(),
             new TownTorchSetupPhase(),
             new LightingInitPhase(),
             new DoorPlacementPhase(),
@@ -43,10 +45,11 @@ namespace JRogue.World.Generation
 
         static IDungeonGenerationPhase[] BuildPreBakedPhases()
         {
-            var phases = new IDungeonGenerationPhase[1 + SharedTailPhases.Length];
+            var phases = new IDungeonGenerationPhase[2 + SharedTailPhases.Length];
             phases[0] = new LayoutStampPhase();
+            phases[1] = new TownBuildingFacadeVisualPhase();
             for (int i = 0; i < SharedTailPhases.Length; i++)
-                phases[i + 1] = SharedTailPhases[i];
+                phases[i + 2] = SharedTailPhases[i];
             return phases;
         }
 

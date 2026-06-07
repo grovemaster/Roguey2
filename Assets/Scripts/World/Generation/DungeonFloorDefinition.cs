@@ -209,6 +209,8 @@ namespace JRogue.World.Generation
         public string portalMarkerId;
         public Vector3Int portalCell;
         public string listLabel;
+        [Tooltip("When true, enter via Confirm adjacent instead of step-on portal.")]
+        public bool adjacentConfirmOnly;
     }
 
     [Serializable]

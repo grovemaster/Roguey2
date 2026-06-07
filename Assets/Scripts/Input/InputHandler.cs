@@ -8,6 +8,7 @@ using JRogue.UI.Gameplay;
 using JRogue.UI.Inventory;
 using JRogue.UI.Quest;
 using JRogue.UI.Targeting;
+using JRogue.World.Generation;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -445,6 +446,9 @@ namespace JRogue.Input
             BaseActor leader = PartyManager.Instance != null
                 ? PartyManager.Instance.GetActiveMember()
                 : null;
+            if (leader != null && TownBuildingDoorInteraction.TryUseFacing(leader))
+                return;
+
             if (leader != null && JRogue.Dialog.NpcTalkInteraction.TryTalkFacing(leader))
                 return;
         }

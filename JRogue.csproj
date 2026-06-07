@@ -94,6 +94,8 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotAcceptFilter.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/ShopNpcMenuUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownInteriorNpcSetupPhase.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownBuildingDoorSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/GridMover.cs" />
     <Compile Include="Assets/Scripts/Dialog/SpiritImprintShamanDialogSession.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupMenuUI.cs" />
@@ -118,6 +120,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownPortalSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/TownBuildingDoorInteractable.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultCellKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationUtility.cs" />
@@ -183,10 +186,12 @@
     <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeLogic.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/UnlockDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Dialog/DialogGraphEvaluator.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownBuildingFacadeVisualPhase.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/GrantPartyExperienceEffect.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopSellableQuery.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTestSceneValidator.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameOverModalUI.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/TownTransitionService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationContext.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonWorldFeatureServices.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/TownTimeLeverEffect.cs" />
@@ -251,6 +256,7 @@
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceContext.cs" />
     <Compile Include="Assets/Scripts/Manager/Turn/TurnManager.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionEvaluator.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/TownBuildingIds.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryHotkeyRuntimeOverrides.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryTargetedUseLog.cs" />
@@ -313,6 +319,7 @@
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorGenerator.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FriendlyFireConfirmDialogUI.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/TownBuildingDoorInteraction.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleProfile.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
@@ -362,6 +369,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationPipeline.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/TownTransitionCurtainUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnAreaResolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeRunState.cs" />
@@ -418,6 +426,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneTilePainter.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorInstance.cs" />
     <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/TownBuildingFacadeOverlay.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableEffect.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableActivationSource.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameLogService.cs" />
