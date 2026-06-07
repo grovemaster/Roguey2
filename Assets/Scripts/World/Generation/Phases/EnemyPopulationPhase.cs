@@ -76,7 +76,7 @@ namespace JRogue.World.Generation.Phases
                     instance.ZoneInstanceId,
                     "Enemy");
 
-                spawnedTotal += ZonePopulationUtility.ScatterEnemies(
+                int zoneSpawned = ZonePopulationUtility.ScatterEnemies(
                     context,
                     map,
                     entries,
@@ -85,9 +85,16 @@ namespace JRogue.World.Generation.Phases
                     instance,
                     out int zoneAttempts,
                     out int zoneFailures);
+                spawnedTotal += zoneSpawned;
                 spawnAttempts += zoneAttempts;
                 spawnFailures += zoneFailures;
+                ZonePopulationUtility.RecordZoneScatter(
+                    context,
+                    instance.ZoneInstanceId,
+                    counts => counts.Enemies += zoneSpawned);
             }
+
+            ZoneGenerationDiagnostics.LogZonePopulationScatterSummary(context);
 
             DungeonGenerationLog.Phase(nameof(EnemyPopulationPhase),
                 $"zoneComposite spawned={spawnedTotal} instances={instances.Count} " +

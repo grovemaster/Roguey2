@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Manager.Map;
 using JRogue.Traps;
+using JRogue.World.Generation.Zones;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
@@ -9,8 +10,8 @@ namespace JRogue.World.Generation.Phases
     {
         public void Execute(DungeonGenerationContext context)
         {
-            DungeonFloorDefinition def = context.Definition;
-            if (def?.TrapPopulation == null || def.TrapPopulation.Count == 0)
+            DungeonFloorDefinition def = context?.Definition;
+            if (def == null)
                 return;
 
             TrapService traps = TrapService.Instance;
@@ -22,6 +23,79 @@ namespace JRogue.World.Generation.Phases
             }
 
             traps.SetOverlayMap(context.Instance.Tilemaps.TrapOverlayMap);
+
+            if (context.UsesZoneComposite)
+            {
+                ExecuteZoneComposite(context, def, map, traps);
+                return;
+            }
+
+            ExecuteFloorWide(context, def, map, traps);
+        }
+
+        static void ExecuteZoneComposite(
+            DungeonGenerationContext context,
+            DungeonFloorDefinition def,
+            MapManager map,
+            TrapService traps)
+        {
+            ZoneGenerationDiagnostics.LogPopulationByZone(nameof(TrapPopulationPhase), map, context);
+
+            IReadOnlyList<ResolvedZonePiece> instances = ZonePopulationUtility.GetHabitatInstances(context);
+            if (instances.Count == 0)
+                return;
+
+            int placedTotal = 0;
+            DungeonFloorZoneLayout layout = def.ZoneLayout;
+
+            for (int i = 0; i < instances.Count; i++)
+            {
+                ResolvedZonePiece instance = instances[i];
+                IReadOnlyList<ZoneTrapPopulationEntry> entries =
+                    ZonePopulationUtility.ResolveTrapEntries(def, layout, instance.ZoneId);
+                if (entries == null || entries.Count == 0)
+                    continue;
+
+                List<Vector3Int> candidates = PopulationPlacementUtility.CollectZoneInstanceCandidates(
+                    map,
+                    context,
+                    instance.ZoneInstanceId);
+                if (candidates.Count == 0)
+                    continue;
+
+                System.Random rng = ZoneGenerationRng.CreateZonePopulationRng(
+                    context.RunSeed,
+                    def.FloorId,
+                    instance.ZoneInstanceId,
+                    "Trap");
+
+                int placed = ZonePopulationUtility.ScatterTraps(
+                    traps,
+                    context,
+                    map,
+                    entries,
+                    candidates,
+                    rng,
+                    instance);
+                placedTotal += placed;
+                ZonePopulationUtility.RecordZoneScatter(
+                    context,
+                    instance.ZoneInstanceId,
+                    counts => counts.Traps += placed);
+            }
+
+            DungeonGenerationLog.Phase(nameof(TrapPopulationPhase),
+                $"zoneComposite placed={placedTotal} instances={instances.Count}");
+        }
+
+        static void ExecuteFloorWide(
+            DungeonGenerationContext context,
+            DungeonFloorDefinition def,
+            MapManager map,
+            TrapService traps)
+        {
+            if (def.TrapPopulation == null || def.TrapPopulation.Count == 0)
+                return;
 
             List<Vector3Int> candidates = PopulationPlacementUtility.CollectFloorCandidates(map, context);
             if (candidates.Count == 0)

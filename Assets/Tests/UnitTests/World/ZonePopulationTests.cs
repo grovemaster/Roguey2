@@ -100,6 +100,38 @@ namespace JRogue.Tests.UnitTests.World
         }
 
         [Test]
+        public void ResolveHazardEntries_UsesDungeonProfileAndSilencesSnow()
+        {
+            DungeonZonePopulationProfile dungeonProfile = CreateProfileWithHazards(hazardRows: 1);
+            DungeonZonePopulationProfile snowProfile = CreateProfile(enemies: 1, items: 0);
+            DungeonFloorZoneLayout layout = CreateLayoutWithZones(
+                ("dungeon", dungeonProfile),
+                ("snow", snowProfile));
+            DungeonFloorDefinition floorDef = CreateFloorDefWithHazards(hazardCount: 1, fallback: true);
+
+            IReadOnlyList<ZoneHazardPopulationEntry> dungeonEntries =
+                ZonePopulationUtility.ResolveHazardEntries(floorDef, layout, "dungeon");
+            IReadOnlyList<ZoneHazardPopulationEntry> snowEntries =
+                ZonePopulationUtility.ResolveHazardEntries(floorDef, layout, "snow");
+
+            Assert.AreEqual(1, dungeonEntries.Count);
+            Assert.AreEqual(2, dungeonEntries[0].minCount);
+            Assert.AreEqual(0, snowEntries.Count);
+        }
+
+        [Test]
+        public void ResolveTrapEntries_FallsBackToFloorWhenProfileMissing()
+        {
+            DungeonFloorZoneLayout layout = CreateLayoutWithZone("dungeon", profile: null);
+            DungeonFloorDefinition floorDef = CreateFloorDefWithTraps(trapCount: 1, fallback: true);
+
+            IReadOnlyList<ZoneTrapPopulationEntry> entries =
+                ZonePopulationUtility.ResolveTrapEntries(floorDef, layout, "dungeon");
+
+            Assert.AreEqual(1, entries.Count);
+        }
+
+        [Test]
         public void GetHabitatInstances_SkipsEmptyAndRockPieces()
         {
             var context = new DungeonGenerationContext(null, null, 1, 0)
@@ -202,13 +234,24 @@ namespace JRogue.Tests.UnitTests.World
 
         DungeonFloorZoneLayout CreateLayoutWithZone(string zoneId, DungeonZonePopulationProfile profile)
         {
+            return CreateLayoutWithZones((zoneId, profile));
+        }
+
+        DungeonFloorZoneLayout CreateLayoutWithZones(
+            params (string zoneId, DungeonZonePopulationProfile profile)[] zones)
+        {
             var layout = ScriptableObject.CreateInstance<DungeonFloorZoneLayout>();
             _assets.Add(layout);
 
-            var zoneDef = ScriptableObject.CreateInstance<DungeonZoneDefinition>();
-            _assets.Add(zoneDef);
-            SetPrivateField(zoneDef, "zoneId", zoneId);
-            SetPrivateField(zoneDef, "populationProfile", profile);
+            var definitions = new DungeonZoneDefinition[zones.Length];
+            for (int i = 0; i < zones.Length; i++)
+            {
+                var zoneDef = ScriptableObject.CreateInstance<DungeonZoneDefinition>();
+                _assets.Add(zoneDef);
+                SetPrivateField(zoneDef, "zoneId", zones[i].zoneId);
+                SetPrivateField(zoneDef, "populationProfile", zones[i].profile);
+                definitions[i] = zoneDef;
+            }
 
             layout.ReplaceAuthoringData(
                 30,
@@ -217,9 +260,60 @@ namespace JRogue.Tests.UnitTests.World
                 ZoneIds.Rock,
                 new ZoneSelectionRule[0],
                 new ZoneLayoutPiece[0],
-                new[] { zoneDef });
+                definitions);
 
             return layout;
+        }
+
+        DungeonZonePopulationProfile CreateProfileWithHazards(int hazardRows)
+        {
+            var profile = CreateProfile(enemies: 0, items: 0);
+            var hazardEntries = new ZoneHazardPopulationEntry[hazardRows];
+            for (int i = 0; i < hazardRows; i++)
+            {
+                hazardEntries[i] = new ZoneHazardPopulationEntry
+                {
+                    minCount = 2,
+                    maxCount = 4,
+                };
+            }
+
+            SetPrivateField(profile, "hazardPopulation", hazardEntries);
+            return profile;
+        }
+
+        DungeonFloorDefinition CreateFloorDefWithHazards(int hazardCount, bool fallback)
+        {
+            var floorDef = CreateFloorDef(enemyCount: 0, fallback: fallback);
+            var hazardEntries = new HazardPopulationEntry[hazardCount];
+            for (int i = 0; i < hazardCount; i++)
+            {
+                hazardEntries[i] = new HazardPopulationEntry
+                {
+                    minCount = 1,
+                    maxCount = 2,
+                };
+            }
+
+            SetPrivateField(floorDef, "hazardPopulation", hazardEntries);
+            return floorDef;
+        }
+
+        DungeonFloorDefinition CreateFloorDefWithTraps(int trapCount, bool fallback)
+        {
+            var floorDef = CreateFloorDef(enemyCount: 0, fallback: fallback);
+            var trapEntries = new TrapPopulationEntry[trapCount];
+            for (int i = 0; i < trapCount; i++)
+            {
+                trapEntries[i] = new TrapPopulationEntry
+                {
+                    minCount = 1,
+                    maxCount = 2,
+                };
+            }
+
+            SetPrivateField(floorDef, "trapPopulation", trapEntries);
+            return floorDef;
         }
 
         DungeonFloorDefinition CreateFloorDef(int enemyCount, bool fallback)

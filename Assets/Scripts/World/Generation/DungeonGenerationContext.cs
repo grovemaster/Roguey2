@@ -32,6 +32,8 @@ namespace JRogue.World.Generation
         public Dictionary<Vector3Int, string> ZoneCellMap { get; set; }
         public Dictionary<string, RectInt> ZoneBoundsByInstanceId { get; set; }
         public ResolvedZonePiece[] ResolvedZonePieces { get; set; }
+        public Dictionary<string, ZonePopulationScatterCounts> ZoneScatterCountsByInstance { get; } =
+            new Dictionary<string, ZonePopulationScatterCounts>();
 
         public DungeonGenerationContext(
             DungeonFloorDefinition definition,

@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using JRogue.Controller.Enemy;
+using JRogue.Hazards;
+using JRogue.Interactables;
 using JRogue.Item;
 using JRogue.Manager.Floor;
 using JRogue.Manager.Map;
 using JRogue.Spawn;
+using JRogue.Traps;
 using JRogue.World.Generation;
 using JRogue.World.Generation.Phases;
 using UnityEngine;
@@ -96,6 +99,82 @@ namespace JRogue.World.Generation.Zones
                 return Array.Empty<ZoneFloorItemPopulationEntry>();
 
             return ConvertFloorItems(floorDef.FloorItemPopulation);
+        }
+
+        public static IReadOnlyList<ZoneHazardPopulationEntry> ResolveHazardEntries(
+            DungeonFloorDefinition floorDef,
+            DungeonFloorZoneLayout layout,
+            string zoneId)
+        {
+            if (layout != null
+                && layout.TryGetZoneDefinition(zoneId, out DungeonZoneDefinition zoneDef)
+                && zoneDef.PopulationProfile != null)
+            {
+                return zoneDef.PopulationProfile.HazardPopulation
+                    ?? Array.Empty<ZoneHazardPopulationEntry>();
+            }
+
+            if (floorDef == null || !floorDef.UseFloorPopulationAsFallback)
+                return Array.Empty<ZoneHazardPopulationEntry>();
+
+            return ConvertFloorHazards(floorDef.HazardPopulation);
+        }
+
+        public static IReadOnlyList<ZoneTrapPopulationEntry> ResolveTrapEntries(
+            DungeonFloorDefinition floorDef,
+            DungeonFloorZoneLayout layout,
+            string zoneId)
+        {
+            if (layout != null
+                && layout.TryGetZoneDefinition(zoneId, out DungeonZoneDefinition zoneDef)
+                && zoneDef.PopulationProfile != null)
+            {
+                return zoneDef.PopulationProfile.TrapPopulation
+                    ?? Array.Empty<ZoneTrapPopulationEntry>();
+            }
+
+            if (floorDef == null || !floorDef.UseFloorPopulationAsFallback)
+                return Array.Empty<ZoneTrapPopulationEntry>();
+
+            return ConvertFloorTraps(floorDef.TrapPopulation);
+        }
+
+        public static IReadOnlyList<ZoneInteractablePopulationEntry> ResolveInteractableEntries(
+            DungeonFloorDefinition floorDef,
+            DungeonFloorZoneLayout layout,
+            string zoneId)
+        {
+            if (layout != null
+                && layout.TryGetZoneDefinition(zoneId, out DungeonZoneDefinition zoneDef)
+                && zoneDef.PopulationProfile != null)
+            {
+                return zoneDef.PopulationProfile.InteractablePopulation
+                    ?? Array.Empty<ZoneInteractablePopulationEntry>();
+            }
+
+            if (floorDef == null || !floorDef.UseFloorPopulationAsFallback)
+                return Array.Empty<ZoneInteractablePopulationEntry>();
+
+            return ConvertFloorInteractables(floorDef.InteractablePopulation);
+        }
+
+        public static void RecordZoneScatter(
+            DungeonGenerationContext context,
+            string zoneInstanceId,
+            Action<ZonePopulationScatterCounts> accumulate)
+        {
+            if (context == null || string.IsNullOrEmpty(zoneInstanceId) || accumulate == null)
+                return;
+
+            if (!context.ZoneScatterCountsByInstance.TryGetValue(
+                    zoneInstanceId,
+                    out ZonePopulationScatterCounts counts))
+            {
+                counts = new ZonePopulationScatterCounts();
+            }
+
+            accumulate(counts);
+            context.ZoneScatterCountsByInstance[zoneInstanceId] = counts;
         }
 
         public static int ScatterEnemies(
@@ -216,6 +295,147 @@ namespace JRogue.World.Generation.Zones
             return placed;
         }
 
+        public static int ScatterHazards(
+            HazardService hazards,
+            DungeonGenerationContext context,
+            MapManager map,
+            IReadOnlyList<ZoneHazardPopulationEntry> entries,
+            List<Vector3Int> candidates,
+            System.Random rng,
+            ResolvedZonePiece zoneInstance)
+        {
+            if (hazards == null || context == null || map == null || entries == null || entries.Count == 0
+                || candidates == null)
+            {
+                return 0;
+            }
+
+            PopulationPlacementUtility.Shuffle(candidates, rng);
+            int candidateIndex = 0;
+            int placed = 0;
+
+            for (int entryIndex = 0; entryIndex < entries.Count; entryIndex++)
+            {
+                ZoneHazardPopulationEntry entry = entries[entryIndex];
+                if (entry.definition == null)
+                    continue;
+
+                int count = rng.Next(entry.minCount, entry.maxCount + 1);
+                for (int i = 0; i < count; i++)
+                {
+                    while (candidateIndex < candidates.Count)
+                    {
+                        Vector3Int cell = candidates[candidateIndex++];
+                        if (!PopulationPlacementUtility.IsPopulationCell(map, context, cell))
+                            continue;
+
+                        if (hazards.HasHazardAt(cell))
+                            continue;
+
+                        hazards.Register(cell, entry.definition, entry.startHidden);
+                        placed++;
+                        break;
+                    }
+                }
+            }
+
+            return placed;
+        }
+
+        public static int ScatterTraps(
+            TrapService traps,
+            DungeonGenerationContext context,
+            MapManager map,
+            IReadOnlyList<ZoneTrapPopulationEntry> entries,
+            List<Vector3Int> candidates,
+            System.Random rng,
+            ResolvedZonePiece zoneInstance)
+        {
+            if (traps == null || context == null || map == null || entries == null || entries.Count == 0
+                || candidates == null)
+            {
+                return 0;
+            }
+
+            PopulationPlacementUtility.Shuffle(candidates, rng);
+            int candidateIndex = 0;
+            int placed = 0;
+
+            for (int entryIndex = 0; entryIndex < entries.Count; entryIndex++)
+            {
+                ZoneTrapPopulationEntry entry = entries[entryIndex];
+                if (entry.definition == null || entry.definition.placement != TrapPlacement.Floor)
+                    continue;
+
+                int count = rng.Next(entry.minCount, entry.maxCount + 1);
+                for (int i = 0; i < count; i++)
+                {
+                    while (candidateIndex < candidates.Count)
+                    {
+                        Vector3Int cell = candidates[candidateIndex++];
+                        if (!PopulationPlacementUtility.IsPopulationCell(map, context, cell))
+                            continue;
+
+                        if (traps.IsFloorTrapAt(cell))
+                            continue;
+
+                        traps.Register(cell, entry.definition);
+                        placed++;
+                        break;
+                    }
+                }
+            }
+
+            return placed;
+        }
+
+        public static int ScatterInteractables(
+            InteractableTileService interactables,
+            DungeonGenerationContext context,
+            MapManager map,
+            IReadOnlyList<ZoneInteractablePopulationEntry> entries,
+            List<Vector3Int> candidates,
+            System.Random rng,
+            ResolvedZonePiece zoneInstance)
+        {
+            if (interactables == null || context == null || map == null || entries == null || entries.Count == 0
+                || candidates == null)
+            {
+                return 0;
+            }
+
+            PopulationPlacementUtility.Shuffle(candidates, rng);
+            int candidateIndex = 0;
+            int placed = 0;
+
+            for (int entryIndex = 0; entryIndex < entries.Count; entryIndex++)
+            {
+                ZoneInteractablePopulationEntry entry = entries[entryIndex];
+                if (entry.definition == null)
+                    continue;
+
+                int count = rng.Next(entry.minCount, entry.maxCount + 1);
+                for (int i = 0; i < count; i++)
+                {
+                    while (candidateIndex < candidates.Count)
+                    {
+                        Vector3Int cell = candidates[candidateIndex++];
+                        if (!PopulationPlacementUtility.IsPopulationCell(map, context, cell))
+                            continue;
+
+                        if (interactables.TryGetInstance(cell, out _))
+                            continue;
+
+                        interactables.Register(cell, entry.definition);
+                        placed++;
+                        break;
+                    }
+                }
+            }
+
+            return placed;
+        }
+
         static ZoneEnemyPopulationEntry[] ConvertFloorEnemies(IReadOnlyList<EnemyPopulationEntry> floorEntries)
         {
             if (floorEntries == null || floorEntries.Count == 0)
@@ -252,6 +472,68 @@ namespace JRogue.World.Generation.Zones
                     maxCount = entry.maxCount,
                     minQuantity = entry.minQuantity,
                     maxQuantity = entry.maxQuantity,
+                };
+            }
+
+            return converted;
+        }
+
+        static ZoneHazardPopulationEntry[] ConvertFloorHazards(IReadOnlyList<HazardPopulationEntry> floorEntries)
+        {
+            if (floorEntries == null || floorEntries.Count == 0)
+                return Array.Empty<ZoneHazardPopulationEntry>();
+
+            var converted = new ZoneHazardPopulationEntry[floorEntries.Count];
+            for (int i = 0; i < floorEntries.Count; i++)
+            {
+                HazardPopulationEntry entry = floorEntries[i];
+                converted[i] = new ZoneHazardPopulationEntry
+                {
+                    definition = entry.definition,
+                    minCount = entry.minCount,
+                    maxCount = entry.maxCount,
+                    startHidden = entry.startHidden,
+                };
+            }
+
+            return converted;
+        }
+
+        static ZoneTrapPopulationEntry[] ConvertFloorTraps(IReadOnlyList<TrapPopulationEntry> floorEntries)
+        {
+            if (floorEntries == null || floorEntries.Count == 0)
+                return Array.Empty<ZoneTrapPopulationEntry>();
+
+            var converted = new ZoneTrapPopulationEntry[floorEntries.Count];
+            for (int i = 0; i < floorEntries.Count; i++)
+            {
+                TrapPopulationEntry entry = floorEntries[i];
+                converted[i] = new ZoneTrapPopulationEntry
+                {
+                    definition = entry.definition,
+                    minCount = entry.minCount,
+                    maxCount = entry.maxCount,
+                };
+            }
+
+            return converted;
+        }
+
+        static ZoneInteractablePopulationEntry[] ConvertFloorInteractables(
+            IReadOnlyList<InteractablePopulationEntry> floorEntries)
+        {
+            if (floorEntries == null || floorEntries.Count == 0)
+                return Array.Empty<ZoneInteractablePopulationEntry>();
+
+            var converted = new ZoneInteractablePopulationEntry[floorEntries.Count];
+            for (int i = 0; i < floorEntries.Count; i++)
+            {
+                InteractablePopulationEntry entry = floorEntries[i];
+                converted[i] = new ZoneInteractablePopulationEntry
+                {
+                    definition = entry.definition,
+                    minCount = entry.minCount,
+                    maxCount = entry.maxCount,
                 };
             }
 

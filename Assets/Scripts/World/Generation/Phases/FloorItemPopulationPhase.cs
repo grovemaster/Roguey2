@@ -73,7 +73,7 @@ namespace JRogue.World.Generation.Phases
                     instance.ZoneInstanceId,
                     "FloorItem");
 
-                placedTotal += ZonePopulationUtility.ScatterFloorItems(
+                int zonePlaced = ZonePopulationUtility.ScatterFloorItems(
                     context,
                     map,
                     piles,
@@ -81,6 +81,11 @@ namespace JRogue.World.Generation.Phases
                     candidates,
                     rng,
                     instance);
+                placedTotal += zonePlaced;
+                ZonePopulationUtility.RecordZoneScatter(
+                    context,
+                    instance.ZoneInstanceId,
+                    counts => counts.FloorItems += zonePlaced);
             }
 
             DungeonGenerationLog.Phase(nameof(FloorItemPopulationPhase),

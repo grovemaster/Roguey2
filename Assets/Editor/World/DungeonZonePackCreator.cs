@@ -1,7 +1,10 @@
 #if UNITY_EDITOR
 using System.IO;
+using JRogue.Hazards;
+using JRogue.Interactables;
 using JRogue.Item;
 using JRogue.Spawn;
+using JRogue.Traps;
 using JRogue.World.Generation;
 using JRogue.World.Generation.Zones;
 using UnityEditor;
@@ -26,6 +29,9 @@ namespace JRogue.Editor.World
         const string DungeonSubStampPath = "Assets/Resources/Dungeon/Stamp_Floor02_20x20.asset";
         const string SkeletonSpawnPath = "Assets/Resources/Dungeon/Spawn_DungeonTestSkeleton.asset";
         const string HandheldTorchPath = "Assets/Resources/Item/Accessory/Accessory_HandheldTorch.asset";
+        const string LavaHazardPath = "Assets/Resources/Hazards/EnvironmentalHazard_Lava.asset";
+        const string SpikeTrapPath = "Assets/Data/Traps/TrapDefinition_Spike_Visible.asset";
+        const string LeverPath = "Assets/Data/Interactables/LeverSwitch_First.asset";
 
         [MenuItem("JRogue/Dungeon/Create Floor 1 Zone Pack")]
         public static void CreateFloor1ZonePack()
@@ -44,31 +50,63 @@ namespace JRogue.Editor.World
             EnemySpawnDefinition skeletonSpawn =
                 AssetDatabase.LoadAssetAtPath<EnemySpawnDefinition>(SkeletonSpawnPath);
             ItemData handheldTorch = AssetDatabase.LoadAssetAtPath<ItemData>(HandheldTorchPath);
+            EnvironmentalHazardDefinition lavaHazard =
+                AssetDatabase.LoadAssetAtPath<EnvironmentalHazardDefinition>(LavaHazardPath);
+            TrapDefinition spikeTrap = AssetDatabase.LoadAssetAtPath<TrapDefinition>(SpikeTrapPath);
+            InteractableTileDefinition lever =
+                AssetDatabase.LoadAssetAtPath<InteractableTileDefinition>(LeverPath);
 
             DungeonZonePopulationProfile dungeonPopulation = CreateOrUpdatePopulationProfile(
                 PopulationRoot + "/Population_Dungeon_Floor01.asset",
-                skeletonSpawn,
+                spawnDefinition: skeletonSpawn,
                 enemyMin: 4,
                 enemyMax: 6,
-                handheldTorch,
+                itemData: handheldTorch,
                 itemMin: 0,
-                itemMax: 1);
+                itemMax: 1,
+                hazardDefinition: lavaHazard,
+                hazardMin: 2,
+                hazardMax: 4,
+                trapDefinition: spikeTrap,
+                trapMin: 1,
+                trapMax: 3,
+                interactableDefinition: lever,
+                interactableMin: 1,
+                interactableMax: 2);
             DungeonZonePopulationProfile desertPopulation = CreateOrUpdatePopulationProfile(
                 PopulationRoot + "/Population_Desert_Floor01.asset",
-                skeletonSpawn,
+                spawnDefinition: skeletonSpawn,
                 enemyMin: 2,
                 enemyMax: 4,
                 itemData: null,
                 itemMin: 0,
-                itemMax: 0);
+                itemMax: 0,
+                hazardDefinition: null,
+                hazardMin: 0,
+                hazardMax: 0,
+                trapDefinition: null,
+                trapMin: 0,
+                trapMax: 0,
+                interactableDefinition: null,
+                interactableMin: 0,
+                interactableMax: 0);
             DungeonZonePopulationProfile snowPopulation = CreateOrUpdatePopulationProfile(
                 PopulationRoot + "/Population_Snow_Floor01.asset",
-                skeletonSpawn,
+                spawnDefinition: skeletonSpawn,
                 enemyMin: 1,
                 enemyMax: 3,
                 itemData: null,
                 itemMin: 0,
-                itemMax: 0);
+                itemMax: 0,
+                hazardDefinition: null,
+                hazardMin: 0,
+                hazardMax: 0,
+                trapDefinition: null,
+                trapMin: 0,
+                trapMax: 0,
+                interactableDefinition: null,
+                interactableMin: 0,
+                interactableMax: 0);
 
             DungeonZoneDefinition zoneDungeon = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Dungeon.asset",
@@ -178,7 +216,16 @@ namespace JRogue.Editor.World
             int enemyMax,
             ItemData itemData,
             int itemMin,
-            int itemMax)
+            int itemMax,
+            EnvironmentalHazardDefinition hazardDefinition,
+            int hazardMin,
+            int hazardMax,
+            TrapDefinition trapDefinition,
+            int trapMin,
+            int trapMax,
+            InteractableTileDefinition interactableDefinition,
+            int interactableMin,
+            int interactableMax)
         {
             var profile = AssetDatabase.LoadAssetAtPath<DungeonZonePopulationProfile>(path);
             if (profile == null)
@@ -217,6 +264,49 @@ namespace JRogue.Editor.World
             else
             {
                 items.arraySize = 0;
+            }
+
+            SerializedProperty hazards = so.FindProperty("hazardPopulation");
+            if (hazardDefinition != null)
+            {
+                hazards.arraySize = 1;
+                SerializedProperty hazard = hazards.GetArrayElementAtIndex(0);
+                hazard.FindPropertyRelative("definition").objectReferenceValue = hazardDefinition;
+                hazard.FindPropertyRelative("minCount").intValue = hazardMin;
+                hazard.FindPropertyRelative("maxCount").intValue = hazardMax;
+                hazard.FindPropertyRelative("startHidden").boolValue = false;
+            }
+            else
+            {
+                hazards.arraySize = 0;
+            }
+
+            SerializedProperty traps = so.FindProperty("trapPopulation");
+            if (trapDefinition != null)
+            {
+                traps.arraySize = 1;
+                SerializedProperty trap = traps.GetArrayElementAtIndex(0);
+                trap.FindPropertyRelative("definition").objectReferenceValue = trapDefinition;
+                trap.FindPropertyRelative("minCount").intValue = trapMin;
+                trap.FindPropertyRelative("maxCount").intValue = trapMax;
+            }
+            else
+            {
+                traps.arraySize = 0;
+            }
+
+            SerializedProperty interactables = so.FindProperty("interactablePopulation");
+            if (interactableDefinition != null)
+            {
+                interactables.arraySize = 1;
+                SerializedProperty interactable = interactables.GetArrayElementAtIndex(0);
+                interactable.FindPropertyRelative("definition").objectReferenceValue = interactableDefinition;
+                interactable.FindPropertyRelative("minCount").intValue = interactableMin;
+                interactable.FindPropertyRelative("maxCount").intValue = interactableMax;
+            }
+            else
+            {
+                interactables.arraySize = 0;
             }
 
             so.ApplyModifiedPropertiesWithoutUndo();

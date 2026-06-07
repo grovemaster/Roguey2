@@ -233,6 +233,18 @@ namespace JRogue.World.Generation.Zones
                     context.Definition,
                     layout,
                     instance.ZoneId).Count;
+                int hazardRows = ZonePopulationUtility.ResolveHazardEntries(
+                    context.Definition,
+                    layout,
+                    instance.ZoneId).Count;
+                int trapRows = ZonePopulationUtility.ResolveTrapEntries(
+                    context.Definition,
+                    layout,
+                    instance.ZoneId).Count;
+                int interactableRows = ZonePopulationUtility.ResolveInteractableEntries(
+                    context.Definition,
+                    layout,
+                    instance.ZoneId).Count;
 
                 log.Append(instance.ZoneInstanceId)
                     .Append(" candidates=")
@@ -240,7 +252,48 @@ namespace JRogue.World.Generation.Zones
                     .Append(" enemyRows=")
                     .Append(enemyRows)
                     .Append(" itemRows=")
-                    .Append(itemRows);
+                    .Append(itemRows)
+                    .Append(" hazardRows=")
+                    .Append(hazardRows)
+                    .Append(" trapRows=")
+                    .Append(trapRows)
+                    .Append(" interactableRows=")
+                    .Append(interactableRows);
+            }
+
+            log.Append(']');
+            Debug.Log($"{Tag} {log}");
+        }
+
+        public static void LogZonePopulationScatterSummary(DungeonGenerationContext context)
+        {
+            if (context == null || !context.UsesZoneComposite)
+                return;
+
+            if (context.ZoneScatterCountsByInstance.Count == 0)
+                return;
+
+            var log = new StringBuilder();
+            log.Append("zonePopulationScatter=[");
+            int i = 0;
+            foreach (KeyValuePair<string, ZonePopulationScatterCounts> pair in context.ZoneScatterCountsByInstance)
+            {
+                if (i++ > 0)
+                    log.Append("; ");
+
+                ZonePopulationScatterCounts counts = pair.Value;
+                log.Append(pair.Key)
+                    .Append("(e=")
+                    .Append(counts.Enemies)
+                    .Append(" h=")
+                    .Append(counts.Hazards)
+                    .Append(" t=")
+                    .Append(counts.Traps)
+                    .Append(" i=")
+                    .Append(counts.FloorItems)
+                    .Append(" x=")
+                    .Append(counts.Interactables)
+                    .Append(')');
             }
 
             log.Append(']');
