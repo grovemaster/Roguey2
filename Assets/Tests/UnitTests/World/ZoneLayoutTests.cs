@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JRogue.World.Generation;
 using JRogue.World.Generation.Zones;
 using NUnit.Framework;
 using UnityEngine;
@@ -245,6 +246,362 @@ namespace JRogue.Tests.UnitTests.World
             Assert.AreEqual("dungeon", map[new Vector3Int(5, 5, 0)]);
             Assert.AreEqual("snow", map[new Vector3Int(5, 12, 0)]);
             Assert.AreEqual(ZoneIds.Rock, map[new Vector3Int(19, 19, 0)]);
+        }
+    }
+
+    [TestFixture]
+    public sealed class ZoneInterfaceResolverTests
+    {
+        [Test]
+        public void ResolveInterfaces_Floor01Pieces_IncludeCenterNorthAdjacency()
+        {
+            var pieces = new[]
+            {
+                new ResolvedZonePiece(
+                    "center",
+                    "dungeon",
+                    ZoneCompassRectResolver.ResolveCompassPreset(CompassDirection.Center, 30, 30),
+                    true),
+                new ResolvedZonePiece(
+                    "north",
+                    "snow",
+                    ZoneCompassRectResolver.ResolveCompassPreset(CompassDirection.North, 30, 30),
+                    false),
+            };
+
+            List<ZoneInterface> interfaces = ZoneInterfaceResolver.ResolveInterfaces(pieces, 30, 30);
+            bool found = false;
+            for (int i = 0; i < interfaces.Count; i++)
+            {
+                ZoneInterface iface = interfaces[i];
+                if (iface.PieceAId == "center"
+                    && iface.PieceBId == "north"
+                    && iface.EdgeOnA == ZoneInterfaceEdge.North)
+                {
+                    found = true;
+                    Assert.Greater(iface.SpanMax, iface.SpanMin);
+                    break;
+                }
+            }
+
+            Assert.IsTrue(found, "Expected center→north interface on shared band edge.");
+        }
+    }
+
+    [TestFixture]
+    public sealed class ZoneBoundaryResolverTests
+    {
+        [Test]
+        public void ResolveKind_HabitatNeighbors_UsesDefaultOpen()
+        {
+            var layout = ScriptableObject.CreateInstance<DungeonFloorZoneLayout>();
+            layout.ReplaceAuthoringData(
+                30,
+                30,
+                ZoneLayoutKind.CompassSlots,
+                ZoneIds.Rock,
+                new ZoneSelectionRule[0],
+                new[]
+                {
+                    new ZoneLayoutPiece
+                    {
+                        pieceId = "center",
+                        defaultBoundary = ZoneBoundaryKind.Open,
+                    },
+                });
+
+            var center = new ResolvedZonePiece(
+                "center",
+                "dungeon",
+                ZoneCompassRectResolver.ResolveCompassPreset(CompassDirection.Center, 30, 30),
+                true);
+            var north = new ResolvedZonePiece(
+                "north",
+                "snow",
+                ZoneCompassRectResolver.ResolveCompassPreset(CompassDirection.North, 30, 30),
+                false);
+
+            layout.TryGetLayoutPiece("center", out ZoneLayoutPiece layoutPiece);
+            var iface = new ZoneInterface("center", "north", ZoneInterfaceEdge.North, 0, 21, 19);
+
+            ZoneBoundaryKind kind = ZoneBoundaryResolver.ResolveKind(layout, layoutPiece, iface, center, north);
+
+            Assert.AreEqual(ZoneBoundaryKind.Open, kind);
+            Object.DestroyImmediate(layout);
+        }
+
+        [Test]
+        public void ResolveKind_EmptyNeighbor_UsesWall()
+        {
+            var layout = ScriptableObject.CreateInstance<DungeonFloorZoneLayout>();
+            layout.ReplaceAuthoringData(
+                30,
+                30,
+                ZoneLayoutKind.CompassSlots,
+                ZoneIds.Rock,
+                new ZoneSelectionRule[0],
+                new[]
+                {
+                    new ZoneLayoutPiece
+                    {
+                        pieceId = "center",
+                        defaultBoundary = ZoneBoundaryKind.Open,
+                    },
+                });
+
+            var center = new ResolvedZonePiece(
+                "center",
+                "dungeon",
+                ZoneCompassRectResolver.ResolveCompassPreset(CompassDirection.Center, 30, 30),
+                true);
+            var north = new ResolvedZonePiece(
+                "north",
+                ZoneIds.Empty,
+                ZoneCompassRectResolver.ResolveCompassPreset(CompassDirection.North, 30, 30),
+                false);
+
+            layout.TryGetLayoutPiece("center", out ZoneLayoutPiece layoutPiece);
+            var iface = new ZoneInterface("center", "north", ZoneInterfaceEdge.North, 0, 21, 19);
+
+            ZoneBoundaryKind kind = ZoneBoundaryResolver.ResolveKind(layout, layoutPiece, iface, center, north);
+
+            Assert.AreEqual(ZoneBoundaryKind.Wall, kind);
+            Object.DestroyImmediate(layout);
+        }
+    }
+
+    [TestFixture]
+    public sealed class ZoneSubStampPlayerStartTests
+    {
+        [Test]
+        public void TryResolveSubStampPlayerStart_MapsStampMarkerIntoPieceBounds()
+        {
+            var stamp = ScriptableObject.CreateInstance<DungeonLayoutStamp>();
+            stamp.InitializeGrid(20, 20);
+            stamp.SetMarker(StampMarkerIds.PlayerStart, new Vector3Int(10, 5, 0));
+
+            var profile = new ZoneFillProfile
+            {
+                mode = ZoneFillMode.SubStamp,
+                subStampTable = new[]
+                {
+                    new ZoneSubStampEntry { stamp = stamp, weight = 1 },
+                },
+            };
+
+            var piece = new ResolvedZonePiece(
+                "center",
+                "dungeon",
+                ZoneCompassRectResolver.ResolveCompassPreset(CompassDirection.Center, 30, 30),
+                true);
+
+            bool resolved = ZonePieceFiller.TryResolveSubStampPlayerStart(
+                piece,
+                profile,
+                new System.Random(123),
+                out Vector3Int worldCell);
+
+            Assert.IsTrue(resolved);
+            Assert.AreEqual(new Vector3Int(10, 5, 0), worldCell);
+            Object.DestroyImmediate(stamp);
+        }
+
+        [Test]
+        public void SubStampBorderStrip_AllowsReachabilityToStampNorthEdge()
+        {
+            var stamp = ScriptableObject.CreateInstance<DungeonLayoutStamp>();
+            stamp.InitializeGrid(20, 20);
+
+            int reachableBefore = CountReachable(stamp, 10, 5);
+            int northEdgeBefore = CountReachableOnRow(stamp, 10, 5, 19);
+
+            Assert.Greater(reachableBefore, 0);
+            Assert.AreEqual(0, northEdgeBefore, "Sealed substamp border should block north edge before strip.");
+
+            int reachableAfter = CountReachableWithStrippedBorder(stamp, 10, 5);
+            int northEdgeAfter = CountReachableOnRowWithStrippedBorder(stamp, 10, 5, 19);
+
+            Assert.Greater(reachableAfter, reachableBefore - 50);
+            Assert.Greater(northEdgeAfter, 0, "Stripped border should expose north edge floor.");
+            Object.DestroyImmediate(stamp);
+        }
+
+        static int CountReachable(DungeonLayoutStamp stamp, int sx, int sy)
+        {
+            var seen = new HashSet<Vector2Int> { new Vector2Int(sx, sy) };
+            var queue = new Queue<Vector2Int>();
+            queue.Enqueue(new Vector2Int(sx, sy));
+
+            while (queue.Count > 0)
+            {
+                Vector2Int c = queue.Dequeue();
+                TryWalk(stamp, c.x + 1, c.y, seen, queue);
+                TryWalk(stamp, c.x - 1, c.y, seen, queue);
+                TryWalk(stamp, c.x, c.y + 1, seen, queue);
+                TryWalk(stamp, c.x, c.y - 1, seen, queue);
+            }
+
+            return seen.Count;
+        }
+
+        static int CountReachableOnRow(DungeonLayoutStamp stamp, int sx, int sy, int targetY) =>
+            CountReachable(stamp, sx, sy) > 0
+                ? CountReachableRow(stamp, sx, sy, targetY, stripBorder: false)
+                : 0;
+
+        static int CountReachableOnRowWithStrippedBorder(DungeonLayoutStamp stamp, int sx, int sy, int targetY) =>
+            CountReachableRow(stamp, sx, sy, targetY, stripBorder: true);
+
+        static int CountReachableWithStrippedBorder(DungeonLayoutStamp stamp, int sx, int sy)
+        {
+            var seen = new HashSet<Vector2Int> { new Vector2Int(sx, sy) };
+            var queue = new Queue<Vector2Int>();
+            queue.Enqueue(new Vector2Int(sx, sy));
+
+            while (queue.Count > 0)
+            {
+                Vector2Int c = queue.Dequeue();
+                TryWalkStripped(stamp, c.x + 1, c.y, seen, queue);
+                TryWalkStripped(stamp, c.x - 1, c.y, seen, queue);
+                TryWalkStripped(stamp, c.x, c.y + 1, seen, queue);
+                TryWalkStripped(stamp, c.x, c.y - 1, seen, queue);
+            }
+
+            return seen.Count;
+        }
+
+        static int CountReachableRow(DungeonLayoutStamp stamp, int sx, int sy, int targetY, bool stripBorder)
+        {
+            var seen = new HashSet<Vector2Int> { new Vector2Int(sx, sy) };
+            var queue = new Queue<Vector2Int>();
+            queue.Enqueue(new Vector2Int(sx, sy));
+
+            while (queue.Count > 0)
+            {
+                Vector2Int c = queue.Dequeue();
+                if (stripBorder)
+                {
+                    TryWalkStripped(stamp, c.x + 1, c.y, seen, queue);
+                    TryWalkStripped(stamp, c.x - 1, c.y, seen, queue);
+                    TryWalkStripped(stamp, c.x, c.y + 1, seen, queue);
+                    TryWalkStripped(stamp, c.x, c.y - 1, seen, queue);
+                }
+                else
+                {
+                    TryWalk(stamp, c.x + 1, c.y, seen, queue);
+                    TryWalk(stamp, c.x - 1, c.y, seen, queue);
+                    TryWalk(stamp, c.x, c.y + 1, seen, queue);
+                    TryWalk(stamp, c.x, c.y - 1, seen, queue);
+                }
+            }
+
+            int count = 0;
+            for (int x = 0; x < stamp.Width; x++)
+            {
+                if (seen.Contains(new Vector2Int(x, targetY)))
+                    count++;
+            }
+
+            return count;
+        }
+
+        static void TryWalk(
+            DungeonLayoutStamp stamp,
+            int x,
+            int y,
+            HashSet<Vector2Int> seen,
+            Queue<Vector2Int> queue)
+        {
+            if (x < 0 || y < 0 || x >= stamp.Width || y >= stamp.Height)
+                return;
+
+            if (!stamp.IsFloor(x, y) || stamp.IsWall(x, y))
+                return;
+
+            var cell = new Vector2Int(x, y);
+            if (!seen.Add(cell))
+                return;
+
+            queue.Enqueue(cell);
+        }
+
+        static void TryWalkStripped(
+            DungeonLayoutStamp stamp,
+            int x,
+            int y,
+            HashSet<Vector2Int> seen,
+            Queue<Vector2Int> queue)
+        {
+            if (x < 0 || y < 0 || x >= stamp.Width || y >= stamp.Height)
+                return;
+
+            if (!IsWalkableWithStrippedBorder(stamp, x, y))
+                return;
+
+            var cell = new Vector2Int(x, y);
+            if (!seen.Add(cell))
+                return;
+
+            queue.Enqueue(cell);
+        }
+
+        static bool IsWalkableWithStrippedBorder(DungeonLayoutStamp stamp, int x, int y)
+        {
+            if (x <= 0 || y <= 0 || x >= stamp.Width - 1 || y >= stamp.Height - 1)
+                return true;
+
+            return stamp.IsFloor(x, y) && !stamp.IsWall(x, y);
+        }
+    }
+
+    [TestFixture]
+    public sealed class ZoneBoundaryApplicatorTests
+    {
+        [Test]
+        public void ApplyAll_ExteriorBoundary_DoesNotThrowWhenPieceBMissing()
+        {
+            var layout = ScriptableObject.CreateInstance<DungeonFloorZoneLayout>();
+            layout.ReplaceAuthoringData(
+                30,
+                30,
+                ZoneLayoutKind.CompassSlots,
+                ZoneIds.Rock,
+                new ZoneSelectionRule[0],
+                new ZoneLayoutPiece[0]);
+
+            var center = new ResolvedZonePiece(
+                "center",
+                "dungeon",
+                ZoneCompassRectResolver.ResolveCompassPreset(CompassDirection.Center, 30, 30),
+                true);
+
+            var boundaries = new List<ResolvedZoneBoundary>
+            {
+                new ResolvedZoneBoundary(
+                    new ZoneInterface(
+                        "center",
+                        ZoneIds.ExteriorNeighbor,
+                        ZoneInterfaceEdge.West,
+                        0,
+                        20,
+                        0),
+                    ZoneBoundaryKind.Wall,
+                    1,
+                    1),
+            };
+
+            Assert.DoesNotThrow(() =>
+            {
+                ZoneBoundaryStats stats = ZoneBoundaryApplicator.ApplyAll(
+                    null,
+                    null,
+                    layout,
+                    new[] { center },
+                    boundaries);
+                Assert.AreEqual(0, stats.OpenCells);
+            });
+
+            Object.DestroyImmediate(layout);
         }
     }
 }

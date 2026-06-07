@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Manager.Map;
 using JRogue.World.Generation.Vaults;
+using JRogue.World.Generation.Zones;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
@@ -83,6 +84,7 @@ namespace JRogue.World.Generation.Phases
                         context,
                         context.Rng,
                         entry.minDistanceFromPlayerStart,
+                        entry.requiredZoneId,
                         out Vector3Int origin))
                 {
                     placedCounts[vaultId] = count + 1;
@@ -100,7 +102,8 @@ namespace JRogue.World.Generation.Phases
                         blueprint,
                         context,
                         MapManager.Instance,
-                        minDist);
+                        minDist,
+                        entry.requiredZoneId);
 
                     DungeonGenerationLog.Warn(
                         $"{nameof(VaultPlacementPhase)}: no valid anchor for '{vaultId}' on '{def.FloorId}' " +
@@ -109,6 +112,7 @@ namespace JRogue.World.Generation.Phases
             }
 
             DungeonGenerationLog.Phase(nameof(VaultPlacementPhase), $"placedCount={placedVaults}");
+            ZoneGenerationDiagnostics.LogCheckpoint(context, "after VaultPlacementPhase");
         }
 
         static void ShuffleIndices(List<int> indices, System.Random rng)

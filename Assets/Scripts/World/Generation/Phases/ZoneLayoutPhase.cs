@@ -70,6 +70,7 @@ namespace JRogue.World.Generation.Phases
             }
 
             DungeonGenerationLog.Phase(nameof(ZoneLayoutPhase), log.ToString());
+            ZoneGenerationDiagnostics.LogLayoutCheckpoint(context, "after ZoneLayoutPhase");
         }
 
         static void ResolvePlayerStart(
@@ -83,8 +84,7 @@ namespace JRogue.World.Generation.Phases
                 if (!piece.IsPlayerStartPiece || piece.ZoneId == ZoneIds.Empty)
                     continue;
 
-                context.PlayerStart = ZoneCompassRectResolver.ResolvePlayerStart(piece.Bounds);
-                context.BuildSafeZoneForFloor(def);
+                ResolvePlayerStartForPiece(context, piece, def);
                 return;
             }
 
@@ -94,8 +94,7 @@ namespace JRogue.World.Generation.Phases
                 if (piece.ZoneId == ZoneIds.Empty)
                     continue;
 
-                context.PlayerStart = ZoneCompassRectResolver.ResolvePlayerStart(piece.Bounds);
-                context.BuildSafeZoneForFloor(def);
+                ResolvePlayerStartForPiece(context, piece, def);
                 return;
             }
 
@@ -103,6 +102,29 @@ namespace JRogue.World.Generation.Phases
                 context.MapWidth / 2,
                 context.MapHeight / 4,
                 0);
+            context.BuildSafeZoneForFloor(def);
+        }
+
+        static void ResolvePlayerStartForPiece(
+            DungeonGenerationContext context,
+            ResolvedZonePiece piece,
+            DungeonFloorDefinition def)
+        {
+            context.PlayerStart = ZoneCompassRectResolver.ResolvePlayerStart(piece.Bounds);
+
+            DungeonFloorZoneLayout layout = def?.ZoneLayout;
+            if (layout != null
+                && layout.TryGetZoneDefinition(piece.ZoneId, out DungeonZoneDefinition zoneDef))
+            {
+                ZoneFillProfile profile = zoneDef.FillProfile;
+                System.Random fillRng = ZoneGenerationRng.CreateZoneFillRng(
+                    context.RunSeed,
+                    def.FloorId,
+                    piece.PieceId);
+                if (ZonePieceFiller.TryResolveSubStampPlayerStart(piece, profile, fillRng, out Vector3Int stampStart))
+                    context.PlayerStart = stampStart;
+            }
+
             context.BuildSafeZoneForFloor(def);
         }
     }

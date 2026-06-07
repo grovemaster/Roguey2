@@ -22,4 +22,9 @@ MonoBehaviour:
   minHeight: 8
   maxWidth: 24
   maxHeight: 24
+  fillProfile:
+    mode: 2
+    subStampTable: []
+    innerWallDensity: 10
+    ensureConnectivity: 0
   tags: []

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using JRogue.Manager.Map;
 using JRogue.World.Generation.Phases;
+using JRogue.World.Generation.Zones;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -49,11 +51,12 @@ namespace JRogue.World.Generation
 
         static IDungeonGenerationPhase[] BuildZoneCompositePhases()
         {
-            var phases = new IDungeonGenerationPhase[2 + SharedTailPhases.Length];
+            var phases = new IDungeonGenerationPhase[3 + SharedTailPhases.Length];
             phases[0] = new ZoneLayoutPhase();
             phases[1] = new ZoneFillPhase();
+            phases[2] = new ZoneBoundaryPhase();
             for (int i = 0; i < SharedTailPhases.Length; i++)
-                phases[i + 2] = SharedTailPhases[i];
+                phases[i + 3] = SharedTailPhases[i];
             return phases;
         }
 
@@ -89,8 +92,16 @@ namespace JRogue.World.Generation
                 context.ZoneCellMap,
                 context.ResolvedZonePieces);
             DungeonFloorServiceBinder.CaptureFeatureState(instance);
+            instance.MarkFeaturesLiveOnServices();
+            ZoneGenerationDiagnostics.LogCheckpoint(context, "after all phases (pre-activation)");
+            int walkable = PopulationPlacementUtility.CountWalkableCells(MapManager.Instance, context);
+            int candidates = PopulationPlacementUtility.CollectFloorCandidates(MapManager.Instance, context).Count;
+            int enemyCount = instance.EnemyContainer != null
+                ? instance.EnemyContainer.childCount
+                : 0;
             DungeonGenerationLog.Info(
-                $"GenerateFirstVisit complete playerStart={context.PlayerStart} portals={context.Portals.Count}");
+                $"GenerateFirstVisit complete playerStart={context.PlayerStart} portals={context.Portals.Count} " +
+                $"walkable={walkable} populationCandidates={candidates} enemyObjects={enemyCount}");
         }
 
         public static void RunPhases(DungeonGenerationContext context)

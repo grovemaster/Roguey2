@@ -23,6 +23,24 @@ namespace JRogue.World.Generation.Zones
         public string FallbackZoneId => fallbackZoneId;
         public DungeonZoneDefinition[] ZoneDefinitions => zoneDefinitions;
 
+        public bool TryGetLayoutPiece(string pieceId, out ZoneLayoutPiece piece)
+        {
+            piece = default;
+            if (string.IsNullOrEmpty(pieceId) || pieces == null)
+                return false;
+
+            for (int i = 0; i < pieces.Length; i++)
+            {
+                if (pieces[i].pieceId != pieceId)
+                    continue;
+
+                piece = pieces[i];
+                return true;
+            }
+
+            return false;
+        }
+
         public bool TryGetZoneDefinition(string zoneId, out DungeonZoneDefinition definition)
         {
             definition = null;

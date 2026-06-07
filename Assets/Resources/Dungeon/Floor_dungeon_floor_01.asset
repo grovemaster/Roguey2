@@ -65,7 +65,7 @@ MonoBehaviour:
   orthogonalEdgePortalCount: 4
   orthogonalEdgeInset: 2
   participatesInDungeonTime: 1
-  baseDayNightCycles: 1
+  baseDayNightCycles: 5
   additionalDayNightCycles: 0
   playerTurnsPerDay: 5
   playerTurnsPerNight: 5

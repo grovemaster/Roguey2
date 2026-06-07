@@ -1,4 +1,5 @@
 using System;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Zones
@@ -17,6 +18,16 @@ namespace JRogue.World.Generation.Zones
         Wall = 2,
         Corridor = 3,
         Mixed = 4,
+    }
+
+    public enum ZoneFillMode
+    {
+        SolidRect = 0,
+        SubStamp = 1,
+        OpenPocket = 2,
+        RoomCorridor = 3,
+        Cave = 4,
+        VaultOnly = 5,
     }
 
     public enum ZonePieceAnchorKind
@@ -39,6 +50,7 @@ namespace JRogue.World.Generation.Zones
     {
         public const string Empty = "empty";
         public const string Rock = "rock";
+        public const string ExteriorNeighbor = "__exterior__";
     }
 
     [Serializable]
@@ -67,6 +79,22 @@ namespace JRogue.World.Generation.Zones
         public string[] requiresAny;
         public string[] excludes;
         [Min(1)] public int maxInstances;
+    }
+
+    [Serializable]
+    public struct ZoneSubStampEntry
+    {
+        public DungeonLayoutStamp stamp;
+        [Min(0)] public int weight;
+    }
+
+    [Serializable]
+    public struct ZoneFillProfile
+    {
+        public ZoneFillMode mode;
+        public ZoneSubStampEntry[] subStampTable;
+        [Range(0, 100)] public int innerWallDensity;
+        public bool ensureConnectivity;
     }
 
     [Serializable]

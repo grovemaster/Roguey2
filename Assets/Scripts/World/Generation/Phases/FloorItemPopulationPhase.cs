@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Item;
 using JRogue.Manager.Floor;
 using JRogue.Manager.Map;
+using JRogue.World.Generation.Zones;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
@@ -22,9 +23,16 @@ namespace JRogue.World.Generation.Phases
                 return;
             }
 
+            ZoneGenerationDiagnostics.LogPopulationByZone(nameof(FloorItemPopulationPhase), map, context);
+
             List<Vector3Int> candidates = PopulationPlacementUtility.CollectFloorCandidates(map, context);
             if (candidates.Count == 0)
+            {
+                DungeonGenerationLog.Warn(
+                    $"{nameof(FloorItemPopulationPhase)}: no population candidates; " +
+                    PopulationPlacementUtility.DescribePopulationFailure(map, context));
                 return;
+            }
 
             PopulationPlacementUtility.Shuffle(candidates, context.Rng);
             int candidateIndex = 0;

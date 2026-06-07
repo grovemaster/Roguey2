@@ -22,4 +22,11 @@ MonoBehaviour:
   minHeight: 8
   maxWidth: 24
   maxHeight: 24
+  fillProfile:
+    mode: 1
+    subStampTable:
+    - stamp: {fileID: 11400000, guid: 6a5678b5e437c699982cc2a7daeb7865, type: 2}
+      weight: 1
+    innerWallDensity: 0
+    ensureConnectivity: 0
   tags: []

@@ -34,7 +34,9 @@ namespace JRogue.World.Generation
                 FloorItemPileService.Instance.CaptureSnapshot(snapshot.floorItems);
         }
 
-        public static void BindActiveFloor(DungeonFloorInstance instance)
+        public static void BindActiveFloor(
+            DungeonFloorInstance instance,
+            bool restoreFeaturesFromSnapshot = true)
         {
             if (instance == null)
                 return;
@@ -44,29 +46,41 @@ namespace JRogue.World.Generation
             if (HazardService.Instance != null)
             {
                 HazardService.Instance.SetOverlayMap(maps.HazardOverlayMap);
-                HazardService.Instance.ClearAllRegistrations();
-                HazardService.Instance.RestoreSnapshot(instance.FeatureSnapshot.hazards);
+                if (restoreFeaturesFromSnapshot)
+                {
+                    HazardService.Instance.ClearAllRegistrations();
+                    HazardService.Instance.RestoreSnapshot(instance.FeatureSnapshot.hazards);
+                }
             }
 
             if (TrapService.Instance != null)
             {
                 TrapService.Instance.SetOverlayMap(maps.TrapOverlayMap);
-                TrapService.Instance.ClearAllRegistrations();
-                TrapService.Instance.RestoreSnapshot(instance.FeatureSnapshot.traps);
+                if (restoreFeaturesFromSnapshot)
+                {
+                    TrapService.Instance.ClearAllRegistrations();
+                    TrapService.Instance.RestoreSnapshot(instance.FeatureSnapshot.traps);
+                }
             }
 
             if (InteractableTileService.Instance != null)
             {
                 InteractableTileService.Instance.SetOverlayMap(maps.InteractableOverlayMap);
-                InteractableTileService.Instance.ClearAllRegistrations();
-                InteractableTileService.Instance.RestoreSnapshot(instance.FeatureSnapshot.interactables);
+                if (restoreFeaturesFromSnapshot)
+                {
+                    InteractableTileService.Instance.ClearAllRegistrations();
+                    InteractableTileService.Instance.RestoreSnapshot(instance.FeatureSnapshot.interactables);
+                }
             }
 
             if (FloorItemPileService.Instance != null)
             {
                 FloorItemPileService.Instance.BindViewRoot(instance.DynamicViewsRoot);
-                FloorItemPileService.Instance.ClearAllPiles();
-                FloorItemPileService.Instance.RestoreSnapshot(instance.FeatureSnapshot.floorItems);
+                if (restoreFeaturesFromSnapshot)
+                {
+                    FloorItemPileService.Instance.ClearAllPiles();
+                    FloorItemPileService.Instance.RestoreSnapshot(instance.FeatureSnapshot.floorItems);
+                }
             }
 
             if (DoorService.Instance != null)

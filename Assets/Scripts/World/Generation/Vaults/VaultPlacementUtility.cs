@@ -34,7 +34,8 @@ namespace JRogue.World.Generation.Vaults
             Vector3Int placementOrigin,
             DungeonGenerationContext context,
             MapManager map,
-            int minDistanceFromPlayerStart)
+            int minDistanceFromPlayerStart,
+            string requiredZoneId = null)
         {
             if (blueprint == null || context == null || map == null)
                 return false;
@@ -72,14 +73,28 @@ namespace JRogue.World.Generation.Vaults
 
                 if (context.ReservedCells.Contains(world))
                     return false;
+
+                if (!MeetsRequiredZone(context, world, requiredZoneId))
+                    return false;
             }
 
             return true;
         }
 
+        static bool MeetsRequiredZone(DungeonGenerationContext context, Vector3Int world, string requiredZoneId)
+        {
+            if (string.IsNullOrEmpty(requiredZoneId))
+                return true;
+
+            if (!context.TryGetZoneId(world, out string zoneId))
+                return false;
+
+            return zoneId == requiredZoneId;
+        }
+
         static bool IsReplaceableCell(DungeonGenerationContext context, MapManager map, Vector3Int world)
         {
-            if (context.UsesZoneComposite)
+            if (context.UsesPaintedZoneMap)
                 return map.IsWalkable(world) || map.IsWall(world);
 
             DungeonLayoutStamp stamp = context.Definition?.LayoutStamp;
@@ -93,7 +108,7 @@ namespace JRogue.World.Generation.Vaults
             DungeonLayoutStamp stamp,
             DungeonGenerationContext context)
         {
-            if (context != null && context.UsesZoneComposite)
+            if (context != null && context.UsesPaintedZoneMap)
             {
                 MapManager map = MapManager.Instance;
                 return map != null
@@ -127,19 +142,20 @@ namespace JRogue.World.Generation.Vaults
             VaultBlueprint blueprint,
             DungeonGenerationContext context,
             MapManager map,
-            int minDistanceFromPlayerStart)
+            int minDistanceFromPlayerStart,
+            string requiredZoneId = null)
         {
             if (context == null || map == null)
                 return 0;
 
-            if (!context.UsesZoneComposite && context.Definition?.LayoutStamp == null)
+            if (!context.UsesPaintedZoneMap && context.Definition?.LayoutStamp == null)
                 return 0;
 
             List<Vector3Int> candidates = CollectOriginCandidates(context.Definition?.LayoutStamp, context);
             int valid = 0;
             for (int i = 0; i < candidates.Count; i++)
             {
-                if (CanPlaceAt(blueprint, candidates[i], context, map, minDistanceFromPlayerStart))
+                if (CanPlaceAt(blueprint, candidates[i], context, map, minDistanceFromPlayerStart, requiredZoneId))
                     valid++;
             }
 

@@ -16,6 +16,7 @@ namespace JRogue.World.Generation.Zones
         [Min(1)] [SerializeField] int minHeight = 8;
         [Min(1)] [SerializeField] int maxWidth = 24;
         [Min(1)] [SerializeField] int maxHeight = 24;
+        [SerializeField] ZoneFillProfile fillProfile = new ZoneFillProfile { mode = ZoneFillMode.SolidRect };
         [SerializeField] string[] tags;
 
         public string ZoneId => zoneId;
@@ -28,6 +29,7 @@ namespace JRogue.World.Generation.Zones
         public int MinHeight => minHeight;
         public int MaxWidth => maxWidth;
         public int MaxHeight => maxHeight;
+        public ZoneFillProfile FillProfile => fillProfile;
         public string[] Tags => tags;
     }
 }

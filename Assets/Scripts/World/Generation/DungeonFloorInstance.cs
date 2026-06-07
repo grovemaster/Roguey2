@@ -44,6 +44,7 @@ namespace JRogue.World.Generation
         }
 
         bool _isGenerated;
+        bool _featuresLiveOnServices;
         Vector3Int _playerStart;
 
         public DungeonFloorFeatureSnapshot FeatureSnapshot => _featureSnapshot;
@@ -51,6 +52,7 @@ namespace JRogue.World.Generation
         public DungeonFloorDefinition Definition => definition;
         public string FloorId => definition != null ? definition.FloorId : name;
         public bool IsGenerated => _isGenerated;
+        public bool FeaturesLiveOnServices => _featuresLiveOnServices;
         public Vector3Int PlayerStart => _playerStart;
         public Transform EnemyContainer => enemyContainer;
         public Transform DynamicViewsRoot => dynamicViewsRoot;
@@ -208,6 +210,10 @@ namespace JRogue.World.Generation
             return tilemap;
         }
 
+        public void MarkFeaturesLiveOnServices() => _featuresLiveOnServices = true;
+
+        public void ClearFeaturesLiveOnServices() => _featuresLiveOnServices = false;
+
         public void MarkGenerated(
             Vector3Int playerStart,
             Dictionary<string, PortalArrivalBinding> arrivals,
@@ -333,7 +339,15 @@ namespace JRogue.World.Generation
 
         public void FinishActivation(GridManager gridManager)
         {
-            DungeonFloorServiceBinder.BindActiveFloor(this);
+            bool restoreFeatures = !_featuresLiveOnServices;
+            DungeonGenerationLog.Info(
+                $"FinishActivation floorId={FloorId} restoreFeaturesFromSnapshot={restoreFeatures} " +
+                $"featuresLiveOnServices={_featuresLiveOnServices}");
+
+            DungeonFloorServiceBinder.BindActiveFloor(this, restoreFeaturesFromSnapshot: restoreFeatures);
+            if (_featuresLiveOnServices)
+                _featuresLiveOnServices = false;
+
             gridManager?.ClearAllOccupancy();
             ReregisterEnemyOccupancy(gridManager);
             ReregisterNpcOccupancy(gridManager);

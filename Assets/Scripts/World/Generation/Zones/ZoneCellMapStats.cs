@@ -54,6 +54,7 @@ namespace JRogue.World.Generation.Zones
         public Dictionary<string, int> WallCellsByZone;
         public int OuterEdgeWallCells;
         public int MissingZoneDefinitionFloorFallback;
+        public int SkippedSubStampBorderWalls;
     }
 
     public static class ZonePaintStatsFormatter
@@ -64,6 +65,7 @@ namespace JRogue.World.Generation.Zones
             log.Append("paintedFloor=").Append(FormatPaintCounts(stats.FloorCellsByZone));
             log.Append(" paintedWall=").Append(FormatPaintCounts(stats.WallCellsByZone));
             log.Append($" outerEdgeWalls={stats.OuterEdgeWallCells}");
+            log.Append($" skippedSubStampBorderWalls={stats.SkippedSubStampBorderWalls}");
             log.Append($" floorFallbackNoZoneDef={stats.MissingZoneDefinitionFloorFallback}");
             return log.ToString();
         }

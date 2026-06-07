@@ -48,6 +48,13 @@ namespace JRogue.World.Generation
         public bool UsesZoneComposite =>
             Definition != null && Definition.LayoutMode == FloorLayoutMode.ZoneComposite;
 
+        /// <summary>
+        /// True when walkable space comes from zone fill (not the legacy layout stamp grid).
+        /// </summary>
+        public bool UsesPaintedZoneMap =>
+            UsesZoneComposite
+            || (ZoneCellMap != null && ZoneCellMap.Count > 0);
+
         public void BuildSafeZoneForFloor(DungeonFloorDefinition def)
         {
             SafeZoneCells.Clear();

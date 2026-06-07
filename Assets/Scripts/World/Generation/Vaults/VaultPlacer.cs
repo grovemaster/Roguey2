@@ -14,6 +14,7 @@ namespace JRogue.World.Generation.Vaults
             DungeonGenerationContext context,
             System.Random rng,
             int minDistanceOverride,
+            string requiredZoneId,
             out Vector3Int placedOrigin)
         {
             placedOrigin = default;
@@ -24,7 +25,7 @@ namespace JRogue.World.Generation.Vaults
             if (map == null)
                 return false;
 
-            if (!context.UsesZoneComposite && context.Definition?.LayoutStamp == null)
+            if (!context.UsesPaintedZoneMap && context.Definition?.LayoutStamp == null)
                 return false;
 
             int minDistance = minDistanceOverride > 0
@@ -45,7 +46,7 @@ namespace JRogue.World.Generation.Vaults
             for (int i = 0; i < candidates.Count; i++)
             {
                 Vector3Int origin = candidates[i];
-                if (!VaultPlacementUtility.CanPlaceAt(blueprint, origin, context, map, minDistance))
+                if (!VaultPlacementUtility.CanPlaceAt(blueprint, origin, context, map, minDistance, requiredZoneId))
                     continue;
 
                 if (!VaultStamper.TryStamp(blueprint, registry, origin, context, out string error))

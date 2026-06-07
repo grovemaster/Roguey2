@@ -30,5 +30,8 @@ namespace JRogue.World.Generation.Vaults
 
         [Tooltip("0 = use MIN_DISTANCE_FROM_PLAYER_START from the .vault file.")]
         [Min(0)] public int minDistanceFromPlayerStart;
+
+        [Tooltip("When set, every vault footprint cell must lie in this habitat zone id.")]
+        public string requiredZoneId;
     }
 }

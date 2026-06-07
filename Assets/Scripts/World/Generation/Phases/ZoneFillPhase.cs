@@ -36,18 +36,22 @@ namespace JRogue.World.Generation.Phases
             }
 
             map.ConfigurePaintTiles(def.FloorTile, def.WallTile);
-            ZonePaintStats paintStats = ZoneSolidPainter.PaintSolidLayout(
+            ZonePaintStats paintStats = ZonePieceFiller.FillLayout(
                 map,
                 def,
                 layout,
                 context.ResolvedZonePieces,
-                context.ZoneCellMap);
+                context.ZoneCellMap,
+                context.RunSeed,
+                def.FloorId);
 
             Dictionary<string, int> mapCounts = ZoneCellMapStats.CountByZone(context.ZoneCellMap);
             DungeonGenerationLog.Phase(nameof(ZoneFillPhase),
-                $"painted {layout.FloorWidth}x{layout.FloorHeight} solid slots; " +
+                $"painted {layout.FloorWidth}x{layout.FloorHeight} zone fills; " +
                 $"{ZoneCellMapStats.FormatCounts(mapCounts)}; " +
                 $"{ZonePaintStatsFormatter.Format(paintStats)}");
+            ZoneGenerationDiagnostics.LogPaintedTileSamples(context, layout, "after ZoneFillPhase");
+            ZoneGenerationDiagnostics.LogCheckpoint(context, "after ZoneFillPhase");
         }
     }
 }

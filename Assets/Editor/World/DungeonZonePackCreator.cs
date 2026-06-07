@@ -20,6 +20,7 @@ namespace JRogue.Editor.World
         const string SnowWallPath = "Assets/TileMaps/Vault/SnowTheme_48.asset";
         const string Floor01DefPath = "Assets/Resources/Dungeon/Floor_dungeon_floor_01.asset";
         const string Floor01LayoutPath = LayoutRoot + "/Layout_Floor01_Zones.asset";
+        const string DungeonSubStampPath = "Assets/Resources/Dungeon/Stamp_Floor02_20x20.asset";
 
         [MenuItem("JRogue/Dungeon/Create Floor 1 Zone Pack")]
         public static void CreateFloor1ZonePack()
@@ -33,25 +34,44 @@ namespace JRogue.Editor.World
             TileBase sandWall = LoadTile(SandWallPath);
             TileBase snowFloor = LoadTile(SnowFloorPath);
             TileBase snowWall = LoadTile(SnowWallPath);
+            DungeonLayoutStamp dungeonStamp = AssetDatabase.LoadAssetAtPath<DungeonLayoutStamp>(DungeonSubStampPath);
 
             DungeonZoneDefinition zoneDungeon = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Dungeon.asset",
                 "dungeon",
                 "Dungeon Hub",
                 dungeonFloor,
-                dungeonWall);
+                dungeonWall,
+                new ZoneFillProfile
+                {
+                    mode = ZoneFillMode.SubStamp,
+                    subStampTable = new[]
+                    {
+                        new ZoneSubStampEntry { stamp = dungeonStamp, weight = 1 },
+                    },
+                });
             DungeonZoneDefinition zoneDesert = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Desert.asset",
                 "desert",
                 "Desert",
                 sandFloor,
-                sandWall);
+                sandWall,
+                new ZoneFillProfile
+                {
+                    mode = ZoneFillMode.OpenPocket,
+                    innerWallDensity = 10,
+                });
             DungeonZoneDefinition zoneSnow = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Snow.asset",
                 "snow",
                 "Snow",
                 snowFloor,
-                snowWall);
+                snowWall,
+                new ZoneFillProfile
+                {
+                    mode = ZoneFillMode.OpenPocket,
+                    innerWallDensity = 10,
+                });
 
             DungeonFloorZoneLayout layout = CreateOrUpdateFloor01Layout(
                 zoneDungeon,
@@ -68,7 +88,8 @@ namespace JRogue.Editor.World
             string zoneId,
             string displayName,
             TileBase floorTile,
-            TileBase wallTile)
+            TileBase wallTile,
+            ZoneFillProfile fillProfile)
         {
             var zone = AssetDatabase.LoadAssetAtPath<DungeonZoneDefinition>(path);
             if (zone == null)
@@ -86,6 +107,26 @@ namespace JRogue.Editor.World
             so.FindProperty("minHeight").intValue = 8;
             so.FindProperty("maxWidth").intValue = 24;
             so.FindProperty("maxHeight").intValue = 24;
+            SerializedProperty fill = so.FindProperty("fillProfile");
+            fill.FindPropertyRelative("mode").enumValueIndex = (int)fillProfile.mode;
+            fill.FindPropertyRelative("innerWallDensity").intValue = fillProfile.innerWallDensity;
+            fill.FindPropertyRelative("ensureConnectivity").boolValue = fillProfile.ensureConnectivity;
+            SerializedProperty subStamps = fill.FindPropertyRelative("subStampTable");
+            ZoneSubStampEntry[] table = fillProfile.subStampTable;
+            if (table == null || table.Length == 0)
+            {
+                subStamps.arraySize = 0;
+            }
+            else
+            {
+                subStamps.arraySize = table.Length;
+                for (int i = 0; i < table.Length; i++)
+                {
+                    SerializedProperty entry = subStamps.GetArrayElementAtIndex(i);
+                    entry.FindPropertyRelative("stamp").objectReferenceValue = table[i].stamp;
+                    entry.FindPropertyRelative("weight").intValue = table[i].weight;
+                }
+            }
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(zone);
             return zone;

@@ -25,7 +25,12 @@ namespace JRogue.World.Generation.Phases
 
             List<Vector3Int> candidates = PopulationPlacementUtility.CollectFloorCandidates(map, context);
             if (candidates.Count == 0)
+            {
+                DungeonGenerationLog.Warn(
+                    $"{nameof(HazardPopulationPhase)}: no population candidates; " +
+                    PopulationPlacementUtility.DescribePopulationFailure(map, context));
                 return;
+            }
 
             PopulationPlacementUtility.Shuffle(candidates, context.Rng);
             int candidateIndex = 0;
