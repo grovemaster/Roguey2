@@ -16,6 +16,8 @@ MonoBehaviour:
   displayName: Desert
   floorTile: {fileID: 11400000, guid: 212be23c50d041961a2cca9215dd386c, type: 2}
   wallTile: {fileID: 11400000, guid: 834b0abad5512a2e3b128154fcf8d52f, type: 2}
+  floorTilePalette: {fileID: 11400000, guid: e0104686a9f39c92c9094576214e4ba6, type: 2}
+  wallTilePalette: {fileID: 11400000, guid: 08ac24a3158fff878bddf7949681dc78, type: 2}
   ambientRegionId: -1
   defaultAmbientLight: 0
   minWidth: 8
@@ -27,6 +29,8 @@ MonoBehaviour:
     subStampTable: []
     innerWallDensity: 10
     ensureConnectivity: 0
+  populationProfile: {fileID: 11400000, guid: 5b9c2d3e4f5061728394a5b6c7d8e9f0, type: 2}
+  monsterPopulationMode: 0
+  monsterSpawnSchedule: {fileID: 0}
   tags:
   - outdoor
-  populationProfile: {fileID: 11400000, guid: 5b9c2d3e4f5061728394a5b6c7d8e9f0, type: 2}

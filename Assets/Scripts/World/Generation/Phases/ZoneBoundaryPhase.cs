@@ -47,7 +47,8 @@ namespace JRogue.World.Generation.Phases
                 def,
                 layout,
                 context.ResolvedZonePieces,
-                boundaries);
+                boundaries,
+                ZoneTilePaintContext.From(context));
 
             var log = new StringBuilder();
             log.Append($"interfaces={interfaces.Count} boundaries={boundaries.Count} ");

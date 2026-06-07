@@ -87,6 +87,7 @@ MonoBehaviour:
     isPlayerStartPiece: 0
   defaultOuterBoundary: 2
   fallbackZoneId: rock
+  skeletonStamp: {fileID: 0}
   zoneDefinitions:
   - {fileID: 11400000, guid: 7159c3ec1bdf1a47299318c0a0152954, type: 2}
   - {fileID: 11400000, guid: 547055b96074bf3e7b76fdf655cdd385, type: 2}

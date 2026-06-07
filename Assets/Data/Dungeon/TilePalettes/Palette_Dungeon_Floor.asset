@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef860a9827b1561d8ec41f65f51e711, type: 3}
+  m_Name: Palette_Dungeon_Floor
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonTilePalette
+  paletteId: dungeon_floor
+  layer: 0
+  defaultVariationMode: 0
+  entries:
+  - tile: {fileID: 11400000, guid: a770cea7164a14f4cbe48a9b5e25548f, type: 2}
+    registryKey: 
+    weight: 5
+  - tile: {fileID: 11400000, guid: 74f05d96e72ac2c45bb96a6dfed16dfd, type: 2}
+    registryKey: 
+    weight: 5
+  - tile: {fileID: 11400000, guid: 767d52ad0f7c0f94a9b2c5fe454e51b0, type: 2}
+    registryKey: 
+    weight: 4
+  - tile: {fileID: 11400000, guid: baee36ceccb744b4bb1d0f5696202110, type: 2}
+    registryKey: 
+    weight: 3
+  - tile: {fileID: 11400000, guid: 712d0040869c5bd459017f0ece3df163, type: 2}
+    registryKey: 
+    weight: 3
+  - tile: {fileID: 11400000, guid: ace34e0b6a210c749b4556a45e7d3d5c, type: 2}
+    registryKey: 
+    weight: 2
+  - tile: {fileID: 11400000, guid: b336753d4b5dd0b46a0568271c23f95c, type: 2}
+    registryKey: 
+    weight: 2
+  - tile: {fileID: 11400000, guid: e4eab747e972c8145923305feb8d08e6, type: 2}
+    registryKey: 
+    weight: 1

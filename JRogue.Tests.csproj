@@ -108,6 +108,7 @@
     <Compile Include="Assets/Tests/UnitTests/Pathfinding/GridAStarPathfinderTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/MockMonoBehavior/TestQuietEssenceSlotManager.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/UndeadSkillTreeRuntimeTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/DungeonTilePaletteResolverTests.cs" />
     <Compile Include="Assets/Tests/Mocks/DummyTargetAbility.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/GridFootprintUtilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Party/PartyManagerTest.cs" />

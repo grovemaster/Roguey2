@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace JRogue.World.Generation.Zones
 {
@@ -11,7 +10,8 @@ namespace JRogue.World.Generation.Zones
             DungeonFloorDefinition floorDef,
             DungeonFloorZoneLayout layout,
             IReadOnlyList<ResolvedZonePiece> pieces,
-            IReadOnlyDictionary<Vector3Int, string> zoneCellMap)
+            IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
+            ZoneTilePaintContext paintContext)
         {
             var stats = new ZonePaintStats
             {
@@ -42,26 +42,13 @@ namespace JRogue.World.Generation.Zones
                         if (onOuterEdge)
                             stats.OuterEdgeWallCells++;
 
-                        TileBase wall = ResolveWallTile(layout, floorDef, zoneId);
-                        if (wall != null)
-                            map.SetCellWall(cell, wall);
-
+                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, zoneId, paintContext);
                         Increment(stats.WallCellsByZone, zoneId);
                         continue;
                     }
 
-                    if (layout.TryGetZoneDefinition(zoneId, out DungeonZoneDefinition zoneDef)
-                        && zoneDef.FloorTile != null)
-                    {
-                        map.SetCellFloor(cell, zoneDef.FloorTile);
-                        Increment(stats.FloorCellsByZone, zoneId);
-                    }
-                    else if (floorDef?.FloorTile != null)
-                    {
-                        map.SetCellFloor(cell, floorDef.FloorTile);
-                        stats.MissingZoneDefinitionFloorFallback++;
-                        Increment(stats.FloorCellsByZone, zoneId + "?");
-                    }
+                    ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, zoneId, paintContext);
+                    Increment(stats.FloorCellsByZone, zoneId);
                 }
             }
 
@@ -79,17 +66,6 @@ namespace JRogue.World.Generation.Zones
                 counts[zoneId] = count + 1;
             else
                 counts[zoneId] = 1;
-        }
-
-        static TileBase ResolveWallTile(
-            DungeonFloorZoneLayout layout,
-            DungeonFloorDefinition floorDef,
-            string zoneId)
-        {
-            if (layout.TryGetZoneDefinition(zoneId, out DungeonZoneDefinition zoneDef) && zoneDef.WallTile != null)
-                return zoneDef.WallTile;
-
-            return floorDef?.WallTile;
         }
     }
 }

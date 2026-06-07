@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef860a9827b1561d8ec41f65f51e711, type: 3}
+  m_Name: Palette_Snow_Floor
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonTilePalette
+  paletteId: snow_floor
+  layer: 0
+  defaultVariationMode: 0
+  entries:
+  - tile: {fileID: 11400000, guid: 33f77e733655c2fd0b38ee535c22ed9e, type: 2}
+    registryKey: 
+    weight: 5
+  - tile: {fileID: 11400000, guid: ec676ab3651eb2f19a33b43225beb7c3, type: 2}
+    registryKey: 
+    weight: 5
+  - tile: {fileID: 11400000, guid: 7fd2838fcedfd8a3db58aec9dec63952, type: 2}
+    registryKey: 
+    weight: 4
+  - tile: {fileID: 11400000, guid: 64826ee802d5ee872a177d6e0f82183e, type: 2}
+    registryKey: 
+    weight: 3
+  - tile: {fileID: 11400000, guid: 1324325f8b1a9a96eb1f8e1244c56ddc, type: 2}
+    registryKey: 
+    weight: 2
+  - tile: {fileID: 11400000, guid: 993e6c7f560f05a43a8006811c54736a, type: 2}
+    registryKey: 
+    weight: 1

@@ -16,6 +16,8 @@ MonoBehaviour:
   displayName: Snow
   floorTile: {fileID: 11400000, guid: 33f77e733655c2fd0b38ee535c22ed9e, type: 2}
   wallTile: {fileID: 11400000, guid: b8c17fa4f107143fcbf03a5ad8bce89e, type: 2}
+  floorTilePalette: {fileID: 11400000, guid: 963671625d18d358f8142ec1a0abccaf, type: 2}
+  wallTilePalette: {fileID: 11400000, guid: 0c3acb6cb40f0014da90c2686ef966d2, type: 2}
   ambientRegionId: -1
   defaultAmbientLight: 0
   minWidth: 8
@@ -27,5 +29,7 @@ MonoBehaviour:
     subStampTable: []
     innerWallDensity: 10
     ensureConnectivity: 0
-  tags: []
   populationProfile: {fileID: 11400000, guid: 6c0d3e4f5061728394a5b6c7d8e9f0a1, type: 2}
+  monsterPopulationMode: 0
+  monsterSpawnSchedule: {fileID: 0}
+  tags: []

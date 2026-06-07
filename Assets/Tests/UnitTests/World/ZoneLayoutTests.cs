@@ -597,7 +597,8 @@ namespace JRogue.Tests.UnitTests.World
                     null,
                     layout,
                     new[] { center },
-                    boundaries);
+                    boundaries,
+                    default);
                 Assert.AreEqual(0, stats.OpenCells);
             });
 

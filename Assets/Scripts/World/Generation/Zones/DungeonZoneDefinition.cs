@@ -10,6 +10,8 @@ namespace JRogue.World.Generation.Zones
         [SerializeField] string displayName = "Dungeon";
         [SerializeField] TileBase floorTile;
         [SerializeField] TileBase wallTile;
+        [SerializeField] DungeonTilePalette floorTilePalette;
+        [SerializeField] DungeonTilePalette wallTilePalette;
         [SerializeField] int ambientRegionId = -1;
         [SerializeField] int defaultAmbientLight = 0;
         [Min(1)] [SerializeField] int minWidth = 8;
@@ -27,6 +29,8 @@ namespace JRogue.World.Generation.Zones
         public string DisplayName => displayName;
         public TileBase FloorTile => floorTile;
         public TileBase WallTile => wallTile;
+        public DungeonTilePalette FloorTilePalette => floorTilePalette;
+        public DungeonTilePalette WallTilePalette => wallTilePalette;
         public int AmbientRegionId => ambientRegionId;
         public int DefaultAmbientLight => defaultAmbientLight;
         public int MinWidth => minWidth;

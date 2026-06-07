@@ -16,6 +16,8 @@ MonoBehaviour:
   displayName: Dungeon Hub
   floorTile: {fileID: 11400000, guid: a770cea7164a14f4cbe48a9b5e25548f, type: 2}
   wallTile: {fileID: 11400000, guid: 76b8e898b74148f479eecb778c522cf8, type: 2}
+  floorTilePalette: {fileID: 11400000, guid: 9fb4c541742c75709bd7e12fc47a0be5, type: 2}
+  wallTilePalette: {fileID: 11400000, guid: 3f00c3d6ce638d5f192c8ef40ea3133c, type: 2}
   ambientRegionId: -1
   defaultAmbientLight: 0
   minWidth: 8
@@ -29,7 +31,7 @@ MonoBehaviour:
       weight: 1
     innerWallDensity: 0
     ensureConnectivity: 0
-  tags: []
   populationProfile: {fileID: 11400000, guid: 4a8b1c2d3e4f5061728394a5b6c7d8e9, type: 2}
   monsterPopulationMode: 1
   monsterSpawnSchedule: {fileID: 11400000, guid: a9c0d1e2f3a6478890a1b2c3d4e5f609, type: 2}
+  tags: []

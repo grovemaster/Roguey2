@@ -29,6 +29,13 @@ namespace JRogue.Editor.World
         const string Floor01LayoutPath = LayoutRoot + "/Layout_Floor01_Zones.asset";
         const string Floor03LayoutPath = LayoutRoot + "/Layout_Floor03_Zones.asset";
         const string PopulationRoot = ZoneRoot + "/Population";
+        const string PaletteRoot = "Assets/Data/Dungeon/TilePalettes";
+        const string PaletteDungeonFloorPath = PaletteRoot + "/Palette_Dungeon_Floor.asset";
+        const string PaletteDungeonWallPath = PaletteRoot + "/Palette_Dungeon_Wall.asset";
+        const string PaletteSandFloorPath = PaletteRoot + "/Palette_Sand_Floor.asset";
+        const string PaletteSandWallPath = PaletteRoot + "/Palette_Sand_Wall.asset";
+        const string PaletteSnowFloorPath = PaletteRoot + "/Palette_Snow_Floor.asset";
+        const string PaletteSnowWallPath = PaletteRoot + "/Palette_Snow_Wall.asset";
         const string ScheduleRoot = "Assets/Data/Dungeon/SpawnSchedules";
         const string ScheduleFloor01DungeonPath = ScheduleRoot + "/Schedule_Floor01_Dungeon.asset";
         const string DungeonSubStampPath = "Assets/Resources/Dungeon/Stamp_Floor02_20x20.asset";
@@ -45,6 +52,7 @@ namespace JRogue.Editor.World
             EnsureFolder(LayoutRoot);
             EnsureFolder(PopulationRoot);
             EnsureFolder(ScheduleRoot);
+            DungeonTilePalettePackCreator.CreateTilePalettes();
 
             TileBase dungeonFloor = LoadTile(FloorTilePath);
             TileBase dungeonWall = LoadTile(WallTilePath);
@@ -120,12 +128,21 @@ namespace JRogue.Editor.World
             MonsterSpawnScheduleProfile dungeonSchedule =
                 CreateOrUpdateFloor01DungeonSchedule(skeletonSpawn);
 
+            DungeonTilePalette paletteDungeonFloor = LoadPalette(PaletteDungeonFloorPath);
+            DungeonTilePalette paletteDungeonWall = LoadPalette(PaletteDungeonWallPath);
+            DungeonTilePalette paletteSandFloor = LoadPalette(PaletteSandFloorPath);
+            DungeonTilePalette paletteSandWall = LoadPalette(PaletteSandWallPath);
+            DungeonTilePalette paletteSnowFloor = LoadPalette(PaletteSnowFloorPath);
+            DungeonTilePalette paletteSnowWall = LoadPalette(PaletteSnowWallPath);
+
             DungeonZoneDefinition zoneDungeon = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_Dungeon.asset",
                 "dungeon",
                 "Dungeon Hub",
                 dungeonFloor,
                 dungeonWall,
+                paletteDungeonFloor,
+                paletteDungeonWall,
                 new ZoneFillProfile
                 {
                     mode = ZoneFillMode.SubStamp,
@@ -148,6 +165,8 @@ namespace JRogue.Editor.World
                 "Desert",
                 sandFloor,
                 sandWall,
+                paletteSandFloor,
+                paletteSandWall,
                 new ZoneFillProfile
                 {
                     mode = ZoneFillMode.OpenPocket,
@@ -161,6 +180,8 @@ namespace JRogue.Editor.World
                 "Snow",
                 snowFloor,
                 snowWall,
+                paletteSnowFloor,
+                paletteSnowWall,
                 new ZoneFillProfile
                 {
                     mode = ZoneFillMode.OpenPocket,
@@ -184,6 +205,7 @@ namespace JRogue.Editor.World
             EnsureFolder(ZoneRoot);
             EnsureFolder(LayoutRoot);
             EnsureFolder(PopulationRoot);
+            DungeonTilePalettePackCreator.CreateTilePalettes();
 
             TileBase dungeonFloor = LoadTile(FloorTilePath);
             TileBase dungeonWall = LoadTile(WallTilePath);
@@ -250,12 +272,21 @@ namespace JRogue.Editor.World
                 interactableMax: 0,
                 enemyForbiddenNearEdge: 1);
 
+            DungeonTilePalette paletteDungeonFloor = LoadPalette(PaletteDungeonFloorPath);
+            DungeonTilePalette paletteDungeonWall = LoadPalette(PaletteDungeonWallPath);
+            DungeonTilePalette paletteSandFloor = LoadPalette(PaletteSandFloorPath);
+            DungeonTilePalette paletteSandWall = LoadPalette(PaletteSandWallPath);
+            DungeonTilePalette paletteSnowFloor = LoadPalette(PaletteSnowFloorPath);
+            DungeonTilePalette paletteSnowWall = LoadPalette(PaletteSnowWallPath);
+
             DungeonZoneDefinition zoneOrcCastle = CreateOrUpdateZone(
                 ZoneRoot + "/Zone_OrcCastle.asset",
                 "orc_castle",
                 "Orc Castle",
                 dungeonFloor,
                 dungeonWall,
+                paletteDungeonFloor,
+                paletteDungeonWall,
                 new ZoneFillProfile
                 {
                     mode = ZoneFillMode.RoomCorridor,
@@ -272,6 +303,8 @@ namespace JRogue.Editor.World
                 "Witch Forest",
                 snowFloor,
                 snowWall,
+                paletteSnowFloor,
+                paletteSnowWall,
                 new ZoneFillProfile
                 {
                     mode = ZoneFillMode.Cave,
@@ -290,6 +323,8 @@ namespace JRogue.Editor.World
                 "Mountain Pass",
                 sandFloor,
                 sandWall,
+                paletteSandFloor,
+                paletteSandWall,
                 new ZoneFillProfile
                 {
                     mode = ZoneFillMode.OpenPocket,
@@ -324,6 +359,8 @@ namespace JRogue.Editor.World
             string displayName,
             TileBase floorTile,
             TileBase wallTile,
+            DungeonTilePalette floorTilePalette,
+            DungeonTilePalette wallTilePalette,
             ZoneFillProfile fillProfile,
             DungeonZonePopulationProfile populationProfile = null,
             string[] tags = null,
@@ -346,6 +383,8 @@ namespace JRogue.Editor.World
             so.FindProperty("displayName").stringValue = displayName;
             so.FindProperty("floorTile").objectReferenceValue = floorTile;
             so.FindProperty("wallTile").objectReferenceValue = wallTile;
+            so.FindProperty("floorTilePalette").objectReferenceValue = floorTilePalette;
+            so.FindProperty("wallTilePalette").objectReferenceValue = wallTilePalette;
             so.FindProperty("minWidth").intValue = minWidth;
             so.FindProperty("minHeight").intValue = minHeight;
             so.FindProperty("maxWidth").intValue = maxWidth;
@@ -737,6 +776,8 @@ namespace JRogue.Editor.World
             so.FindProperty("floorId").stringValue = floorId;
             so.FindProperty("layoutMode").enumValueIndex = (int)FloorLayoutMode.ZoneComposite;
             so.FindProperty("zoneLayout").objectReferenceValue = layout;
+            so.FindProperty("defaultFloorPalette").objectReferenceValue = LoadPalette(PaletteDungeonFloorPath);
+            so.FindProperty("defaultWallPalette").objectReferenceValue = LoadPalette(PaletteDungeonWallPath);
             so.FindProperty("useFloorPopulationAsFallback").boolValue = true;
             so.FindProperty("playerSafeRadius").intValue = 5;
             so.FindProperty("participatesInDungeonTime").boolValue = true;
@@ -986,6 +1027,9 @@ namespace JRogue.Editor.World
 
         static TileBase LoadTile(string path) =>
             AssetDatabase.LoadAssetAtPath<TileBase>(path);
+
+        static DungeonTilePalette LoadPalette(string path) =>
+            AssetDatabase.LoadAssetAtPath<DungeonTilePalette>(path);
 
         static void EnsureFolder(string path)
         {

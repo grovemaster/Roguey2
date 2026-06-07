@@ -153,6 +153,7 @@
     <Compile Include="Assets/Scripts/Dialog/NpcDialogProfile.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceEffect.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneTilePaintContext.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryTelemetry.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonExitService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneBoundaryApplicator.cs" />
@@ -213,6 +214,7 @@
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlayerInteraction.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneBoundaryResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTileVariationMode.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonFloorZoneLayout.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapTypes.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyMemberDeathService.cs" />
@@ -265,6 +267,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/HealthRegenerationService.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceEntry.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePaletteEntry.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/LayoutStampPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimePhase.cs" />
@@ -291,6 +294,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/MessageHistoryUI.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarInteractable.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileDefinition.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePaletteLayer.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPhase3SampleContent.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalEntryService.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightCellData.cs" />
@@ -360,6 +364,7 @@
     <Compile Include="Assets/Scripts/Interactables/Effects/SetTileEmissionEffect.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRollResult.cs" />
     <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePaletteResolver.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnGroupMembership.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />
@@ -400,6 +405,7 @@
     <Compile Include="Assets/Scripts/Abilities/Progression/GrantPartyExperienceAbility.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/ZoneLayoutPhase.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarResolver.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePalette.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/OtherInteractableOnPrecondition.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/ShopNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkCounterService.cs" />

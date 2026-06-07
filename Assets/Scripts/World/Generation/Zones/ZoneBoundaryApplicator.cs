@@ -11,7 +11,8 @@ namespace JRogue.World.Generation.Zones
             DungeonFloorDefinition floorDef,
             DungeonFloorZoneLayout layout,
             IReadOnlyList<ResolvedZonePiece> pieces,
-            IReadOnlyList<ResolvedZoneBoundary> boundaries)
+            IReadOnlyList<ResolvedZoneBoundary> boundaries,
+            ZoneTilePaintContext paintContext)
         {
             var stats = new ZoneBoundaryStats();
             if (map == null || layout == null || pieces == null || boundaries == null)
@@ -43,6 +44,7 @@ namespace JRogue.World.Generation.Zones
                     pieceA,
                     pieceB,
                     zoneByPieceId,
+                    paintContext,
                     ref stats);
             }
 
@@ -59,6 +61,7 @@ namespace JRogue.World.Generation.Zones
             ResolvedZonePiece pieceA,
             ResolvedZonePiece pieceB,
             IReadOnlyDictionary<string, string> zoneByPieceId,
+            ZoneTilePaintContext paintContext,
             ref ZoneBoundaryStats stats)
         {
             ZoneInterface iface = boundary.Interface;
@@ -96,7 +99,7 @@ namespace JRogue.World.Generation.Zones
 
                 if (open)
                 {
-                    ZoneTilePainter.PaintFloor(map, edgeCell, layout, floorDef, zoneAId);
+                    ZoneTilePainter.PaintFloor(map, edgeCell, layout, floorDef, zoneAId, paintContext);
                     stats.OpenCells++;
 
                     if (InBounds(neighborCell, layout))
@@ -104,13 +107,13 @@ namespace JRogue.World.Generation.Zones
                         string neighborZone = iface.IsExterior
                             ? layout.FallbackZoneId
                             : zoneBId ?? layout.FallbackZoneId;
-                        ZoneTilePainter.PaintFloor(map, neighborCell, layout, floorDef, neighborZone);
+                        ZoneTilePainter.PaintFloor(map, neighborCell, layout, floorDef, neighborZone, paintContext);
                         stats.OpenCells++;
                     }
                 }
                 else
                 {
-                    ZoneTilePainter.PaintWall(map, edgeCell, layout, floorDef, zoneAId);
+                    ZoneTilePainter.PaintWall(map, edgeCell, layout, floorDef, zoneAId, paintContext);
                     stats.WallCells++;
 
                     if (InBounds(neighborCell, layout))
@@ -118,7 +121,7 @@ namespace JRogue.World.Generation.Zones
                         string neighborZone = iface.IsExterior
                             ? layout.FallbackZoneId
                             : zoneBId ?? layout.FallbackZoneId;
-                        ZoneTilePainter.PaintWall(map, neighborCell, layout, floorDef, neighborZone);
+                        ZoneTilePainter.PaintWall(map, neighborCell, layout, floorDef, neighborZone, paintContext);
                         stats.WallCells++;
                     }
                 }

@@ -18,6 +18,8 @@ MonoBehaviour:
   zoneLayout: {fileID: 11400000, guid: c7ebde8cbef3d5aa4b9ef8d05ec4c8e1, type: 2}
   floorTile: {fileID: 11400000, guid: a770cea7164a14f4cbe48a9b5e25548f, type: 2}
   wallTile: {fileID: 11400000, guid: 76b8e898b74148f479eecb778c522cf8, type: 2}
+  defaultFloorPalette: {fileID: 11400000, guid: 9fb4c541742c75709bd7e12fc47a0be5, type: 2}
+  defaultWallPalette: {fileID: 11400000, guid: 3f00c3d6ce638d5f192c8ef40ea3133c, type: 2}
   playerSafeRadius: 5
   formationProfile: {fileID: 11400000, guid: bc9b8ea4cc7eebeef321ff560e79df53, type: 2}
   enemyPopulation:
@@ -49,12 +51,15 @@ MonoBehaviour:
     minQuantity: 1
     maxQuantity: 1
   useFloorPopulationAsFallback: 1
+  monsterPopulationMode: 0
+  monsterSpawnSchedule: {fileID: 0}
   portals:
   - portalLinkId: link_floor01_to_floor02
     targetFloorId: dungeon_floor_02
     portalMarkerId: portal_south
     portalCell: {x: 0, y: 0, z: 0}
     listLabel: Portal (South)
+    adjacentConfirmOnly: 0
   edgePortals:
   - edge: 0
     portalLinkId: link_floor01_to_floor02
@@ -65,6 +70,7 @@ MonoBehaviour:
     arrivalAnchor: {x: 15, y: 17, z: 0}
   orthogonalEdgePortalCount: 4
   orthogonalEdgeInset: 2
+  portalPlacementRules: []
   participatesInDungeonTime: 1
   baseDayNightCycles: 5
   additionalDayNightCycles: 0

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef860a9827b1561d8ec41f65f51e711, type: 3}
+  m_Name: Palette_Dungeon_Wall
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonTilePalette
+  paletteId: dungeon_wall
+  layer: 1
+  defaultVariationMode: 0
+  entries:
+  - tile: {fileID: 11400000, guid: 2b4751ab7a420de43b5ab03194f66fd8, type: 2}
+    registryKey: 
+    weight: 4
+  - tile: {fileID: 11400000, guid: 5c693ede610f6c448ad9043978f50ce5, type: 2}
+    registryKey: 
+    weight: 4
+  - tile: {fileID: 11400000, guid: 76b8e898b74148f479eecb778c522cf8, type: 2}
+    registryKey: 
+    weight: 5
+  - tile: {fileID: 11400000, guid: cda2ccb33a401434d8ea67ce11ffef56, type: 2}
+    registryKey: 
+    weight: 3
+  - tile: {fileID: 11400000, guid: d11e5e84d0873e24f8585df984473563, type: 2}
+    registryKey: 
+    weight: 2

@@ -25,14 +25,16 @@ namespace JRogue.World.Generation.Zones
             if (map == null || layout == null || zoneCellMap == null)
                 return stats;
 
+            var paintContext = ZoneTilePaintContext.From(runSeed, floorId);
+
             map.ClearAllTiles();
 
             int width = layout.FloorWidth;
             int height = layout.FloorHeight;
             if (layout.LayoutKind == ZoneLayoutKind.Hybrid && hybridSkeleton != null)
-                PaintSkeletonBaseline(map, floorDef, layout, hybridSkeleton, zoneCellMap, width, height, stats);
+                PaintSkeletonBaseline(map, floorDef, layout, hybridSkeleton, zoneCellMap, width, height, paintContext, stats);
             else
-                PaintBaseline(map, floorDef, layout, zoneCellMap, width, height, stats);
+                PaintBaseline(map, floorDef, layout, zoneCellMap, width, height, paintContext, stats);
 
             if (pieces == null)
                 return stats;
@@ -59,6 +61,7 @@ namespace JRogue.World.Generation.Zones
                     fillRng,
                     zoneCellMap,
                     maskByZoneMap,
+                    paintContext,
                     stats);
             }
 
@@ -74,6 +77,7 @@ namespace JRogue.World.Generation.Zones
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             int width,
             int height,
+            ZoneTilePaintContext paintContext,
             ZonePaintStats stats)
         {
             for (int y = 0; y < height; y++)
@@ -91,7 +95,7 @@ namespace JRogue.World.Generation.Zones
                         if (onOuterEdge)
                             stats.OuterEdgeWallCells++;
 
-                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, zoneId);
+                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, zoneId, paintContext);
                         Increment(stats.WallCellsByZone, zoneId);
                     }
                 }
@@ -106,6 +110,7 @@ namespace JRogue.World.Generation.Zones
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             int width,
             int height,
+            ZoneTilePaintContext paintContext,
             ZonePaintStats stats)
         {
             int stampWidth = Mathf.Min(skeleton.Width, width);
@@ -122,12 +127,12 @@ namespace JRogue.World.Generation.Zones
 
                     if (x >= stampWidth || y >= stampHeight || skeleton.IsWall(x, y) || !skeleton.IsFloor(x, y))
                     {
-                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, zoneId);
+                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, zoneId, paintContext);
                         Increment(stats.WallCellsByZone, zoneId);
                         continue;
                     }
 
-                    ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, zoneId);
+                    ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, zoneId, paintContext);
                     Increment(stats.FloorCellsByZone, zoneId);
                 }
             }
@@ -154,6 +159,7 @@ namespace JRogue.World.Generation.Zones
             System.Random fillRng,
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             bool maskByZoneMap,
+            ZoneTilePaintContext paintContext,
             ZonePaintStats stats)
         {
             switch (profile.mode)
@@ -168,6 +174,7 @@ namespace JRogue.World.Generation.Zones
                         fillRng,
                         zoneCellMap,
                         maskByZoneMap,
+                        paintContext,
                         stats);
                     break;
                 case ZoneFillMode.OpenPocket:
@@ -180,6 +187,7 @@ namespace JRogue.World.Generation.Zones
                         fillRng,
                         zoneCellMap,
                         maskByZoneMap,
+                        paintContext,
                         stats);
                     break;
                 case ZoneFillMode.RoomCorridor:
@@ -194,6 +202,7 @@ namespace JRogue.World.Generation.Zones
                             profile.ensureConnectivity),
                         zoneCellMap,
                         maskByZoneMap,
+                        paintContext,
                         stats);
                     break;
                 case ZoneFillMode.Cave:
@@ -209,10 +218,11 @@ namespace JRogue.World.Generation.Zones
                             profile.ensureConnectivity),
                         zoneCellMap,
                         maskByZoneMap,
+                        paintContext,
                         stats);
                     break;
                 default:
-                    FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, stats);
+                    FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, paintContext, stats);
                     break;
             }
         }
@@ -225,12 +235,13 @@ namespace JRogue.World.Generation.Zones
             bool[,] floorMask,
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             bool maskByZoneMap,
+            ZoneTilePaintContext paintContext,
             ZonePaintStats stats)
         {
             RectInt bounds = piece.Bounds;
             if (floorMask == null)
             {
-                FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, stats);
+                FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, paintContext, stats);
                 return;
             }
 
@@ -251,12 +262,12 @@ namespace JRogue.World.Generation.Zones
 
                     if (floorMask[x, y])
                     {
-                        ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId);
+                        ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId, paintContext);
                         Increment(stats.FloorCellsByZone, piece.ZoneId);
                     }
                     else
                     {
-                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, piece.ZoneId);
+                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, piece.ZoneId, paintContext);
                         Increment(stats.WallCellsByZone, piece.ZoneId);
                     }
                 }
@@ -270,6 +281,7 @@ namespace JRogue.World.Generation.Zones
             ResolvedZonePiece piece,
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             bool maskByZoneMap,
+            ZoneTilePaintContext paintContext,
             ZonePaintStats stats)
         {
             RectInt bounds = piece.Bounds;
@@ -284,7 +296,7 @@ namespace JRogue.World.Generation.Zones
                     if (!CellBelongsToPiece(cell, piece, zoneCellMap, maskByZoneMap))
                         continue;
 
-                    ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId);
+                    ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId, paintContext);
                     Increment(stats.FloorCellsByZone, piece.ZoneId);
                 }
             }
@@ -299,6 +311,7 @@ namespace JRogue.World.Generation.Zones
             System.Random fillRng,
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             bool maskByZoneMap,
+            ZoneTilePaintContext paintContext,
             ZonePaintStats stats)
         {
             RectInt bounds = piece.Bounds;
@@ -321,12 +334,12 @@ namespace JRogue.World.Generation.Zones
 
                     if (placePillar)
                     {
-                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, piece.ZoneId);
+                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, piece.ZoneId, paintContext);
                         Increment(stats.WallCellsByZone, piece.ZoneId);
                     }
                     else
                     {
-                        ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId);
+                        ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId, paintContext);
                         Increment(stats.FloorCellsByZone, piece.ZoneId);
                     }
                 }
@@ -342,9 +355,10 @@ namespace JRogue.World.Generation.Zones
             System.Random fillRng,
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             bool maskByZoneMap,
+            ZoneTilePaintContext paintContext,
             ZonePaintStats stats)
         {
-            FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, stats);
+            FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, paintContext, stats);
 
             DungeonLayoutStamp stamp = PickSubStamp(profile.subStampTable, fillRng);
             if (stamp == null)
@@ -383,12 +397,12 @@ namespace JRogue.World.Generation.Zones
                             continue;
                         }
 
-                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, piece.ZoneId);
+                        ZoneTilePainter.PaintWall(map, cell, layout, floorDef, piece.ZoneId, paintContext);
                         Increment(stats.WallCellsByZone, piece.ZoneId);
                     }
                     else if (stamp.IsFloor(sx, sy))
                     {
-                        ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId);
+                        ZoneTilePainter.PaintFloor(map, cell, layout, floorDef, piece.ZoneId, paintContext);
                         Increment(stats.FloorCellsByZone, piece.ZoneId);
                     }
                 }

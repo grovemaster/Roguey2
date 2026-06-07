@@ -52,6 +52,8 @@ namespace JRogue.World.Generation
         [SerializeField] Zones.DungeonFloorZoneLayout zoneLayout;
         [SerializeField] TileBase floorTile;
         [SerializeField] TileBase wallTile;
+        [SerializeField] Zones.DungeonTilePalette defaultFloorPalette;
+        [SerializeField] Zones.DungeonTilePalette defaultWallPalette;
         [SerializeField] int playerSafeRadius = 5;
         [SerializeField] PartyFormationSpawnProfile formationProfile;
         [SerializeField] EnemyPopulationEntry[] enemyPopulation = Array.Empty<EnemyPopulationEntry>();
@@ -91,6 +93,8 @@ namespace JRogue.World.Generation
         public Zones.DungeonFloorZoneLayout ZoneLayout => zoneLayout;
         public TileBase FloorTile => floorTile;
         public TileBase WallTile => wallTile;
+        public Zones.DungeonTilePalette DefaultFloorPalette => defaultFloorPalette;
+        public Zones.DungeonTilePalette DefaultWallPalette => defaultWallPalette;
         public int PlayerSafeRadius => playerSafeRadius;
         public PartyFormationSpawnProfile FormationProfile => formationProfile;
         public IReadOnlyList<EnemyPopulationEntry> EnemyPopulation => enemyPopulation;

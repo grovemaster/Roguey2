@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Editor/World/ShamanBarbarianPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/DungeonTilePalettePackCreator.cs" />
     <Compile Include="Assets/Editor/Party/MainCharacterSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/World/NpcDialogPackCreator.cs" />
     <Compile Include="Assets/Editor/World/MapPresencePackEditor.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />
     <Compile Include="Assets/Editor/Interactables/EnemySpawnAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/TownTorchPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/DungeonEditorBatchRunner.cs" />
     <Compile Include="Assets/Editor/Essence/EssenceAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/SampleScenePrefabInstanceRepair.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioQaPack.cs" />
