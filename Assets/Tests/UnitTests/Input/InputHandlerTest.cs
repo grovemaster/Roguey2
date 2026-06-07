@@ -515,7 +515,7 @@ namespace JRogue.Tests.UnitTests.Input
         }
 
         [Test]
-        public void TryApplyRecordedCommand_SwapPartyMember_WhenEnemyTurn_ReordersControlledActor()
+        public void TryApplyRecordedCommand_SwapPartyMember_WhenEnemyTurn_SelectsControlledActorWithoutReordering()
         {
             TestFixtureContext context = CreateFixture(2);
             context.TurnManager.currentState = GameState.ENEMY_TURN;
@@ -524,8 +524,9 @@ namespace JRogue.Tests.UnitTests.Input
             BaseActor second = context.PartyManager.partyMembers[1];
 
             Assert.IsTrue(context.InputHandler.TryApplyRecordedCommand(PlayerCommand.SwapPartyMember(1)));
-            Assert.AreSame(second, context.PartyManager.partyMembers[0]);
-            Assert.AreSame(first, context.PartyManager.partyMembers[1]);
+            Assert.AreSame(first, context.PartyManager.partyMembers[0]);
+            Assert.AreSame(second, context.PartyManager.partyMembers[1]);
+            Assert.AreSame(second, context.PartyManager.GetActiveMember());
         }
 
         private TestFixtureContext CreateFixture(int partySize)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Data.Progression;
@@ -50,6 +51,8 @@ namespace JRogue.Manager.Party
         {
             get => isFormationActive;
         }
+
+        public event Action ActiveMemberChanged;
 
         public BaseActor MainCharacter => mainCharacter;
 
@@ -227,46 +230,84 @@ namespace JRogue.Manager.Party
 
         public void RecordNewLeaderPosition(Vector3Int newPos)
         {
-            // 1. STATIONARY CHECK
-            if (positionHistory.Count > 0 && positionHistory[0] == newPos)
+            if (partyMembers.Count == 0)
+                return;
+
+            EnsureHistoryLength();
+            RecordMemberPosition(0, newPos, positionHistory[0]);
+        }
+
+        /// <summary>
+        /// Realigns formation breadcrumbs when the member at <paramref name="memberIndex"/> moves.
+        /// Matches legacy reorder-to-front semantics without mutating <see cref="partyMembers"/>.
+        /// </summary>
+        public void RecordMemberPosition(int memberIndex, Vector3Int newPos, Vector3Int oldPos)
+        {
+            if (memberIndex < 0 || memberIndex >= partyMembers.Count)
+                return;
+
+            EnsureHistoryLength();
+
+            if (oldPos == newPos)
             {
-                // Helpful to know if the logic is skipping because the leader bumped into a wall
-                Debug.Log($"[RECORD-SKIP] Leader stationary at {newPos}. History preserved.");
+                Debug.Log(
+                    $"[RECORD-SKIP] Member at index {memberIndex} stationary at {newPos}. History preserved.");
                 return;
             }
 
-            Debug.Log($"[RECORD-START] Leader moving to {newPos}. Shifting history for {partyMembers.Count} members.");
+            int count = partyMembers.Count;
+            var virtualToParty = new int[count];
+            virtualToParty[0] = memberIndex;
+            int virtualIndex = 1;
+            for (int i = 0; i < memberIndex; i++)
+                virtualToParty[virtualIndex++] = i;
+            for (int i = memberIndex + 1; i < count; i++)
+                virtualToParty[virtualIndex++] = i;
 
-            // The leader's OLD position (history[0]) is what the first follower (index 1) will target.
-            Vector3Int carryPos = positionHistory[0];
+            Debug.Log(
+                $"[RECORD-START] Member [{memberIndex}] ({partyMembers[memberIndex].name}) moving {oldPos} -> {newPos}. Realigning history for {count} members.");
 
-            // Update the leader's current slot
-            Debug.Log($"[RECORD-LEADER] Index [0] updated: {positionHistory[0]} -> {newPos}");
-            positionHistory[0] = newPos;
+            var virtualHistory = new Vector3Int[count];
+            virtualHistory[0] = newPos;
+            virtualHistory[1] = oldPos;
+            for (int v = 2; v < count; v++)
+                virtualHistory[v] = positionHistory[virtualToParty[v - 1]];
 
-            // 2. SHIFT LOOP
-            for (int i = 1; i < partyMembers.Count; i++)
+            for (int v = 0; v < count; v++)
             {
-                if (i < positionHistory.Count)
-                {
-                    Vector3Int oldHistoryPos = positionHistory[i];
-
-                    // Log the hand-off: CarryPos is the tile vacated by the person in front
-                    Debug.Log($"[RECORD-SHIFT] Index [{i}] ({partyMembers[i].name}) receiving breadcrumb {carryPos}. (Old was {oldHistoryPos})");
-
-                    positionHistory[i] = carryPos;
-                    carryPos = oldHistoryPos;
-                }
-                else
-                {
-                    // This handles cases where the history list was shorter than the party list
-                    Vector3Int memberPos = partyMembers[i].GridPosition;
-                    Debug.LogWarning($"[RECORD-PAD] History index [{i}] was missing. Padding with member's current pos: {memberPos}");
-                    positionHistory.Add(memberPos);
-                }
+                int partyIndex = virtualToParty[v];
+                Debug.Log(
+                    $"[RECORD-MAP] Party index [{partyIndex}] ({partyMembers[partyIndex].name}) breadcrumb {positionHistory[partyIndex]} -> {virtualHistory[v]}");
+                positionHistory[partyIndex] = virtualHistory[v];
             }
 
             PrintHistoryReport("SHIFT-COMPLETE");
+        }
+
+        public void RecordMemberMove(BaseActor member, Vector3Int newPos, Vector3Int oldPos)
+        {
+            int index = member != null ? partyMembers.IndexOf(member) : -1;
+            if (index >= 0)
+                RecordMemberPosition(index, newPos, oldPos);
+        }
+
+        public void RecordMemberMove(BaseActor member, Vector3Int newPos)
+        {
+            int index = member != null ? partyMembers.IndexOf(member) : -1;
+            if (index < 0)
+                return;
+
+            EnsureHistoryLength();
+            RecordMemberPosition(index, newPos, positionHistory[index]);
+        }
+
+        void EnsureHistoryLength()
+        {
+            while (positionHistory.Count < partyMembers.Count)
+            {
+                int padIndex = positionHistory.Count;
+                positionHistory.Add(partyMembers[padIndex].GridPosition);
+            }
         }
 
         // public void RecordNewLeaderPosition(Vector3Int newPos)
@@ -321,9 +362,18 @@ namespace JRogue.Manager.Party
             Debug.Log($"[{label}] {report}");
         }
 
+        public int ActiveMemberIndex => activeIndex;
+
         public BaseActor GetActiveMember() => (partyMembers.Count > 0) ? partyMembers[activeIndex] : null;
 
-        /// <summary>Removes a fallen member before destroy; snaps formation and repoints camera if leader died.</summary>
+        /// <summary>Formation chain leader — always <c>partyMembers[0]</c>, independent of control selection.</summary>
+        public BaseActor GetFormationLeader() =>
+            partyMembers.Count > 0 ? partyMembers[0] : null;
+
+        public bool IsFormationLeader(BaseActor actor) =>
+            actor != null && partyMembers.Count > 0 && partyMembers[0] == actor;
+
+        /// <summary>Removes a fallen member before destroy; snaps formation and repoints camera if active member died.</summary>
         public bool RemovePartyMember(BaseActor member)
         {
             if (member == null)
@@ -333,7 +383,7 @@ namespace JRogue.Manager.Party
             if (index < 0)
                 return false;
 
-            bool wasLeader = index == 0;
+            bool wasActive = index == activeIndex;
             partyMembers.RemoveAt(index);
 
             for (int i = partyMembers.Count - 1; i >= 0; i--)
@@ -342,10 +392,22 @@ namespace JRogue.Manager.Party
                     partyMembers.RemoveAt(i);
             }
 
-            activeIndex = 0;
+            if (partyMembers.Count == 0)
+            {
+                activeIndex = 0;
+            }
+            else if (wasActive)
+            {
+                activeIndex = Mathf.Min(activeIndex, partyMembers.Count - 1);
+            }
+            else if (index < activeIndex)
+            {
+                activeIndex--;
+            }
+
             SnapHistoryToCurrentPositions();
 
-            if (partyMembers.Count > 0 && wasLeader)
+            if (partyMembers.Count > 0 && wasActive)
                 RefreshCameraFollow();
 
             return true;
@@ -359,32 +421,22 @@ namespace JRogue.Manager.Party
         }
 
         /// <summary>
-        /// Logic to designate a character as leader and reorder the party list.
-        /// This ensures Index 0 is ALWAYS the person you are controlling.
+        /// Selects which party member receives player input. Does not reorder
+        /// <see cref="partyMembers"/> — formation and map order stay at index 0.
         /// </summary>
         public void SwapActiveMember(int index)
         {
-            if (partyMembers.Count == 0 || index < 0 || index >= partyMembers.Count) return;
+            if (partyMembers.Count == 0 || index < 0 || index >= partyMembers.Count)
+                return;
 
-            // 1. Identify the new leader
-            BaseActor newLeader = partyMembers[index];
+            if (index == activeIndex)
+                return;
 
-            // 2. REORDER: Move selected member to index 0
-            // This is critical so that RecordNewLeaderPosition and Rush logic
-            // always see the controlled player as the start of the chain.
-            partyMembers.RemoveAt(index);
-            partyMembers.Insert(0, newLeader);
-
-            // Active index stays 0 because of the reordering
-            activeIndex = 0;
-
+            activeIndex = index;
             RefreshCameraFollow();
 
-            // 4. RESET HISTORY: When the leader changes, the old breadcrumbs 
-            // are invalid for the new line formation.
-            SnapHistoryToCurrentPositions();
-
-            Debug.Log($"[SWAP] Now controlling {newLeader.name}. Party list reordered and history snapped.");
+            Debug.Log($"[SWAP] Now controlling {partyMembers[activeIndex].name}.");
+            ActiveMemberChanged?.Invoke();
         }
 
         // public void SnapHistoryToCurrentPositions()

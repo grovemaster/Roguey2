@@ -216,6 +216,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/VaultPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberMapHighlight.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadGraveTouchLingerPassive.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneHybridCellAssigner.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="Assets/Scripts/World/Generation/RunPartyPersistence.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownNpcSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultSourceText.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/PartyControlHudUI.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableLeverContent.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/InteractablePopulationPhase.cs" />
     <Compile Include="Assets/Scripts/Abilities/ThrowingKnife/ThrowingKnifeAbility.cs" />

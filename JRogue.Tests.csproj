@@ -73,6 +73,7 @@
     <Compile Include="Assets/Tests/UnitTests/Essence/FloorEssenceLifetimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarPlaceListBuilderTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Targeting/SplashZoneResolverTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/UI/TurnManagerActedTests.cs" />
     <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/LightSourceItemRulesTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/TownTimeLogicTests.cs" />

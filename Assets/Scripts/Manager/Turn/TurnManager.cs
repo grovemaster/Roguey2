@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using JRogue.Actors;
@@ -27,6 +28,11 @@ namespace JRogue.Manager.Turn
 
         // Tracks which party members have acted this turn
         private HashSet<GameObject> charactersWhoActed = new HashSet<GameObject>();
+
+        public event Action PlayerActedStateChanged;
+
+        public bool HasActedThisTurn(GameObject actor) =>
+            actor != null && charactersWhoActed.Contains(actor);
 
         void Awake()
         {
@@ -61,6 +67,7 @@ namespace JRogue.Manager.Turn
 
             // Mark this specific character as done
             charactersWhoActed.Add(actor);
+            PlayerActedStateChanged?.Invoke();
 
             FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
             PartyLightEmitterBridge.RefreshParty();
@@ -145,6 +152,7 @@ namespace JRogue.Manager.Turn
         {
             currentState = GameState.GAME_OVER;
             charactersWhoActed.Clear();
+            PlayerActedStateChanged?.Invoke();
             Debug.Log("--- Game Over ---");
         }
 
@@ -160,6 +168,7 @@ namespace JRogue.Manager.Turn
 
             currentState = GameState.ENEMY_TURN;
             charactersWhoActed.Clear();
+            PlayerActedStateChanged?.Invoke();
 
             EnemyController[] enemies = FindObjectsByType<EnemyController>();
 
@@ -186,6 +195,7 @@ namespace JRogue.Manager.Turn
                 currentState = GameState.PLAYER_TURN;
                 Debug.Log("--- New Player Turn ---");
                 NotifyPartyTurnStart();
+                PlayerActedStateChanged?.Invoke();
             }
             else
             {

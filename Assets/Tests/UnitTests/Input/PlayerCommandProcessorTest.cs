@@ -70,7 +70,7 @@ namespace JRogue.Tests.UnitTests.Input
         }
 
         [Test]
-        public void TryApply_SwapPartyMember_WhenEnemyTurn_SucceedsAndReordersLeader()
+        public void TryApply_SwapPartyMember_WhenEnemyTurn_SucceedsAndSelectsMember()
         {
             SetupTwoMemberParty(out PartyManager party, out PlayerCommandProcessor processor);
             TurnManager.Instance.currentState = GameState.ENEMY_TURN;
@@ -80,8 +80,9 @@ namespace JRogue.Tests.UnitTests.Input
 
             Assert.IsTrue(processor.TryApply(PlayerCommand.SwapPartyMember(1)));
 
-            Assert.AreSame(member1, party.partyMembers[0]);
-            Assert.AreSame(member0, party.partyMembers[1]);
+            Assert.AreSame(member0, party.partyMembers[0]);
+            Assert.AreSame(member1, party.partyMembers[1]);
+            Assert.AreSame(member1, party.GetActiveMember());
         }
 
         [Test]
@@ -250,6 +251,35 @@ namespace JRogue.Tests.UnitTests.Input
             _scriptableCleanup.Add(essence);
 
             processor = NewProcessorWithReticle();
+        }
+
+        [Test]
+        public void TryApply_MoveGrid_AfterSwapToFollower_FormationActive_RushesOtherMembers()
+        {
+            InputTestSceneBuilder.SetupMapAndManagers(_createdObjects);
+            PartyManager party = InputTestSceneBuilder.CreatePartyWithTestActors(3, _createdObjects);
+            PlayerCommandProcessor processor = NewProcessorWithReticle();
+
+            party.partyMembers[0].SetGridPosition(new Vector3Int(0, 0, 0));
+            party.partyMembers[1].SetGridPosition(new Vector3Int(0, -2, 0));
+            party.partyMembers[2].SetGridPosition(new Vector3Int(0, -4, 0));
+            party.SnapHistoryToCurrentPositions();
+            InputTestSceneBuilder.RegisterCurrentPartyOnGrid(party.partyMembers);
+
+            BaseActor front = party.partyMembers[0];
+            BaseActor middle = party.partyMembers[1];
+            BaseActor rear = party.partyMembers[2];
+
+            Assert.IsTrue(processor.TryApply(PlayerCommand.SwapPartyMember(1)));
+            Assert.AreSame(middle, party.GetActiveMember());
+            Assert.AreSame(front, party.partyMembers[0]);
+
+            Vector3Int middleStart = middle.GridPosition;
+            Vector3Int frontStart = front.GridPosition;
+            Assert.IsTrue(processor.TryApply(PlayerCommand.MoveGrid(Vector3Int.up)));
+            Assert.AreEqual(middleStart + Vector3Int.up, middle.GridPosition);
+            Assert.AreEqual(middleStart, front.GridPosition);
+            Assert.AreNotEqual(frontStart, front.GridPosition);
         }
 
         [Test]

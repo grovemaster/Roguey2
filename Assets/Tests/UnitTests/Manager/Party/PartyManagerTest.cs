@@ -108,16 +108,12 @@ namespace JRogue.Tests.UnitTests.Manager.Party
         }
 
         [Test]
-        public void RecordNewLeaderPosition_ShortHistory_UsesFallbackAndKeepsCount()
+        public void RecordNewLeaderPosition_ShortHistory_PadsMissingSlotsAndKeepsCount()
         {
             PartyManager partyManager = CreatePartyManagerWithMembers(4);
             partyManager.positionHistory = new List<Vector3Int> { new Vector3Int(0, 0, 0) };
             Vector3Int newLeaderPos = new Vector3Int(50, 50, 0);
 
-            // Missing follower slots are padded with each member's current tile (see PartyManager RECORD-PAD warnings).
-            LogAssert.Expect(LogType.Warning, new Regex(@"\[RECORD-PAD\].*"));
-            LogAssert.Expect(LogType.Warning, new Regex(@"\[RECORD-PAD\].*"));
-            LogAssert.Expect(LogType.Warning, new Regex(@"\[RECORD-PAD\].*"));
             partyManager.RecordNewLeaderPosition(newLeaderPos);
 
             Assert.AreEqual(4, partyManager.positionHistory.Count);
@@ -126,6 +122,24 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             Assert.AreEqual(partyManager.partyMembers[2].GridPosition, partyManager.positionHistory[2]);
             Assert.AreEqual(partyManager.partyMembers[3].GridPosition, partyManager.positionHistory[3]);
             AssertAllPositionsUnique(partyManager.positionHistory);
+        }
+
+        [Test]
+        public void RecordMemberPosition_NonZeroIndex_RealignsHistoryForAllFollowers()
+        {
+            PartyManager partyManager = CreatePartyManagerWithMembers(3);
+            partyManager.SnapHistoryToCurrentPositions();
+            Vector3Int aPos = partyManager.partyMembers[0].GridPosition;
+            Vector3Int bPos = partyManager.partyMembers[1].GridPosition;
+            Vector3Int cPos = partyManager.partyMembers[2].GridPosition;
+            Vector3Int bNewPos = bPos + Vector3Int.right;
+
+            partyManager.RecordMemberPosition(1, bNewPos, bPos);
+
+            Assert.AreEqual(bPos, partyManager.positionHistory[0]);
+            Assert.AreEqual(bNewPos, partyManager.positionHistory[1]);
+            Assert.AreEqual(aPos, partyManager.positionHistory[2]);
+            Assert.AreEqual(cPos, partyManager.partyMembers[2].GridPosition);
         }
 
         [Test]
@@ -164,7 +178,8 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             partyManager.SwapActiveMember(partySize - 1);
 
             Assert.AreEqual(memberToPromote, partyManager.GetActiveMember());
-            Assert.AreEqual(memberToPromote, partyManager.partyMembers[0]);
+            Assert.AreEqual(partyManager.partyMembers[0], initial);
+            Assert.AreEqual(memberToPromote, partyManager.partyMembers[partySize - 1]);
         }
 
         [TestCase(1)]
@@ -186,7 +201,7 @@ namespace JRogue.Tests.UnitTests.Manager.Party
             Assert.IsNotNull(before);
             Assert.IsNotNull(after);
             Assert.AreEqual(expectedNextLeader, after);
-            Assert.AreEqual(expectedNextLeader, partyManager.partyMembers[0]);
+            Assert.AreEqual(partyManager.partyMembers[0], before);
         }
 
         [TestCase(1)]

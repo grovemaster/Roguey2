@@ -165,7 +165,7 @@ Show on **mouse hover** over any **non-empty** main-row slot or overflow icon (i
 
 ### 5.2 — Character swap
 
-When the player presses **F1–F4** (existing party select) or otherwise changes active member:
+When the player presses **F1–F5** (existing party select) or **F** (cycle) and changes active member:
 
 ```
 Before:  [Aria bar visible]     After:  [Bruenor bar visible]
@@ -174,9 +174,9 @@ Before:  [Aria bar visible]     After:  [Bruenor bar visible]
 
 No cross-character leakage: pressing `3` always executes **active member’s** slot 3 entry, not a global slot.
 
-### 5.3 — Party strip hint (optional v0.1)
+### 5.3 — Party control HUD
 
-Small portrait chips above the bar (● active ○ inactive) mirror inventory party strip — **nice-to-have**, not required if F-keys remain primary.
+Portrait strip, F-key labels, acted-state greying, and active-member map highlight are specified in **[Party control HUD](Party-Control-HUD-Requirements.md)**.
 
 ---
 

@@ -62,6 +62,7 @@ namespace JRogue.UI.Gameplay
             RegisterMirror();
             MessageConsoleUI.EnsureInstance();
             AbilityHotbarUI.EnsureInstance().RefreshAll();
+            PartyControlHudUI.EnsureInstance().RefreshAll();
         }
 
         void OnDestroy()

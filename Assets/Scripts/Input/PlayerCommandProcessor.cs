@@ -225,6 +225,20 @@ namespace JRogue.Input
             FormationRushService.Rush(partyManager, turnManager, gridManager, mapManager);
         }
 
+        void CompleteFormationMemberMove(BaseActor member, Vector3Int oldPosition)
+        {
+            if (member.GridPosition != oldPosition)
+                partyManager.RecordMemberMove(member, member.GridPosition, oldPosition);
+            else
+            {
+                Debug.Log(
+                    $"[FORMATION-BUMP] {member.name} attacked without moving. Position stayed {oldPosition}.");
+                partyManager.SnapHistoryToCurrentPositions();
+            }
+
+            ProcessFollowerRush();
+        }
+
         private bool IsPlayerTurnActive() =>
             TurnManager.Instance != null && TurnManager.Instance.currentState == GameState.PLAYER_TURN;
 
@@ -329,17 +343,7 @@ namespace JRogue.Input
                         follower: activeMember))
                 {
                     if (activeMember.TryMove(direction))
-                    {
-                        if (activeMember.GridPosition != oldPosition)
-                            partyManager.RecordNewLeaderPosition(activeMember.GridPosition);
-                        else
-                        {
-                            Debug.Log($"[FORMATION-BUMP] Leader attacked at {targetTile}. Position stayed {oldPosition}.");
-                            partyManager.SnapHistoryToCurrentPositions();
-                        }
-
-                        ProcessFollowerRush();
-                    }
+                        CompleteFormationMemberMove(activeMember, oldPosition);
                 }
 
                 return true;
@@ -447,12 +451,7 @@ namespace JRogue.Input
 
             if (formationActive)
             {
-                if (activeMember.GridPosition != oldPosition)
-                    partyManager.RecordNewLeaderPosition(activeMember.GridPosition);
-                else
-                    partyManager.SnapHistoryToCurrentPositions();
-
-                ProcessFollowerRush();
+                CompleteFormationMemberMove(activeMember, oldPosition);
             }
             else
             {
@@ -572,7 +571,7 @@ namespace JRogue.Input
 
             if (partyManager.IsFormationActive)
             {
-                partyManager.RecordNewLeaderPosition(activeMember.GridPosition);
+                partyManager.RecordMemberMove(activeMember, activeMember.GridPosition);
                 ProcessFollowerRush();
                 turnManager.ForceEndPlayerTurn();
             }
@@ -1021,7 +1020,7 @@ namespace JRogue.Input
         {
             if (partyManager.IsFormationActive)
             {
-                partyManager.RecordNewLeaderPosition(actor.GridPosition);
+                partyManager.RecordMemberMove(actor, actor.GridPosition);
                 ProcessFollowerRush();
             }
             else
@@ -1064,12 +1063,11 @@ namespace JRogue.Input
         {
             EnsureManagers();
             partyManager.SwapActiveMember(zeroBasedIndex);
-            partyManager.SnapHistoryToCurrentPositions();
 
             BaseActor newActive = partyManager.GetActiveMember();
             if (newActive != null)
             {
-                Debug.Log($"[SWAP] Now controlling {newActive.name}. Camera following and History Snapped.");
+                Debug.Log($"[SWAP] Now controlling {newActive.name}.");
             }
 
             return true;

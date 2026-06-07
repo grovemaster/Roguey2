@@ -25,7 +25,7 @@ namespace JRogue.Manager.Party
             PartyManager party = PartyManager.Instance;
             if (party != null && party.IsFormationActive)
             {
-                party.RecordNewLeaderPosition(activeMember.GridPosition);
+                party.RecordMemberMove(activeMember, activeMember.GridPosition);
 
                 GridManager grid = GridManager.Instance;
                 MapManager map = MapManager.Instance;

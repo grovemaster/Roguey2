@@ -42,7 +42,10 @@ namespace JRogue.Service.Formation
             BaseActor leader = party.GetActiveMember();
             if (leader == null) return;
 
-            Debug.Log($"[RUSH] Starting Rush. Party: {members.Count}, History: {history.Count}");
+            int leaderIndex = members.IndexOf(leader);
+            if (leaderIndex < 0) return;
+
+            Debug.Log($"[RUSH] Starting Rush. Party: {members.Count}, History: {history.Count}, Leader index: {leaderIndex}");
 
             // 1. Lift everyone off the spatial hash so planning has a clean slate.
             //    We unregister even already-acted followers; they'll be re-claimed
@@ -57,9 +60,12 @@ namespace JRogue.Service.Formation
 
             Dictionary<BaseActor, Vector3Int> plannedMoves = new Dictionary<BaseActor, Vector3Int>();
 
-            // 3. Plan a destination for each follower (skip leader at index 0).
-            for (int i = 1; i < members.Count; i++)
+            // 3. Plan a destination for each follower (skip the acting leader).
+            for (int i = 0; i < members.Count; i++)
             {
+                if (i == leaderIndex)
+                    continue;
+
                 BaseActor follower = members[i];
                 if (follower == null) continue;
 
