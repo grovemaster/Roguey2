@@ -8,6 +8,7 @@ using JRogue.UI.Gameplay;
 using JRogue.UI.Inventory;
 using JRogue.UI.Quest;
 using JRogue.UI.Racial;
+using JRogue.UI.Character;
 using JRogue.UI.Targeting;
 using JRogue.World.Generation;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace JRogue.Input
         private InputAction toggleInventoryAction;
         private InputAction toggleQuestJournalAction;
         private InputAction toggleRacialAbilitiesAction;
+        private InputAction toggleCharacterEquipmentAction;
         private InputAction pickupFloorItemsAction;
         private InputAction aimBowAction;
         private InputAction restAction;
@@ -108,6 +110,21 @@ namespace JRogue.Input
                 toggleRacialAbilitiesAction.performed += OnToggleRacialAbilitiesPerformed;
             }
 
+            toggleCharacterEquipmentAction = playerInput != null
+                ? playerInput.actions.FindAction("ToggleCharacterEquipment", throwIfNotFound: false)
+                : null;
+
+            if (toggleCharacterEquipmentAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>ToggleCharacterEquipment</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (binding <Keyboard>/c).");
+            }
+            else
+            {
+                toggleCharacterEquipmentAction.performed += OnToggleCharacterEquipmentPerformed;
+            }
+
             pickupFloorItemsAction = playerInput != null
                 ? playerInput.actions.FindAction("PickupFloorItems", throwIfNotFound: false)
                 : null;
@@ -174,7 +191,7 @@ namespace JRogue.Input
             {
                 Debug.LogWarning(
                     $"{nameof(InputHandler)}: No <b>CloseDoor</b> action on {nameof(PlayerInput)}. "
-                    + "Add it to GameControls (binding <Keyboard>/c).");
+                    + "Add it to GameControls (binding <Keyboard>/shift+c).");
             }
             else
             {
@@ -202,6 +219,7 @@ namespace JRogue.Input
             AltarUsedModalUI.EnsureInstance();
             QuestJournalUI.EnsureInstance();
             RacialAbilitiesUI.EnsureInstance();
+            CharacterEquipmentUI.EnsureInstance();
 
             FloorPickupHudButton.EnsureInstance();
         }
@@ -227,6 +245,12 @@ namespace JRogue.Input
             {
                 toggleRacialAbilitiesAction.performed -= OnToggleRacialAbilitiesPerformed;
                 toggleRacialAbilitiesAction = null;
+            }
+
+            if (toggleCharacterEquipmentAction != null)
+            {
+                toggleCharacterEquipmentAction.performed -= OnToggleCharacterEquipmentPerformed;
+                toggleCharacterEquipmentAction = null;
             }
 
             if (pickupFloorItemsAction != null)
@@ -380,6 +404,30 @@ namespace JRogue.Input
                 return;
 
             RacialAbilitiesUI.TogglePanelFromGameplayInput();
+        }
+
+        void OnToggleCharacterEquipmentPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            if (GameOverService.IsGameOver)
+                return;
+
+            if (CharacterEquipmentUI.BlocksGameplay)
+            {
+                CharacterEquipmentUI.TogglePanelFromGameplayInput();
+                return;
+            }
+
+            InventoryUI.ForceCloseIfOpen();
+            QuestJournalUI.ForceCloseIfOpen();
+            RacialAbilitiesUI.ForceCloseIfOpen();
+
+            if (BlocksFloorGameplay())
+                return;
+
+            CharacterEquipmentUI.TogglePanelFromGameplayInput();
         }
 
         void OnAimBowPerformed(InputAction.CallbackContext context)

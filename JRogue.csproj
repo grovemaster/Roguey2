@@ -95,14 +95,17 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/ShopNpcMenuUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownInteriorNpcSetupPhase.cs" />
+    <Compile Include="Assets/Scripts/UI/Character/EquipmentSlotGridView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownBuildingDoorSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/GridMover.cs" />
     <Compile Include="Assets/Scripts/Dialog/SpiritImprintShamanDialogSession.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupMenuUI.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/MapCellOccupancy.cs" />
+    <Compile Include="Assets/Scripts/UI/Character/EquipmentDetailPaneView.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/EnemyDoorInteraction.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/NpcDialogBoxUI.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapWallTopology.cs" />
+    <Compile Include="Assets/Scripts/UI/Character/EssenceSlotPanelView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownPhaseAdvanceSource.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRule.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapService.cs" />
@@ -385,6 +388,7 @@
     <Compile Include="Assets/Scripts/Dialog/NpcTalkInteraction.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarDefinition.cs" />
+    <Compile Include="Assets/Scripts/UI/Character/CharacterEquipmentUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TrapPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneGenerationRng.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementSet.cs" />
@@ -393,6 +397,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotDefinition.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTile.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/DungeonVaultCatalog.cs" />
+    <Compile Include="Assets/Scripts/UI/Character/EssenceDetailFormatter.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneAmbientApplicator.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotState.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardDefinition.cs" />
@@ -454,6 +459,7 @@
     <Compile Include="Assets/Scripts/Manager/Progression/PartyExperienceService.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/AmbientRegion.cs" />
     <Compile Include="Assets/Scripts/Manager/Map/MapManager.cs" />
+    <Compile Include="Assets/Scripts/UI/Character/CharacterEquipmentViewModel.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementSet.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/SpiritImprintShamanNpcController.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/OpenDoorEffect.cs" />

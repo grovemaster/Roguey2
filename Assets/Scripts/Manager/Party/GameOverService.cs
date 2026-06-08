@@ -36,6 +36,7 @@ namespace JRogue.Manager.Party
             input?.CommandProcessor.ForceExitTargeting();
             InventoryUI.ForceCloseForGameOver();
             JRogue.UI.Racial.RacialAbilitiesUI.ForceCloseIfOpen();
+            JRogue.UI.Character.CharacterEquipmentUI.ForceCloseIfOpen();
 
             if (TurnManager.Instance != null)
                 TurnManager.Instance.EnterGameOver();

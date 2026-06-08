@@ -875,7 +875,10 @@ namespace JRogue.UI.Inventory
 
             bool willOpen = !inventoryPanel.activeSelf;
             if (willOpen)
+            {
                 JRogue.UI.Racial.RacialAbilitiesUI.ForceCloseIfOpen();
+                JRogue.UI.Character.CharacterEquipmentUI.ForceCloseIfOpen();
+            }
 
             inventoryPanel.SetActive(willOpen);
 

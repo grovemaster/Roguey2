@@ -219,6 +219,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""ToggleCharacterEquipment"",
+                    ""type"": ""Button"",
+                    ""id"": ""d7e8f9a0-b1c2-4d3e-8f9a-0b1c2d3e4f5a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""PickupFloorItems"",
                     ""type"": ""Button"",
                     ""id"": ""f8a2c1d4-9e3b-4a7f-b2d1-8c5e6f0a1b2c"",
@@ -1236,11 +1245,22 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a2b3c4d5-e6f7-8901-a2b3-c4d5e6f7a8b9"",
-                    ""path"": ""<Keyboard>/c"",
+                    ""path"": ""<Keyboard>/shift+c"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""CloseDoor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e8f9a0b1-c2d3-4e5f-9a0b-1c2d3e4f5a6b"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleCharacterEquipment"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1441,6 +1461,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_ToggleInventory = m_Player.FindAction("ToggleInventory", throwIfNotFound: true);
         m_Player_ToggleQuestJournal = m_Player.FindAction("ToggleQuestJournal", throwIfNotFound: true);
         m_Player_ToggleRacialAbilities = m_Player.FindAction("ToggleRacialAbilities", throwIfNotFound: true);
+        m_Player_ToggleCharacterEquipment = m_Player.FindAction("ToggleCharacterEquipment", throwIfNotFound: true);
         m_Player_PickupFloorItems = m_Player.FindAction("PickupFloorItems", throwIfNotFound: true);
         m_Player_AimBow = m_Player.FindAction("AimBow", throwIfNotFound: true);
         m_Player_OpenDoor = m_Player.FindAction("OpenDoor", throwIfNotFound: true);
@@ -1540,6 +1561,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ToggleInventory;
     private readonly InputAction m_Player_ToggleQuestJournal;
     private readonly InputAction m_Player_ToggleRacialAbilities;
+    private readonly InputAction m_Player_ToggleCharacterEquipment;
     private readonly InputAction m_Player_PickupFloorItems;
     private readonly InputAction m_Player_AimBow;
     private readonly InputAction m_Player_OpenDoor;
@@ -1612,6 +1634,10 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/ToggleRacialAbilities".
         /// </summary>
         public InputAction @ToggleRacialAbilities => m_Wrapper.m_Player_ToggleRacialAbilities;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ToggleCharacterEquipment".
+        /// </summary>
+        public InputAction @ToggleCharacterEquipment => m_Wrapper.m_Player_ToggleCharacterEquipment;
         /// <summary>
         /// Provides access to the underlying input action "Player/PickupFloorItems".
         /// </summary>
@@ -1700,6 +1726,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ToggleRacialAbilities.started += instance.OnToggleRacialAbilities;
             @ToggleRacialAbilities.performed += instance.OnToggleRacialAbilities;
             @ToggleRacialAbilities.canceled += instance.OnToggleRacialAbilities;
+            @ToggleCharacterEquipment.started += instance.OnToggleCharacterEquipment;
+            @ToggleCharacterEquipment.performed += instance.OnToggleCharacterEquipment;
+            @ToggleCharacterEquipment.canceled += instance.OnToggleCharacterEquipment;
             @PickupFloorItems.started += instance.OnPickupFloorItems;
             @PickupFloorItems.performed += instance.OnPickupFloorItems;
             @PickupFloorItems.canceled += instance.OnPickupFloorItems;
@@ -1768,6 +1797,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ToggleRacialAbilities.started -= instance.OnToggleRacialAbilities;
             @ToggleRacialAbilities.performed -= instance.OnToggleRacialAbilities;
             @ToggleRacialAbilities.canceled -= instance.OnToggleRacialAbilities;
+            @ToggleCharacterEquipment.started -= instance.OnToggleCharacterEquipment;
+            @ToggleCharacterEquipment.performed -= instance.OnToggleCharacterEquipment;
+            @ToggleCharacterEquipment.canceled -= instance.OnToggleCharacterEquipment;
             @PickupFloorItems.started -= instance.OnPickupFloorItems;
             @PickupFloorItems.performed -= instance.OnPickupFloorItems;
             @PickupFloorItems.canceled -= instance.OnPickupFloorItems;
@@ -1921,6 +1953,13 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleRacialAbilities(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleCharacterEquipment" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleCharacterEquipment(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "PickupFloorItems" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
