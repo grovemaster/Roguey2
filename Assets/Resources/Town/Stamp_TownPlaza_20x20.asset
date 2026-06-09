@@ -31,6 +31,8 @@ MonoBehaviour:
     cell: {x: 12, y: 8, z: 0}
   - markerId: shaman_barbarian
     cell: {x: 10, y: 6, z: 0}
+  - markerId: fairy_merchant
+    cell: {x: 12, y: 6, z: 0}
   - markerId: town_time_lever_a
     cell: {x: 8, y: 6, z: 0}
   - markerId: town_time_lever_b

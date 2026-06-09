@@ -4,6 +4,8 @@ using JRogue.Item;
 using JRogue.Manager.Door;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
+using JRogue.Manager.Party;
+using JRogue.Racial;
 using JRogue.Stats;
 using JRogue.World.Generation;
 using UnityEngine;
@@ -36,6 +38,9 @@ namespace JRogue.UI.Inventory
                     return true;
                 return InventoryPolicy.CanUseCarriedFromAlly(row.Owner, row.Owner, itemEquippedElsewhere: false);
             }
+
+            if (item is FairyStoneItemData)
+                return FairyStonePartyRules.PartyHasElf();
 
             bool hasActiveAbility = item.activeAbilities != null && item.activeAbilities.Count > 0;
 

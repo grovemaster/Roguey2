@@ -127,6 +127,7 @@ namespace JRogue.World.Generation
         public const string TownNpc4 = "town_npc_4";
         public const string TownNpc5 = "town_npc_5";
         public const string ShamanBarbarian = "shaman_barbarian";
+        public const string FairyMerchant = "fairy_merchant";
         public const string TownTorchWest = "town_torch_w";
         public const string TownTorchNorth = "town_torch_n";
         public const string TownTorchEast = "town_torch_e";

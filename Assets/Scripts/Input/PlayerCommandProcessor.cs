@@ -786,12 +786,6 @@ namespace JRogue.Input
             if (activeMember == null)
                 return false;
 
-            if (!turnManager.CanActorTakeAction(activeMember.gameObject))
-            {
-                Debug.LogWarning($"[INPUT] {activeMember.name} has already acted and cannot use abilities.");
-                return false;
-            }
-
             return TryActivateHotbarMainSlot(slotIndex);
         }
 
@@ -820,12 +814,6 @@ namespace JRogue.Input
             if (currentState == InputState.Targeting)
                 return false;
 
-            if (!turnManager.CanActorTakeAction(actor.gameObject))
-            {
-                Debug.LogWarning($"[INPUT] {actor.name} has already acted and cannot use abilities.");
-                return false;
-            }
-
             HotbarResolvedAction resolved = HotbarResolver.Resolve(actor, entry);
             if (!resolved.IsValid)
             {
@@ -842,6 +830,16 @@ namespace JRogue.Input
                 return false;
             }
 
+            if (resolved.Kind == HotbarEntryKind.ElementalSpiritSummon)
+                return TryExecuteHotbarSpiritSummon(actor, resolved);
+
+            if (HotbarUsabilityService.RequiresTurnSlotBeforeUse(actor, resolved)
+                && !turnManager.CanActorTakeAction(actor.gameObject))
+            {
+                Debug.LogWarning($"[INPUT] {actor.name} has already acted and cannot use abilities.");
+                return false;
+            }
+
             if (resolved.Kind == HotbarEntryKind.InventoryUse)
                 return TryExecuteHotbarInventoryUse(actor, resolved);
 
@@ -849,7 +847,7 @@ namespace JRogue.Input
             if (ability == null)
                 return false;
 
-            if (!TryAllowPlayerAbilitySource(resolved.Source, out string safeDeny))
+            if (!TryAllowPlayerAbilitySource(resolved, out string safeDeny))
             {
                 Debug.Log($"{SafeZonePolicyService.LogPrefix} {safeDeny}");
                 return false;
@@ -859,9 +857,57 @@ namespace JRogue.Input
                 return TryBeginHotbarTargetedUse(actor, resolved);
 
             bool success = ExecuteResolvedUntargeted(actor, resolved);
-            if (success)
+            if (success && HotbarUsabilityService.RequiresTurnSlotAfterUse(actor, resolved))
                 CompleteActorAction(actor);
 
+            return success;
+        }
+
+        bool TryExecuteHotbarSpiritSummon(BaseActor actor, HotbarResolvedAction resolved)
+        {
+            ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+            if (contracts == null)
+                return false;
+
+            string instanceId = resolved.ContractInstanceId;
+            if (string.IsNullOrEmpty(instanceId))
+                return false;
+
+            if (contracts.IsInstanceSummoned(instanceId))
+            {
+                if (!contracts.TryDismissInstance(instanceId))
+                    return false;
+
+                if (contracts.TryGetPreset(instanceId, out ElementalSpiritContractPreset preset)
+                    && preset.spirit != null)
+                {
+                    string name = string.IsNullOrWhiteSpace(preset.spirit.displayName)
+                        ? preset.spirit.spiritId
+                        : preset.spirit.displayName.Trim();
+                    Debug.Log($"[ElementalSpirit] {name} dismissed.");
+                }
+
+                AbilityHotbarUI.Instance?.RefreshAll();
+                return true;
+            }
+
+            if (!contracts.TrySummonInstance(instanceId, out string failureReason))
+            {
+                if (!string.IsNullOrEmpty(failureReason))
+                    Debug.Log(failureReason);
+                return false;
+            }
+
+            if (contracts.TryGetPreset(instanceId, out ElementalSpiritContractPreset summoned)
+                && summoned.spirit != null)
+            {
+                string name = string.IsNullOrWhiteSpace(summoned.spirit.displayName)
+                    ? summoned.spirit.spiritId
+                    : summoned.spirit.displayName.Trim();
+                Debug.Log($"[ElementalSpirit] {name} summoned.");
+            }
+
+            AbilityHotbarUI.Instance?.RefreshAll();
             return true;
         }
 
@@ -906,7 +952,7 @@ namespace JRogue.Input
                 return true;
             }
 
-            if (!TryAllowPlayerAbilitySource(resolved.Source, out string denyReason))
+            if (!TryAllowPlayerAbilitySource(resolved, out string denyReason))
             {
                 Debug.Log($"{SafeZonePolicyService.LogPrefix} {denyReason}");
                 return false;
@@ -984,13 +1030,27 @@ namespace JRogue.Input
                 PlayerAbilitySource.HumanMageSpell =>
                     mageSpells != null && mageSpells.TryExecuteEquipped(resolved.AbilityIndex, actor.gameObject),
                 PlayerAbilitySource.RacialActive =>
-                    resolved.Ability != null
-                    && resolved.Ability.Execute(actor.gameObject)
-                    && HumanClassAbilityResources.TrySpend(actor.stats, resolved.Ability),
+                    TryExecuteHotbarRacialActive(actor, resolved),
                 PlayerAbilitySource.InventoryItem =>
                     TryExecuteHotbarInventoryActiveImmediate(actor, resolved),
                 _ => actorEssence != null && actorEssence.TryExecuteAbility(resolved.SlotIndex, resolved.AbilityIndex),
             };
+        }
+
+        static bool TryExecuteHotbarRacialActive(BaseActor actor, HotbarResolvedAction resolved)
+        {
+            AbilityAction ability = resolved.Ability;
+            if (ability == null)
+                return false;
+
+            if (HotbarResolver.IsElementalSpiritActiveBinding(resolved.RacialBindingKey))
+            {
+                ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+                return contracts != null && contracts.TryExecuteSpiritActiveForAbility(ability);
+            }
+
+            return ability.Execute(actor.gameObject)
+                && HumanClassAbilityResources.TrySpend(actor.stats, ability);
         }
 
         bool TryExecuteHotbarInventoryActiveImmediate(BaseActor actor, HotbarResolvedAction resolved)
@@ -1117,6 +1177,18 @@ namespace JRogue.Input
                 return;
 
             ExitTargetingMode();
+        }
+
+        static bool TryAllowPlayerAbilitySource(HotbarResolvedAction resolved, out string denyReason)
+        {
+            if (resolved.Source == PlayerAbilitySource.RacialActive
+                && HotbarResolver.IsElementalSpiritActiveBinding(resolved.RacialBindingKey))
+            {
+                denyReason = null;
+                return true;
+            }
+
+            return TryAllowPlayerAbilitySource(resolved.Source, out denyReason);
         }
 
         static bool TryAllowPlayerAbilitySource(PlayerAbilitySource source, out string denyReason)

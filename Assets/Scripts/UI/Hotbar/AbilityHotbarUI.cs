@@ -34,6 +34,7 @@ namespace JRogue.UI.Hotbar
         InputHandler _inputHandler;
         bool _editMode;
         bool _overflowOpen;
+        bool _autoEditModeFromOverflow;
         BaseActor _lastActor;
 
         public static AbilityHotbarUI Instance => _instance;
@@ -213,12 +214,40 @@ namespace JRogue.UI.Hotbar
                 slotIndex,
                 MainSlotKeyLabels[slotIndex],
                 dimmedDuplicate: false,
-                displayName: null);
+                displayName: ResolveDisplayName(resolved, entry));
+        }
+
+        static string ResolveDisplayName(HotbarResolvedAction resolved, HotbarEntry entry)
+        {
+            if (entry.IsEmpty())
+                return null;
+
+            if (!string.IsNullOrWhiteSpace(resolved.Ability?.abilityName))
+                return resolved.Ability.abilityName.Trim();
+
+            if (resolved.Ability != null && !string.IsNullOrWhiteSpace(resolved.Ability.name))
+                return resolved.Ability.name.Trim();
+
+            return entry.Kind switch
+            {
+                HotbarEntryKind.ElementalSpiritSummon => "Spirit",
+                _ => entry.Kind.ToString(),
+            };
         }
 
         public void ToggleEditMode()
         {
-            _editMode = !_editMode;
+            SetEditMode(!_editMode, fromOverflowAuto: false);
+        }
+
+        void SetEditMode(bool enabled, bool fromOverflowAuto)
+        {
+            _editMode = enabled;
+            if (!enabled)
+                _autoEditModeFromOverflow = false;
+            else if (!fromOverflowAuto)
+                _autoEditModeFromOverflow = false;
+
             if (_editButton != null)
             {
                 TextMeshProUGUI label = _editButton.GetComponentInChildren<TextMeshProUGUI>();
@@ -236,6 +265,29 @@ namespace JRogue.UI.Hotbar
 
         public void SetOverflowOpen(bool open)
         {
+            if (open && !_overflowOpen && !_editMode)
+            {
+                _editMode = true;
+                _autoEditModeFromOverflow = true;
+                if (_editButton != null)
+                {
+                    TextMeshProUGUI label = _editButton.GetComponentInChildren<TextMeshProUGUI>();
+                    if (label != null)
+                        label.text = "Done";
+                }
+            }
+            else if (!open && _autoEditModeFromOverflow)
+            {
+                _editMode = false;
+                _autoEditModeFromOverflow = false;
+                if (_editButton != null)
+                {
+                    TextMeshProUGUI label = _editButton.GetComponentInChildren<TextMeshProUGUI>();
+                    if (label != null)
+                        label.text = "Edit";
+                }
+            }
+
             _overflowOpen = open;
             if (_overflowRoot != null)
                 _overflowRoot.SetActive(open);
@@ -401,7 +453,7 @@ namespace JRogue.UI.Hotbar
             _overflowRoot.GetComponent<Image>().color = new Color(0.06f, 0.07f, 0.1f, 0.95f);
 
             CreateText(_overflowRoot.transform, "OverflowHint", 14f, FontStyles.Normal).text =
-                "Overflow — drag onto 1–0 · click to use · Esc to close";
+                "Overflow — drag abilities onto 1–0 · click to use · Esc to close";
 
             var scrollGo = new GameObject(
                 "Scroll",
@@ -455,24 +507,58 @@ namespace JRogue.UI.Hotbar
         static HotbarSlotWidget CreateSlotWidget(Transform parent, bool isMainRow)
         {
             var go = new GameObject("Slot", typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
-            go.transform.SetParent(parent, false);
+            TextMeshProUGUI nameLabel = null;
+            Transform widgetHost = go.transform;
 
             if (isMainRow)
             {
+                go.transform.SetParent(parent, false);
                 LayoutElement le = go.AddComponent<LayoutElement>();
                 le.minWidth = le.minHeight = 72f;
                 le.preferredWidth = le.preferredHeight = 80f;
+
+                nameLabel = CreateText(go.transform, "Name", 11f, FontStyles.Normal);
+                nameLabel.alignment = TextAlignmentOptions.Bottom;
+                nameLabel.enableAutoSizing = true;
+                nameLabel.fontSizeMin = 8f;
+                nameLabel.fontSizeMax = 11f;
+                nameLabel.raycastTarget = false;
+                RectTransform nameRt = (RectTransform)nameLabel.transform;
+                nameRt.anchorMin = new Vector2(0f, 0f);
+                nameRt.anchorMax = new Vector2(1f, 0.38f);
+                nameRt.offsetMin = new Vector2(2f, 2f);
+                nameRt.offsetMax = new Vector2(-2f, 0f);
             }
             else
             {
-                var row = new GameObject("Row", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+                var row = new GameObject("Row", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(Image));
                 row.transform.SetParent(parent, false);
+                LayoutElement rowLe = row.AddComponent<LayoutElement>();
+                rowLe.minHeight = 56f;
+                row.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+
                 HorizontalLayoutGroup h = row.GetComponent<HorizontalLayoutGroup>();
                 h.spacing = 8f;
                 h.childAlignment = TextAnchor.MiddleLeft;
+                h.childControlWidth = false;
+                h.childControlHeight = true;
+                h.childForceExpandWidth = false;
+                h.childForceExpandHeight = true;
+
                 go.transform.SetParent(row.transform, false);
                 LayoutElement le = go.AddComponent<LayoutElement>();
                 le.minWidth = le.minHeight = 56f;
+                le.preferredWidth = 56f;
+
+                nameLabel = CreateText(row.transform, "Name", 15f, FontStyles.Normal);
+                nameLabel.alignment = TextAlignmentOptions.MidlineLeft;
+                nameLabel.textWrappingMode = TextWrappingModes.Normal;
+                nameLabel.raycastTarget = false;
+                LayoutElement nameLe = nameLabel.gameObject.AddComponent<LayoutElement>();
+                nameLe.flexibleWidth = 1f;
+                nameLe.minHeight = 56f;
+
+                widgetHost = row.transform;
             }
 
             Image bg = go.GetComponent<Image>();
@@ -487,8 +573,13 @@ namespace JRogue.UI.Hotbar
 
             TextMeshProUGUI keyLabel = CreateKeyLabel(go.transform);
 
-            HotbarSlotWidget widget = go.AddComponent<HotbarSlotWidget>();
-            widget.Initialize(icon, bg, keyLabel);
+            var widgetHostGo = widgetHost.gameObject;
+            if (widgetHostGo.GetComponent<CanvasGroup>() == null)
+                widgetHostGo.AddComponent<CanvasGroup>();
+
+            HotbarSlotWidget widget = widgetHostGo.AddComponent<HotbarSlotWidget>();
+            widget.Initialize(icon, bg, keyLabel, nameLabel);
+            widget.SetVisualRoot(go.transform);
             return widget;
         }
 
@@ -594,8 +685,11 @@ namespace JRogue.UI.Hotbar
             Image _icon;
             Image _frame;
             TextMeshProUGUI _keyLabel;
+            TextMeshProUGUI _nameLabel;
             CanvasGroup _canvasGroup;
             AbilityHotbarUI _host;
+            ScrollRect _scrollRectWhileDragging;
+            Transform _visualRoot;
             static HotbarEntry _dragEntry;
             static int _dragMainIndex = -1;
 
@@ -604,13 +698,16 @@ namespace JRogue.UI.Hotbar
             public HotbarResolvedAction Resolved { get; private set; }
             public int MainSlotIndex { get; set; } = -1;
 
-            public void Initialize(Image icon, Image frame, TextMeshProUGUI keyLabel)
+            public void Initialize(Image icon, Image frame, TextMeshProUGUI keyLabel, TextMeshProUGUI nameLabel)
             {
                 _icon = icon;
                 _frame = frame;
                 _keyLabel = keyLabel;
+                _nameLabel = nameLabel;
                 _canvasGroup = GetComponent<CanvasGroup>();
             }
+
+            public void SetVisualRoot(Transform visualRoot) => _visualRoot = visualRoot;
 
             public void Bind(
                 AbilityHotbarUI host,
@@ -634,6 +731,13 @@ namespace JRogue.UI.Hotbar
                     _keyLabel.gameObject.SetActive(!string.IsNullOrEmpty(keyLabel));
                 }
 
+                string label = ResolveSlotLabel(displayName, resolved, entry);
+                if (_nameLabel != null)
+                {
+                    _nameLabel.text = label ?? string.Empty;
+                    _nameLabel.gameObject.SetActive(!string.IsNullOrEmpty(label));
+                }
+
                 if (Entry.IsEmpty())
                 {
                     _icon.sprite = null;
@@ -650,7 +754,32 @@ namespace JRogue.UI.Hotbar
                 else
                     _frame.color = new Color(0.1f, 0.11f, 0.14f, 0.95f);
 
+                if (_visualRoot != null)
+                {
+                    bool greyFrame = dimmedDuplicate;
+                    _visualRoot.GetComponent<Image>().color = greyFrame
+                        ? new Color(0.08f, 0.09f, 0.11f, 0.7f)
+                        : new Color(0.1f, 0.11f, 0.14f, 0.95f);
+                }
+
                 RefreshUsability(actor);
+            }
+
+            static string ResolveSlotLabel(string displayName, HotbarResolvedAction resolved, HotbarEntry entry)
+            {
+                if (entry.IsEmpty())
+                    return null;
+
+                if (!string.IsNullOrWhiteSpace(displayName))
+                    return displayName.Trim();
+
+                if (!string.IsNullOrWhiteSpace(resolved.Ability?.abilityName))
+                    return resolved.Ability.abilityName.Trim();
+
+                if (resolved.Ability != null && !string.IsNullOrWhiteSpace(resolved.Ability.name))
+                    return resolved.Ability.name.Trim();
+
+                return entry.Kind.ToString();
             }
 
             public void RefreshUsability(BaseActor actor)
@@ -686,9 +815,11 @@ namespace JRogue.UI.Hotbar
                 if (Entry.IsEmpty() || HotbarTooltipUI.Instance == null || _host._canvas == null)
                     return;
 
-                string title = Resolved.Ability != null
-                    ? Resolved.Ability.abilityName
-                    : Entry.Kind.ToString();
+                string title = !string.IsNullOrWhiteSpace(_nameLabel?.text)
+                    ? _nameLabel.text
+                    : Resolved.Ability != null
+                        ? Resolved.Ability.abilityName
+                        : Entry.Kind.ToString();
                 string description = Resolved.Ability?.description;
                 string footer = HotbarTooltipUI.BuildFooter(
                     Resolved,
@@ -712,12 +843,21 @@ namespace JRogue.UI.Hotbar
 
                 _dragEntry = Entry.Clone();
                 _dragMainIndex = MainSlotIndex;
+                _scrollRectWhileDragging = GetComponentInParent<ScrollRect>();
+                if (_scrollRectWhileDragging != null)
+                    _scrollRectWhileDragging.enabled = false;
             }
 
             public void OnDrag(PointerEventData eventData) { }
 
             public void OnEndDrag(PointerEventData eventData)
             {
+                if (_scrollRectWhileDragging != null)
+                {
+                    _scrollRectWhileDragging.enabled = true;
+                    _scrollRectWhileDragging = null;
+                }
+
                 _dragEntry = null;
                 _dragMainIndex = -1;
             }

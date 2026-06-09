@@ -9,5 +9,6 @@ namespace JRogue.UI.Hotbar
         RacialActive = 4,
         InventoryActive = 5,
         InventoryUse = 6,
+        ElementalSpiritSummon = 7,
     }
 }

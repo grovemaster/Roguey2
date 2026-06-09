@@ -17,7 +17,9 @@ namespace JRogue.UI.Hotbar
     public static class HotbarResolver
     {
         public const string SpiritImprintBindingPrefix = "SpiritImprint:";
-        public const string ElementalSpiritBindingPrefix = "ElementalSpirit:";
+        public const string ElementalSpiritActiveBindingPrefix = "ElementalSpiritActive:";
+        public const string ElementalSpiritSummonBindingPrefix = "ElementalSpiritSummon:";
+        public const string LegacyElementalSpiritBindingPrefix = "ElementalSpirit:";
 
         public static HotbarResolvedAction Resolve(BaseActor actor, HotbarEntry entry)
         {
@@ -32,6 +34,7 @@ namespace JRogue.UI.Hotbar
                 HotbarEntryKind.EquipmentActive => ResolveEquipment(actor, entry),
                 HotbarEntryKind.HumanMageSpell => ResolveHumanMageSpell(actor, entry),
                 HotbarEntryKind.RacialActive => ResolveRacial(actor, entry),
+                HotbarEntryKind.ElementalSpiritSummon => ResolveElementalSpiritSummon(actor, entry),
                 HotbarEntryKind.InventoryActive => ResolveInventoryActive(actor, entry),
                 HotbarEntryKind.InventoryUse => ResolveInventoryUse(actor, entry),
                 _ => Invalid(entry.Kind, "Unknown hotbar entry kind."),
@@ -126,10 +129,35 @@ namespace JRogue.UI.Hotbar
             if (bindingKey.StartsWith(SpiritImprintBindingPrefix, System.StringComparison.Ordinal))
                 return ResolveSpiritImprint(actor, entry, bindingKey);
 
-            if (bindingKey.StartsWith(ElementalSpiritBindingPrefix, System.StringComparison.Ordinal))
-                return ResolveElementalSpirit(actor, entry, bindingKey);
+            if (IsElementalSpiritActiveBinding(bindingKey))
+                return ResolveElementalSpiritActive(actor, entry, bindingKey);
+
+            if (bindingKey.StartsWith(LegacyElementalSpiritBindingPrefix, System.StringComparison.Ordinal))
+                return Stale(entry.Kind, "Elemental spirit binding format changed.");
 
             return Stale(entry.Kind, "Unknown racial binding key.");
+        }
+
+        static HotbarResolvedAction ResolveElementalSpiritSummon(BaseActor actor, HotbarEntry entry)
+        {
+            string instanceId = entry.contractInstanceId;
+            if (string.IsNullOrEmpty(instanceId))
+                return Stale(entry.Kind, "Missing contract instance id.");
+
+            ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+            if (contracts == null)
+                return Stale(entry.Kind, "No elemental spirit runtime.");
+
+            if (!contracts.TryGetPreset(instanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
+                return Stale(entry.Kind, "Spirit instance is not contracted.");
+
+            return new HotbarResolvedAction
+            {
+                IsValid = true,
+                IsStale = false,
+                Kind = entry.Kind,
+                ContractInstanceId = instanceId,
+            };
         }
 
         static HotbarResolvedAction ResolveSpiritImprint(BaseActor actor, HotbarEntry entry, string bindingKey)
@@ -165,27 +193,22 @@ namespace JRogue.UI.Hotbar
             return ValidRacial(entry, ability, abilityIndex);
         }
 
-        static HotbarResolvedAction ResolveElementalSpirit(BaseActor actor, HotbarEntry entry, string bindingKey)
+        static HotbarResolvedAction ResolveElementalSpiritActive(
+            BaseActor actor,
+            HotbarEntry entry,
+            string bindingKey)
         {
-            string[] parts = bindingKey.Split(':');
-            if (parts.Length < 3)
-                return Stale(entry.Kind, "Invalid Elemental Spirit binding.");
-
-            string spiritId = parts[1];
-            if (!int.TryParse(parts[2], out int abilityIndex))
-                return Stale(entry.Kind, "Invalid Elemental Spirit ability index.");
+            if (!TryParseElementalSpiritActiveBinding(bindingKey, out string abilityAssetName))
+                return Stale(entry.Kind, "Invalid Elemental Spirit active binding.");
 
             ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
             if (contracts == null)
                 return Stale(entry.Kind, "No elemental spirit runtime.");
 
-            if (!contracts.IsSpiritSummoned(spiritId))
-                return Stale(entry.Kind, "Spirit is not summoned.");
-
-            if (!TryGetSpiritActiveAtIndex(contracts, spiritId, abilityIndex, out AbilityAction ability))
+            if (!TryFindRosterSpiritActiveByAssetName(contracts, abilityAssetName, out AbilityAction ability))
                 return Stale(entry.Kind, "Elemental spirit ability unavailable.");
 
-            return ValidRacial(entry, ability, abilityIndex);
+            return ValidRacial(entry, ability, 0);
         }
 
         static HotbarResolvedAction ResolveInventoryActive(BaseActor actor, HotbarEntry entry)
@@ -293,42 +316,94 @@ namespace JRogue.UI.Hotbar
         public static string BuildSpiritImprintBindingKey(string nodeId, int abilityIndex) =>
             $"{SpiritImprintBindingPrefix}{nodeId}:{abilityIndex}";
 
-        public static string BuildElementalSpiritBindingKey(string spiritId, int abilityIndex) =>
-            $"{ElementalSpiritBindingPrefix}{spiritId}:{abilityIndex}";
+        public static string BuildElementalSpiritActiveBindingKey(string abilityAssetName) =>
+            $"{ElementalSpiritActiveBindingPrefix}{abilityAssetName}";
 
-        public static bool TryGetSpiritActiveAtIndex(
+        public static string BuildElementalSpiritSummonBindingKey(string contractInstanceId) =>
+            $"{ElementalSpiritSummonBindingPrefix}{contractInstanceId}";
+
+        public static bool IsElementalSpiritActiveBinding(string bindingKey) =>
+            !string.IsNullOrEmpty(bindingKey)
+            && bindingKey.StartsWith(ElementalSpiritActiveBindingPrefix, System.StringComparison.Ordinal);
+
+        public static bool TryParseElementalSpiritActiveBinding(string bindingKey, out string abilityAssetName)
+        {
+            abilityAssetName = null;
+            if (!IsElementalSpiritActiveBinding(bindingKey))
+                return false;
+
+            abilityAssetName = bindingKey.Substring(ElementalSpiritActiveBindingPrefix.Length);
+            return !string.IsNullOrEmpty(abilityAssetName);
+        }
+
+        public static bool TryFindSummonedSpiritActiveByAssetName(
             ElementalSpiritContractsRuntime contracts,
-            string spiritId,
-            int abilityIndex,
+            string abilityAssetName,
+            out AbilityAction ability) =>
+            TryFindSpiritActiveByAssetName(
+                contracts,
+                abilityAssetName,
+                summonedOnly: true,
+                out ability);
+
+        public static bool TryFindRosterSpiritActiveByAssetName(
+            ElementalSpiritContractsRuntime contracts,
+            string abilityAssetName,
+            out AbilityAction ability) =>
+            TryFindSpiritActiveByAssetName(
+                contracts,
+                abilityAssetName,
+                summonedOnly: false,
+                out ability);
+
+        public static bool HasSummonedSpiritActiveByAssetName(
+            ElementalSpiritContractsRuntime contracts,
+            string abilityAssetName) =>
+            TryFindSummonedSpiritActiveByAssetName(contracts, abilityAssetName, out _);
+
+        static bool TryFindSpiritActiveByAssetName(
+            ElementalSpiritContractsRuntime contracts,
+            string abilityAssetName,
+            bool summonedOnly,
             out AbilityAction ability)
         {
             ability = null;
-            if (contracts == null || string.IsNullOrEmpty(spiritId) || abilityIndex < 0)
+            if (contracts == null || string.IsNullOrEmpty(abilityAssetName))
                 return false;
 
-            if (!contracts.TryGetContractLevel(spiritId, out int contractLevel))
-                return false;
+            foreach (ElementalSpiritContractPreset preset in contracts.ContractedSpirits)
+            {
+                if (preset?.spirit == null)
+                    continue;
 
-            var actives = new List<AbilityAction>();
-            CollectElementalSpiritActives(contracts, spiritId, contractLevel, actives);
-            if (abilityIndex >= actives.Count)
-                return false;
+                preset.EnsureInstanceId();
+                if (summonedOnly && !contracts.IsInstanceSummoned(preset.contractInstanceId))
+                    continue;
 
-            ability = actives[abilityIndex];
-            return ability != null;
+                if (!contracts.TryGetContractLevelForInstance(preset.contractInstanceId, out int contractLevel))
+                    continue;
+
+                if (!TryGetSpiritActiveByAssetName(preset.spirit, contractLevel, abilityAssetName, out ability))
+                    continue;
+
+                if (ability == null)
+                    continue;
+
+                return true;
+            }
+
+            return false;
         }
 
-        public static void CollectElementalSpiritActives(
-            ElementalSpiritContractsRuntime contracts,
-            string spiritId,
+        public static bool TryGetSpiritActiveByAssetName(
+            ElementalSpiritDefinition definition,
             int contractLevel,
-            List<AbilityAction> destination)
+            string abilityAssetName,
+            out AbilityAction ability)
         {
-            if (destination == null || contracts == null || string.IsNullOrEmpty(spiritId))
-                return;
-
-            if (!TryGetSpiritDefinition(contracts, spiritId, out ElementalSpiritDefinition definition))
-                return;
+            ability = null;
+            if (definition == null || string.IsNullOrEmpty(abilityAssetName))
+                return false;
 
             for (int level = 1; level <= contractLevel; level++)
             {
@@ -337,19 +412,61 @@ namespace JRogue.UI.Hotbar
 
                 foreach (ElementalSpiritActiveEntry activeEntry in row.activeEntries)
                 {
-                    if (activeEntry?.ability != null)
-                        destination.Add(activeEntry.ability);
+                    if (activeEntry?.ability == null)
+                        continue;
+
+                    if (activeEntry.ability.name != abilityAssetName)
+                        continue;
+
+                    ability = activeEntry.ability;
+                    return true;
                 }
             }
+
+            return false;
         }
 
-        static bool TryGetSpiritDefinition(
+        public static void CollectDedupedElementalSpiritActives(
             ElementalSpiritContractsRuntime contracts,
-            string spiritId,
-            out ElementalSpiritDefinition definition)
+            HashSet<string> seenAbilityAssetNames,
+            List<(AbilityAction ability, string displayName)> destination)
         {
-            definition = null;
-            return contracts != null && contracts.TryGetSpiritDefinition(spiritId, out definition);
+            if (destination == null || contracts == null)
+                return;
+
+            seenAbilityAssetNames ??= new HashSet<string>();
+
+            foreach (ElementalSpiritContractPreset preset in contracts.ContractedSpirits)
+            {
+                if (preset?.spirit == null)
+                    continue;
+
+                preset.EnsureInstanceId();
+                if (!contracts.TryGetContractLevelForInstance(preset.contractInstanceId, out int contractLevel))
+                    continue;
+
+                ElementalSpiritDefinition definition = preset.spirit;
+                for (int level = 1; level <= contractLevel; level++)
+                {
+                    if (!definition.TryGetLevelRow(level, out ElementalSpiritLevelData row) || row.activeEntries == null)
+                        continue;
+
+                    foreach (ElementalSpiritActiveEntry activeEntry in row.activeEntries)
+                    {
+                        AbilityAction ability = activeEntry?.ability;
+                        if (ability == null || string.IsNullOrEmpty(ability.name))
+                            continue;
+
+                        if (!seenAbilityAssetNames.Add(ability.name))
+                            continue;
+
+                        string displayName = !string.IsNullOrWhiteSpace(ability.abilityName)
+                            ? ability.abilityName.Trim()
+                            : ability.name;
+                        destination.Add((ability, displayName));
+                    }
+                }
+            }
         }
 
         static bool ContainsNode(IReadOnlyList<string> path, string nodeId)

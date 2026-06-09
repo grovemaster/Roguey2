@@ -27,10 +27,10 @@ MonoBehaviour:
     passiveEffects:
     - {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a02, type: 2}
     activeEntries:
-    - ability: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a04, type: 2}
-      consumesTurn: 0
-      repeatableSameTurn: 1
-      kind: 1
+    - ability: {fileID: 11400000, guid: d9a4e6c13b5f6a0d1e2f304152637485, type: 2}
+      consumesTurn: 1
+      repeatableSameTurn: 0
+      kind: 0
   - statModifiers:
     - attribute: 1
       value: 1

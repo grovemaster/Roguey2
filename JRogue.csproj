@@ -385,7 +385,9 @@
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnAreaResolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeRunState.cs" />
+    <Compile Include="Assets/Scripts/Racial/ElementalSpiritContractService.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkInteraction.cs" />
+    <Compile Include="Assets/Scripts/Racial/FairyStoneUseService.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Character/CharacterEquipmentUI.cs" />

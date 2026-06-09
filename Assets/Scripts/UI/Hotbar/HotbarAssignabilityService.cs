@@ -211,6 +211,7 @@ namespace JRogue.UI.Hotbar
             List<(HotbarEntry, string, string)> pool)
         {
             AppendSpiritImprintActives(actor, pool);
+            AppendElementalSpiritSummonEntries(actor, pool);
             AppendElementalSpiritActives(actor, pool);
         }
 
@@ -253,6 +254,46 @@ namespace JRogue.UI.Hotbar
             }
         }
 
+        static void AppendElementalSpiritSummonEntries(
+            BaseActor actor,
+            List<(HotbarEntry, string, string)> pool)
+        {
+            ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+            if (contracts == null)
+                return;
+
+            var duplicateCounts = new Dictionary<string, int>();
+            foreach (ElementalSpiritContractPreset preset in contracts.ContractedSpirits)
+            {
+                if (preset?.spirit == null)
+                    continue;
+
+                preset.EnsureInstanceId();
+                string spiritId = preset.spirit.spiritId ?? string.Empty;
+                duplicateCounts.TryGetValue(spiritId, out int index);
+                index++;
+                duplicateCounts[spiritId] = index;
+
+                string spiritName = string.IsNullOrWhiteSpace(preset.spirit.displayName)
+                    ? preset.spirit.spiritId
+                    : preset.spirit.displayName.Trim();
+                if (index > 1)
+                    spiritName = $"{spiritName} ({index})";
+
+                bool summoned = contracts.IsInstanceSummoned(preset.contractInstanceId);
+                string label = summoned ? $"{spiritName} — Dismiss" : $"{spiritName} — Summon";
+
+                pool.Add((
+                    new HotbarEntry
+                    {
+                        Kind = HotbarEntryKind.ElementalSpiritSummon,
+                        contractInstanceId = preset.contractInstanceId,
+                    },
+                    label,
+                    GroupRacial));
+            }
+        }
+
         static void AppendElementalSpiritActives(
             BaseActor actor,
             List<(HotbarEntry, string, string)> pool)
@@ -261,33 +302,24 @@ namespace JRogue.UI.Hotbar
             if (contracts == null)
                 return;
 
-            foreach (string spiritId in contracts.SummonedSpiritIds)
+            var seen = new HashSet<string>();
+            var actives = new List<(AbilityAction ability, string displayName)>();
+            HotbarResolver.CollectDedupedElementalSpiritActives(contracts, seen, actives);
+
+            foreach ((AbilityAction ability, string displayName) in actives)
             {
-                if (!contracts.TryGetContractLevel(spiritId, out int contractLevel))
+                if (ability == null)
                     continue;
 
-                if (!contracts.TryGetSpiritDefinition(spiritId, out ElementalSpiritDefinition definition))
-                    continue;
-
-                var actives = new List<AbilityAction>();
-                HotbarResolver.CollectElementalSpiritActives(contracts, spiritId, contractLevel, actives);
-
-                for (int abilityIndex = 0; abilityIndex < actives.Count; abilityIndex++)
-                {
-                    AbilityAction ability = actives[abilityIndex];
-                    if (ability == null)
-                        continue;
-
-                    pool.Add((
-                        new HotbarEntry
-                        {
-                            Kind = HotbarEntryKind.RacialActive,
-                            racialBindingKey = HotbarResolver.BuildElementalSpiritBindingKey(spiritId, abilityIndex),
-                            abilityAssetName = ability.name,
-                        },
-                        FormatAbilityName(ability, definition.displayName),
-                        GroupRacial));
-                }
+                pool.Add((
+                    new HotbarEntry
+                    {
+                        Kind = HotbarEntryKind.RacialActive,
+                        racialBindingKey = HotbarResolver.BuildElementalSpiritActiveBindingKey(ability.name),
+                        abilityAssetName = ability.name,
+                    },
+                    displayName,
+                    GroupRacial));
             }
         }
 

@@ -33,11 +33,19 @@ namespace JRogue.UI.Hotbar
                 return (false, false, resolved.DenyReason ?? "Invalid hotbar entry.");
 
             TurnManager turnManager = TurnManager.Instance;
+            bool inSafeZone = SafeZonePolicyService.IsSafeZoneForActiveParty();
+
+            if (resolved.Kind == HotbarEntryKind.ElementalSpiritSummon)
+                return EvaluateElementalSpiritSummon(actor, resolved, turnManager, inSafeZone);
+
+            if (resolved.Source == PlayerAbilitySource.RacialActive
+                && HotbarResolver.IsElementalSpiritActiveBinding(resolved.RacialBindingKey))
+            {
+                return EvaluateElementalSpiritActive(actor, resolved, turnManager, inSafeZone);
+            }
+
             if (turnManager == null || turnManager.currentState != GameState.PLAYER_TURN)
                 return (false, false, "Not your turn.");
-
-            if (!turnManager.CanActorTakeAction(actor.gameObject))
-                return (false, false, "Already acted this turn.");
 
             if (resolved.Kind == HotbarEntryKind.InventoryUse
                 || resolved.Kind == HotbarEntryKind.InventoryActive)
@@ -49,10 +57,16 @@ namespace JRogue.UI.Hotbar
             if (ability == null)
                 return (false, resolved.IsStale, "Ability unavailable.");
 
-            if (!ability.CanExecute(actor.gameObject))
+            if (RequiresTurnSlotBeforeUse(actor, resolved)
+                && !turnManager.CanActorTakeAction(actor.gameObject))
+            {
+                return (false, false, "Already acted this turn.");
+            }
+
+            if (!ability.IsReadyForUse(actor.gameObject))
                 return (false, false, "Cannot use this ability right now.");
 
-            if (!TryAllowSource(resolved.Source, out string safeDeny))
+            if (!TryAllowSource(resolved.Source, logDeny: false, out string safeDeny))
                 return (false, false, safeDeny);
 
             if (!CanAfford(actor, resolved, ability))
@@ -63,6 +77,89 @@ namespace JRogue.UI.Hotbar
             {
                 return (false, false, "Racial ability unavailable.");
             }
+
+            return (true, false, null);
+        }
+
+        static (bool usable, bool stale, string denyReason) EvaluateElementalSpiritActive(
+            BaseActor actor,
+            HotbarResolvedAction resolved,
+            TurnManager turnManager,
+            bool inSafeZone)
+        {
+            AbilityAction ability = resolved.Ability;
+            if (ability == null)
+                return (false, true, "Ability unavailable.");
+
+            ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+            if (contracts == null)
+                return (false, true, "No elemental spirit runtime.");
+
+            if (!HotbarResolver.TryParseElementalSpiritActiveBinding(
+                    resolved.RacialBindingKey,
+                    out string abilityAssetName)
+                || !HotbarResolver.TryFindRosterSpiritActiveByAssetName(contracts, abilityAssetName, out _))
+            {
+                return (false, true, "Elemental spirit ability unavailable.");
+            }
+
+            if (!HotbarResolver.HasSummonedSpiritActiveByAssetName(contracts, abilityAssetName))
+                return (false, false, "Summon the spirit to use this ability.");
+
+            if (turnManager == null)
+                return (false, false, "Not your turn.");
+
+            if (RequiresTurnSlotBeforeUse(actor, resolved))
+            {
+                if (turnManager.currentState != GameState.PLAYER_TURN)
+                    return (false, false, "Not your turn.");
+
+                if (!turnManager.CanActorTakeAction(actor.gameObject))
+                    return (false, false, "Already acted this turn.");
+            }
+
+            if (!CanAfford(actor, resolved, ability))
+                return (false, false, InsufficientResourceMessage(actor));
+
+            if (!ability.IsReadyForUse(actor.gameObject))
+                return (false, false, "Cannot use this ability right now.");
+
+            return (true, false, null);
+        }
+
+        static (bool usable, bool stale, string denyReason) EvaluateElementalSpiritSummon(
+            BaseActor actor,
+            HotbarResolvedAction resolved,
+            TurnManager turnManager,
+            bool inSafeZone)
+        {
+            if (turnManager == null)
+                return (false, false, "Not your turn.");
+
+            if (!inSafeZone && turnManager.currentState != GameState.PLAYER_TURN)
+                return (false, false, "Not your turn.");
+
+            ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+            if (contracts == null)
+                return (false, true, "No elemental spirit runtime.");
+
+            string instanceId = resolved.ContractInstanceId;
+            if (string.IsNullOrEmpty(instanceId)
+                || !contracts.TryGetPreset(instanceId, out ElementalSpiritContractPreset preset)
+                || preset.spirit == null)
+            {
+                return (false, true, "Spirit instance is not contracted.");
+            }
+
+            if (contracts.IsInstanceSummoned(instanceId))
+                return (true, false, null);
+
+            CharacterStats stats = actor.stats;
+            if (stats == null)
+                return (false, false, "No character stats.");
+
+            if (stats.currentSoulPower < preset.spirit.summonSoulPowerCost)
+                return (false, false, "Not enough Soul Power to summon.");
 
             return (true, false, null);
         }
@@ -81,7 +178,7 @@ namespace JRogue.UI.Hotbar
             if (definition == null)
                 return (false, true, "Item definition missing.");
 
-            if (!SafeZonePolicyService.TryAllowInventoryUse(definition, out string safeDeny))
+            if (!SafeZonePolicyService.TryAllowInventoryUse(definition, out string safeDeny, logDeny: false))
                 return (false, false, safeDeny);
 
             InventoryViewModel.Row row = BuildInventoryRow(resolved);
@@ -107,7 +204,6 @@ namespace JRogue.UI.Hotbar
         {
             BaseActor owner = resolved.ItemOwner;
             ItemInstance instance = resolved.ItemInstance;
-            ItemData definition = instance?.Definition;
 
             EquipmentManager equipment = owner?.GetComponent<EquipmentManager>();
             bool isEquipped = false;
@@ -146,16 +242,16 @@ namespace JRogue.UI.Hotbar
                 stackedWeight: instance?.TotalWeight ?? 0f);
         }
 
-        static bool TryAllowSource(PlayerAbilitySource source, out string denyReason)
+        static bool TryAllowSource(PlayerAbilitySource source, bool logDeny, out string denyReason)
         {
             denyReason = null;
             if (source == PlayerAbilitySource.InventoryItem)
                 return true;
 
             if (source == PlayerAbilitySource.Essence)
-                return SafeZonePolicyService.TryAllowEssenceAbility(out denyReason);
+                return SafeZonePolicyService.TryAllowEssenceAbility(out denyReason, logDeny);
 
-            return SafeZonePolicyService.TryAllowHostileAction(out denyReason);
+            return SafeZonePolicyService.TryAllowHostileAction(out denyReason, logDeny);
         }
 
         static bool CanAfford(BaseActor actor, HotbarResolvedAction resolved, AbilityAction ability)
@@ -181,31 +277,49 @@ namespace JRogue.UI.Hotbar
 
         static bool CanExecuteRacial(BaseActor actor, HotbarResolvedAction resolved, AbilityAction ability)
         {
-            ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
-            if (contracts != null
-                && TryParseElementalSpiritBinding(resolved.RacialBindingKey, out string spiritId))
+            if (HotbarResolver.IsElementalSpiritActiveBinding(resolved.RacialBindingKey))
             {
-                return contracts.CanExecuteSpiritActive(spiritId, ability);
+                ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+                return contracts != null && contracts.CanExecuteSpiritActiveForAbility(ability);
             }
 
             return ability.CanExecute(actor.gameObject);
         }
 
-        static bool TryParseElementalSpiritBinding(string bindingKey, out string spiritId)
+        public static bool RequiresTurnSlotBeforeUse(BaseActor actor, HotbarResolvedAction resolved)
         {
-            spiritId = null;
-            if (string.IsNullOrEmpty(bindingKey)
-                || !bindingKey.StartsWith(HotbarResolver.ElementalSpiritBindingPrefix, System.StringComparison.Ordinal))
-            {
+            if (resolved.Kind == HotbarEntryKind.ElementalSpiritSummon)
                 return false;
+
+            if (resolved.Source == PlayerAbilitySource.RacialActive
+                && HotbarResolver.IsElementalSpiritActiveBinding(resolved.RacialBindingKey))
+            {
+                ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+                if (contracts == null || resolved.Ability == null)
+                    return true;
+
+                return contracts.SpiritActiveConsumesTurn(resolved.Ability);
             }
 
-            string[] parts = bindingKey.Split(':');
-            if (parts.Length < 2)
+            return true;
+        }
+
+        public static bool RequiresTurnSlotAfterUse(BaseActor actor, HotbarResolvedAction resolved)
+        {
+            if (resolved.Kind == HotbarEntryKind.ElementalSpiritSummon)
                 return false;
 
-            spiritId = parts[1];
-            return !string.IsNullOrEmpty(spiritId);
+            if (resolved.Source == PlayerAbilitySource.RacialActive
+                && HotbarResolver.IsElementalSpiritActiveBinding(resolved.RacialBindingKey))
+            {
+                ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+                if (contracts == null || resolved.Ability == null)
+                    return true;
+
+                return contracts.SpiritActiveConsumesTurn(resolved.Ability);
+            }
+
+            return true;
         }
 
         static string InsufficientResourceMessage(BaseActor actor)

@@ -18,5 +18,6 @@ namespace JRogue.UI.Hotbar
         public string DenyReason;
         public HotbarEntryKind Kind;
         public string RacialBindingKey;
+        public string ContractInstanceId;
     }
 }

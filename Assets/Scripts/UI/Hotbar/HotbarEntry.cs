@@ -10,6 +10,7 @@ namespace JRogue.UI.Hotbar
         public int abilityIndex;
         public int equipmentSlot;
         public string itemInstanceId;
+        public string contractInstanceId;
         public string racialBindingKey;
         public string abilityAssetName;
 
@@ -34,6 +35,8 @@ namespace JRogue.UI.Hotbar
                     $"inv-active:{itemInstanceId ?? string.Empty}:{abilityIndex}",
                 HotbarEntryKind.InventoryUse =>
                     $"inv-use:{itemInstanceId ?? string.Empty}",
+                HotbarEntryKind.ElementalSpiritSummon =>
+                    $"spirit-summon:{contractInstanceId ?? string.Empty}",
                 _ => $"unknown:{(int)Kind}",
             };
         }
@@ -62,6 +65,8 @@ namespace JRogue.UI.Hotbar
                     && abilityIndex == other.abilityIndex,
                 HotbarEntryKind.InventoryUse =>
                     string.Equals(itemInstanceId, other.itemInstanceId, StringComparison.Ordinal),
+                HotbarEntryKind.ElementalSpiritSummon =>
+                    string.Equals(contractInstanceId, other.contractInstanceId, StringComparison.Ordinal),
                 _ => false,
             };
         }
@@ -74,6 +79,7 @@ namespace JRogue.UI.Hotbar
                 abilityIndex = abilityIndex,
                 equipmentSlot = equipmentSlot,
                 itemInstanceId = itemInstanceId,
+                contractInstanceId = contractInstanceId,
                 racialBindingKey = racialBindingKey,
                 abilityAssetName = abilityAssetName,
             };

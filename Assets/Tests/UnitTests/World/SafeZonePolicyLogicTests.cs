@@ -105,5 +105,14 @@ namespace JRogue.Tests.UnitTests.World
             potion.allowUseInSafeZone = true;
             Assert.IsTrue(SafeZonePolicyLogic.IsUtilityInventoryUse(potion));
         }
+
+        [Test]
+        public void IsUtilityInventoryUse_FairyStoneIsUtility()
+        {
+            var stone = ScriptableObject.CreateInstance<FairyStoneItemData>();
+            _assets.Add(stone);
+
+            Assert.IsTrue(SafeZonePolicyLogic.IsUtilityInventoryUse(stone));
+        }
     }
 }

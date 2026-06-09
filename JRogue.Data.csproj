@@ -58,6 +58,7 @@
     <Compile Include="Assets/Data/Enemy/EnemySpeciesDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/CyborgImplantDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanPerRankStatModifier.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritRegistry.cs" />
     <Compile Include="Assets/Data/Door/DoorPlacement.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanMageSpellsRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadNecroticSustenanceBenefit.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonAbilitiesRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeClusterData.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/AncestorDefinition.cs" />
+    <Compile Include="Assets/Data/Item/FairyStoneItemData.cs" />
     <Compile Include="Assets/Data/Status/StatusEffectDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadRacialEffectTracker.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeNodeData.cs" />

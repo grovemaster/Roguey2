@@ -55,6 +55,15 @@ namespace JRogue.Tests.UnitTests.Essence
         }
 
         [Test]
+        public void IsReadyForUse_FalseWhenRuntimePresent_WithoutLogging()
+        {
+            SetupActorWithSuddenStrength(out BaseActor actor, out SuddenStrengthAbility ability, out _);
+            actor.gameObject.AddComponent<SuddenStrengthBuffRuntime>().Apply(100, 10);
+
+            Assert.IsFalse(ability.IsReadyForUse(actor.gameObject));
+        }
+
+        [Test]
         public void ExecuteCore_AddsModifierWithRuntimeSource()
         {
             SetupActorWithSuddenStrength(out BaseActor actor, out SuddenStrengthAbility ability, out _);

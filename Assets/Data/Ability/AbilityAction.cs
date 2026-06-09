@@ -59,6 +59,9 @@ namespace JRogue.Ability
         // New Method: Can we actually use this right now?
         public abstract bool CanExecute(GameObject user);
 
+        /// <summary>Side-effect-free readiness check for UI polling. Must not log.</summary>
+        public virtual bool IsReadyForUse(GameObject user) => CanExecute(user);
+
         // Public entry points are non-virtual: they handle cross-cutting
         // concerns (noise, future logging/cooldowns/etc.) and delegate the
         // ability-specific work to ExecuteCore.

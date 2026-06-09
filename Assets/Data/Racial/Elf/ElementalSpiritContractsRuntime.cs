@@ -9,14 +9,14 @@ using UnityEngine;
 namespace JRogue.Racial
 {
     /// <summary>
-    /// Elf elemental spirit contracts: preset roster, summon/dismiss, upkeep, cumulative level payloads while summoned.
+    /// Elf elemental spirit contracts: roster instances, summon/dismiss, upkeep, cumulative level payloads while summoned.
     /// </summary>
     [DefaultExecutionOrder(51)]
     public class ElementalSpiritContractsRuntime : MonoBehaviour
     {
         [SerializeField] List<ElementalSpiritContractPreset> contractedSpirits = new List<ElementalSpiritContractPreset>();
 
-        [Tooltip("Optional: spirits summoned when the actor enters play.")]
+        [Tooltip("Optional: contract instance ids or legacy spirit ids summoned when the actor enters play.")]
         [SerializeField] List<string> summonedSpiritIdsOnStart = new List<string>();
 
         [SerializeField] bool requireElfElementalSubsystem = true;
@@ -24,48 +24,128 @@ namespace JRogue.Racial
         readonly Dictionary<string, ElementalSpiritModifierSource> _modifierSources =
             new Dictionary<string, ElementalSpiritModifierSource>();
 
-        readonly HashSet<string> _summonedSpiritIds = new HashSet<string>();
+        readonly HashSet<string> _summonedInstanceIds = new HashSet<string>();
         readonly Dictionary<string, bool> _toggleActiveByKey = new Dictionary<string, bool>();
 
-        string _fireImbueSpiritId;
+        string _fireImbueInstanceId;
         int _weaponFireImbueBonus;
 
         CharacterStats _stats;
 
-        public IReadOnlyCollection<string> SummonedSpiritIds => _summonedSpiritIds;
+        public IReadOnlyList<ElementalSpiritContractPreset> ContractedSpirits => contractedSpirits;
+
+        public IReadOnlyCollection<string> SummonedContractInstanceIds => _summonedInstanceIds;
+
+        /// <summary>Legacy: distinct spirit ids among summoned instances.</summary>
+        public IReadOnlyCollection<string> SummonedSpiritIds => GetSummonedSpiritIdsSnapshot();
 
         public int WeaponFireImbueBonus => _weaponFireImbueBonus;
 
         void Awake()
         {
             _stats = GetComponent<CharacterStats>();
+            EnsureAllContractInstanceIds();
         }
 
         void Start()
         {
             if (summonedSpiritIdsOnStart == null || summonedSpiritIdsOnStart.Count == 0)
                 return;
+
             foreach (string id in summonedSpiritIdsOnStart)
             {
-                if (!string.IsNullOrEmpty(id))
-                    TrySummon(id, out _);
+                if (string.IsNullOrEmpty(id))
+                    continue;
+
+                if (TryResolveInstanceId(id, out string instanceId))
+                    TrySummonInstance(instanceId, out _);
             }
         }
 
         void OnDestroy()
         {
-            foreach (string id in new List<string>(_summonedSpiritIds))
-                DismissSpirit(id);
+            foreach (string id in new List<string>(_summonedInstanceIds))
+                DismissInstance(id);
         }
 
-        public bool IsSpiritSummoned(string spiritId) =>
-            !string.IsNullOrEmpty(spiritId) && _summonedSpiritIds.Contains(spiritId);
+        public bool TryFormContract(
+            ElementalSpiritDefinition spirit,
+            int initialLevel,
+            out string contractInstanceId,
+            out string failureReason)
+        {
+            contractInstanceId = null;
+            failureReason = null;
+
+            if (!ValidateElfActor(out failureReason))
+                return false;
+
+            if (spirit == null || string.IsNullOrEmpty(spirit.spiritId))
+            {
+                failureReason = "Invalid spirit definition.";
+                return false;
+            }
+
+            int level = Mathf.Clamp(initialLevel, 1, spirit.maxLevel);
+            var preset = new ElementalSpiritContractPreset
+            {
+                spirit = spirit,
+                contractLevel = level,
+            };
+            preset.EnsureInstanceId();
+            contractedSpirits.Add(preset);
+            contractInstanceId = preset.contractInstanceId;
+            return true;
+        }
+
+        public bool IsInstanceSummoned(string contractInstanceId) =>
+            !string.IsNullOrEmpty(contractInstanceId) && _summonedInstanceIds.Contains(contractInstanceId);
+
+        public bool IsSpiritSummoned(string spiritId)
+        {
+            if (string.IsNullOrEmpty(spiritId))
+                return false;
+
+            foreach (string instanceId in _summonedInstanceIds)
+            {
+                if (TryGetPreset(instanceId, out ElementalSpiritContractPreset preset)
+                    && preset.spirit != null
+                    && preset.spirit.spiritId == spiritId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool TryGetPreset(string contractInstanceId, out ElementalSpiritContractPreset preset)
+        {
+            preset = null;
+            if (string.IsNullOrEmpty(contractInstanceId))
+                return false;
+
+            foreach (ElementalSpiritContractPreset candidate in contractedSpirits)
+            {
+                if (candidate == null)
+                    continue;
+                candidate.EnsureInstanceId();
+                if (candidate.contractInstanceId == contractInstanceId)
+                {
+                    preset = candidate;
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public bool TryGetContractLevel(string spiritId, out int level)
         {
             level = 0;
             if (string.IsNullOrEmpty(spiritId))
                 return false;
+
             foreach (ElementalSpiritContractPreset preset in contractedSpirits)
             {
                 if (preset?.spirit == null || preset.spirit.spiritId != spiritId)
@@ -77,29 +157,36 @@ namespace JRogue.Racial
             return false;
         }
 
-        public bool TrySummon(string spiritId, out string failureReason)
+        public bool TryGetContractLevelForInstance(string contractInstanceId, out int level)
+        {
+            level = 0;
+            if (!TryGetPreset(contractInstanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
+                return false;
+
+            level = Mathf.Clamp(preset.contractLevel, 1, preset.spirit.maxLevel);
+            return true;
+        }
+
+        public bool TrySummonInstance(string contractInstanceId, out string failureReason)
         {
             failureReason = null;
             if (!ValidateElfActor(out failureReason))
                 return false;
 
-            if (!TryGetContractLevel(spiritId, out int contractLevel))
+            if (!TryGetPreset(contractInstanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
             {
-                failureReason = $"Spirit '{spiritId}' is not contracted.";
+                failureReason = "Spirit instance is not contracted.";
                 return false;
             }
 
-            if (_summonedSpiritIds.Contains(spiritId))
+            if (_summonedInstanceIds.Contains(contractInstanceId))
             {
-                failureReason = $"Spirit '{spiritId}' is already summoned.";
+                failureReason = "Spirit instance is already summoned.";
                 return false;
             }
 
-            if (!TryGetSpiritDefinition(spiritId, out ElementalSpiritDefinition def))
-            {
-                failureReason = $"Unknown spirit '{spiritId}'.";
-                return false;
-            }
+            ElementalSpiritDefinition def = preset.spirit;
+            int contractLevel = Mathf.Clamp(preset.contractLevel, 1, def.maxLevel);
 
             if (_stats.currentSoulPower < def.summonSoulPowerCost)
             {
@@ -108,9 +195,26 @@ namespace JRogue.Racial
             }
 
             _stats.currentSoulPower -= def.summonSoulPowerCost;
-            ApplySummonedPayload(def, contractLevel);
-            _summonedSpiritIds.Add(spiritId);
+            ApplySummonedPayload(contractInstanceId, def, contractLevel);
+            _summonedInstanceIds.Add(contractInstanceId);
             return true;
+        }
+
+        public bool TrySummon(string spiritId, out string failureReason)
+        {
+            failureReason = null;
+            foreach (ElementalSpiritContractPreset preset in contractedSpirits)
+            {
+                if (preset?.spirit == null || preset.spirit.spiritId != spiritId)
+                    continue;
+                preset.EnsureInstanceId();
+                if (_summonedInstanceIds.Contains(preset.contractInstanceId))
+                    continue;
+                return TrySummonInstance(preset.contractInstanceId, out failureReason);
+            }
+
+            failureReason = $"Spirit '{spiritId}' is not contracted.";
+            return false;
         }
 
         public int TrySummonBatch(IReadOnlyList<string> spiritIdsInOrder)
@@ -127,12 +231,29 @@ namespace JRogue.Racial
             return count;
         }
 
+        public bool TryDismissInstance(string contractInstanceId)
+        {
+            if (string.IsNullOrEmpty(contractInstanceId) || !_summonedInstanceIds.Contains(contractInstanceId))
+                return false;
+            DismissInstance(contractInstanceId);
+            return true;
+        }
+
         public bool TryDismiss(string spiritId)
         {
-            if (string.IsNullOrEmpty(spiritId) || !_summonedSpiritIds.Contains(spiritId))
+            if (string.IsNullOrEmpty(spiritId))
                 return false;
-            DismissSpirit(spiritId);
-            return true;
+
+            foreach (ElementalSpiritContractPreset preset in contractedSpirits)
+            {
+                if (preset?.spirit == null || preset.spirit.spiritId != spiritId)
+                    continue;
+                preset.EnsureInstanceId();
+                if (_summonedInstanceIds.Contains(preset.contractInstanceId))
+                    return TryDismissInstance(preset.contractInstanceId);
+            }
+
+            return false;
         }
 
         public int TryDismissBatch(IReadOnlyList<string> spiritIds)
@@ -151,7 +272,7 @@ namespace JRogue.Racial
 
         public void NotifyTurnStart()
         {
-            if (_summonedSpiritIds.Count == 0 || _stats == null)
+            if (_summonedInstanceIds.Count == 0 || _stats == null)
                 return;
 
             PayUpkeepThenPassivesTurnStart();
@@ -159,32 +280,37 @@ namespace JRogue.Racial
 
         public void RefreshPassives()
         {
-            if (_summonedSpiritIds.Count == 0)
+            if (_summonedInstanceIds.Count == 0)
                 return;
 
-            foreach (string spiritId in _summonedSpiritIds)
+            foreach (string instanceId in _summonedInstanceIds)
             {
-                if (!TryGetSpiritDefinition(spiritId, out ElementalSpiritDefinition def))
+                if (!TryGetPreset(instanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
                     continue;
-                if (!TryGetContractLevel(spiritId, out int contractLevel))
-                    continue;
-                RefreshPassivesForSpirit(def, contractLevel);
+                int contractLevel = Mathf.Clamp(preset.contractLevel, 1, preset.spirit.maxLevel);
+                RefreshPassivesForSpirit(preset.spirit, contractLevel);
             }
         }
 
-        public bool TryToggleFireWeaponImbue(string spiritId, FireWeaponImbueAbility ability, int fireBonus)
+        public bool TryToggleFireWeaponImbue(string spiritId, FireWeaponImbueAbility ability, int fireBonus) =>
+            TryToggleFireWeaponImbueForInstance(FindFirstSummonedInstanceForSpirit(spiritId), ability, fireBonus);
+
+        public bool TryToggleFireWeaponImbueForInstance(
+            string contractInstanceId,
+            FireWeaponImbueAbility ability,
+            int fireBonus)
         {
-            if (!IsSpiritSummoned(spiritId) || ability == null)
+            if (!IsInstanceSummoned(contractInstanceId) || ability == null)
                 return false;
 
-            string key = ToggleKey(spiritId, ability);
+            string key = ToggleKey(contractInstanceId, ability);
             bool nowActive = _toggleActiveByKey.TryGetValue(key, out bool active) && active;
             if (nowActive)
             {
                 _toggleActiveByKey[key] = false;
-                if (_fireImbueSpiritId == spiritId)
+                if (_fireImbueInstanceId == contractInstanceId)
                 {
-                    _fireImbueSpiritId = null;
+                    _fireImbueInstanceId = null;
                     _weaponFireImbueBonus = 0;
                 }
 
@@ -198,70 +324,177 @@ namespace JRogue.Racial
                 _stats.currentSoulPower -= ability.soulPowerCost;
 
             _toggleActiveByKey[key] = true;
-            _fireImbueSpiritId = spiritId;
+            _fireImbueInstanceId = contractInstanceId;
             _weaponFireImbueBonus = fireBonus;
             return true;
         }
 
-        public bool CanExecuteSpiritActive(string spiritId, AbilityAction ability)
+        public bool CanExecuteSpiritActive(string spiritId, AbilityAction ability) =>
+            CanExecuteSpiritActiveForAbility(ability);
+
+        public bool CanExecuteSpiritActiveForAbility(AbilityAction ability)
         {
-            if (ability == null || !IsSpiritSummoned(spiritId))
+            if (ability == null)
                 return false;
-            if (!TryGetSpiritDefinition(spiritId, out ElementalSpiritDefinition def))
+
+            return TryFindSummonedInstanceForAbility(ability, out _, out _);
+        }
+
+        public bool TryExecuteSpiritActiveForAbility(AbilityAction ability)
+        {
+            if (ability == null)
                 return false;
-            if (!TryGetContractLevel(spiritId, out int contractLevel))
+
+            if (!TryFindSummonedInstanceForAbility(ability, out string instanceId, out ElementalSpiritDefinition def))
                 return false;
-            return FindActiveEntry(def, contractLevel, ability) != null && ability.CanExecute(gameObject);
+
+            if (!TryGetContractLevelForInstance(instanceId, out int contractLevel))
+                return false;
+
+            if (FindActiveEntry(def, contractLevel, ability) == null)
+                return false;
+
+            if (ability is FireWeaponImbueAbility imbue)
+                return TryToggleFireWeaponImbueForInstance(instanceId, imbue, imbue.fireDamageBonus);
+
+            if (!ability.CanExecute(gameObject))
+                return false;
+
+            if (!ability.Execute(gameObject))
+                return false;
+
+            return TrySpendAbilitySoulPower(ability);
+        }
+
+        bool TrySpendAbilitySoulPower(AbilityAction ability)
+        {
+            if (_stats == null || ability == null)
+                return false;
+
+            int cost = ability.soulPowerCost;
+            if (cost <= 0)
+                return true;
+
+            if (_stats.currentSoulPower < cost)
+                return false;
+
+            _stats.currentSoulPower -= cost;
+            return true;
+        }
+
+        public bool SpiritActiveConsumesTurn(AbilityAction ability)
+        {
+            if (ability == null)
+                return true;
+
+            foreach (string instanceId in GetSummonedInstancesInContractOrder())
+            {
+                if (!TryGetPreset(instanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
+                    continue;
+
+                if (!TryGetContractLevelForInstance(instanceId, out int contractLevel))
+                    continue;
+
+                ElementalSpiritActiveEntry entry = FindActiveEntry(preset.spirit, contractLevel, ability);
+                if (entry != null)
+                    return entry.consumesTurn;
+            }
+
+            return true;
+        }
+
+        public bool TryGetSpiritDefinition(string spiritId, out ElementalSpiritDefinition def)
+        {
+            def = null;
+            foreach (ElementalSpiritContractPreset preset in contractedSpirits)
+            {
+                if (preset?.spirit != null && preset.spirit.spiritId == spiritId)
+                {
+                    def = preset.spirit;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool TryFindSummonedInstanceForAbility(
+            AbilityAction ability,
+            out string contractInstanceId,
+            out ElementalSpiritDefinition definition)
+        {
+            contractInstanceId = null;
+            definition = null;
+            if (ability == null)
+                return false;
+
+            foreach (string instanceId in GetSummonedInstancesInContractOrder())
+            {
+                if (!TryGetPreset(instanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
+                    continue;
+
+                if (!TryGetContractLevelForInstance(instanceId, out int contractLevel))
+                    continue;
+
+                if (FindActiveEntry(preset.spirit, contractLevel, ability) == null)
+                    continue;
+
+                contractInstanceId = instanceId;
+                definition = preset.spirit;
+                return true;
+            }
+
+            return false;
         }
 
         void PayUpkeepThenPassivesTurnStart()
         {
-            foreach (string spiritId in GetSummonedInContractOrder())
+            foreach (string instanceId in GetSummonedInstancesInContractOrder())
             {
-                if (!TryGetSpiritDefinition(spiritId, out ElementalSpiritDefinition def))
+                if (!TryGetPreset(instanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
                     continue;
 
+                ElementalSpiritDefinition def = preset.spirit;
                 if (_stats.currentSoulPower >= def.upkeepSoulPowerPerTurn)
                     _stats.currentSoulPower -= def.upkeepSoulPowerPerTurn;
                 else
-                    DismissSpirit(spiritId);
+                    DismissInstance(instanceId);
             }
 
-            foreach (string spiritId in _summonedSpiritIds)
+            foreach (string instanceId in _summonedInstanceIds)
             {
-                if (!TryGetSpiritDefinition(spiritId, out ElementalSpiritDefinition def))
+                if (!TryGetPreset(instanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
                     continue;
-                if (!TryGetContractLevel(spiritId, out int contractLevel))
-                    continue;
-                NotifyPassivesTurnStartForSpirit(def, contractLevel);
+                int contractLevel = Mathf.Clamp(preset.contractLevel, 1, preset.spirit.maxLevel);
+                NotifyPassivesTurnStartForSpirit(preset.spirit, contractLevel);
             }
         }
 
-        IEnumerable<string> GetSummonedInContractOrder()
+        IEnumerable<string> GetSummonedInstancesInContractOrder()
         {
             var yielded = new HashSet<string>();
             foreach (ElementalSpiritContractPreset preset in contractedSpirits)
             {
                 if (preset?.spirit == null)
                     continue;
-                string id = preset.spirit.spiritId;
-                if (_summonedSpiritIds.Contains(id) && yielded.Add(id))
-                    yield return id;
+                preset.EnsureInstanceId();
+                if (_summonedInstanceIds.Contains(preset.contractInstanceId) && yielded.Add(preset.contractInstanceId))
+                    yield return preset.contractInstanceId;
             }
 
-            foreach (string id in _summonedSpiritIds)
+            foreach (string id in _summonedInstanceIds)
             {
                 if (yielded.Add(id))
                     yield return id;
             }
         }
 
-        void ApplySummonedPayload(ElementalSpiritDefinition def, int contractLevel)
+        void ApplySummonedPayload(string contractInstanceId, ElementalSpiritDefinition def, int contractLevel)
         {
-            if (!_modifierSources.TryGetValue(def.spiritId, out ElementalSpiritModifierSource src))
+            if (!_modifierSources.TryGetValue(contractInstanceId, out ElementalSpiritModifierSource src))
             {
-                src = new ElementalSpiritModifierSource(def);
-                _modifierSources[def.spiritId] = src;
+                src = new ElementalSpiritModifierSource(def, contractInstanceId);
+                _modifierSources[contractInstanceId] = src;
             }
 
             for (int level = 1; level <= contractLevel; level++)
@@ -292,18 +525,18 @@ namespace JRogue.Racial
             }
         }
 
-        void DismissSpirit(string spiritId)
+        void DismissInstance(string contractInstanceId)
         {
-            if (!TryGetSpiritDefinition(spiritId, out ElementalSpiritDefinition def))
+            if (!TryGetPreset(contractInstanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
             {
-                _summonedSpiritIds.Remove(spiritId);
+                _summonedInstanceIds.Remove(contractInstanceId);
                 return;
             }
 
-            if (!TryGetContractLevel(spiritId, out int contractLevel))
-                contractLevel = def.maxLevel;
+            ElementalSpiritDefinition def = preset.spirit;
+            int contractLevel = Mathf.Clamp(preset.contractLevel, 1, def.maxLevel);
 
-            if (_modifierSources.TryGetValue(spiritId, out ElementalSpiritModifierSource src))
+            if (_modifierSources.TryGetValue(contractInstanceId, out ElementalSpiritModifierSource src))
             {
                 for (int level = 1; level <= contractLevel; level++)
                 {
@@ -335,22 +568,22 @@ namespace JRogue.Racial
                     row.passiveEffects[i]?.OnRemove(gameObject);
             }
 
-            ClearToggleStateForSpirit(spiritId);
-            _summonedSpiritIds.Remove(spiritId);
+            ClearToggleStateForInstance(contractInstanceId);
+            _summonedInstanceIds.Remove(contractInstanceId);
         }
 
-        void ClearToggleStateForSpirit(string spiritId)
+        void ClearToggleStateForInstance(string contractInstanceId)
         {
-            if (_fireImbueSpiritId == spiritId)
+            if (_fireImbueInstanceId == contractInstanceId)
             {
-                _fireImbueSpiritId = null;
+                _fireImbueInstanceId = null;
                 _weaponFireImbueBonus = 0;
             }
 
             var keys = new List<string>();
             foreach (string key in _toggleActiveByKey.Keys)
             {
-                if (key.StartsWith(spiritId + ":", StringComparison.Ordinal))
+                if (key.StartsWith(contractInstanceId + ":", StringComparison.Ordinal))
                     keys.Add(key);
             }
 
@@ -399,19 +632,71 @@ namespace JRogue.Racial
             return null;
         }
 
-        public bool TryGetSpiritDefinition(string spiritId, out ElementalSpiritDefinition def)
+        void EnsureAllContractInstanceIds()
         {
-            def = null;
+            if (contractedSpirits == null)
+                return;
+
+            foreach (ElementalSpiritContractPreset preset in contractedSpirits)
+                preset?.EnsureInstanceId();
+        }
+
+        bool TryResolveInstanceId(string idOrSpiritId, out string contractInstanceId)
+        {
+            contractInstanceId = null;
+            if (string.IsNullOrEmpty(idOrSpiritId))
+                return false;
+
+            if (TryGetPreset(idOrSpiritId, out _))
+            {
+                contractInstanceId = idOrSpiritId;
+                return true;
+            }
+
             foreach (ElementalSpiritContractPreset preset in contractedSpirits)
             {
-                if (preset?.spirit != null && preset.spirit.spiritId == spiritId)
-                {
-                    def = preset.spirit;
-                    return true;
-                }
+                if (preset?.spirit == null || preset.spirit.spiritId != idOrSpiritId)
+                    continue;
+                preset.EnsureInstanceId();
+                contractInstanceId = preset.contractInstanceId;
+                return true;
             }
 
             return false;
+        }
+
+        string FindFirstSummonedInstanceForSpirit(string spiritId)
+        {
+            if (string.IsNullOrEmpty(spiritId))
+                return null;
+
+            foreach (string instanceId in GetSummonedInstancesInContractOrder())
+            {
+                if (TryGetPreset(instanceId, out ElementalSpiritContractPreset preset)
+                    && preset.spirit != null
+                    && preset.spirit.spiritId == spiritId)
+                {
+                    return instanceId;
+                }
+            }
+
+            return null;
+        }
+
+        HashSet<string> GetSummonedSpiritIdsSnapshot()
+        {
+            var ids = new HashSet<string>();
+            foreach (string instanceId in _summonedInstanceIds)
+            {
+                if (TryGetPreset(instanceId, out ElementalSpiritContractPreset preset)
+                    && preset.spirit != null
+                    && !string.IsNullOrEmpty(preset.spirit.spiritId))
+                {
+                    ids.Add(preset.spirit.spiritId);
+                }
+            }
+
+            return ids;
         }
 
         bool ValidateElfActor(out string failureReason)
@@ -439,7 +724,7 @@ namespace JRogue.Racial
             return true;
         }
 
-        static string ToggleKey(string spiritId, AbilityAction ability) =>
-            $"{spiritId}:{ability.name}";
+        static string ToggleKey(string contractInstanceId, AbilityAction ability) =>
+            $"{contractInstanceId}:{ability.name}";
     }
 }

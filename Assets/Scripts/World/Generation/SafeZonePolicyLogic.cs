@@ -15,6 +15,9 @@ namespace JRogue.World.Generation
             if (item is DoorKeyItemData)
                 return true;
 
+            if (item is FairyStoneItemData)
+                return true;
+
             return item.AllowUseInSafeZone;
         }
 

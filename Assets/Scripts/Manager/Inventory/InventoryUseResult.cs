@@ -10,6 +10,7 @@ namespace JRogue.Manager.Inventory
         ConsumedImmediately = 1,
         StartedTargeting = 2,
         StartedBowAim = 3,
+        StartedChoiceDialog = 4,
     }
 
     /// <summary>Captured when <see cref="InventoryUseOutcome.StartedTargeting"/> — confirm consumes, cancel restores UI.</summary>
@@ -87,5 +88,8 @@ namespace JRogue.Manager.Inventory
 
         public static InventoryUseResult StartBowAim(InventoryBowAimPending pending) =>
             new InventoryUseResult(InventoryUseOutcome.StartedBowAim, null, default, pending);
+
+        public static InventoryUseResult StartChoiceDialog() =>
+            new InventoryUseResult(InventoryUseOutcome.StartedChoiceDialog, null, default, default);
     }
 }

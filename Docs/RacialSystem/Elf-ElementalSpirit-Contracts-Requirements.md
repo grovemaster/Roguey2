@@ -52,12 +52,14 @@ Serialize which spirits are **contracted** (preset list + levels), which are **c
 |------|--------|
 | **Elemental Spirit** | A data-defined entity (asset) with element, level table, costs, and abilities. |
 | **Element** | One of **Fire**, **Water**, **Earth**, **Wind**. Used for grouping/content; **not** a hard limit of one spirit per element. |
-| **Contract** | Elf is allowed to use a given spirit (appears in their **contract roster**). v0: roster is **preset**; later: gained via event/NPC/item. |
-| **Contract level** | Integer **1 … maxLevel** for that spirit on this Elf. Determines which **level rows** of passives/actives apply. v0: **preset**; later: raised by event/NPC/item. |
-| **Summon** | Pay **summon cost** → spirit enters **summoned** state → passives apply, actives available. |
-| **Dismiss** | Spirit leaves summoned state → passives removed, actives unavailable, toggles cleared per policy. |
+| **Contract** | Elf is allowed to use a given spirit (appears in their **contract roster**). v0: roster is **preset**; later: gained via [Fairy Stone](Elf-Fairy-Stone-Spirit-Contract-Requirements.md) / event / NPC. |
+| **Contract instance** | One row in the roster: `{ contractInstanceId, spiritId, contractLevel }`. The same spirit **type** may appear **multiple times** (no roster cap). |
+| **Contract level** | Integer **1 … maxLevel** for **that instance** on this Elf. Determines which **level rows** apply when **that instance** is summoned. |
+| **Summon** | Pay **summon cost** → spirit **instance** enters **summoned** state → passives apply, actives available. Triggered via **hotbar summon/dismiss entry** (§5.10). |
+| **Dismiss** | Spirit **instance** leaves summoned state → passives removed, actives unavailable, toggles cleared. Same hotbar entry when instance is summoned. |
 | **Upkeep** | Soul Power paid **each turn** (see §5.3) while summoned; failure → **auto-dismiss**. |
-| **Soul Power** | Shared resource with essences (`currentSoulPower`). All summon, upkeep, and ability costs use Soul Power. |
+| **Soul Power** | Shared resource with essences (`currentSoulPower`). Summon, upkeep, and spirit active costs use Soul Power. |
+| **Use (spirit active)** | Execute a **summoned** spirit instance’s combat active from the hotbar — **`consumesTurn`** per ability row. **Distinct** from the summon/dismiss hotbar entry (§5.10). |
 
 ---
 
@@ -117,8 +119,8 @@ On eligible actors (`Race.Elf`, subsystem `ElfElementalContracts`):
 
 | State | Description |
 |-------|-------------|
-| **`contractedSpirits`** | Ordered or keyed list: `{ spiritId, contractLevel }`. **Unlimited** roster size in design; practical limits are content/UX only. |
-| **`summonedSpiritIds`** | Set (or list) of spirits currently **summoned**. |
+| **`contractedSpirits`** | Ordered list of **instances**: `{ contractInstanceId, spiritId, contractLevel }`. **Unlimited** roster size; duplicate spirit types allowed. |
+| **`summonedContractInstanceIds`** | Set of **instance ids** currently **summoned** (replaces spirit-id-only set when duplicates exist). |
 | **`toggleStates`** | Optional map for toggle actives (spirit + active → on/off). |
 
 **Derived:** For each summoned spirit, effective abilities = union of all level rows **1 … contractLevel** for that spirit (or **exactly level N only**—**resolve once**: recommend **cumulative** lower levels + current level, i.e. level 3 grants level 1–3 payloads; document in implementation).
@@ -137,7 +139,8 @@ On eligible actors (`Race.Elf`, subsystem `ElfElementalContracts`):
 - At least **two** **`ElementalSpiritDefinition`** ScriptableObject assets (see D4.7 — **not** GameObject prefabs) proving:
   - Same element, **different** abilities.
   - Different **`maxLevel`** or different per-level payloads.
-- At least one spirit with a **toggle-style** active (Fire weapon imbue pattern).
+- At least one spirit with a **toggle-style** active (Fire weapon imbue pattern) — **at level ≥ 2** on Ember Warden after §5.12 test authoring.
+- **Level 1 test actives:** both v0 spirits use **Sudden Strength** at level 1 (§5.12).
 
 ### D4.7 — Deliverables: actor prefab vs spirit data
 
@@ -174,7 +177,7 @@ On eligible actors (`Race.Elf`, subsystem `ElfElementalContracts`):
 
 **F4.4** Summoning a spirit:
 
-1. Spirit must be **contracted** and **not already summoned** (unless design allows re-summon refresh—default: **no duplicate** entry in `summonedSpiritIds`).
+1. Instance must be **contracted** and **not already summoned** (each `contractInstanceId` at most once in `summonedContractInstanceIds`).
 2. Elf must have **Soul Power ≥ `summonSoulPowerCost`**; on success, **deduct** summon cost.
 3. Spirit enters **summoned** state.
 4. Apply **all applicable level passives** for that spirit’s **contract level**; register actives for execution.
@@ -199,7 +202,7 @@ On eligible actors (`Race.Elf`, subsystem `ElfElementalContracts`):
 
 - Remove all passives/modifiers sourced from that spirit.
 - Disable actives; clear **toggle state** for that spirit.
-- Remove spirit from `summonedSpiritIds`.
+- Remove instance from `summonedContractInstanceIds`.
 
 ### 5.6 — Using actives while summoned
 
@@ -217,7 +220,8 @@ On eligible actors (`Race.Elf`, subsystem `ElfElementalContracts`):
 
 ### 5.8 — Later: form contract & level spirit (explicitly out of v0)
 
-**F4.15 (later)** **Form contract:** event/NPC/item adds `{ spiritId, initialLevel }` to `contractedSpirits` (or sets level 1 if new).
+**F4.15 (later)** **Form contract:** event/NPC/item adds `{ spiritId, initialLevel }` to `contractedSpirits` (or sets level 1 if new).  
+→ **Specified:** [Elf — Fairy Stone spirit contracts](Elf-Fairy-Stone-Spirit-Contract-Requirements.md) (town merchant + consumable item, 50% random spirit at level 1).
 
 **F4.16 (later)** **Level spirit:** event/NPC/item increases **contract level** for one spirit, capped at `maxLevel`; re-apply passives if summoned (remove old level sources, apply new cumulative set).
 
@@ -229,6 +233,66 @@ v0 **must not** depend on these gates; presets suffice for playtests.
 
 **F4.18** Named/boss Elves: richer **preset** rosters and levels in data.
 
+### 5.10 — Hotbar summon / dismiss (locked)
+
+Summon and dismiss are **player-facing hotbar abilities**, not a separate character sheet or debug command. Implements [Ability hotbar §8.1](../UI/Ability-Hotbar-Requirements.md) `ElementalSpiritSummon` entries alongside existing spirit **active** entries.
+
+| Rule | Detail |
+|------|--------|
+| **One entry per contract instance** | Each row in `contractedSpirits` exposes **one** assignable hotbar action keyed by **`contractInstanceId`**. Duplicate spirit types → duplicate hotbar entries (e.g. two Ember Warden instances → two summon slots). |
+| **Toggle behavior** | If instance **not summoned**: hotbar press → **summon** (`TrySummon`). If **summoned**: same bound slot → **dismiss** (`TryDismiss`). Label/icon reflects state (*“Ember Warden — Summon”* / *“… — Dismiss”*). |
+| **Turn cost** | **None** — does **not** consume the actor’s turn (F4.5 / O5). |
+| **When allowed** | Active party member’s turn in combat (`TurnManager`); freely in town / safe zone when `GameplayModalGate` allows. Failed summon (insufficient Soul Power) → greyed entry + log message. |
+| **No targeting** | Summon/dismiss does **not** enter reticle / targeting mode. |
+| **Spirit actives separate** | While summoned, spirit **combat actives** appear as hotbar assignables — only when at least one summoned instance exposes that active. **Deduped by ability asset** — §5.11. |
+| **Per-character bar** | Entries appear only on **that Elf’s** hotbar (`HotbarAssignabilityService` scoped to actor). |
+| **Binding key (implementation)** | Summon: `ElementalSpiritSummon:{contractInstanceId}`. Active: `ElementalSpiritActive:{abilityAssetId}` (deduped — §5.11). |
+
+**Flow:**
+
+```
+Hotbar key / click (ElementalSpiritSummon entry)
+  → Resolve contractInstanceId on active Elf
+  → If not summoned: TrySummon(instance) — deduct summon SP, apply passives
+  → If summoned: TryDismiss(instance) — teardown passives, clear toggles
+  → No turn consumed; dungeon log feedback
+```
+
+**Default authoring:** New contract instances appear in the **overflow assignable pool** (Racial group); player drags to main row. Optional later: auto-pin first N instances.
+
+### 5.11 — Hotbar spirit active deduplication (locked)
+
+When **multiple summoned instances** expose the **same** `AbilityAction` asset (e.g. three spirits all grant **Sudden Strength** at level 1), the hotbar shows **one** assignable slot for that ability — **not** one slot per spirit instance.
+
+| Rule | Detail |
+|------|--------|
+| **Dedup key** | Stable **`AbilityAction` asset identity** (ScriptableObject instance id / authored asset name — pick one in code and document). |
+| **Assignable pool** | Union actives from **all summoned instances** at their contract levels → **collapse** rows sharing the same ability asset → **one** overflow/hotbar entry per unique active. |
+| **Label** | Ability display name only (e.g. **“Sudden Strength”**) — omit spirit name when deduped. |
+| **Execution** | On hotbar press, resolve **any** summoned instance on this Elf that exposes the ability and passes `CanExecute` (recommend: first in roster order). |
+| **Summon entries unchanged** | §5.10 — **one summon/dismiss slot per contract instance**; dedup applies **only** to combat actives. |
+| **Different abilities** | Ember Weapon Imbue vs Tide Mend vs Sudden Strength → **separate** hotbar entries (different assets). |
+
+**Example:** Elf summons three instances that each include **Sudden Strength** at level 1 → hotbar assignable pool contains **one** “Sudden Strength” active, plus **three** summon/dismiss toggles (one per instance).
+
+**Cross-ref:** [Ability hotbar §8.2.1](../UI/Ability-Hotbar-Requirements.md).
+
+### 5.12 — v0 test authoring: Sudden Strength at level 1 (locked)
+
+To simplify playtesting (Fairy Stone contracts, duplicate instances, hotbar dedup), **both** shipped spirit definitions use the **same** level-1 active:
+
+| Spirit | Level 1 active (v0 test) | Asset |
+|--------|--------------------------|-------|
+| **Ember Warden** | **Sudden Strength** | `Assets/Resources/Item/Ability/SuddenStrength_Standard.asset` |
+| **Tide Shard** | **Sudden Strength** | same |
+
+| Rule | Detail |
+|------|--------|
+| **Level 1 only** | Replace level-1 `activeEntries` on both spirits with **`SuddenStrength_Standard`** reference. |
+| **Higher levels** | May keep distinct actives (Ember Weapon Imbue, Tide Mend, …) for differentiation — not required for v0 test slice. |
+| **Metadata** | Copy `consumesTurn` / `soulPowerCost` from essence pattern or use ability defaults ([Sudden Strength essence doc](../Essence/Sudden-Strength-Essence-Requirements.md)). |
+| **Dedup test** | Contract duplicate instances → summon multiple → confirm **one** Sudden Strength hotbar slot (§5.11). |
+
 ---
 
 ## 6. Non-functional requirements
@@ -239,9 +303,11 @@ Designers add spirits and level rows by **editing assets**, not code subclasses 
 **N4.2 — Tests (v0 minimum)**  
 - Summon → passive applied → dismiss → passive removed.  
 - Upkeep paid → spirit stays; upkeep fails → auto-dismiss.  
-- Summon/dismiss batch does **not** flag turn consumed (hook to turn system stub if needed).  
+- Hotbar summon/dismiss → **no turn consumed**; hotbar spirit active with `consumesTurn=true` **does** consume turn.  
 - Toggle active: on → off same turn.  
-- Cannot summon spirit not in roster; cannot use active when not summoned.
+- Cannot summon uncontracted instance; cannot use active when instance not summoned.  
+- Hotbar summon entry greyed when insufficient Soul Power for summon cost.
+- Three summoned instances sharing **Sudden Strength** at L1 → **one** deduped active on hotbar; three summon toggles remain.
 
 **N4.3 — Migration**  
 Elves without contract state: empty roster, nothing summoned, no errors.
@@ -261,15 +327,18 @@ If a spirit passive grants body capabilities or equip bypass, use **`CharacterSt
 - Given two spirits summoned, **upkeep** deducts **both** costs at turn start; if only enough Soul Power for one, policy dismisses **insufficient** spirits (document whether all-or-nothing vs partial—recommend **per-spirit** check in roster order).
 - Given **manual dismiss**, all modifiers from that spirit are gone and actives fail `CanExecute`.
 - Given preset NPC Elf with one contracted spirit level 1, load/play matches preset without contract UI.
+- Given Ember Warden **contract instance** bound to hotbar slot `3`, pressing `3` **summons** then **dismisses** without ending the Elf’s turn.
 - **`ElfPlayer.prefab`** exists under `Assets/Prefabs/Actor/Race/`, drops into a scene, and enters play with Elf race, subsystem, baseline loadout, and preset contracted spirits as authored.
 
 ---
 
 ## 8. Out of scope (v0)
 
-- In-world **form contract** and **level spirit** (NPC/event/item).
-- Full **character sheet** / spirit management UI (debug menu acceptable).
-- Unified **ability hotbar** binding (may follow Phase 3 policy).
+- In-world **form contract** and **level spirit** (NPC/event/item) — **form contract** now specified in [Elf — Fairy Stone spirit contracts](Elf-Fairy-Stone-Spirit-Contract-Requirements.md) (implementation pending).
+- **Level spirit** via Fairy Stone (separate future gate).
+- Full **character sheet** / spirit management UI beyond hotbar (debug menu acceptable).
+- **Non-hotbar** summon/dismiss UI (no dedicated racial menu action for summon in v0).
+- Unified **ability hotbar** binding for spirit **actives** — **in scope** via [Ability hotbar](../UI/Ability-Hotbar-Requirements.md); summon/dismiss entries added in §5.10.
 - Limiting **number of contracts** (design is **unlimited** roster).
 - Cross-spirit exclusivity (“only one Fire”) unless added in a later doc.
 - Tiefling implants, Human class, Barbarian imprint changes.
@@ -283,7 +352,7 @@ If a spirit passive grants body capabilities or equip bypass, use **`CharacterSt
 | O1 | Level payloads **cumulative** (1+2+3) vs **current level only**? | **Cumulative** for clearer growth; document in code. |
 | O2 | Upkeep timing: turn **start** vs **end**? | **Start of Elf turn** (predictable with dismiss before acting). |
 | O3 | Partial summon batch if Soul Power runs out mid-batch? | **Summon until funds exhausted**; remainder stay unsummoned; log feedback. |
-| O4 | Multiple instances of same `spiritId` in roster? | **No** — one entry per `spiritId`; level stored once. |
+| O4 | Multiple instances of same `spiritId` in roster? | **Yes** — unlimited **contract instances**; each row has unique **`contractInstanceId`**. Summon/dismiss/hotbar key by **instance**, not `spiritId` alone. See [Fairy Stone doc](Elf-Fairy-Stone-Spirit-Contract-Requirements.md) L8. |
 | O5 | `consumesTurn` interaction with summon/dismiss? | Summon/dismiss **never** consume turn; only flagged actives do. |
 
 ---
@@ -294,6 +363,8 @@ If a spirit passive grants body capabilities or equip bypass, use **`CharacterSt
 |-----|----------------|
 | [Phase0 — Glossary](Phase0-Glossary-And-Data-Contracts.md) | Add **Elemental Spirit**, **contract**, **summon** when implementing. |
 | [Phase3 — Barbarian Spirit Imprint](Phase3-Requirements.md) | Parallel **preset v0** pattern; different lifecycle. |
+| [Elf — Fairy Stone spirit contracts](Elf-Fairy-Stone-Spirit-Contract-Requirements.md) | **Form contract** item + merchant gate (implements F4.15). |
+| [Ability hotbar](../UI/Ability-Hotbar-Requirements.md) | Summon/dismiss + spirit actives on per-Elf hotbar (§5.10). |
 | [Phase5 — Requirements](Phase5-Requirements.md) | Elf subsystem fulfills **sustained / upkeep** shape. |
 
 **Tiefling:** [Cyborg implants](Tiefling-Cyborg-Implants-Requirements.md) — slot replace, not summon/upkeep; do not conflate with Elf rules.

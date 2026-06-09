@@ -80,6 +80,7 @@
     <Compile Include="Assets/Editor/Targeting/SplashZoneAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/TownPackCreator.cs" />
     <Compile Include="Assets/Editor/Altar/AltarAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/FairyMerchantPackCreator.cs" />
     <Compile Include="Assets/Editor/World/LightEmittingItemsPackEditor.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioAssetPackCreator.cs" />
   </ItemGroup>

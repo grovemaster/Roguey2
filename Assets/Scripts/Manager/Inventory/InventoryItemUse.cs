@@ -6,6 +6,7 @@ using JRogue.Manager.Equipment;
 using JRogue.Manager.Door;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
+using JRogue.Racial;
 using JRogue.UI.Inventory;
 using JRogue.World.Generation;
 using UnityEngine;
@@ -34,6 +35,9 @@ namespace JRogue.Manager.Inventory
 
             if (row.Item is EvocableItemData evocableDef)
                 return TryUseEvocable(row, inCombat, evocableDef);
+
+            if (row.Item is FairyStoneItemData)
+                return FairyStoneUseService.TryBeginUse(row);
 
             if (HealingPotionRules.IsHealingPotionItem(row.Item)
                 && inCombat

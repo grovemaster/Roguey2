@@ -9,6 +9,7 @@ using JRogue.Manager.Equipment;
 using JRogue.Manager.Floor;
 using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
+using JRogue.Racial;
 using JRogue.Stats;
 using JRogue.UI.Hotbar;
 using TMPro;
@@ -2358,7 +2359,22 @@ namespace JRogue.UI.Inventory
                 return;
             }
 
+            if (result.Outcome == JRogue.Manager.Inventory.InventoryUseOutcome.StartedChoiceDialog)
+            {
+                FairyStoneUseService.SetInventoryRefreshCallback(RefreshAfterDeferredInventoryUse);
+                return;
+            }
+
             RefreshInventoryDisplay();
+        }
+
+        void RefreshAfterDeferredInventoryUse()
+        {
+            if (inventoryPanel == null || !inventoryPanel.activeSelf)
+                return;
+
+            RefreshInventoryDisplay();
+            AbilityHotbarUI.Instance?.RefreshAll();
         }
 
         void TryBeginBowInvokeAim(JRogue.Manager.Inventory.InventoryBowAimPending pending)

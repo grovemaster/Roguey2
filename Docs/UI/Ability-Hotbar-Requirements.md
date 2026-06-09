@@ -269,7 +269,8 @@ Overflow clicks respect `GameplayModalGate` — no activation through inventory/
 | `EssenceActive` | `EssenceSlotManager` slot + ability index | `PlayerAbilitySource.Essence` |
 | `EquipmentActive` | `EquipmentSlot` + ability index on equipped item | `PlayerAbilitySource.EquipmentItem` |
 | `HumanMageSpell` | Spell index in `HumanMageSpellsRuntime` | `PlayerAbilitySource.HumanMageSpell` |
-| `RacialActive` | Racial runtime id + ability index (Spirit Imprint node, Dwarf common, Elf spirit contract, Undead tree, Tiefling implant, etc.) | **New** unified resolver → existing `AbilityAction.Execute` |
+| `RacialActive` | Racial runtime id + ability index (Spirit Imprint node, Dwarf common, **Elf spirit active**, Undead tree, Tiefling implant, etc.) | Unified resolver → `AbilityAction.Execute` |
+| `ElementalSpiritSummon` | Elf **`contractInstanceId`** on `ElementalSpiritContractsRuntime` | `ElementalSpiritContractsRuntime.TrySummon` / `TryDismiss` — **no** `AbilityAction`; see [Elf §5.10](../RacialSystem/Elf-ElementalSpirit-Contracts-Requirements.md) |
 | `InventoryActive` | `ItemInstance` id + ability index on `ItemData.activeAbilities` | `PlayerAbilitySource.InventoryItem` |
 | `InventoryUse` | `ItemInstance` id for single-action consumable (no separate `AbilityAction`) | `InventoryItemUse` / processor |
 
@@ -280,10 +281,41 @@ Overflow clicks respect `GameplayModalGate` — no activation through inventory/
 | Essence active | Essence equipped in that slot on **this** character | Class cannot use essences; slot empty |
 | Equipment active | Item equipped in slot | Ability index out of range |
 | Racial active | Progression unlock present on **this** character | Dev-only invoker flags off in shipping |
+| **Elemental spirit summon** | Elf has **contract instance** in roster (`ElementalSpiritContractsRuntime`) | Not an Elf; instance no longer in roster (stale) |
+| **Elemental spirit active** | Parent instance **summoned** + active index valid | Instance not summoned; insufficient SP for active |
 | Inventory item / scroll / evocable / throwable | `ItemInstance` **carried or equipped** on **this** character | Item on ally; item on ground; essence category |
 | Mage spell | `HumanClass.Mage` | Wrong class |
 
 **Locked:** Cannot bind ally inventory to your bar — use §12 transfer first.
+
+### 8.2.1 — Elf elemental spirits (summon / dismiss + actives)
+
+| Entry kind | Assignable pool | Hotbar press behavior | Turn cost |
+|------------|-----------------|----------------------|-----------|
+| **`ElementalSpiritSummon`** | **Every contract instance** on this Elf (summoned or not) | **Toggle:** not summoned → summon; summoned → dismiss | **None** |
+| **`RacialActive`** (Elf spirit active) | **Deduped** union of actives from **all summoned instances** (one entry per unique `AbilityAction` asset) | Execute via first eligible summoned instance | **Per active** (`consumesTurn`) |
+
+| Usability (summon entry) | Enabled | Greyed |
+|--------------------------|---------|--------|
+| Instance not summoned | Soul Power ≥ `summonSoulPowerCost` | Insufficient SP; not active member’s turn (combat) |
+| Instance summoned | Always (dismiss) | Not active member’s turn (combat) |
+
+**Active deduplication (locked):**
+
+| Rule | Detail |
+|------|--------|
+| **Same ability asset** | Multiple summoned instances exposing e.g. **Sudden Strength** → **one** hotbar assignable + **one** bound main-row slot. |
+| **Different ability assets** | Separate entries (Sudden Strength vs Ember Imbue vs Tide Mend). |
+| **Binding key** | `ElementalSpiritActive:{abilityAssetId}` — **not** per `contractInstanceId`. |
+| **Execution** | `HotbarResolver` picks a summoned instance on this Elf that provides the ability and passes `CanExecuteSpiritActive`. |
+| **Summon toggles** | **Not** deduped — N instances → N `ElementalSpiritSummon` entries. |
+
+- **Labels (summon):** *“{SpiritName} — Summon”* / *“… — Dismiss”*; duplicate spirit types disambiguate with instance suffix (*“Ember Warden (2)”*).
+- **Labels (active):** ability name only when deduped (*“Sudden Strength”*).
+- **Icons:** spirit icon for summon entries; ability icon for deduped actives.
+- **Cross-ref:** [Elf §5.11–§5.12](../RacialSystem/Elf-ElementalSpirit-Contracts-Requirements.md).
+
+---
 
 ### 8.3 — Runtime validation (key press & click)
 
@@ -553,6 +585,8 @@ Pick **one** style family project-wide; recolor to JRogue palette (#c8d0e0 icons
 | **AC12** | Out-of-turn or safe-zone-blocked ability appears **greyed** on main row and overflow; click/key does not fire. |
 | **AC13** | Hover any non-empty slot or overflow icon → tooltip with **name + description**. |
 | **AC14** | Usable ability turns grey immediately when last Soul Power spent (or other gate triggers) without requiring scene reload. |
+| **AC15** | Elf with contracted instance: hotbar **summon** entry toggles summon/dismiss **without** consuming turn; spirit **active** entries appear only while summoned. |
+| **AC16** | Three summoned spirit instances all expose **Sudden Strength** | Open assignable pool / main row | **One** Sudden Strength slot; **three** summon/dismiss slots. |
 
 ---
 

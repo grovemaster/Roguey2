@@ -22,6 +22,7 @@ namespace JRogue.World.Generation.Phases
             (StampMarkerIds.TownNpc4, "Town/Npc/TownNpc_Fenn", "Assets/Resources/Town/Npc/TownNpc_Fenn.prefab"),
             (StampMarkerIds.TownNpc5, "Town/Npc/TownNpc_Greta", "Assets/Resources/Town/Npc/TownNpc_Greta.prefab"),
             (StampMarkerIds.ShamanBarbarian, "Town/Npc/TownNpc_ShamanBarbarian", "Assets/Resources/Town/Npc/TownNpc_ShamanBarbarian.prefab"),
+            (StampMarkerIds.FairyMerchant, "Town/Npc/TownNpc_FairyMerchant", "Assets/Resources/Town/Npc/TownNpc_FairyMerchant.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)

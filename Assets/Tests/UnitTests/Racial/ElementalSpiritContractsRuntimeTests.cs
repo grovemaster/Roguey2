@@ -26,6 +26,20 @@ namespace JRogue.Tests.Racial
         }
 
         [Test]
+        public void TryFormContract_AppendsDistinctInstances()
+        {
+            ElementalSpiritDefinition spirit = BuildSpiritWithStats();
+            _destroy.Add(spirit);
+            GameObject go = CreateBareElf();
+            var runtime = go.GetComponent<ElementalSpiritContractsRuntime>();
+
+            Assert.IsTrue(runtime.TryFormContract(spirit, 1, out string firstId, out _));
+            Assert.IsTrue(runtime.TryFormContract(spirit, 1, out string secondId, out _));
+            Assert.AreNotEqual(firstId, secondId);
+            Assert.AreEqual(2, runtime.ContractedSpirits.Count);
+        }
+
+        [Test]
         public void Summon_AppliesCumulativeStats_DismissRemoves()
         {
             ElementalSpiritDefinition spirit = BuildSpiritWithStats();
@@ -87,6 +101,17 @@ namespace JRogue.Tests.Racial
 
             Assert.IsFalse(runtime.TrySummon("unknown_spirit", out string reason));
             Assert.IsNotEmpty(reason);
+        }
+
+        GameObject CreateBareElf()
+        {
+            var go = new GameObject("ElfTest");
+            _destroy.Add(go);
+            var stats = go.AddComponent<CharacterStats>();
+            stats.race = Race.Elf;
+            stats.racialSubsystem = RacialSubsystemKind.ElfElementalContracts;
+            go.AddComponent<ElementalSpiritContractsRuntime>();
+            return go;
         }
 
         GameObject CreateElf(ElementalSpiritDefinition spirit, int contractLevel)

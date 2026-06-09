@@ -34,29 +34,31 @@ namespace JRogue.World.Generation
             return leader != null && IsSafeZoneAt(leader.GridPosition);
         }
 
-        public static bool TryAllowEssenceAbility(out string denyReason)
+        public static bool TryAllowEssenceAbility(out string denyReason, bool logDeny = true)
         {
             denyReason = null;
             if (!IsSafeZoneForActiveParty())
                 return true;
 
             denyReason = DenyMessage;
-            LogDeny("essence ability");
+            if (logDeny)
+                LogDeny("essence ability");
             return false;
         }
 
-        public static bool TryAllowHostileAction(out string denyReason)
+        public static bool TryAllowHostileAction(out string denyReason, bool logDeny = true)
         {
             denyReason = null;
             if (!IsSafeZoneForActiveParty())
                 return true;
 
             denyReason = DenyMessage;
-            LogDeny("hostile action");
+            if (logDeny)
+                LogDeny("hostile action");
             return false;
         }
 
-        public static bool TryAllowInventoryUse(ItemData item, out string denyReason)
+        public static bool TryAllowInventoryUse(ItemData item, out string denyReason, bool logDeny = true)
         {
             denyReason = null;
             if (!IsSafeZoneForActiveParty())
@@ -66,7 +68,8 @@ namespace JRogue.World.Generation
                 return true;
 
             denyReason = DenyMessage;
-            LogDeny($"inventory use ({item?.itemName ?? "item"})");
+            if (logDeny)
+                LogDeny($"inventory use ({item?.itemName ?? "item"})");
             return false;
         }
 
