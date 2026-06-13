@@ -4,6 +4,7 @@ using JRogue.Actors;
 using JRogue.Item;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
+using JRogue.Progression.Proficiency;
 using JRogue.Stats;
 using NUnit.Framework;
 using UnityEngine;
@@ -101,8 +102,9 @@ namespace JRogue.Tests.UnitTests.Combat
                 stats.WeaponProficiencies[type] = new Stat(0);
             foreach (SkillType type in System.Enum.GetValues(typeof(SkillType)))
                 stats.Skills[type] = new Stat(0);
-            stats.WeaponProficiencies[WeaponType.Bow] = new Stat(bowProf);
-            stats.Skills[SkillType.Athletics] = new Stat(athletics);
+            var runtime = go.AddComponent<ProficiencyRuntime>();
+            runtime.SetLevelForTests(ProficiencyKind.Weapon_Bow, bowProf);
+            runtime.SetLevelForTests(ProficiencyKind.Fighting, athletics);
             go.AddComponent<InventoryManager>();
             go.AddComponent<EquipmentManager>();
             go.AddComponent<TestBowActor>();

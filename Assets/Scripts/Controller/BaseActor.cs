@@ -12,6 +12,7 @@ using JRogue.Interactables;
 using JRogue.Manager.Door;
 using JRogue.Service.Sensing;
 using JRogue.Status;
+using JRogue.Progression.Proficiency;
 using JRogue.Stats;
 using JRogue.World.Lighting;
 using UnityEngine;
@@ -69,6 +70,7 @@ namespace JRogue.Actors
             essenceManager = GetComponent<EssenceSlotManager>();
             health = GetComponent<HealthComponent>();
             mover = GetComponent<GridMover>();
+            ProficiencyRuntime.EnsureOn(gameObject);
 
             // BaseActor is the only place that knows how this kind of actor dies,
             // so it owns the Died subscription. Subclasses still implement Die().

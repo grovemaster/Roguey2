@@ -12,6 +12,7 @@ using JRogue.Manager.Floor;
 using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
+using JRogue.Progression.Proficiency;
 using JRogue.Racial;
 using JRogue.Hazards;
 using JRogue.Traps;
@@ -553,11 +554,17 @@ namespace JRogue.Input
                     equipManager != null
                     && equipManager.TryExecuteItemAbility(pending.SlotIndex, pending.AbilityIndex, target),
                 PlayerAbilitySource.HumanMageSpell =>
-                    mageSpells != null
-                    && mageSpells.TryExecuteEquipped(pending.SlotIndex, activeMember.gameObject, target),
+                    TryExecuteMageSpellWithProficiency(
+                        activeMember,
+                        mageSpells,
+                        pending.SlotIndex,
+                        target),
                 PlayerAbilitySource.DragonianSpell =>
-                    dragonianSpells != null
-                    && dragonianSpells.TryExecuteMemorized(pending.SlotIndex, activeMember.gameObject, target),
+                    TryExecuteDragonianSpellWithProficiency(
+                        activeMember,
+                        dragonianSpells,
+                        pending.SlotIndex,
+                        target),
                 PlayerAbilitySource.InventoryItem =>
                     TryExecuteInventoryItemTargetedUse(pending, activeMember, target),
                 PlayerAbilitySource.BowAim =>
@@ -1035,10 +1042,9 @@ namespace JRogue.Input
                     equipManager != null
                     && equipManager.TryExecuteItemAbility(resolved.SlotIndex, resolved.AbilityIndex),
                 PlayerAbilitySource.HumanMageSpell =>
-                    mageSpells != null && mageSpells.TryExecuteEquipped(resolved.AbilityIndex, actor.gameObject),
+                    TryExecuteMageSpellWithProficiency(actor, mageSpells, resolved.AbilityIndex),
                 PlayerAbilitySource.DragonianSpell =>
-                    dragonianSpells != null
-                    && dragonianSpells.TryExecuteMemorized(resolved.AbilityIndex, actor.gameObject),
+                    TryExecuteDragonianSpellWithProficiency(actor, dragonianSpells, resolved.AbilityIndex),
                 PlayerAbilitySource.RacialActive =>
                     TryExecuteHotbarRacialActive(actor, resolved),
                 PlayerAbilitySource.InventoryItem =>
@@ -1227,6 +1233,44 @@ namespace JRogue.Input
                 return SafeZonePolicyService.TryAllowHostileAction(out denyReason);
 
             return TryAllowPlayerAbilitySource(pending.Source, out denyReason);
+        }
+
+        static bool TryExecuteMageSpellWithProficiency(
+            BaseActor actor,
+            HumanMageSpellsRuntime runtime,
+            int equippedIndex,
+            Vector3Int? targetTile = null)
+        {
+            if (actor == null || runtime == null)
+                return false;
+
+            bool ok = targetTile.HasValue
+                ? runtime.TryExecuteEquipped(equippedIndex, actor.gameObject, targetTile.Value)
+                : runtime.TryExecuteEquipped(equippedIndex, actor.gameObject);
+
+            if (ok)
+                ProficiencyAwardService.AwardMageSpellCast(actor, runtime, equippedIndex);
+
+            return ok;
+        }
+
+        static bool TryExecuteDragonianSpellWithProficiency(
+            BaseActor actor,
+            DragonianSpellsRuntime runtime,
+            int memorizedIndex,
+            Vector3Int? targetTile = null)
+        {
+            if (actor == null || runtime == null)
+                return false;
+
+            bool ok = targetTile.HasValue
+                ? runtime.TryExecuteMemorized(memorizedIndex, actor.gameObject, targetTile.Value)
+                : runtime.TryExecuteMemorized(memorizedIndex, actor.gameObject);
+
+            if (ok)
+                ProficiencyAwardService.AwardDragonianSpellCast(actor, runtime, memorizedIndex);
+
+            return ok;
         }
     }
 }

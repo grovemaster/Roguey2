@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using JRogue.Core.Actor;
 using JRogue.Core.Targeting;
+using JRogue.Stats;
 using UnityEngine;
 
 namespace JRogue.Ability
@@ -16,6 +18,11 @@ namespace JRogue.Ability
         public int magicPowerCost;
         public int divinePowerCost;
         public int cooldownTurns;
+
+        [Header("Proficiency")]
+        public List<ProficiencyKind> proficiencyTags = new();
+        [Tooltip("When > 0, replaces default pxp tier for awards from this ability.")]
+        public int proficiencyXpOverride;
 
         [Header("Targeting Settings")]
         public bool requiresTarget; // Fixes 'does not have requiresTarget'

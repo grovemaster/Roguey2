@@ -62,6 +62,7 @@
     <Compile Include="Assets/Scripts/Quest/QuestDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/ItemCategoryRegistry.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInterfaces.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyXpDispatcher.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/ILootRandom.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownInteriorNpcSetupPhase.cs" />
     <Compile Include="Assets/Scripts/UI/Character/EquipmentSlotGridView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownBuildingDoorSetupPhase.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyAptitudeService.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/GridMover.cs" />
     <Compile Include="Assets/Scripts/Dialog/SpiritImprintShamanDialogSession.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupMenuUI.cs" />
@@ -125,6 +127,7 @@
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopDataTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneDebugOverlay.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyRules.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntryKind.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritNicknameService.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationState.cs" />
@@ -164,6 +167,7 @@
     <Compile Include="Assets/Scripts/World/Generation/PartySpawnService.cs" />
     <Compile Include="Assets/Scripts/Dialog/DialogDataTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneEnterTracker.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyCombatResolver.cs" />
     <Compile Include="Assets/Scripts/Abilities/LightningBolt/LightningBoltAbility.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/PortalPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightLevel.cs" />
@@ -246,6 +250,8 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneBoundaryResolver.cs" />
     <Compile Include="Assets/Scripts/Racial/SoulBeastRitualLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyKindMapping.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyLegacyMigration.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTileVariationMode.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonFloorZoneLayout.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapTypes.cs" />
@@ -333,6 +339,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarInteractable.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePaletteLayer.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyStrikePayloadBuilder.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPhase3SampleContent.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalEntryService.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightCellData.cs" />
@@ -384,6 +391,7 @@
     <Compile Include="Assets/Scripts/Service/Sensing/SenseSightService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyLogic.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/PartySkillDetection.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyAwardService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimeLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownSoulBeastRitualSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/LightingInitPhase.cs" />
@@ -453,6 +461,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneRectProcGenerator.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/RestSessionService.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyEligibility.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/RacialAbilitiesUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCellMapStats.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/ScriptOnlyPrecondition.cs" />
@@ -484,7 +493,9 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinition.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopTransactionService.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupHudButton.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyRuntime.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/TrapWhileAliveMapEffect.cs" />
+    <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyMageSpellTags.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AdjacentInteractPickerModalUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementEntry.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRoller.cs" />

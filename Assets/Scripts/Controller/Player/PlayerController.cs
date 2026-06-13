@@ -1,8 +1,10 @@
 using JRogue.Actors;
 using JRogue.Combat;
 using JRogue.Controller.Enemy;
+using JRogue.Item;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Party;
+using JRogue.Progression.Proficiency;
 using JRogue.Stats;
 using JRogue.World.Generation;
 using UnityEngine;
@@ -56,18 +58,36 @@ namespace JRogue.Controller.Player
 
         void AttackEnemy(EnemyController enemy)
         {
-            int damage = equipment.GetTotalAttack(baseAttack);
-            enemy.TakeDamage(damage, DamageType.Slash, gameObject);
+            ItemData weapon = equipment.GetItemFromEquipmentSlot(EquipmentSlot.MainHand);
+            int baseDamage = equipment.GetTotalAttack(baseAttack);
+            ProficiencyResolvedAction trainAction =
+                ProficiencyStrikePayloadBuilder.FromMeleeWeapon(this, weapon, baseDamage);
+            int damage = ProficiencyCombatResolver.ComputePhysicalDamage(
+                this,
+                baseDamage,
+                trainAction.WeaponType,
+                trainAction.DamageModulesApplied);
+            DamageType damageType = trainAction.DamageModulesApplied.Count > 0
+                ? trainAction.DamageModulesApplied[0].type
+                : DamageType.Slash;
+            enemy.TakeDamage(damage, damageType, gameObject);
             Debug.Log($"Player attacked {enemy.name} for {damage} damage!");
             ProduceNoise(meleeNoiseVolume);
+            ProficiencyXpDispatcher.Dispatch(this, trainAction);
         }
 
         void AttackUnarmed(EnemyController enemy)
         {
-            int damage = Mathf.Max(1, baseAttack);
+            ProficiencyResolvedAction trainAction = ProficiencyStrikePayloadBuilder.FromUnarmed(baseAttack);
+            int damage = ProficiencyCombatResolver.ComputePhysicalDamage(
+                this,
+                baseAttack,
+                WeaponType.Unarmed,
+                trainAction.DamageModulesApplied);
             enemy.TakeDamage(damage, DamageType.Blunt, gameObject);
             Debug.Log($"Player attacked {enemy.name} unarmed for {damage} damage!");
             ProduceNoise(meleeNoiseVolume);
+            ProficiencyXpDispatcher.Dispatch(this, trainAction);
         }
 
         public override void OnHearNoise(BaseActor source, Vector3Int origin, int rawVolume, int effectiveVolume)

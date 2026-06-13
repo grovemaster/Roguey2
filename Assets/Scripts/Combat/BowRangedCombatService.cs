@@ -9,6 +9,7 @@ using JRogue.Item;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
+using JRogue.Progression.Proficiency;
 using JRogue.Stats;
 using JRogue.World.Generation;
 using UnityEngine;
@@ -71,21 +72,7 @@ namespace JRogue.Combat
             if (actor == null || bow == null || arrow == null)
                 return 1;
 
-            int baseDamage = SumDamage(bow) + SumDamage(arrow);
-            CharacterStats stats = actor.stats;
-            if (stats == null)
-                return Mathf.Max(1, baseDamage);
-
-            float bowSkill = stats.WeaponProficiencies.TryGetValue(WeaponType.Bow, out Stat bowProf)
-                ? bowProf.GetValue()
-                : 0f;
-            float fightSkill = stats.Skills.TryGetValue(SkillType.Athletics, out Stat athletics)
-                ? athletics.GetValue()
-                : 0f;
-
-            float skillMod = 1f + bowSkill / 25f;
-            float fightingMod = 1f + fightSkill / 30f;
-            return Mathf.Max(1, Mathf.RoundToInt(baseDamage * skillMod * fightingMod));
+            return ProficiencyCombatResolver.ComputeBowShotDamage(actor, bow, arrow);
         }
 
         static int SumDamage(ItemData item) =>
@@ -138,6 +125,10 @@ namespace JRogue.Combat
 
             Debug.Log(
                 $"{LogPrefix} Shot at {targetTile} for {damage} with {arrowUsed.itemName} ({targets.Count} target(s)).");
+
+            ProficiencyResolvedAction trainAction =
+                ProficiencyStrikePayloadBuilder.FromBowShot(bow, arrowUsed, damage);
+            ProficiencyXpDispatcher.Dispatch(shooter, trainAction);
             return true;
         }
 

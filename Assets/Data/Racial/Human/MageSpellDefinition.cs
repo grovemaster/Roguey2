@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JRogue.Ability;
+using JRogue.Stats;
 using JRogue.Stats.Racial;
 using UnityEngine;
 
@@ -19,6 +20,9 @@ namespace JRogue.Racial
 
         public AbilityAction ability;
         public int magicPowerCost = 1;
+
+        [Header("Proficiency")]
+        public List<ProficiencyKind> proficiencyTags = new();
 
         [Min(0)]
         public int extraEquipCost;

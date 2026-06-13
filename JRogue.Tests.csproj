@@ -88,6 +88,7 @@
     <Compile Include="Assets/Tests/UnitTests/UI/HotbarResolverTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DwarfAncestryRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/PortalPlacementResolverTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Progression/ProficiencySystemTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarDepletedStateTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/ZonePopulationTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/PlayerCommandProcessorTest.cs" />
