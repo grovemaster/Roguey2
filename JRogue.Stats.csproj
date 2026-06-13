@@ -55,6 +55,7 @@
     <Compile Include="Assets/Scripts/Stats/StatModifier.cs" />
     <Compile Include="Assets/Scripts/Stats/Racial/HumanClass.cs" />
     <Compile Include="Assets/Scripts/Stats/Racial/RacialTraitQueries.cs" />
+    <Compile Include="Assets/Scripts/Stats/Racial/DragonianRules.cs" />
     <Compile Include="Assets/Scripts/Stats/Stat.cs" />
     <Compile Include="Assets/Scripts/Stats/Racial/RacialIdentitySnapshot.cs" />
     <Compile Include="Assets/Scripts/Stats/CharacterStats.cs" />

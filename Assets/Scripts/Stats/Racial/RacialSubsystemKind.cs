@@ -27,7 +27,10 @@ namespace JRogue.Stats.Racial
         UndeadSkillTree = 6,
 
         /// <summary>Beastman Soul Beast bond and linear ability chain (permanent).</summary>
-        BeastmanSoulBeast = 7
+        BeastmanSoulBeast = 7,
+
+        /// <summary>Dragonian spell library with Soul Power memory budget (permanent learn, flexible memorize).</summary>
+        DragonianSpells = 8
     }
 
     /// <summary>
@@ -44,6 +47,7 @@ namespace JRogue.Stats.Racial
                 case RacialSubsystemKind.ElfElementalContracts:
                 case RacialSubsystemKind.DwarfAncestry:
                 case RacialSubsystemKind.BeastmanSoulBeast:
+                case RacialSubsystemKind.DragonianSpells:
                     return RacialCommitmentPolicy.Permanent;
                 case RacialSubsystemKind.TieflingImplants:
                 case RacialSubsystemKind.UndeadSkillTree:
@@ -74,6 +78,8 @@ namespace JRogue.Stats.Racial
                     return race == Race.Undead;
                 case RacialSubsystemKind.BeastmanSoulBeast:
                     return race == Race.Beastman;
+                case RacialSubsystemKind.DragonianSpells:
+                    return race == Race.Dragonian;
                 default:
                     return false;
             }

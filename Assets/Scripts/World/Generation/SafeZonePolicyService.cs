@@ -73,6 +73,20 @@ namespace JRogue.World.Generation
             return false;
         }
 
+        public const string MemorizeLoadoutDenyMessage = "You can only adjust memorized spells in town.";
+
+        public static bool TryAllowDragonianMemorizeChange(out string denyReason, bool logDeny = true)
+        {
+            denyReason = null;
+            if (IsSafeZoneForActiveParty())
+                return true;
+
+            denyReason = MemorizeLoadoutDenyMessage;
+            if (logDeny)
+                Debug.Log($"{LogPrefix} {denyReason}");
+            return false;
+        }
+
         public static bool IsUtilityInventoryUse(ItemData item) =>
             SafeZonePolicyLogic.IsUtilityInventoryUse(item);
 

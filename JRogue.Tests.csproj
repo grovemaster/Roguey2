@@ -68,6 +68,7 @@
     <Compile Include="Assets/Tests/UnitTests/Racial/HumanClassPowersTests.cs" />
     <Compile Include="Assets/Tests/JRogueTestsRootSetupFixture.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/LightingQaPlacementResolverTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Racial/DragonianSpellsRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/MonsterSpawnScheduleLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/ConeSightFootprintTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/VaultSourceTextTests.cs" />

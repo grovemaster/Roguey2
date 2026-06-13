@@ -77,6 +77,7 @@
     <Compile Include="Assets/Editor/Inventory/FireballScrollSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Doors/DoorPackEditor.cs" />
     <Compile Include="Assets/Editor/Interactables/TownTimeLeverAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/DragonianSpellPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/EvocableItemPackEditor.cs" />
     <Compile Include="Assets/Editor/Racial/BeastmanRacialDevMenu.cs" />
     <Compile Include="Assets/Editor/Party/PartyCompositionMenu.cs" />

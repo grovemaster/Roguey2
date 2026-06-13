@@ -10,5 +10,6 @@ namespace JRogue.UI.Hotbar
         InventoryActive = 5,
         InventoryUse = 6,
         ElementalSpiritSummon = 7,
+        DragonianSpell = 8,
     }
 }

@@ -20,6 +20,7 @@ namespace JRogue.UI.Hotbar
         public const string GroupEssence = "Essence Actives";
         public const string GroupEquipment = "Equipment Actives";
         public const string GroupMage = "Mage Spells";
+        public const string GroupDragonian = "Dragonian Spells";
         public const string GroupInventory = "Inventory";
         public const string GroupRacial = "Racial Actives";
 
@@ -32,6 +33,7 @@ namespace JRogue.UI.Hotbar
             AppendEssenceActives(actor, pool);
             AppendEquipmentActives(actor, pool);
             AppendMageSpells(actor, pool);
+            AppendDragonianSpells(actor, pool);
             AppendInventoryEntries(actor, pool);
             AppendRacialActives(actor, pool);
             return pool;
@@ -132,8 +134,40 @@ namespace JRogue.UI.Hotbar
                         abilityIndex = i,
                         abilityAssetName = ability.name,
                     },
-                    FormatAbilityName(ability, spell.displayName),
+                    FormatSpellDisplayName(spell.displayName, ability),
                     GroupMage));
+            }
+        }
+
+        static void AppendDragonianSpells(
+            BaseActor actor,
+            List<(HotbarEntry, string, string)> pool)
+        {
+            CharacterStats stats = actor.stats;
+            if (stats == null || stats.race != Race.Dragonian)
+                return;
+
+            DragonianSpellsRuntime dragonianSpells = actor.GetComponent<DragonianSpellsRuntime>();
+            if (dragonianSpells == null)
+                return;
+
+            IReadOnlyList<DragonianSpellDefinition> memorized = dragonianSpells.MemorizedSpells;
+            for (int i = 0; i < memorized.Count; i++)
+            {
+                DragonianSpellDefinition spell = memorized[i];
+                AbilityAction ability = spell?.ability;
+                if (ability == null)
+                    continue;
+
+                pool.Add((
+                    new HotbarEntry
+                    {
+                        Kind = HotbarEntryKind.DragonianSpell,
+                        abilityIndex = i,
+                        abilityAssetName = ability.name,
+                    },
+                    FormatSpellDisplayName(spell.displayName, ability),
+                    GroupDragonian));
             }
         }
 
@@ -364,6 +398,14 @@ namespace JRogue.UI.Hotbar
             }
 
             return seen;
+        }
+
+        static string FormatSpellDisplayName(string spellDisplayName, AbilityAction ability)
+        {
+            if (!string.IsNullOrWhiteSpace(spellDisplayName))
+                return spellDisplayName.Trim();
+
+            return FormatAbilityName(ability, null);
         }
 
         static string FormatAbilityName(AbilityAction ability, string fallback)

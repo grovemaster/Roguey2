@@ -399,6 +399,7 @@
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnGroupMembership.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/PartyLightEmitterBridge.cs" />
+    <Compile Include="Assets/Scripts/Racial/DragonianSpellLoadoutService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeLogic.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationPipeline.cs" />

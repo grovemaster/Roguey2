@@ -17,6 +17,8 @@ namespace JRogue.Input
         BowAim = 4,
         /// <summary>Racial progression active (Spirit Imprint, elemental spirits, etc.).</summary>
         RacialActive = 5,
+        /// <summary>Memorized Dragonian spell from Soul Power memory loadout.</summary>
+        DragonianSpell = 6,
     }
 
     /// <summary>Discriminant for <see cref="PlayerCommand"/>; stable for serialization.</summary>

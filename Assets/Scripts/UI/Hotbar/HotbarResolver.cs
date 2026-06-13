@@ -34,6 +34,7 @@ namespace JRogue.UI.Hotbar
                 HotbarEntryKind.EssenceActive => ResolveEssence(actor, entry),
                 HotbarEntryKind.EquipmentActive => ResolveEquipment(actor, entry),
                 HotbarEntryKind.HumanMageSpell => ResolveHumanMageSpell(actor, entry),
+                HotbarEntryKind.DragonianSpell => ResolveDragonianSpell(actor, entry),
                 HotbarEntryKind.RacialActive => ResolveRacial(actor, entry),
                 HotbarEntryKind.ElementalSpiritSummon => ResolveElementalSpiritSummon(actor, entry),
                 HotbarEntryKind.InventoryActive => ResolveInventoryActive(actor, entry),
@@ -117,6 +118,28 @@ namespace JRogue.UI.Hotbar
                 entry.Kind,
                 ability,
                 PlayerAbilitySource.HumanMageSpell,
+                entry.abilityIndex,
+                entry.abilityIndex);
+        }
+
+        static HotbarResolvedAction ResolveDragonianSpell(BaseActor actor, HotbarEntry entry)
+        {
+            CharacterStats stats = actor.stats;
+            if (stats == null || stats.race != Race.Dragonian)
+                return Stale(entry.Kind, "Not a Dragonian.");
+
+            DragonianSpellsRuntime dragonianSpells = actor.GetComponent<DragonianSpellsRuntime>();
+            if (dragonianSpells == null)
+                return Stale(entry.Kind, "No Dragonian spell runtime.");
+
+            AbilityAction ability = dragonianSpells.GetMemorizedAbility(entry.abilityIndex);
+            if (ability == null)
+                return Stale(entry.Kind, "Dragonian spell unavailable.");
+
+            return Valid(
+                entry.Kind,
+                ability,
+                PlayerAbilitySource.DragonianSpell,
                 entry.abilityIndex,
                 entry.abilityIndex);
         }

@@ -113,6 +113,7 @@
     <Compile Include="Assets/Data/Item/BeastBloodItemData.cs" />
     <Compile Include="Assets/Data/Racial/Beastman/SoulBeastRitualOfferingDefinition.cs" />
     <Compile Include="Assets/Data/Item/Currency/ManaStoneTierCatalog.cs" />
+    <Compile Include="Assets/Data/Racial/Dragonian/DragonianSpellsRuntime.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryAccessibilitySettings.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritLevelCurve.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritMeditationGateDefinition.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Assets/Data/Racial/RacialLoadoutApplier.cs" />
     <Compile Include="Assets/Data/Racial/Beastman/SoulBeastRitualTypeDefinition.cs" />
     <Compile Include="Assets/Data/Enemy/LootTableEntry.cs" />
+    <Compile Include="Assets/Data/Racial/Dragonian/DragonianSpellDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonAbilityDefinition.cs" />
     <Compile Include="Assets/Data/Lighting/LightEmitterDefinition.cs" />
     <Compile Include="Assets/Data/Status/StatusEffectId.cs" />

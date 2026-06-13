@@ -29,6 +29,8 @@ namespace JRogue.UI.Hotbar
                     $"equip:{equipmentSlot}:{abilityIndex}",
                 HotbarEntryKind.HumanMageSpell =>
                     $"mage:{abilityIndex}",
+                HotbarEntryKind.DragonianSpell =>
+                    $"dragonian:{abilityIndex}",
                 HotbarEntryKind.RacialActive =>
                     $"racial:{racialBindingKey ?? string.Empty}",
                 HotbarEntryKind.InventoryActive =>
@@ -57,6 +59,8 @@ namespace JRogue.UI.Hotbar
                 HotbarEntryKind.EquipmentActive =>
                     equipmentSlot == other.equipmentSlot && abilityIndex == other.abilityIndex,
                 HotbarEntryKind.HumanMageSpell =>
+                    abilityIndex == other.abilityIndex,
+                HotbarEntryKind.DragonianSpell =>
                     abilityIndex == other.abilityIndex,
                 HotbarEntryKind.RacialActive =>
                     string.Equals(racialBindingKey, other.racialBindingKey, StringComparison.Ordinal),

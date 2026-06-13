@@ -542,6 +542,7 @@ namespace JRogue.Input
             EssenceSlotManager actorEssence = activeMember.GetComponent<EssenceSlotManager>();
             EquipmentManager equipManager = activeMember.GetComponent<EquipmentManager>();
             HumanMageSpellsRuntime mageSpells = activeMember.GetComponent<HumanMageSpellsRuntime>();
+            DragonianSpellsRuntime dragonianSpells = activeMember.GetComponent<DragonianSpellsRuntime>();
 
             bool ok = pending.Source switch
             {
@@ -554,6 +555,9 @@ namespace JRogue.Input
                 PlayerAbilitySource.HumanMageSpell =>
                     mageSpells != null
                     && mageSpells.TryExecuteEquipped(pending.SlotIndex, activeMember.gameObject, target),
+                PlayerAbilitySource.DragonianSpell =>
+                    dragonianSpells != null
+                    && dragonianSpells.TryExecuteMemorized(pending.SlotIndex, activeMember.gameObject, target),
                 PlayerAbilitySource.InventoryItem =>
                     TryExecuteInventoryItemTargetedUse(pending, activeMember, target),
                 PlayerAbilitySource.BowAim =>
@@ -594,6 +598,8 @@ namespace JRogue.Input
                     return TargetedActionContext.FromEquipment(pending.SlotIndex, pending.AbilityIndex);
                 case PlayerAbilitySource.HumanMageSpell:
                     return TargetedActionContext.FromHumanMageSpell(pending.AbilityIndex);
+                case PlayerAbilitySource.DragonianSpell:
+                    return TargetedActionContext.FromDragonianSpell(pending.AbilityIndex);
                 case PlayerAbilitySource.BowAim:
                     return TargetedActionContext.BowAim();
                 case PlayerAbilitySource.RacialActive:
@@ -1021,6 +1027,7 @@ namespace JRogue.Input
             EssenceSlotManager actorEssence = actor.GetComponent<EssenceSlotManager>();
             EquipmentManager equipManager = actor.GetComponent<EquipmentManager>();
             HumanMageSpellsRuntime mageSpells = actor.GetComponent<HumanMageSpellsRuntime>();
+            DragonianSpellsRuntime dragonianSpells = actor.GetComponent<DragonianSpellsRuntime>();
 
             return resolved.Source switch
             {
@@ -1029,6 +1036,9 @@ namespace JRogue.Input
                     && equipManager.TryExecuteItemAbility(resolved.SlotIndex, resolved.AbilityIndex),
                 PlayerAbilitySource.HumanMageSpell =>
                     mageSpells != null && mageSpells.TryExecuteEquipped(resolved.AbilityIndex, actor.gameObject),
+                PlayerAbilitySource.DragonianSpell =>
+                    dragonianSpells != null
+                    && dragonianSpells.TryExecuteMemorized(resolved.AbilityIndex, actor.gameObject),
                 PlayerAbilitySource.RacialActive =>
                     TryExecuteHotbarRacialActive(actor, resolved),
                 PlayerAbilitySource.InventoryItem =>

@@ -266,6 +266,12 @@ namespace JRogue.UI.Hotbar
                 return mageSpells != null && mageSpells.CanAffordCast(resolved.AbilityIndex);
             }
 
+            if (resolved.Source == PlayerAbilitySource.DragonianSpell)
+            {
+                DragonianSpellsRuntime dragonianSpells = actor.GetComponent<DragonianSpellsRuntime>();
+                return dragonianSpells != null && dragonianSpells.CanAffordCast(resolved.AbilityIndex);
+            }
+
             if (resolved.Source == PlayerAbilitySource.Essence)
             {
                 EssenceSlotManager essence = actor.GetComponent<EssenceSlotManager>();

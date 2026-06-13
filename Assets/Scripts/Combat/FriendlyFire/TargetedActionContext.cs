@@ -43,6 +43,14 @@ namespace JRogue.Combat.FriendlyFire
                 AbilityIndex = abilityIndex,
             };
 
+        public static TargetedActionContext FromDragonianSpell(int abilityIndex) =>
+            new TargetedActionContext
+            {
+                Source = PlayerAbilitySource.DragonianSpell,
+                SlotIndex = abilityIndex,
+                AbilityIndex = abilityIndex,
+            };
+
         public static TargetedActionContext BowAim() =>
             new TargetedActionContext { Source = PlayerAbilitySource.BowAim };
 

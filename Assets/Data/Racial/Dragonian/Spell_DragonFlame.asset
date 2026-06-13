@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0e1f2a3b4c5567890abcdef01234568, type: 3}
+  m_Name: Spell_DragonFlame
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.DragonianSpellDefinition
+  spellId: dragonian_spell_fireball
+  displayName: Dragon Flame
+  description: Breathe condensed flame at a distant tile.
+  memorizeCost: 7
+  soulPowerCastCost: 5
+  ability: {fileID: 11400000, guid: ccbdd8aa50ddf7c8b91ce85b5ca98601, type: 2}

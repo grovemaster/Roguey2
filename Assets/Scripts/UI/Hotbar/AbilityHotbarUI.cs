@@ -223,6 +223,24 @@ namespace JRogue.UI.Hotbar
             if (entry.IsEmpty())
                 return null;
 
+            if (entry.Kind == HotbarEntryKind.DragonianSpell)
+            {
+                DragonianSpellDefinition spell = actor
+                    ?.GetComponent<DragonianSpellsRuntime>()
+                    ?.GetMemorizedSpell(entry.abilityIndex);
+                if (!string.IsNullOrWhiteSpace(spell?.displayName))
+                    return spell.displayName.Trim();
+            }
+
+            if (entry.Kind == HotbarEntryKind.HumanMageSpell)
+            {
+                MageSpellDefinition spell = actor
+                    ?.GetComponent<HumanMageSpellsRuntime>()
+                    ?.GetEquippedSpell(entry.abilityIndex);
+                if (!string.IsNullOrWhiteSpace(spell?.displayName))
+                    return spell.displayName.Trim();
+            }
+
             if (!string.IsNullOrWhiteSpace(resolved.Ability?.abilityName))
                 return resolved.Ability.abilityName.Trim();
 

@@ -198,7 +198,10 @@ namespace JRogue.Stats
         public int MaxHP => Constitution.GetValue() * 10;
         public int EncumbranceLimit => Constitution.GetValue() * 5;
 
-        public int MaxSoulPower => HumanClassRules.ComputeMaxSoulPower(this);
+        public int MaxSoulPower =>
+            DragonianRules.UsesSoulPower(race)
+                ? DragonianRules.ComputeMaxSoulPower(this)
+                : HumanClassRules.ComputeMaxSoulPower(this);
         public int MaxMagicPower => HumanClassRules.ComputeMaxMagicPower(this);
         public int MaxDivinePower => HumanClassRules.ComputeMaxDivinePower(this);
 
