@@ -8,7 +8,7 @@
 
 **Depends on:** Phase 0–2 (`CharacterStats`, `Race`, `RacialSubsystemKind`, modifier stacking), [Sudden Strength essence](../Essence/Sudden-Strength-Essence-Requirements.md) (`SuddenStrength_Standard`), [Fireball scroll / ability](../Inventory/Fireball-Scroll-Requirements.md) (`Fireball_Standard`), [Soul Power regeneration](../Progression/Soul-Power-Regeneration-Requirements.md), [Ability hotbar](../UI/Ability-Hotbar-Requirements.md), `EssenceSlotManager`, `AbilityAction` / targeting pipeline, [Party composition presets](../../Assets/Scripts/World/Generation/PartyCompositionPresets.cs) (`DragonianPlayer` in Tiefling/Beastman/Dragonian/Dwarf roster).
 
-**Related:** [Human — Class powers](Human-Class-Powers-Requirements.md) (Mage spell equip budget — **different resource**), [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md) (Soul Power spend, race-exclusive actives), [Racial abilities menu](../UI/Racial-Abilities-Menu-Requirements.md) (future Dragonian body — read-only spell sheet), [Dragonian — Spell learning (Elder quests)](Dragonian-Spell-Learning-Elder-Quests-Requirements.md) (how spells enter **known library**).
+**Related:** [Human — Class powers](Human-Class-Powers-Requirements.md) (Mage spell equip budget — **different resource**), [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md) (Soul Power spend, race-exclusive actives), [Racial abilities menu](../UI/Racial-Abilities-Menu-Requirements.md) ([Dragonian body — spell loadout](Dragonian-Racial-Abilities-Menu-Requirements.md)), [Dragonian — Spell learning (Elder quests)](Dragonian-Spell-Learning-Elder-Quests-Requirements.md) (how spells enter **known library**).
 
 **Explicitly out of scope (v0):** Dragonian **learning** from NPCs (see [Elder quests](Dragonian-Spell-Learning-Elder-Quests-Requirements.md)); spell **tiers** derived from a formula (use explicit **`memorizeCost`** per spell); respec **refund** of learning costs; Dragonian racial menu UI (defer v0.1); gamepad layout; PvP spell steal; casting Dragonian spells from items scrolls owned by non-Dragonians.
 
@@ -144,7 +144,7 @@ remainingMemory >= memorizeCost(S)
 |---------|------------------------|
 | **Town / safe zone** | **Yes** |
 | **Dungeon / combat** | **No** — reject with clear feedback (e.g. *“You can only adjust memorized spells in town.”*) |
-| Racial menu (`K`) | **Read-only v0**; editing deferred to v0.1 UI or dedicated spell sheet in safe zone |
+| Racial menu (`K`) | **Loadout edit in town** — see [Dragonian — racial abilities menu](Dragonian-Racial-Abilities-Menu-Requirements.md) |
 
 **Implementation:** gate via `SafeZonePolicyService` (or equivalent) on `TryMemorize` / `TryUnmemorize`, matching Beast Blood / ritual safe-zone discipline.
 

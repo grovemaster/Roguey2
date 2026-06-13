@@ -36,6 +36,12 @@ namespace JRogue.UI.Racial
         public static readonly Color BeastmanSectionAccent = new Color(0.55f, 0.78f, 0.42f, 1f);
         public static readonly Color BeastmanCardBackground = new Color(0.12f, 0.14f, 0.11f, 0.95f);
         public static readonly Color BeastmanCardAccent = new Color(0.42f, 0.62f, 0.32f, 1f);
+        public static readonly Color DragonianSectionAccent = new Color(0.88f, 0.42f, 0.28f, 1f);
+        public static readonly Color DragonianBudgetBackground = new Color(0.16f, 0.1f, 0.1f, 0.95f);
+        public static readonly Color DragonianColumnBackground = new Color(0.11f, 0.115f, 0.12f, 0.92f);
+        public static readonly Color DragonianRowBackground = new Color(0.14f, 0.12f, 0.12f, 0.95f);
+        public static readonly Color DragonianRowBorder = new Color(0.28f, 0.18f, 0.16f, 0.95f);
+        public static readonly Color DragonianActionButtonBackground = new Color(0.32f, 0.16f, 0.14f, 0.98f);
 
         static Sprite _placeholderSprite;
         static Sprite _imprintEmblemSprite;
@@ -43,6 +49,7 @@ namespace JRogue.UI.Racial
         static Sprite _soulBeastBondEmblemSprite;
         static Sprite _soulBeastPassiveEmblemSprite;
         static Sprite _soulBeastActiveEmblemSprite;
+        static Sprite _dragonianSpellEmblemSprite;
         static TMP_FontAsset _font;
 
         static TMP_FontAsset UiFont
@@ -127,6 +134,17 @@ namespace JRogue.UI.Racial
             }
         }
 
+        public static Sprite DragonianSpellEmblemSprite
+        {
+            get
+            {
+                if (_dragonianSpellEmblemSprite == null)
+                    _dragonianSpellEmblemSprite = CreateDragonianSpellEmblemSprite();
+
+                return _dragonianSpellEmblemSprite;
+            }
+        }
+
         public static TextMeshProUGUI CreateText(
             Transform parent,
             string name,
@@ -179,6 +197,34 @@ namespace JRogue.UI.Racial
                         c = new Color(0.784f, 0.627f, 0.376f, 0.95f);
                     else if (dist < inner * 0.45f)
                         c = new Color(0.95f, 0.82f, 0.35f, 0.85f);
+
+                    tex.SetPixel(x, y, c);
+                }
+            }
+
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+        }
+
+        static Sprite CreateDragonianSpellEmblemSprite()
+        {
+            const int size = 32;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.filterMode = FilterMode.Bilinear;
+            Vector2 center = new Vector2(size * 0.5f, size * 0.5f);
+            Color ember = new Color(0.88f, 0.42f, 0.28f, 0.95f);
+            Color core = new Color(0.98f, 0.72f, 0.28f, 0.9f);
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dist = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), center);
+                    Color c = Color.clear;
+                    if (dist <= size * 0.42f && dist >= size * 0.24f)
+                        c = ember;
+                    else if (dist < size * 0.18f)
+                        c = core;
 
                     tex.SetPixel(x, y, c);
                 }

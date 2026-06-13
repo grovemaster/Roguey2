@@ -191,6 +191,7 @@
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthBuffRuntime.cs" />
     <Compile Include="Assets/Scripts/Combat/FriendlyFire/FriendlyFirePreview.cs" />
     <Compile Include="Assets/Scripts/World/Altar/SpawnEnemyAltarCompletionEffect.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/DragonianSpellBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/IDungeonGenerationPhase.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/TieflingForgemasterNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/GameStoryFlagService.cs" />
@@ -423,6 +424,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownMeditationShrineSetupPhase.cs" />
     <Compile Include="Assets/Scripts/UI/Character/CharacterEquipmentUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TrapPopulationPhase.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/DragonianSpellBodyView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneGenerationRng.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementSet.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/EnemyPopulationPhase.cs" />

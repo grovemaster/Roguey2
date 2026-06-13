@@ -1,3 +1,4 @@
+using JRogue.Manager.Combat;
 using JRogue.Actors;
 using JRogue.Controller.Npc;
 using JRogue.Item;
@@ -74,10 +75,19 @@ namespace JRogue.World.Generation
         }
 
         public const string MemorizeLoadoutDenyMessage = "You can only adjust memorized spells in town.";
+        public const string CombatMemorizeDenyMessage = "You cannot adjust equipped word-forms during combat.";
 
         public static bool TryAllowDragonianMemorizeChange(out string denyReason, bool logDeny = true)
         {
             denyReason = null;
+            if (CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat)
+            {
+                denyReason = CombatMemorizeDenyMessage;
+                if (logDeny)
+                    Debug.Log($"{LogPrefix} {denyReason}");
+                return false;
+            }
+
             if (IsSafeZoneForActiveParty())
                 return true;
 

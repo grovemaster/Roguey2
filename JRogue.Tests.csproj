@@ -90,6 +90,7 @@
     <Compile Include="Assets/Tests/UnitTests/World/ZonePopulationTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/PlayerCommandProcessorTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Party/MainCharacterGameOverTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/UI/Racial/DragonianRacialAbilitiesMenuTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/Phase0RacialContractTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarOfferingServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryConsumeQuantityTests.cs" />
