@@ -115,6 +115,7 @@
     <Compile Include="Assets/Scripts/World/Generation/TownToDungeonPortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedStatModifierRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarOfferingService.cs" />
+    <Compile Include="Assets/Scripts/Racial/ElementalSpiritLevelCapPolicy.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/IlluminationVisibilityLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopDataTypes.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultCellKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationUtility.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingService.cs" />
+    <Compile Include="Assets/Scripts/Racial/ElementalSpiritMeditationLogic.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntry.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneJigsawSolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
@@ -205,6 +207,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryViewModel.cs" />
     <Compile Include="Assets/Scripts/Quest/QuestService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/EvocableRechargeService.cs" />
+    <Compile Include="Assets/Scripts/Racial/ElementalSpiritProgressionLogic.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinitionCatalog.cs" />
@@ -284,6 +287,7 @@
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardBootstrap.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcDialogSession.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileService.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/ElementalSpiritContractsView.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopPriceResolver.cs" />
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationLog.cs" />
@@ -388,8 +392,10 @@
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritContractService.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkInteraction.cs" />
     <Compile Include="Assets/Scripts/Racial/FairyStoneUseService.cs" />
+    <Compile Include="Assets/Scripts/Racial/ElementalSpiritMeditationService.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarDefinition.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownMeditationShrineSetupPhase.cs" />
     <Compile Include="Assets/Scripts/UI/Character/CharacterEquipmentUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TrapPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneGenerationRng.cs" />
@@ -419,10 +425,12 @@
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarResolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePalette.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/OtherInteractableOnPrecondition.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Effects/ElementalSpiritMeditationEffect.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/ShopNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkCounterService.cs" />
     <Compile Include="Assets/Scripts/Item/LightSourceItemRules.cs" />
     <Compile Include="Assets/Scripts/Interactables/PartyCarriedLightSource.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/ElfElementalSpiritViewModel.cs" />
     <Compile Include="Assets/Scripts/Quest/QuestLogic.cs" />
     <Compile Include="Assets/Scripts/Interactables/SampleSceneInteractablePlacements.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTestController.cs" />

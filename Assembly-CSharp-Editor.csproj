@@ -83,6 +83,7 @@
     <Compile Include="Assets/Editor/World/FairyMerchantPackCreator.cs" />
     <Compile Include="Assets/Editor/World/LightEmittingItemsPackEditor.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/Interactables/MeditationShrineAssetPackCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -76,6 +76,7 @@
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeModifierSource.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanClassSkillNodeModifierSource.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritContractsRuntime.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritProgressionConfig.cs" />
     <Compile Include="Assets/Data/Racial/Elf/FireWeaponImbueAbility.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalElement.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintNodeData.cs" />
@@ -104,6 +105,8 @@
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfAncestorPathRuntime.cs" />
     <Compile Include="Assets/Data/Item/Currency/ManaStoneTierCatalog.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryAccessibilitySettings.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritLevelCurve.cs" />
+    <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritMeditationGateDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/ImplantSlot.cs" />
     <Compile Include="Assets/Data/Racial/IRacialProgressionPayload.cs" />
     <Compile Include="Assets/Data/Item/Currency/ManaStoneItemData.cs" />

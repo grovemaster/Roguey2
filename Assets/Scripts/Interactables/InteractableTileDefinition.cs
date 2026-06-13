@@ -12,6 +12,9 @@ namespace JRogue.Interactables
         public bool blocksOccupancy = true;
         public bool bumpEnabled = true;
 
+        [Tooltip("When true, the tile can be activated repeatedly (e.g. meditation shrine).")]
+        public bool allowRepeatActivation;
+
         public InteractablePrecondition[] preconditions = System.Array.Empty<InteractablePrecondition>();
         public InteractableEffect[] onActivateEffects = System.Array.Empty<InteractableEffect>();
 

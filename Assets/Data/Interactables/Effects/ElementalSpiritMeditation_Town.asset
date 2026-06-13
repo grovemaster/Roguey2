@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13e3070510ed3b9b4b48ce96109bd2e3, type: 3}
+  m_Name: ElementalSpiritMeditation_Town
+  m_EditorClassIdentifier: JRogue::JRogue.Interactables.ElementalSpiritMeditationEffect
+  gate: {fileID: 11400000, guid: 28b0653414b46b3baabbc1ab2126aea4, type: 2}

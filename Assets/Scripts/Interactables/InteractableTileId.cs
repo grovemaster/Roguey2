@@ -10,5 +10,6 @@ namespace JRogue.Interactables
         WallTorch = 5,
         TownTimeLeverA = 6,
         TownTimeLeverB = 7,
+        MeditationShrine = 8,
     }
 }

@@ -20,6 +20,7 @@ namespace JRogue.World.Generation
             new TownPortalSetupPhase(),
             new TownBuildingDoorSetupPhase(),
             new TownTimeLeverSetupPhase(),
+            new TownMeditationShrineSetupPhase(),
             new TownNpcSetupPhase(),
             new TownInteriorNpcSetupPhase(),
             new TownTorchSetupPhase(),

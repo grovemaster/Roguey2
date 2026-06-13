@@ -9,6 +9,7 @@ namespace JRogue.Racial
         public string contractInstanceId;
         public ElementalSpiritDefinition spirit;
         [Min(1)] public int contractLevel = 1;
+        [Min(0)] public int contractExperience;
 
         public void EnsureInstanceId()
         {

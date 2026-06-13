@@ -121,6 +121,7 @@ namespace JRogue.Editor.World
             EnsureTownTiles();
             EnsureTownBuildingTiles();
             JRogue.Editor.Interactables.TownTimeLeverAssetPackCreator.CreateTownTimeLeverAssets();
+            JRogue.Editor.Interactables.MeditationShrineAssetPackCreator.CreateMeditationShrineAssets();
 
             TileBase floorTile = AssetDatabase.LoadAssetAtPath<TileBase>(FloorTilePath);
             TileBase wallTile = AssetDatabase.LoadAssetAtPath<TileBase>(WallTilePath);
@@ -363,6 +364,8 @@ namespace JRogue.Editor.World
             stamp.SetMarker(StampMarkerIds.TownNpc3, new Vector3Int(8, 8, 0));
             stamp.SetMarker(StampMarkerIds.TownTimeLeverA, new Vector3Int(8, 6, 0));
             stamp.SetMarker(StampMarkerIds.TownTimeLeverB, new Vector3Int(9, 6, 0));
+            stamp.SetMarker(StampMarkerIds.MeditationShrine, new Vector3Int(4, 6, 0));
+            stamp.SetMarker(StampMarkerIds.FairyMerchant, new Vector3Int(12, 6, 0));
             PaintDemoBuildingFacade(stamp, originX: 12, originY: 8, width: 5, depth: 3, doorLocalX: 2, doorLocalY: 0);
             EditorUtility.SetDirty(stamp);
             return stamp;

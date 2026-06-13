@@ -99,7 +99,7 @@ While a spirit instance is **summoned**, its actives obey **`ElementalSpiritActi
 |--------------------------------------------------------------------------|-------------------|
 | F4.15 — form contract via event/NPC/item | **This doc is that item gate (v0).** |
 | F4.2 — cannot summon uncontracted spirit | Unchanged; new contract adds to roster only. |
-| F4.16 — level spirit (later) | **Out of v0** — Fairy Stone does **not** raise an instance’s level. |
+| F4.16 — level spirit (later) | **Out of Fairy Stone v0** — use [meditation shrine](Elf-ElementalSpirit-Meditation-Leveling-Requirements.md) instead. |
 | O4 — duplicate `spiritId` in roster | **Yes** — each success adds a **new instance**; unlimited roster (L8). **Runtime refactor:** summon/dismiss/hotbar must key by **`contractInstanceId`**, not `spiritId` alone. |
 | Cumulative level payloads | New instance at level 1 grants level-1 row when **that instance** is summoned. |
 | Preset v0 roster on prefab | `ElfPlayer` may start with `[]`; contracts gained via stones + future gates. |

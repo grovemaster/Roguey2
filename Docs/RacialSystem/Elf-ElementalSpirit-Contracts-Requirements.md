@@ -223,7 +223,8 @@ On eligible actors (`Race.Elf`, subsystem `ElfElementalContracts`):
 **F4.15 (later)** **Form contract:** event/NPC/item adds `{ spiritId, initialLevel }` to `contractedSpirits` (or sets level 1 if new).  
 → **Specified:** [Elf — Fairy Stone spirit contracts](Elf-Fairy-Stone-Spirit-Contract-Requirements.md) (town merchant + consumable item, 50% random spirit at level 1).
 
-**F4.16 (later)** **Level spirit:** event/NPC/item increases **contract level** for one spirit, capped at `maxLevel`; re-apply passives if summoned (remove old level sources, apply new cumulative set).
+**F4.16 (later)** **Level spirit:** event/NPC/item increases **contract level** for one spirit, capped at `maxLevel`; re-apply passives if summoned (remove old level sources, apply new cumulative set).  
+→ **Specified:** [Elf — meditation & leveling](Elf-ElementalSpirit-Meditation-Leveling-Requirements.md) (town meditation shrine, spirit XP, character-level cap).
 
 v0 **must not** depend on these gates; presets suffice for playtests.
 

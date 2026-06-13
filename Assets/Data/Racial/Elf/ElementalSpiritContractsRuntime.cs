@@ -91,6 +91,7 @@ namespace JRogue.Racial
             {
                 spirit = spirit,
                 contractLevel = level,
+                contractExperience = 0,
             };
             preset.EnsureInstanceId();
             contractedSpirits.Add(preset);
@@ -403,6 +404,38 @@ namespace JRogue.Racial
             return true;
         }
 
+        public int ResolveContractLevelUps(
+            string contractInstanceId,
+            int effectiveCap,
+            ElementalSpiritLevelCurve curve)
+        {
+            if (!TryGetPreset(contractInstanceId, out ElementalSpiritContractPreset preset)
+                || preset.spirit == null
+                || curve == null)
+            {
+                return 0;
+            }
+
+            int levelsGained = 0;
+            int cap = Mathf.Clamp(effectiveCap, 1, preset.spirit.maxLevel);
+
+            while (preset.contractLevel < cap)
+            {
+                int threshold = curve.GetXpRequiredForNextLevel(preset.contractLevel);
+                if (threshold == int.MaxValue || preset.contractExperience < threshold)
+                    break;
+
+                preset.contractExperience -= threshold;
+                preset.contractLevel = Mathf.Clamp(preset.contractLevel + 1, 1, preset.spirit.maxLevel);
+                levelsGained++;
+
+                if (IsInstanceSummoned(contractInstanceId))
+                    ReapplySummonedPayload(contractInstanceId);
+            }
+
+            return levelsGained;
+        }
+
         public bool TryGetSpiritDefinition(string spiritId, out ElementalSpiritDefinition def)
         {
             def = null;
@@ -527,9 +560,30 @@ namespace JRogue.Racial
 
         void DismissInstance(string contractInstanceId)
         {
+            RemoveSummonedPayload(contractInstanceId);
+            _summonedInstanceIds.Remove(contractInstanceId);
+        }
+
+        void ReapplySummonedPayload(string contractInstanceId)
+        {
+            if (!IsInstanceSummoned(contractInstanceId)
+                || !TryGetPreset(contractInstanceId, out ElementalSpiritContractPreset preset)
+                || preset.spirit == null)
+            {
+                return;
+            }
+
+            RemoveSummonedPayload(contractInstanceId, removeFromSummonedSet: false);
+            int contractLevel = Mathf.Clamp(preset.contractLevel, 1, preset.spirit.maxLevel);
+            ApplySummonedPayload(contractInstanceId, preset.spirit, contractLevel);
+        }
+
+        void RemoveSummonedPayload(string contractInstanceId, bool removeFromSummonedSet = true)
+        {
             if (!TryGetPreset(contractInstanceId, out ElementalSpiritContractPreset preset) || preset.spirit == null)
             {
-                _summonedInstanceIds.Remove(contractInstanceId);
+                if (removeFromSummonedSet)
+                    _summonedInstanceIds.Remove(contractInstanceId);
                 return;
             }
 
@@ -569,7 +623,9 @@ namespace JRogue.Racial
             }
 
             ClearToggleStateForInstance(contractInstanceId);
-            _summonedInstanceIds.Remove(contractInstanceId);
+
+            if (removeFromSummonedSet)
+                _summonedInstanceIds.Remove(contractInstanceId);
         }
 
         void ClearToggleStateForInstance(string contractInstanceId)

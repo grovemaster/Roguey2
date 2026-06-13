@@ -316,7 +316,7 @@ namespace JRogue.UI.Racial
             {
                 Race.Barbarian => "Spirit Imprint",
                 Race.Dwarf => "Racial abilities — coming soon",
-                Race.Elf => "Racial abilities — coming soon",
+                Race.Elf => "Elemental spirit contracts",
                 Race.Human => "Racial abilities — coming soon",
                 _ => "Racial abilities — coming soon"
             };

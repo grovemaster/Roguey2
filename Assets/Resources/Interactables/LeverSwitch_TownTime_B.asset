@@ -17,6 +17,7 @@ MonoBehaviour:
   kind: 0
   blocksOccupancy: 1
   bumpEnabled: 1
+  allowRepeatActivation: 0
   preconditions:
   - {fileID: 11400000, guid: 307b0277118640a5889d05da1e59446b, type: 2}
   onActivateEffects:

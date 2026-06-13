@@ -124,7 +124,7 @@ namespace JRogue.Interactables
             if (instance == null || instance.Definition == null)
                 return InteractableBumpResult.Failed;
 
-            if (instance.IsOn)
+            if (!instance.Definition.allowRepeatActivation && instance.IsOn)
             {
                 Debug.Log(
                     $"[Interactable] {instance.Definition.displayName} at {instance.Cell} is already activated.");
@@ -141,8 +141,12 @@ namespace JRogue.Interactables
                 return InteractableBumpResult.PreconditionFailed;
             }
 
-            instance.SetOn();
-            RefreshOverlayVisual(instance);
+            if (!instance.Definition.allowRepeatActivation)
+            {
+                instance.SetOn();
+                RefreshOverlayVisual(instance);
+            }
+
             RunEffects(instance, bumper, source);
 
             Debug.Log(

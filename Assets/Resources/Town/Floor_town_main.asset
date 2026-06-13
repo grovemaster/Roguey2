@@ -18,6 +18,8 @@ MonoBehaviour:
   zoneLayout: {fileID: 0}
   floorTile: {fileID: 11400000, guid: c3d4e5f6a7b84990a1b2c3d4e5f67811, type: 2}
   wallTile: {fileID: 11400000, guid: c3d4e5f6a7b84990a1b2c3d4e5f67812, type: 2}
+  defaultFloorPalette: {fileID: 0}
+  defaultWallPalette: {fileID: 0}
   playerSafeRadius: 8
   formationProfile: {fileID: 11400000, guid: bc9b8ea4cc7eebeef321ff560e79df53, type: 2}
   enemyPopulation: []

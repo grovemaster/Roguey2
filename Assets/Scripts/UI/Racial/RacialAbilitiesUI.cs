@@ -68,8 +68,11 @@ namespace JRogue.UI.Racial
         TextMeshProUGUI _placeholderBody;
         RacialAbilitiesPartyStripView _partyStrip;
         SpiritImprintTimelineView _timeline;
+        ElementalSpiritContractsView _spiritContracts;
         RectTransform _scrollContent;
+        RectTransform _elfScrollContent;
         GameObject _barbarianBodyRoot;
+        GameObject _elfBodyRoot;
         GameObject _defaultBodyRoot;
 
         readonly List<BaseActor> _partyActors = new List<BaseActor>();
@@ -200,6 +203,53 @@ namespace JRogue.UI.Racial
 
             _timeline = SpiritImprintTimelineView.Create(_scrollContent);
 
+            _elfBodyRoot = CreateBodyRoot(_panelRoot.transform, "ElfBody");
+            CreateLayoutTextOn(_elfBodyRoot.transform, "SectionLabel", "ELEMENTAL SPIRIT CONTRACTS", RacialUiTheme.SectionFontSize, FontStyles.Bold, 24f).color =
+                RacialUiTheme.SectionLabel;
+
+            var elfScrollHost = new GameObject("ContractsScroll", typeof(RectTransform));
+            elfScrollHost.transform.SetParent(_elfBodyRoot.transform, false);
+            var elfScrollLe = elfScrollHost.AddComponent<LayoutElement>();
+            elfScrollLe.flexibleHeight = 1f;
+            elfScrollLe.minHeight = 200f;
+
+            ScrollRect elfScroll = elfScrollHost.AddComponent<ScrollRect>();
+            elfScroll.horizontal = false;
+            elfScroll.vertical = true;
+            elfScroll.movementType = ScrollRect.MovementType.Clamped;
+
+            var elfViewport = new GameObject("Viewport", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Mask));
+            elfViewport.transform.SetParent(elfScrollHost.transform, false);
+            RacialUiTheme.Stretch(elfViewport.GetComponent<RectTransform>());
+            elfViewport.GetComponent<Image>().sprite = RacialUiTheme.PlaceholderSprite;
+            elfViewport.GetComponent<Image>().color = new Color(0.12f, 0.125f, 0.135f, 0.92f);
+            elfViewport.GetComponent<Mask>().showMaskGraphic = false;
+
+            var elfContent = new GameObject("Content", typeof(RectTransform));
+            elfContent.transform.SetParent(elfViewport.transform, false);
+            _elfScrollContent = elfContent.GetComponent<RectTransform>();
+            _elfScrollContent.anchorMin = new Vector2(0f, 1f);
+            _elfScrollContent.anchorMax = new Vector2(1f, 1f);
+            _elfScrollContent.pivot = new Vector2(0.5f, 1f);
+            _elfScrollContent.sizeDelta = new Vector2(0f, 0f);
+
+            elfScroll.viewport = elfViewport.GetComponent<RectTransform>();
+            elfScroll.content = _elfScrollContent;
+
+            var elfContentLayout = elfContent.AddComponent<VerticalLayoutGroup>();
+            elfContentLayout.childControlWidth = true;
+            elfContentLayout.childForceExpandWidth = true;
+            elfContentLayout.childControlHeight = true;
+            elfContentLayout.childForceExpandHeight = false;
+            elfContent.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            _spiritContracts = ElementalSpiritContractsView.Create(_elfScrollContent);
+
+            var elfBodyFlex = _elfBodyRoot.AddComponent<LayoutElement>();
+            elfBodyFlex.flexibleHeight = 1f;
+            elfBodyFlex.minHeight = 240f;
+            _elfBodyRoot.SetActive(false);
+
             _defaultBodyRoot = CreateBodyRoot(_panelRoot.transform, "DefaultBody");
             var defaultPanel = new GameObject("PlaceholderPanel", typeof(RectTransform), typeof(Image));
             defaultPanel.transform.SetParent(_defaultBodyRoot.transform, false);
@@ -308,6 +358,7 @@ namespace JRogue.UI.Racial
             _bannerText.text = string.Empty;
             _partyStrip.Rebuild(_partyActors, 0);
             _barbarianBodyRoot.SetActive(true);
+            _elfBodyRoot.SetActive(false);
             _defaultBodyRoot.SetActive(false);
             _timeline.SetPlainMessage("No party members available.");
         }
@@ -366,6 +417,8 @@ namespace JRogue.UI.Racial
 
             if (race == Race.Barbarian)
                 ShowBarbarianBody(actor);
+            else if (race == Race.Elf)
+                ShowElfBody(actor);
             else
                 ShowDefaultBody(actor, race);
         }
@@ -373,6 +426,7 @@ namespace JRogue.UI.Racial
         void ShowBarbarianBody(BaseActor actor)
         {
             _defaultBodyRoot.SetActive(false);
+            _elfBodyRoot.SetActive(false);
             _barbarianBodyRoot.SetActive(true);
 
             var runtime = actor.GetComponent<SpiritImprintRuntime>();
@@ -388,9 +442,28 @@ namespace JRogue.UI.Racial
             _timeline.Rebuild(vm.Cards);
         }
 
+        void ShowElfBody(BaseActor actor)
+        {
+            _defaultBodyRoot.SetActive(false);
+            _barbarianBodyRoot.SetActive(false);
+            _elfBodyRoot.SetActive(true);
+
+            var runtime = actor.GetComponent<ElementalSpiritContractsRuntime>();
+            if (runtime == null)
+            {
+                _bannerText.text = string.Empty;
+                _spiritContracts.SetPlainMessage("This Elf has no elemental spirit contracts runtime.");
+                return;
+            }
+
+            _bannerText.text = ElfElementalSpiritViewModel.BannerText;
+            _spiritContracts.Rebuild(ElfElementalSpiritViewModel.Build(actor));
+        }
+
         void ShowDefaultBody(BaseActor actor, Race race)
         {
             _barbarianBodyRoot.SetActive(false);
+            _elfBodyRoot.SetActive(false);
             _defaultBodyRoot.SetActive(true);
 
             _bannerText.text = string.Empty;

@@ -17,6 +17,9 @@ namespace JRogue.Racial
         [Min(0)] public int summonSoulPowerCost = 1;
         [Min(0)] public int upkeepSoulPowerPerTurn = 1;
 
+        [Tooltip("Optional per-spirit XP curve. When unset, uses ElementalSpiritProgressionConfig.defaultLevelCurve.")]
+        public ElementalSpiritLevelCurve levelCurve;
+
         public List<ElementalSpiritLevelData> levels = new List<ElementalSpiritLevelData>();
 
         public bool TryGetLevelRow(int level, out ElementalSpiritLevelData row)
