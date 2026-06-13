@@ -90,4 +90,4 @@ MonoBehaviour:
   npcId: dragonian_elder_volscale
   dialogProfile: {fileID: 0}
   portrait: {fileID: 11400000, guid: e961ae884cc6fcde5ab12af5947b56a7, type: 2}
-  elderDefinition: {fileID: 11400000, guid: 1322c6d596bf2ce6b90475b3f8d77130, type: 2}
+  elderDefinition: {fileID: 11400000, guid: 73688c894ef1148918e47a306e9f50cc, type: 2}

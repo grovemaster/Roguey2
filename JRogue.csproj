@@ -304,6 +304,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileService.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/ElementalSpiritContractsView.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopPriceResolver.cs" />
+    <Compile Include="Assets/Scripts/Racial/DragonianElderDefinition.cs" />
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationLog.cs" />
     <Compile Include="Assets/Scripts/Shop/TownShopStateService.cs" />

@@ -10,20 +10,6 @@ using UnityEngine;
 
 namespace JRogue.Racial
 {
-    [CreateAssetMenu(fileName = "DragonianElder", menuName = "JRogue/Racial/Dragonian Elder Definition")]
-    public sealed class DragonianElderDefinition : ScriptableObject
-    {
-        public string elderId;
-        public string displayName;
-        [TextArea(2, 4)] public string description;
-        public string npcId;
-        public string[] chainQuestIds = System.Array.Empty<string>();
-        public string[] unlockStoryFlags = System.Array.Empty<string>();
-
-        public string ResolvedElderId =>
-            string.IsNullOrWhiteSpace(elderId) ? name : elderId.Trim();
-    }
-
     public static class DragonianElderIds
     {
         public const string VolscaleNpcId = "dragonian_elder_volscale";
@@ -357,5 +343,44 @@ namespace JRogue.Racial
             return $"Reward: Learn {spell.displayName} "
                    + $"(memorize {spell.memorizeCost} SP · cast {spell.soulPowerCastCost} SP)";
         }
+    }
+
+    public static class DragonianElderRegistry
+    {
+        const string ResourceFolder = "Racial/Dragonian";
+
+        static Dictionary<string, DragonianElderDefinition> _byNpcId;
+
+        public static DragonianElderDefinition Resolve(DragonianElderDefinition assigned, string npcId)
+        {
+            if (assigned != null)
+                return assigned;
+
+            if (string.IsNullOrWhiteSpace(npcId))
+                return null;
+
+            EnsureLoaded();
+            _byNpcId.TryGetValue(npcId.Trim(), out DragonianElderDefinition elder);
+            return elder;
+        }
+
+        static void EnsureLoaded()
+        {
+            if (_byNpcId != null)
+                return;
+
+            _byNpcId = new Dictionary<string, DragonianElderDefinition>(StringComparer.OrdinalIgnoreCase);
+            DragonianElderDefinition[] elders = Resources.LoadAll<DragonianElderDefinition>(ResourceFolder);
+            for (int i = 0; i < elders.Length; i++)
+            {
+                DragonianElderDefinition elder = elders[i];
+                if (elder == null || string.IsNullOrWhiteSpace(elder.npcId))
+                    continue;
+
+                _byNpcId[elder.npcId.Trim()] = elder;
+            }
+        }
+
+        public static void ResetCacheForTests() => _byNpcId = null;
     }
 }

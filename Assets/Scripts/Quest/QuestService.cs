@@ -397,6 +397,9 @@ namespace JRogue.Quest
             if (!TryGetInstance(questId, ownerPartyMemberId, out QuestInstance instance))
                 return;
 
+            if (!instance.isNew)
+                return;
+
             instance.isNew = false;
             NotifyChanged();
         }

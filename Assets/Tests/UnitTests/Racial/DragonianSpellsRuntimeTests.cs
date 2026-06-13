@@ -49,6 +49,9 @@ namespace JRogue.Tests.UnitTests.Racial
             typeof(DragonianSpellCatalogService)
                 .GetField("_cached", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
                 ?.SetValue(null, catalog);
+            typeof(DragonianSpellCatalogService)
+                .GetField("_spellLookup", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+                ?.SetValue(null, null);
 
             GameObject actor = CreateDragonianActor(maxSoulPowerBudget: 100);
             var runtime = actor.GetComponent<DragonianSpellsRuntime>();

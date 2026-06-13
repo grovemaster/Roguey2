@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.Quest.QuestDefinition
   questId: quest_dragonian_volscale_01
   displayTitle: Gather Ember Scales
-  journalDescription: Elder Volscale wants proof you can survive the dungeon. Skeletons
-    sometimes shed Ember Scales when slain — pick them up from the floor and keep two
-    in your own inventory (not a party member's bag). Return to Elder Volscale in town
-    when ready to learn Draconic Surge.
+  journalDescription: "Elder Volscale wants proof you can survive the dungeon. Skeletons
+    sometimes shed Ember Scales when slain \u2014 pick them up from the floor and
+    keep two in your own inventory (not a party member's bag). Return to Elder Volscale
+    in town when ready to learn Draconic Surge."
   giverNpcId: dragonian_elder_volscale
   giverDisplayName: Elder Volscale
   ownership: 1

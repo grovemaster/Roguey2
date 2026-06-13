@@ -10,8 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0e1f2a3b4c5567890abcdef01234568, type: 3}
-  m_Name: DragonianSpellCatalog
-  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.DragonianSpellCatalog
-  spells:
-  - {fileID: 11400000, guid: 7debe6b1d65241728ab93d763ca8f111, type: 2}
-  - {fileID: 11400000, guid: 8e8c90f12a2342ed833e4d1a949d8595, type: 2}
+  m_Name: Spell_DragonFlame
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.DragonianSpellDefinition
+  spellId: dragonian_spell_fireball
+  displayName: Dragon Flame
+  description: Breathe condensed flame at a distant tile.
+  memorizeCost: 7
+  soulPowerCastCost: 5
+  ability: {fileID: 11400000, guid: ccbdd8aa50ddf7c8b91ce85b5ca98601, type: 2}

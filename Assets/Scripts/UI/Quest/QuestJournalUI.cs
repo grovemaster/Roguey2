@@ -38,6 +38,7 @@ namespace JRogue.UI.Quest
         TextMeshProUGUI _detailText;
         TextMeshProUGUI _hintText;
         RectTransform _listContent;
+        ScrollRect _listScroll;
         Outline _detailBorder;
         readonly List<TabButtonChrome> _tabButtons = new List<TabButtonChrome>();
         readonly List<GameObject> _rowObjects = new List<GameObject>();
@@ -135,6 +136,43 @@ namespace JRogue.UI.Quest
 
             if (kb.pKey.wasPressedThisFrame)
                 TogglePinSelected();
+
+            HandleListNavigation(kb);
+        }
+
+        void HandleListNavigation(Keyboard kb)
+        {
+            IReadOnlyList<QuestInstance> entries = GetEntriesForTab(_tab);
+            if (entries.Count == 0)
+                return;
+
+            if (kb.upArrowKey.wasPressedThisFrame
+                || kb.wKey.wasPressedThisFrame
+                || kb.numpad8Key.wasPressedThisFrame)
+            {
+                SelectIndex(_selectedIndex < 0 ? 0 : _selectedIndex - 1, entries.Count);
+                return;
+            }
+
+            if (kb.downArrowKey.wasPressedThisFrame
+                || kb.sKey.wasPressedThisFrame
+                || kb.numpad2Key.wasPressedThisFrame)
+            {
+                SelectIndex(_selectedIndex < 0 ? 0 : _selectedIndex + 1, entries.Count);
+            }
+        }
+
+        void SelectIndex(int index, int entryCount)
+        {
+            if (entryCount <= 0)
+            {
+                _selectedIndex = -1;
+                RefreshDisplay();
+                return;
+            }
+
+            _selectedIndex = Mathf.Clamp(index, 0, entryCount - 1);
+            RefreshDisplay();
         }
 
         public void Open()
@@ -146,6 +184,9 @@ namespace JRogue.UI.Quest
             EnsurePanelBuilt();
             _open = true;
             _panelRoot.SetActive(true);
+
+            IReadOnlyList<QuestInstance> entries = GetEntriesForTab(_tab);
+            _selectedIndex = entries.Count > 0 ? 0 : -1;
             RefreshDisplay();
         }
 
@@ -186,6 +227,7 @@ namespace JRogue.UI.Quest
             UpdateDetail(entries);
             UpdateHint();
             UpdateTabButtonStyles();
+            ScrollListToSelected(entries.Count);
         }
 
         IReadOnlyList<QuestInstance> GetEntriesForTab(JournalTab tab)
@@ -449,6 +491,7 @@ namespace JRogue.UI.Quest
             text.text = label;
             text.fontSize = 22f;
             text.color = Color.white;
+            text.raycastTarget = false;
             text.margin = new Vector4(12f, 6f, 12f, 6f);
             RectTransform textRt = textGo.GetComponent<RectTransform>();
             textRt.anchorMin = Vector2.zero;
@@ -458,14 +501,11 @@ namespace JRogue.UI.Quest
 
             if (selectable)
             {
+                row.AddComponent<LayoutElement>().minHeight = 44f;
                 Button button = row.AddComponent<Button>();
                 button.targetGraphic = image;
                 int captured = index;
-                button.onClick.AddListener(() =>
-                {
-                    _selectedIndex = captured;
-                    RefreshDisplay();
-                });
+                button.onClick.AddListener(() => SelectIndex(captured, GetEntriesForTab(_tab).Count));
             }
 
             _rowObjects.Add(row);
@@ -485,8 +525,18 @@ namespace JRogue.UI.Quest
         void SetTab(JournalTab tab)
         {
             _tab = tab;
-            _selectedIndex = -1;
+            IReadOnlyList<QuestInstance> entries = GetEntriesForTab(tab);
+            _selectedIndex = entries.Count > 0 ? 0 : -1;
             RefreshDisplay();
+        }
+
+        void ScrollListToSelected(int entryCount)
+        {
+            if (_listScroll == null || _selectedIndex < 0 || entryCount <= 1)
+                return;
+
+            float normalized = 1f - ((float)_selectedIndex / (entryCount - 1));
+            _listScroll.verticalNormalizedPosition = Mathf.Clamp01(normalized);
         }
 
         void UpdateTabButtonStyles()
@@ -521,8 +571,8 @@ namespace JRogue.UI.Quest
                 return;
 
             _hintText.text = _tab == JournalTab.Active
-                ? "Esc close · P pin/unpin · J journal"
-                : "Esc close · J journal";
+                ? "↑↓ / W S / Numpad 8·2 select · Esc close · P pin/unpin · J journal"
+                : "↑↓ / W S / Numpad 8·2 select · Esc close · J journal";
         }
 
         void EnsurePanelBuilt()
@@ -610,6 +660,7 @@ namespace JRogue.UI.Quest
             scroll.horizontal = false;
             scroll.vertical = true;
             scroll.movementType = ScrollRect.MovementType.Clamped;
+            _listScroll = scroll;
 
             var detailPane = new GameObject("DetailPane", typeof(RectTransform), typeof(Image), typeof(Outline));
             detailPane.transform.SetParent(body.transform, false);
@@ -676,6 +727,7 @@ namespace JRogue.UI.Quest
             _tabButtons.Add(new TabButtonChrome { Tab = tab, Background = image });
 
             TextMeshProUGUI text = CreateText(buttonGo.transform, "Label", label, 20f, TextAlignmentOptions.Center);
+            text.raycastTarget = false;
             RectTransform textRt = text.rectTransform;
             textRt.anchorMin = Vector2.zero;
             textRt.anchorMax = Vector2.one;

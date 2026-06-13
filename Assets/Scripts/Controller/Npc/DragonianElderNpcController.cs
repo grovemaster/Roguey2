@@ -9,11 +9,12 @@ namespace JRogue.Controller.Npc
     {
         [SerializeField] DragonianElderDefinition elderDefinition;
 
-        public DragonianElderDefinition ElderDefinition => elderDefinition;
+        public DragonianElderDefinition ElderDefinition =>
+            DragonianElderRegistry.Resolve(elderDefinition, NpcId);
 
         public override void BeginDialog(BaseActor speaker)
         {
-            var session = new DragonianElderDialogSession(speaker, this, elderDefinition);
+            var session = new DragonianElderDialogSession(speaker, this, ElderDefinition);
             session.Start();
         }
     }

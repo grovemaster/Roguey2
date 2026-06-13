@@ -81,13 +81,39 @@ namespace JRogue.Editor.World
             DragonianSpellDefinition dragonFlame)
         {
             string path = $"{ResourcesCatalogFolder}/DragonianSpellCatalog.asset";
+            DragonianSpellDefinition resourcesSurge = SyncResourcesSpellCopy(
+                draconicSurge,
+                "Spell_DraconicSurge.asset");
+            DragonianSpellDefinition resourcesFlame = SyncResourcesSpellCopy(
+                dragonFlame,
+                "Spell_DragonFlame.asset");
+
             var catalog = LoadOrCreate<DragonianSpellCatalog>(path);
             catalog.spells.Clear();
-            if (draconicSurge != null)
-                catalog.spells.Add(draconicSurge);
-            if (dragonFlame != null)
-                catalog.spells.Add(dragonFlame);
+            if (resourcesSurge != null)
+                catalog.spells.Add(resourcesSurge);
+            if (resourcesFlame != null)
+                catalog.spells.Add(resourcesFlame);
             EditorUtility.SetDirty(catalog);
+        }
+
+        static DragonianSpellDefinition SyncResourcesSpellCopy(
+            DragonianSpellDefinition source,
+            string fileName)
+        {
+            if (source == null)
+                return null;
+
+            string path = $"{ResourcesCatalogFolder}/{fileName}";
+            var copy = LoadOrCreate<DragonianSpellDefinition>(path);
+            copy.spellId = source.spellId;
+            copy.displayName = source.displayName;
+            copy.description = source.description;
+            copy.memorizeCost = source.memorizeCost;
+            copy.soulPowerCastCost = source.soulPowerCastCost;
+            copy.ability = source.ability;
+            EditorUtility.SetDirty(copy);
+            return copy;
         }
 
         static void WireDragonianPlayerPartyMemberId()
@@ -191,8 +217,9 @@ namespace JRogue.Editor.World
 
         static DragonianElderDefinition CreateVolscaleElder(QuestDefinition quest01, QuestDefinition quest02)
         {
-            string path = $"{DataDragonianFolder}/Elder_Volscale.asset";
-            var elder = LoadOrCreate<DragonianElderDefinition>(path);
+            string resourcesPath = $"{ResourcesCatalogFolder}/Elder_Volscale.asset";
+            string dataPath = $"{DataDragonianFolder}/Elder_Volscale.asset";
+            var elder = LoadOrCreate<DragonianElderDefinition>(resourcesPath);
             elder.elderId = "dragonian_elder_volscale";
             elder.displayName = "Elder Volscale";
             elder.description = "Teaches foundational draconic word-forms through personal trials.";
@@ -204,6 +231,16 @@ namespace JRogue.Editor.World
             };
             elder.unlockStoryFlags = System.Array.Empty<string>();
             EditorUtility.SetDirty(elder);
+
+            DragonianElderDefinition dataCopy = LoadOrCreate<DragonianElderDefinition>(dataPath);
+            dataCopy.elderId = elder.elderId;
+            dataCopy.displayName = elder.displayName;
+            dataCopy.description = elder.description;
+            dataCopy.npcId = elder.npcId;
+            dataCopy.chainQuestIds = elder.chainQuestIds;
+            dataCopy.unlockStoryFlags = elder.unlockStoryFlags;
+            EditorUtility.SetDirty(dataCopy);
+
             return elder;
         }
 
@@ -408,6 +445,9 @@ namespace JRogue.Editor.World
             T asset = AssetDatabase.LoadAssetAtPath<T>(path);
             if (asset != null)
                 return asset;
+
+            if (AssetDatabase.LoadAssetAtPath<ScriptableObject>(path) != null)
+                AssetDatabase.DeleteAsset(path);
 
             asset = ScriptableObject.CreateInstance<T>();
             AssetDatabase.CreateAsset(asset, path);

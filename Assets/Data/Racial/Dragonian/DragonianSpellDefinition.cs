@@ -1,4 +1,5 @@
 using JRogue.Ability;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -49,8 +50,10 @@ namespace JRogue.Racial
     public static class DragonianSpellCatalogService
     {
         const string DefaultResourcePath = "Racial/Dragonian/DragonianSpellCatalog";
+        const string SpellResourceFolder = "Racial/Dragonian";
 
         static DragonianSpellCatalog _cached;
+        static Dictionary<string, DragonianSpellDefinition> _spellLookup;
 
         public static DragonianSpellCatalog Instance
         {
@@ -66,10 +69,56 @@ namespace JRogue.Racial
         public static bool TryGetSpell(string spellId, out DragonianSpellDefinition spell)
         {
             spell = null;
-            DragonianSpellCatalog catalog = Instance;
-            return catalog != null && catalog.TryGetSpell(spellId, out spell);
+            if (string.IsNullOrWhiteSpace(spellId))
+                return false;
+
+            EnsureSpellLookup();
+            return _spellLookup.TryGetValue(spellId.Trim(), out spell);
         }
 
-        public static void ResetCacheForTests() => _cached = null;
+        static void EnsureSpellLookup()
+        {
+            if (_spellLookup != null)
+                return;
+
+            _spellLookup = new Dictionary<string, DragonianSpellDefinition>(StringComparer.OrdinalIgnoreCase);
+
+            DragonianSpellCatalog catalog = Instance;
+            if (catalog?.spells != null)
+            {
+                for (int i = 0; i < catalog.spells.Count; i++)
+                    RegisterSpell(catalog.spells[i]);
+            }
+
+            if (_spellLookup.Count == 0)
+            {
+                DragonianSpellDefinition[] spells =
+                    Resources.LoadAll<DragonianSpellDefinition>(SpellResourceFolder);
+                for (int i = 0; i < spells.Length; i++)
+                    RegisterSpell(spells[i]);
+            }
+
+            if (_spellLookup.Count == 0)
+            {
+                Debug.LogWarning(
+                    "[Dragonian] No Dragonian spells found under "
+                    + $"Resources/{SpellResourceFolder}. "
+                    + "Run JRogue/Racial/Create Dragonian Spell Pack.");
+            }
+        }
+
+        static void RegisterSpell(DragonianSpellDefinition spell)
+        {
+            if (spell == null || string.IsNullOrWhiteSpace(spell.spellId))
+                return;
+
+            _spellLookup[spell.spellId.Trim()] = spell;
+        }
+
+        public static void ResetCacheForTests()
+        {
+            _cached = null;
+            _spellLookup = null;
+        }
     }
 }
