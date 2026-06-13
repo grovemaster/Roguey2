@@ -14,6 +14,23 @@ namespace JRogue.World.Generation
         [SerializeField] Transform partyContainer;
         [SerializeField] DungeonFloorInstanceManager floorInstanceManager;
 
+        public Transform PartyContainer => partyContainer;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public void DevSetPartyMemberPrefabs(GameObject[] prefabs)
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                UnityEditor.Undo.RecordObject(this, "Set Party Composition");
+#endif
+            partyMemberPrefabs = prefabs != null ? (GameObject[])prefabs.Clone() : null;
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                UnityEditor.EditorUtility.SetDirty(this);
+#endif
+        }
+#endif
+
         void Awake()
         {
             if (!applyOnAwake)

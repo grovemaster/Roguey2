@@ -15,8 +15,17 @@ MonoBehaviour:
   implantId: thoracic_plate
   displayName: Thoracic Plate
   description: Chest-mounted alloy plating.
-  allowedSlots:
-  - 2
+  allowedSlots: 02
+  installCost:
+    gold: 25
+    items: []
+    storyFlags: []
+  removeCost:
+    gold: 0
+    items: []
+    storyFlags: []
+  racialRestrictions: []
+  racialBenefits: []
   statModifiers:
   - attribute: 3
     value: 1

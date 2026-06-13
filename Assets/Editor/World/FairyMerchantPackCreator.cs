@@ -165,7 +165,7 @@ namespace JRogue.Editor.World
             if (stamp == null)
                 return;
 
-            stamp.SetMarker(StampMarkerIds.FairyMerchant, new Vector3Int(12, 6, 0));
+            stamp.SetMarker(StampMarkerIds.FairyMerchant, new Vector3Int(12, 5, 0));
             EditorUtility.SetDirty(stamp);
         }
 

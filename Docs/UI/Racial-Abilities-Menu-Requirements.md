@@ -203,7 +203,7 @@ Placeholder only — no mechanical lists until each race’s reference doc ships
 | Human | Class powers — coming soon. |
 | Dwarf | Ancestor path and common abilities — coming soon. |
 | Elf | [Elemental spirit contracts](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md) — roster reference + nicknames. |
-| Tiefling | Cyborg implants — coming soon. |
+| Tiefling | [Cyborg implants](../RacialSystem/Tiefling-Cyborg-Implants-Requirements.md) — view installed grafts; change at [Fleshmetal Forgemaster](../RacialSystem/Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md). |
 | Undead / Beastman / other | Racial abilities — coming soon. |
 
 **Rules:** No fake data; no links to hotbar; no Shaman / NPC callouts unless race-specific doc requires it later.

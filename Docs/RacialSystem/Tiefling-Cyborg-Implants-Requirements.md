@@ -26,7 +26,7 @@ Designers author implants as assets (stat mods, passives, actives) and assign th
 Swapping an implant in one slot **fully removes** the previous implant’s stats, passives, and actives (stable sources) before applying the replacement—no stacked duplicates from the same slot.
 
 **G4 — NPC / preset parity**  
-v0: implants come from **prefab / serialized preset** (like Barbarian imprint path and Elf contract roster). **Later:** special NPC installs or offers swaps from an authored catalog.
+v0: implants may come from **prefab / serialized preset** for tests and NPC enemies. **Player-facing swaps** use the [Fleshmetal Forgemaster](Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md) in town once implemented.
 
 **G6 — Playable Tiefling prefab**  
 A dedicated **`TieflingPlayer`** actor prefab exists (same family as `HumanPlayer` / `BarbarianPlayer`) so designers can place or spawn a correctly configured Tiefling without hand-wiring components.
@@ -109,7 +109,7 @@ Per implant (stable **`implantId`** for saves):
 |-------|-------------|
 | **`implantId`** | Stable string (or int) for saves and UI. |
 | **Display** | Name, description, icon optional. |
-| **`allowedSlots`** | Which `ImplantSlot` values may host this implant (usually one; allow list if an implant is valid in multiple locations). |
+| **`allowedSlots`** | **Exactly one** `ImplantSlot` this implant may occupy (see [Forgemaster doc](Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md) L11). |
 | **`racialRestrictions`** | List, **zero or more** `RacialRestrictionDefinition` assets — **Tiefling + Undead only** (progression payload) |
 | **`racialBenefits`** | List, **zero or more** `RacialBenefitDefinition` assets — **Tiefling + Undead only** |
 | **Stat modifications** | `statModifiers` + `resistanceModifiers`, same shape as `RacialLoadoutDefinition` / `EssenceData` |
@@ -123,7 +123,8 @@ Per implant (stable **`implantId`** for saves):
 **Content rules:**
 
 - Different implants in the same slot location **may** grant different stats and abilities.
-- The same implant asset **may** be authored for multiple slots only if `allowedSlots` includes them (unusual; document per asset).
+- Each implant asset **`allowedSlots`** must list **exactly one** slot (Forgemaster doc L11); multi-slot grafts are out of scope until explicitly requested.
+- The same `implantId` **cannot** appear in two slots on one actor (Forgemaster doc L15).
 
 ### D6.2 — Active abilities (implants)
 
@@ -212,17 +213,19 @@ Use a **stable source per slot**, e.g. `TieflingImplant:{slot}` or the `CyborgIm
 
 **F7.11** With horns and standard helmet data, `EquipmentLegalityEvaluator` **blocks** helmet equip; implants do not bypass unless an implant registers Phase 4 bypass (document if added).
 
-### 7.5 — Later: special NPC (out of v0)
+### 7.5 — Fleshmetal Forgemaster NPC
 
-**F7.12 (later)** NPC interaction **offers** install/replace from an authored catalog (cost, quest flags, faction, etc.).
+**F7.12** Town **Tiefling Fleshmetal Forgemaster** offers **install / replace / remove** from an authored catalog — see [Tiefling — Fleshmetal Forgemaster NPC](Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md).
 
-**F7.13 (later)** NPC may gate **which** `CyborgImplantDefinition` assets are available; v0 presets skip this gate.
+**F7.13** Per-implant **install cost** (gold, items, story/quest gates) and **remove cost** (default half gold, extensible items) are data-driven on `CyborgImplantDefinition` + Forgemaster catalog.
+
+**F7.14 (future)** Multiple Forgemaster NPCs with **subset catalogs** and **slot specialization** (e.g. Heart-only smith) — data model in Forgemaster doc §8.4 / §18.
 
 ### 7.6 — Presets and NPCs
 
-**F7.14** Anonymous Tiefling NPC: minimal preset (e.g. one implant or empty slots except baseline).
+**F7.15** Anonymous Tiefling NPC: minimal preset (e.g. one implant or empty slots except baseline).
 
-**F7.15** Named / boss Tieflings: richer preset maps in data.
+**F7.16** Named / boss Tieflings: richer preset maps in data.
 
 ---
 
@@ -261,9 +264,9 @@ Implants that change anatomy use `RegisterBodyEquipmentContribution` with keys s
 
 ---
 
-## 10. Out of scope (v0)
+## 10. Out of scope (runtime v0 — NPC separate doc)
 
-- Special **NPC** install/swap flow (dialogue, shop, quest rewards).
+- **Forgemaster NPC** dialog flow — see [Tiefling — Fleshmetal Forgemaster NPC](Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md) (install/replace/remove UI, costs, grey-out offers).
 - Full **character sheet** / implant management UI (debug acceptable).
 - Unified **ability hotbar** for implant actives (follow Phase 3 / Elf policy until wired).
 - Elf contracts, Barbarian imprint changes, Human class.
@@ -275,11 +278,12 @@ Implants that change anatomy use `RegisterBodyEquipmentContribution` with keys s
 
 | # | Question | Recommendation |
 |---|----------|----------------|
-| O1 | Same `implantId` in two slots allowed? | **No** in v0 — one instance per slot; source id includes **slot**. |
-| O2 | Replace allowed anytime in v0? | **Yes** via API/debug; **later** NPC adds when/where/cost. |
-| O3 | Empty slots in preset vs require all seven filled? | **Any subset**; empty slots are valid. |
-| O4 | Implant resistances stack with baseline Fire resist? | **Yes**, cross-source stacking per Phase 0. |
-| O5 | `allowedSlots` missing on asset? | Treat as **invalid** at import/apply time. |
+| O1 | Same `implantId` in two slots allowed? | **No** — one instance per actor; each implant targets **one** slot ([Forgemaster doc](Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md) L15). |
+| O2 | Multi-slot implant assets (`allowedSlots.Count > 1`)? | **No** — out of scope until explicitly requested (Forgemaster doc L11). |
+| O3 | Replace allowed anytime in v0? | **Yes** via API/debug; **Forgemaster** adds when/where/cost. |
+| O4 | Empty slots in preset vs require all seven filled? | **Any subset**; empty slots are valid. |
+| O5 | Implant resistances stack with baseline Fire resist? | **Yes**, cross-source stacking per Phase 0. |
+| O6 | `allowedSlots` missing or not exactly one entry? | Treat as **invalid** at import/apply time. |
 
 ---
 
@@ -290,5 +294,6 @@ Implants that change anatomy use `RegisterBodyEquipmentContribution` with keys s
 | [Phase0 — Glossary](Phase0-Glossary-And-Data-Contracts.md) | Add **implant slot**, **replace** when implementing. |
 | [Phase3 — Barbarian Spirit Imprint](Phase3-Requirements.md) | Opposite commitment policy; same **preset v0** delivery style. |
 | [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md) | Different lifecycle (summon vs always-on install). |
+| [Tiefling — Fleshmetal Forgemaster NPC](Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md) | Town install / replace / remove; catalog costs. |
 | [Phase5 — Requirements](Phase5-Requirements.md) | Tiefling fulfills **slot replace / RespecAllowed** shape. |
 | Phase 4 (equip / anatomy) | Horns + helmet exclusion; optional implant body contributions. |

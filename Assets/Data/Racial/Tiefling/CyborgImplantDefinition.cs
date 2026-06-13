@@ -14,6 +14,9 @@ namespace JRogue.Racial
 
         public List<ImplantSlot> allowedSlots = new List<ImplantSlot>();
 
+        public CyborgImplantInstallCost installCost;
+        public CyborgImplantRemoveCost removeCost;
+
         [Header("Racial benefits & restrictions (progression node)")]
         public List<RacialRestrictionDefinition> racialRestrictions = new List<RacialRestrictionDefinition>();
         public List<RacialBenefitDefinition> racialBenefits = new List<RacialBenefitDefinition>();
@@ -35,5 +38,20 @@ namespace JRogue.Racial
 
         public bool IsAllowedInSlot(ImplantSlot slot) =>
             allowedSlots != null && allowedSlots.Contains(slot);
+
+        public bool TryGetTargetSlot(out ImplantSlot slot, out string validationError)
+        {
+            slot = default;
+            validationError = null;
+
+            if (allowedSlots == null || allowedSlots.Count != 1)
+            {
+                validationError = "allowedSlots must contain exactly one slot.";
+                return false;
+            }
+
+            slot = allowedSlots[0];
+            return true;
+        }
     }
 }

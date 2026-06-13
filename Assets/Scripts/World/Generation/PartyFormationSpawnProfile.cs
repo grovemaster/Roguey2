@@ -24,13 +24,20 @@ namespace JRogue.World.Generation
                 return offsets != null && offsets.Length >= memberCount;
             }
 
-            if (layouts.Length > 0 && layouts[0].relativeOffsets != null)
-            {
-                offsets = layouts[0].relativeOffsets;
-                return true;
-            }
+            offsets = CreateVerticalLineOffsets(memberCount);
+            return offsets != null;
+        }
 
-            return false;
+        static Vector3Int[] CreateVerticalLineOffsets(int memberCount)
+        {
+            if (memberCount <= 0)
+                return null;
+
+            var offsets = new Vector3Int[memberCount];
+            for (int i = 0; i < memberCount; i++)
+                offsets[i] = new Vector3Int(0, -i, 0);
+
+            return offsets;
         }
 
         [Serializable]
@@ -71,6 +78,17 @@ namespace JRogue.World.Generation
                     Vector3Int.zero,
                     new Vector3Int(0, -1, 0),
                     new Vector3Int(1, 0, 0),
+                },
+            },
+            new FormationOffsetSet
+            {
+                memberCount = 4,
+                relativeOffsets = new[]
+                {
+                    Vector3Int.zero,
+                    new Vector3Int(0, -1, 0),
+                    new Vector3Int(0, -2, 0),
+                    new Vector3Int(0, -3, 0),
                 },
             },
         };

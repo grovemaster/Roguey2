@@ -30,9 +30,9 @@ MonoBehaviour:
   - markerId: town_npc_5
     cell: {x: 12, y: 8, z: 0}
   - markerId: shaman_barbarian
-    cell: {x: 10, y: 6, z: 0}
+    cell: {x: 10, y: 5, z: 0}
   - markerId: fairy_merchant
-    cell: {x: 12, y: 6, z: 0}
+    cell: {x: 12, y: 5, z: 0}
   - markerId: town_time_lever_a
     cell: {x: 8, y: 6, z: 0}
   - markerId: town_time_lever_b
@@ -46,6 +46,8 @@ MonoBehaviour:
   - markerId: building_demo_door
     cell: {x: 14, y: 8, z: 0}
   - markerId: meditation_shrine
-    cell: {x: 4, y: 6, z: 0}
+    cell: {x: 4, y: 5, z: 0}
+  - markerId: tiefling_fleshmetal_forgemaster
+    cell: {x: 8, y: 5, z: 0}
   - markerId: playerStart
     cell: {x: 10, y: 8, z: 0}

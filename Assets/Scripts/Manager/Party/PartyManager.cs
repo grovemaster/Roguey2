@@ -162,6 +162,15 @@ namespace JRogue.Manager.Party
             BootstrapMainCharacterDesignation();
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public void DevPrepareForRosterRebuild()
+        {
+            mainCharacter = null;
+            activeIndex = 0;
+            positionHistory.Clear();
+        }
+#endif
+
         /// <summary>Points the main camera at the currently controlled party member.</summary>
         public void RefreshCameraFollow()
         {

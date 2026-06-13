@@ -19,6 +19,7 @@ namespace JRogue.UI.Hotbar
         public const string SpiritImprintBindingPrefix = "SpiritImprint:";
         public const string ElementalSpiritActiveBindingPrefix = "ElementalSpiritActive:";
         public const string ElementalSpiritSummonBindingPrefix = "ElementalSpiritSummon:";
+        public const string TieflingImplantActiveBindingPrefix = "TieflingImplant:";
         public const string LegacyElementalSpiritBindingPrefix = "ElementalSpirit:";
 
         public static HotbarResolvedAction Resolve(BaseActor actor, HotbarEntry entry)
@@ -132,6 +133,9 @@ namespace JRogue.UI.Hotbar
             if (IsElementalSpiritActiveBinding(bindingKey))
                 return ResolveElementalSpiritActive(actor, entry, bindingKey);
 
+            if (bindingKey.StartsWith(TieflingImplantActiveBindingPrefix, System.StringComparison.Ordinal))
+                return ResolveTieflingImplantActive(actor, entry, bindingKey);
+
             if (bindingKey.StartsWith(LegacyElementalSpiritBindingPrefix, System.StringComparison.Ordinal))
                 return Stale(entry.Kind, "Elemental spirit binding format changed.");
 
@@ -209,6 +213,33 @@ namespace JRogue.UI.Hotbar
                 return Stale(entry.Kind, "Elemental spirit ability unavailable.");
 
             return ValidRacial(entry, ability, 0);
+        }
+
+        static HotbarResolvedAction ResolveTieflingImplantActive(
+            BaseActor actor,
+            HotbarEntry entry,
+            string bindingKey)
+        {
+            if (!TryParseTieflingImplantActiveBinding(bindingKey, out ImplantSlot slot, out int abilityIndex))
+                return Stale(entry.Kind, "Invalid Tiefling implant binding.");
+
+            TieflingImplantsRuntime implants = actor.GetComponent<TieflingImplantsRuntime>();
+            if (implants == null)
+                return Stale(entry.Kind, "No Tiefling implant runtime.");
+
+            if (!implants.TryGetInstalled(slot, out CyborgImplantDefinition implant)
+                || implant?.activeAbilities == null
+                || abilityIndex < 0
+                || abilityIndex >= implant.activeAbilities.Count)
+            {
+                return Stale(entry.Kind, "Tiefling implant ability unavailable.");
+            }
+
+            AbilityAction ability = implant.activeAbilities[abilityIndex];
+            if (ability == null)
+                return Stale(entry.Kind, "Tiefling implant ability missing.");
+
+            return ValidRacial(entry, ability, abilityIndex);
         }
 
         static HotbarResolvedAction ResolveInventoryActive(BaseActor actor, HotbarEntry entry)
@@ -334,6 +365,34 @@ namespace JRogue.UI.Hotbar
 
             abilityAssetName = bindingKey.Substring(ElementalSpiritActiveBindingPrefix.Length);
             return !string.IsNullOrEmpty(abilityAssetName);
+        }
+
+        public static string BuildTieflingImplantActiveBindingKey(ImplantSlot slot, int abilityIndex) =>
+            $"{TieflingImplantActiveBindingPrefix}{slot}:{abilityIndex}";
+
+        public static bool TryParseTieflingImplantActiveBinding(
+            string bindingKey,
+            out ImplantSlot slot,
+            out int abilityIndex)
+        {
+            slot = default;
+            abilityIndex = -1;
+            if (string.IsNullOrEmpty(bindingKey)
+                || !bindingKey.StartsWith(TieflingImplantActiveBindingPrefix, System.StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            string remainder = bindingKey.Substring(TieflingImplantActiveBindingPrefix.Length);
+            int separator = remainder.LastIndexOf(':');
+            if (separator <= 0 || separator >= remainder.Length - 1)
+                return false;
+
+            string slotText = remainder.Substring(0, separator);
+            if (!System.Enum.TryParse(slotText, out slot))
+                return false;
+
+            return int.TryParse(remainder.Substring(separator + 1), out abilityIndex) && abilityIndex >= 0;
         }
 
         public static bool TryFindSummonedSpiritActiveByAssetName(

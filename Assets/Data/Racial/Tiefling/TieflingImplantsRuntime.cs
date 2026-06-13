@@ -70,6 +70,26 @@ namespace JRogue.Racial
         public bool TryGetInstalled(ImplantSlot slot, out CyborgImplantDefinition implant) =>
             _installedBySlot.TryGetValue(slot, out implant);
 
+        public bool HasImplantId(string implantId)
+        {
+            if (string.IsNullOrEmpty(implantId))
+                return false;
+
+            foreach (CyborgImplantDefinition installed in _installedBySlot.Values)
+            {
+                if (installed != null && installed.implantId == implantId)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public void ClearAllImplants()
+        {
+            foreach (ImplantSlot slot in new List<ImplantSlot>(_installedBySlot.Keys))
+                RemoveImplantInternal(slot);
+        }
+
         public void RefreshPassives()
         {
             foreach (CyborgImplantDefinition implant in _installedBySlot.Values)
@@ -105,9 +125,12 @@ namespace JRogue.Racial
                 return false;
             }
 
-            if (implant.allowedSlots == null || implant.allowedSlots.Count == 0 || !implant.IsAllowedInSlot(slot))
+            if (!implant.TryGetTargetSlot(out ImplantSlot targetSlot, out failureReason))
+                return false;
+
+            if (slot != targetSlot)
             {
-                failureReason = $"Implant '{implant.implantId}' is not allowed in slot {slot}.";
+                failureReason = $"Implant '{implant.implantId}' belongs in slot {targetSlot}, not {slot}.";
                 return false;
             }
 

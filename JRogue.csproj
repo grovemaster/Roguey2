@@ -66,6 +66,7 @@
     <Compile Include="Assets/Scripts/World/Generation/PortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/ILootRandom.cs" />
     <Compile Include="Assets/Scripts/Item/ItemStorageLocation.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/PartyCompositionSwapService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/DoorPlacementPhase.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryGivePickerUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/Algorithm/ShadowCaster.cs" />
+    <Compile Include="Assets/Scripts/Dialog/TieflingForgemasterDialogSession.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryItemRowView.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/TelekinesisFloorQuery.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/AdjacentMapInteractableService.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="Assets/Scripts/World/Lighting/LightingService.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritMeditationLogic.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntry.cs" />
+    <Compile Include="Assets/Scripts/Racial/TieflingImplantForgemasterService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneJigsawSolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneSelectionSolver.cs" />
@@ -185,6 +188,7 @@
     <Compile Include="Assets/Scripts/Combat/FriendlyFire/FriendlyFirePreview.cs" />
     <Compile Include="Assets/Scripts/World/Altar/SpawnEnemyAltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/World/Generation/IDungeonGenerationPhase.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/TieflingForgemasterNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/GameStoryFlagService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryPolicy.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentLegalityEvaluator.cs" />
@@ -218,6 +222,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
+    <Compile Include="Assets/Scripts/Racial/PartyRacialDevSwapService.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCompassRectResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlayerInteraction.cs" />
@@ -230,6 +235,7 @@
     <Compile Include="Assets/Scripts/Status/StatusImmunity.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/VaultPlacementPhase.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/PartyCompositionPresets.cs" />
     <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberMapHighlight.cs" />
@@ -371,6 +377,7 @@
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/HealingPotionRules.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarItemLookup.cs" />
+    <Compile Include="Assets/Scripts/Racial/TieflingImplantForgemasterLogic.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/RacialUiTheme.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceResolver.cs" />
@@ -466,6 +473,7 @@
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarTooltipUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonZonePopulationProfile.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/MapInteractPlayerInteraction.cs" />
+    <Compile Include="Assets/Scripts/Racial/PartyRacialDevTools.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/GridOverlayPainter.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingQaPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyExperienceService.cs" />

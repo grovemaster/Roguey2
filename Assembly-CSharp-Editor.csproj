@@ -55,12 +55,14 @@
     <Compile Include="Assets/Editor/World/NpcDialogPackCreator.cs" />
     <Compile Include="Assets/Editor/World/MapPresencePackEditor.cs" />
     <Compile Include="Assets/Editor/World/ShopNpcPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/FleshmetalForgemasterPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/HealingPotionSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />
     <Compile Include="Assets/Editor/Interactables/EnemySpawnAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/TownTorchPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DungeonEditorBatchRunner.cs" />
+    <Compile Include="Assets/Editor/Racial/PartyRacialDevSwapMenu.cs" />
     <Compile Include="Assets/Editor/Essence/EssenceAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/SampleScenePrefabInstanceRepair.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioQaPack.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Assets/Editor/Doors/DoorPackEditor.cs" />
     <Compile Include="Assets/Editor/Interactables/TownTimeLeverAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/EvocableItemPackEditor.cs" />
+    <Compile Include="Assets/Editor/Party/PartyCompositionMenu.cs" />
     <Compile Include="Assets/Editor/World/DungeonV0aPackCreator.cs" />
     <Compile Include="Assets/Editor/Targeting/SplashZoneAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/TownPackCreator.cs" />

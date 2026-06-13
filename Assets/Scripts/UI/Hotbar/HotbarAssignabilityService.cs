@@ -213,6 +213,7 @@ namespace JRogue.UI.Hotbar
             AppendSpiritImprintActives(actor, pool);
             AppendElementalSpiritSummonEntries(actor, pool);
             AppendElementalSpiritActives(actor, pool);
+            AppendTieflingImplantActives(actor, pool);
         }
 
         static void AppendSpiritImprintActives(
@@ -310,6 +311,59 @@ namespace JRogue.UI.Hotbar
                     displayName,
                     GroupRacial));
             }
+        }
+
+        static void AppendTieflingImplantActives(
+            BaseActor actor,
+            List<(HotbarEntry, string, string)> pool)
+        {
+            TieflingImplantsRuntime implants = actor.GetComponent<TieflingImplantsRuntime>();
+            if (implants == null)
+                return;
+
+            var seenAbilityAssetNames = CollectAbilityAssetNames(pool);
+            foreach (KeyValuePair<ImplantSlot, CyborgImplantDefinition> pair in implants.InstalledSnapshot)
+            {
+                CyborgImplantDefinition implant = pair.Value;
+                if (implant?.activeAbilities == null)
+                    continue;
+
+                for (int abilityIndex = 0; abilityIndex < implant.activeAbilities.Count; abilityIndex++)
+                {
+                    AbilityAction ability = implant.activeAbilities[abilityIndex];
+                    if (ability == null || string.IsNullOrEmpty(ability.name))
+                        continue;
+
+                    if (!seenAbilityAssetNames.Add(ability.name))
+                        continue;
+
+                    string displayName = FormatAbilityName(ability, implant.displayName);
+                    pool.Add((
+                        new HotbarEntry
+                        {
+                            Kind = HotbarEntryKind.RacialActive,
+                            racialBindingKey = HotbarResolver.BuildTieflingImplantActiveBindingKey(
+                                pair.Key,
+                                abilityIndex),
+                            abilityAssetName = ability.name,
+                        },
+                        displayName,
+                        GroupRacial));
+                }
+            }
+        }
+
+        static HashSet<string> CollectAbilityAssetNames(List<(HotbarEntry entry, string displayName, string group)> pool)
+        {
+            var seen = new HashSet<string>();
+            for (int i = 0; i < pool.Count; i++)
+            {
+                string assetName = pool[i].entry.abilityAssetName;
+                if (!string.IsNullOrEmpty(assetName))
+                    seen.Add(assetName);
+            }
+
+            return seen;
         }
 
         static string FormatAbilityName(AbilityAction ability, string fallback)

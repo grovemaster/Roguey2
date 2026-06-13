@@ -65,6 +65,17 @@ namespace JRogue.Tests.Racial
         }
 
         [Test]
+        public void Install_LeftArm_AppliesTenStrength()
+        {
+            CyborgImplantDefinition arm = CreateArmImplant(value: 10);
+            GameObject go = CreateTieflingWithPresets(
+                new ImplantSlotPreset { slot = ImplantSlot.LeftArm, implant = arm });
+            go.GetComponent<TieflingImplantsRuntime>().TryApplyPresetFromSerialized();
+
+            Assert.AreEqual(20, go.GetComponent<CharacterStats>().Strength.GetValue());
+        }
+
+        [Test]
         public void Install_InvalidSlot_Fails()
         {
             CyborgImplantDefinition heartOnly = CreateArmImplant();
