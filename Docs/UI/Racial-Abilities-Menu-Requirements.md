@@ -175,6 +175,7 @@ RacialAbilitiesUI.Open(focusedIndex)
   → switch (member.stats.race, member.stats.racialSubsystem)
       Barbarian + SpiritImprint → BarbarianSpiritImprintBodyView
       Elf + ElfElementalContracts → ElfElementalSpiritBodyView ([Elf menu doc](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md))
+      Human + Mage + HumanSpecialization → HumanMageSpellBodyView ([Human Mage menu doc](../RacialSystem/Human-Mage-Racial-Abilities-Menu-Requirements.md))
       default → DefaultRacialAbilitiesBodyView
 ```
 
@@ -200,7 +201,7 @@ Placeholder only — no mechanical lists until each race’s reference doc ships
 
 | Race | Placeholder subtitle (v0 copy) |
 |------|--------------------------------|
-| Human | Class powers — coming soon. |
+| Human | [Human Mage — grimoire & prepared spells](../RacialSystem/Human-Mage-Racial-Abilities-Menu-Requirements.md) when `HumanClass.Mage`; otherwise class placeholder. |
 | Dwarf | Ancestor path and common abilities — coming soon. |
 | Elf | [Elemental spirit contracts](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md) — roster reference + nicknames. |
 | Tiefling | [Cyborg implants — racial menu body](Tiefling-Racial-Abilities-Menu-Requirements.md) — slot grid + detail pane; change at [Fleshmetal Forgemaster](../RacialSystem/Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md). |
@@ -416,7 +417,7 @@ BarbarianSpiritImprintViewModel.Build(BaseActor member)
 | **v0** | Shell, **`K`**, party strip, default placeholder, Barbarian read-only path, scroll + text cards |
 | **v0.1** | **Done** — full-screen layout, TMP chrome, portrait party strip, timeline node cards + ghost styling (§5.1) |
 | **v0.2** | Optional **next-at-Shaman** silhouettes (§8.4); passive/active row icons from assets; per-node imprint icons |
-| **v1** | Dwarf / Human reference bodies per racial docs; **Elf body:** [Elf — racial abilities menu](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md); **Tiefling body:** [Tiefling — racial abilities menu](../RacialSystem/Tiefling-Racial-Abilities-Menu-Requirements.md) |
+| **v1** | Dwarf reference bodies; **Human Mage body:** [Human Mage — racial abilities menu](../RacialSystem/Human-Mage-Racial-Abilities-Menu-Requirements.md); **Elf body:** [Elf — racial abilities menu](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md); **Tiefling body:** [Tiefling — racial abilities menu](../RacialSystem/Tiefling-Racial-Abilities-Menu-Requirements.md) |
 | **v1.1** | Persist last focused member; hover tooltips on truncated descriptions |
 
 ---

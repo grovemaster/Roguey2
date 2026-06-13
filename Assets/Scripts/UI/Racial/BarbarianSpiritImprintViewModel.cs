@@ -320,7 +320,7 @@ namespace JRogue.UI.Racial
                 Race.Tiefling => "Cyborg implants (Fleshmetal grafts)",
                 Race.Beastman => "Soul Beast bond",
                 Race.Dragonian => "Draconic word-forms",
-                Race.Human => "Racial abilities — coming soon",
+                Race.Human => "Human class powers (Mage grimoire when committed)",
                 _ => "Racial abilities — coming soon"
             };
         }

@@ -78,6 +78,7 @@
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupCoordinator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyDisplay.cs" />
     <Compile Include="Assets/Scripts/Abilities/Telekinesis/TelekinesisAbility.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/HumanMageSpellBodyView.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/HearingUtility.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySortMode.cs" />
     <Compile Include="Assets/Scripts/Controller/Player/PlayerController.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntryKind.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritNicknameService.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationState.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/HumanMageSpellBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownPortalSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />

@@ -575,7 +575,7 @@ Load: resolve ids through catalog; drop unknown ids with warning; rebuild equip 
 | Milestone | Scope |
 |-----------|--------|
 | **v0** | Learn via inventory read; equip via debug/preset or minimal inspector |
-| **v0.1** | Human Mage body on **`K`** racial menu (known vs equipped columns — mirror [Dragonian menu](Dragonian-Racial-Abilities-Menu-Requirements.md)) |
+| **v0.1** | Human Mage body on **`K`** racial menu — [Human Mage — racial abilities menu](Human-Mage-Racial-Abilities-Menu-Requirements.md) (known vs prepared columns) |
 | **v1** | Spell tier / cost tooltips; filter known library |
 
 ---

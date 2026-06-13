@@ -82,6 +82,7 @@
     <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/LightSourceItemRulesTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/TownTimeLogicTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/UI/Racial/HumanMageRacialAbilitiesMenuTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Progression/RestSessionTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/TargetingSightGateTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/UI/HotbarResolverTests.cs" />
