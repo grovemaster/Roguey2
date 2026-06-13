@@ -418,7 +418,7 @@ Parallel to [Barbarian Spirit Imprint menu](../UI/Racial-Abilities-Menu-Requirem
 
 **Banner (Tiefling body):** *“View only — visit the Tiefling Fleshmetal Forgemaster in town to install or change grafts.”*
 
-**Out of v0 Forgemaster doc** — implement Tiefling menu body in a separate **`Tiefling-Racial-Abilities-Menu-Requirements.md`** when ready; cross-link here.
+**Out of v0 Forgemaster doc** — Tiefling menu body specified in **[Tiefling — racial abilities menu](Tiefling-Racial-Abilities-Menu-Requirements.md)** (requirements + mock; implementation pending); cross-link here.
 
 ---
 
@@ -464,7 +464,7 @@ Parallel to [Barbarian Spirit Imprint menu](../UI/Racial-Abilities-Menu-Requirem
 - [x] Town stamp marker `(8, 6)` + `TownNpcSetupPhase` spawn entry
 - [x] Unit tests (`TieflingImplantForgemasterLogicTests`)
 - [x] Dev Tiefling swap — **Ctrl+Shift+T** or **JRogue → Dev → Convert Active Party Member To Tiefling**
-- [ ] (Later) Tiefling racial menu read-only body doc + implementation
+- [x] Tiefling racial menu read-only body — see [Tiefling — racial abilities menu](Tiefling-Racial-Abilities-Menu-Requirements.md)
 
 ---
 

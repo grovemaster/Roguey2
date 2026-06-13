@@ -70,10 +70,12 @@ namespace JRogue.UI.Racial
         RacialAbilitiesPartyStripView _partyStrip;
         SpiritImprintTimelineView _timeline;
         ElementalSpiritContractsView _spiritContracts;
+        TieflingImplantBodyView _tieflingImplants;
         RectTransform _scrollContent;
         RectTransform _elfScrollContent;
         GameObject _barbarianBodyRoot;
         GameObject _elfBodyRoot;
+        GameObject _tieflingBodyRoot;
         GameObject _defaultBodyRoot;
 
         readonly List<BaseActor> _partyActors = new List<BaseActor>();
@@ -257,6 +259,13 @@ namespace JRogue.UI.Racial
             elfBodyFlex.minHeight = 240f;
             _elfBodyRoot.SetActive(false);
 
+            _tieflingBodyRoot = CreateBodyRoot(_panelRoot.transform, "TieflingBody");
+            _tieflingImplants = TieflingImplantBodyView.Create(_tieflingBodyRoot.transform);
+            var tieflingBodyFlex = _tieflingBodyRoot.AddComponent<LayoutElement>();
+            tieflingBodyFlex.flexibleHeight = 1f;
+            tieflingBodyFlex.minHeight = 240f;
+            _tieflingBodyRoot.SetActive(false);
+
             _defaultBodyRoot = CreateBodyRoot(_panelRoot.transform, "DefaultBody");
             var defaultPanel = new GameObject("PlaceholderPanel", typeof(RectTransform), typeof(Image));
             defaultPanel.transform.SetParent(_defaultBodyRoot.transform, false);
@@ -366,6 +375,7 @@ namespace JRogue.UI.Racial
             _partyStrip.Rebuild(_partyActors, 0);
             _barbarianBodyRoot.SetActive(true);
             _elfBodyRoot.SetActive(false);
+            _tieflingBodyRoot.SetActive(false);
             _defaultBodyRoot.SetActive(false);
             _timeline.SetPlainMessage("No party members available.");
         }
@@ -415,6 +425,8 @@ namespace JRogue.UI.Racial
             {
                 _bannerText.text = string.Empty;
                 _barbarianBodyRoot.SetActive(true);
+                _elfBodyRoot.SetActive(false);
+                _tieflingBodyRoot.SetActive(false);
                 _defaultBodyRoot.SetActive(false);
                 _timeline.SetPlainMessage("Invalid party member.");
                 return;
@@ -426,6 +438,8 @@ namespace JRogue.UI.Racial
                 ShowBarbarianBody(actor);
             else if (race == Race.Elf)
                 ShowElfBody(actor);
+            else if (race == Race.Tiefling)
+                ShowTieflingBody(actor);
             else
                 ShowDefaultBody(actor, race);
         }
@@ -434,6 +448,7 @@ namespace JRogue.UI.Racial
         {
             _defaultBodyRoot.SetActive(false);
             _elfBodyRoot.SetActive(false);
+            _tieflingBodyRoot.SetActive(false);
             _barbarianBodyRoot.SetActive(true);
 
             var runtime = actor.GetComponent<SpiritImprintRuntime>();
@@ -453,6 +468,7 @@ namespace JRogue.UI.Racial
         {
             _defaultBodyRoot.SetActive(false);
             _barbarianBodyRoot.SetActive(false);
+            _tieflingBodyRoot.SetActive(false);
             _elfBodyRoot.SetActive(true);
 
             if (actor.stats == null || actor.stats.racialSubsystem != RacialSubsystemKind.ElfElementalContracts)
@@ -474,10 +490,30 @@ namespace JRogue.UI.Racial
             _spiritContracts.Rebuild(actor, ElfElementalSpiritViewModel.Build(actor));
         }
 
+        void ShowTieflingBody(BaseActor actor)
+        {
+            if (actor.stats == null ||
+                actor.stats.racialSubsystem != RacialSubsystemKind.TieflingImplants ||
+                actor.GetComponent<TieflingImplantsRuntime>() == null)
+            {
+                ShowDefaultBody(actor, Race.Tiefling);
+                return;
+            }
+
+            _defaultBodyRoot.SetActive(false);
+            _barbarianBodyRoot.SetActive(false);
+            _elfBodyRoot.SetActive(false);
+            _tieflingBodyRoot.SetActive(true);
+
+            _bannerText.text = TieflingImplantBodyViewModel.BannerText;
+            _tieflingImplants.Rebuild(actor);
+        }
+
         void ShowDefaultBody(BaseActor actor, Race race)
         {
             _barbarianBodyRoot.SetActive(false);
             _elfBodyRoot.SetActive(false);
+            _tieflingBodyRoot.SetActive(false);
             _defaultBodyRoot.SetActive(true);
 
             _bannerText.text = string.Empty;

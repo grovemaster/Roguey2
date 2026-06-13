@@ -317,6 +317,7 @@ namespace JRogue.UI.Racial
                 Race.Barbarian => "Spirit Imprint",
                 Race.Dwarf => "Racial abilities — coming soon",
                 Race.Elf => "Elemental spirit contracts",
+                Race.Tiefling => "Cyborg implants (Fleshmetal grafts)",
                 Race.Human => "Racial abilities — coming soon",
                 _ => "Racial abilities — coming soon"
             };

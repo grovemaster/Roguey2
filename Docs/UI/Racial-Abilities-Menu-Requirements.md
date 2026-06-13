@@ -203,7 +203,7 @@ Placeholder only — no mechanical lists until each race’s reference doc ships
 | Human | Class powers — coming soon. |
 | Dwarf | Ancestor path and common abilities — coming soon. |
 | Elf | [Elemental spirit contracts](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md) — roster reference + nicknames. |
-| Tiefling | [Cyborg implants](../RacialSystem/Tiefling-Cyborg-Implants-Requirements.md) — view installed grafts; change at [Fleshmetal Forgemaster](../RacialSystem/Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md). |
+| Tiefling | [Cyborg implants — racial menu body](Tiefling-Racial-Abilities-Menu-Requirements.md) — slot grid + detail pane; change at [Fleshmetal Forgemaster](../RacialSystem/Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md). |
 | Undead / Beastman / other | Racial abilities — coming soon. |
 
 **Rules:** No fake data; no links to hotbar; no Shaman / NPC callouts unless race-specific doc requires it later.
@@ -416,7 +416,7 @@ BarbarianSpiritImprintViewModel.Build(BaseActor member)
 | **v0** | Shell, **`K`**, party strip, default placeholder, Barbarian read-only path, scroll + text cards |
 | **v0.1** | **Done** — full-screen layout, TMP chrome, portrait party strip, timeline node cards + ghost styling (§5.1) |
 | **v0.2** | Optional **next-at-Shaman** silhouettes (§8.4); passive/active row icons from assets; per-node imprint icons |
-| **v1** | Dwarf / Tiefling / Human reference bodies per racial docs; **Elf body:** [Elf — racial abilities menu](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md) |
+| **v1** | Dwarf / Human reference bodies per racial docs; **Elf body:** [Elf — racial abilities menu](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md); **Tiefling body:** [Tiefling — racial abilities menu](../RacialSystem/Tiefling-Racial-Abilities-Menu-Requirements.md) |
 | **v1.1** | Persist last focused member; hover tooltips on truncated descriptions |
 
 ---

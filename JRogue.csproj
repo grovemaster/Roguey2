@@ -358,6 +358,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownTorchSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupQuery.cs" />
     <Compile Include="Assets/Scripts/Item/ItemUserMark.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/TieflingImplantBodyView.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/SenseSightService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyLogic.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/PartySkillDetection.cs" />
@@ -370,6 +371,7 @@
     <Compile Include="Assets/Scripts/Abilities/Passive/ElementalSpiritStatPassive.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPresentationModel.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/RadarPassive.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/TieflingImplantBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManaStoneLedger.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimeService.cs" />
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnDefinition.cs" />
@@ -467,6 +469,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/GameLogService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonEntryService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/TieflingImplantSlotGridView.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/MonsterSpawnSchedulePhase.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceProfile.cs" />
