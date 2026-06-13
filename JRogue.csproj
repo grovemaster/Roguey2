@@ -220,6 +220,7 @@
     <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceService.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/MessageConsoleUI.cs" />
     <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeService.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/BeastmanSoulBeastBodyView.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
@@ -346,6 +347,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/FriendlyFireConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingDoorInteraction.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeService.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/BeastmanSoulBeastBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleProfile.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlaceholderSprites.cs" />

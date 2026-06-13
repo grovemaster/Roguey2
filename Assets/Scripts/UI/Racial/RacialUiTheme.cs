@@ -33,9 +33,16 @@ namespace JRogue.UI.Racial
         public static readonly Color TimelineLine = new Color(0.35f, 0.38f, 0.42f, 0.9f);
         public static readonly Color TimelineDot = new Color(0.784f, 0.627f, 0.376f, 1f);
         public static readonly Color GhostDot = new Color(0.45f, 0.48f, 0.52f, 0.55f);
+        public static readonly Color BeastmanSectionAccent = new Color(0.55f, 0.78f, 0.42f, 1f);
+        public static readonly Color BeastmanCardBackground = new Color(0.12f, 0.14f, 0.11f, 0.95f);
+        public static readonly Color BeastmanCardAccent = new Color(0.42f, 0.62f, 0.32f, 1f);
 
         static Sprite _placeholderSprite;
         static Sprite _imprintEmblemSprite;
+        static Sprite _soulBeastEmptyEmblemSprite;
+        static Sprite _soulBeastBondEmblemSprite;
+        static Sprite _soulBeastPassiveEmblemSprite;
+        static Sprite _soulBeastActiveEmblemSprite;
         static TMP_FontAsset _font;
 
         static TMP_FontAsset UiFont
@@ -73,6 +80,50 @@ namespace JRogue.UI.Racial
                     _imprintEmblemSprite = CreateImprintEmblemSprite();
 
                 return _imprintEmblemSprite;
+            }
+        }
+
+        public static Sprite SoulBeastEmptyEmblemSprite
+        {
+            get
+            {
+                if (_soulBeastEmptyEmblemSprite == null)
+                    _soulBeastEmptyEmblemSprite = CreateRingEmblemSprite(new Color(0.45f, 0.52f, 0.4f, 0.35f), dashed: true);
+
+                return _soulBeastEmptyEmblemSprite;
+            }
+        }
+
+        public static Sprite SoulBeastBondEmblemSprite
+        {
+            get
+            {
+                if (_soulBeastBondEmblemSprite == null)
+                    _soulBeastBondEmblemSprite = CreateRingEmblemSprite(new Color(0.82f, 0.58f, 0.28f, 0.95f), dashed: false);
+
+                return _soulBeastBondEmblemSprite;
+            }
+        }
+
+        public static Sprite SoulBeastPassiveEmblemSprite
+        {
+            get
+            {
+                if (_soulBeastPassiveEmblemSprite == null)
+                    _soulBeastPassiveEmblemSprite = CreateRingEmblemSprite(new Color(0.55f, 0.78f, 0.42f, 0.95f), dashed: false);
+
+                return _soulBeastPassiveEmblemSprite;
+            }
+        }
+
+        public static Sprite SoulBeastActiveEmblemSprite
+        {
+            get
+            {
+                if (_soulBeastActiveEmblemSprite == null)
+                    _soulBeastActiveEmblemSprite = CreateRingEmblemSprite(new Color(0.91f, 0.55f, 0.24f, 0.95f), dashed: false);
+
+                return _soulBeastActiveEmblemSprite;
             }
         }
 
@@ -128,6 +179,40 @@ namespace JRogue.UI.Racial
                         c = new Color(0.784f, 0.627f, 0.376f, 0.95f);
                     else if (dist < inner * 0.45f)
                         c = new Color(0.95f, 0.82f, 0.35f, 0.85f);
+
+                    tex.SetPixel(x, y, c);
+                }
+            }
+
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+        }
+
+        static Sprite CreateRingEmblemSprite(Color ringColor, bool dashed)
+        {
+            const int size = 32;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.filterMode = FilterMode.Bilinear;
+            Vector2 center = new Vector2(size * 0.5f, size * 0.5f);
+            float outer = size * 0.42f;
+            float inner = size * 0.28f;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dist = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), center);
+                    Color c = Color.clear;
+                    bool inRing = dist <= outer && dist >= inner;
+                    if (inRing)
+                    {
+                        if (!dashed || ((x + y) / 3) % 2 == 0)
+                            c = ringColor;
+                    }
+                    else if (dist < inner * 0.45f)
+                    {
+                        c = new Color(ringColor.r, ringColor.g, ringColor.b, ringColor.a * 0.45f);
+                    }
 
                     tex.SetPixel(x, y, c);
                 }
