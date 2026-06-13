@@ -39,6 +39,9 @@ namespace JRogue.Manager.Inventory
             if (row.Item is FairyStoneItemData)
                 return FairyStoneUseService.TryBeginUse(row);
 
+            if (row.Item is BeastBloodItemData)
+                return BeastBloodUseService.TryBeginUse(row);
+
             if (HealingPotionRules.IsHealingPotionItem(row.Item)
                 && inCombat
                 && !HealingPotionRules.IsExemptFromPainStun(row.Owner.gameObject))

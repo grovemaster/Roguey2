@@ -11,5 +11,6 @@ namespace JRogue.Interactables
         TownTimeLeverA = 6,
         TownTimeLeverB = 7,
         MeditationShrine = 8,
+        SoulBeastRitualCircle = 9,
     }
 }

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1707a16df5be7a3c850395676998938, type: 3}
+  m_Name: SoulBeastRegistry
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.SoulBeastRegistry
+  beasts:
+  - {fileID: 11400000, guid: a69dbcbb1f394dd7d98263a0d76868c4, type: 2}
+  - {fileID: 11400000, guid: bbf95401c2da376e09fdd014a05febf8, type: 2}

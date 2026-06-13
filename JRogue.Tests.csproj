@@ -104,6 +104,7 @@
     <Compile Include="Assets/Tests/UnitTests/UI/Racial/BarbarianSpiritImprintViewModelTests.cs" />
     <Compile Include="Assets/Tests/Controller/BaseActorTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/ElfRacialAbilitiesMenuTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Racial/SoulBeastRitualLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Loot/AutoPickupConfirmationTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/WarriorWillpowerHealingPotionTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/EquipmentStackSplitTests.cs" />

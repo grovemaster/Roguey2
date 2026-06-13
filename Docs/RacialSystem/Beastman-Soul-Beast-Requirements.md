@@ -32,8 +32,8 @@ Player and NPC Beastmen use **prefab / serialized preset** for optional Soul Bea
 **G6 — Playable Beastman prefab (required)**  
 A dedicated **`BeastmanPlayer`** actor prefab exists (same family as `HumanPlayer` / `DwarfPlayer`) so designers can place or spawn a correctly configured Beastman without hand-wiring components. See **§6.6**.
 
-**G7 — Future gates (documented, not v0)**  
-**Acquisition** (bonding a Soul Beast) and **progression** (advancing along the chain) are gated by **special events / systems TBD**. v0 uses Inspector presets only.
+**G7 — Future gates (documented, not v0 runtime)**  
+**Acquisition** and **progression** are specified in **[Soul Beast contract ritual & leveling](Beastman-Soul-Beast-Contract-And-Leveling-Requirements.md)**. Parent doc v0 vertical slice still uses Inspector presets until that doc is implemented.
 
 **G8 — Example content = stats only (v0)**  
 All sample Soul Beast nodes in shipping v0 content use **simple stat modifications** only. Passive and active ability slots remain in the **data model** but sample assets leave those lists **empty** until abilities are designed.
@@ -69,8 +69,8 @@ All sample Soul Beast nodes in shipping v0 content use **simple stat modificatio
 | **Chain node** | One step on the chain. Carries **zero or more** stat modifications, passive effects, and active abilities (lists may all be empty). |
 | **Soul Beast path** | Ordered list of node ids **root → deepest chosen** on the **bonded** beast’s chain (same save semantics as Barbarian `chosenPathNodeIds`). |
 | **Soul Beast rank** | Derived: number of **non-root** nodes on the path (`rank == chosenPathNodeIds.Count - 1` when the list starts with root). |
-| **Acquisition event** | Story/NPC/world gate that grants **one** Soul Beast bond (later). Not in v0. |
-| **Progression event** | Story/NPC/world gate that authorizes **one** new node on the bonded beast’s chain (later). Not in v0. |
+| **Acquisition event** | Story/NPC/world gate that grants **one** Soul Beast bond. **v0 gate:** [Soul Beast contract ritual](Beastman-Soul-Beast-Contract-And-Leveling-Requirements.md) §Part A. |
+| **Progression event** | Gate that raises **`soulBeastLevel`**. **v0 gate:** [Beast Blood leveling](Beastman-Soul-Beast-Contract-And-Leveling-Requirements.md) §Part B. |
 | **Preset (v0)** | Optional Soul Beast id and path are **authored before play** on prefab or linked preset asset. Unbonded preset = empty beast id, no chain effects. |
 
 ---
@@ -347,8 +347,8 @@ Existing Beastman actors without subsystem state: unbonded, empty path, baseline
 
 | Gate | v0 | Later |
 |------|-----|-------|
-| Acquire Soul Beast | Inspector preset bond (testing only) | **Special acquisition event** |
-| Advance chain | Inspector preset `chosenPathNodeIds` | **Special progression event**, **one node** per event |
+| Acquire Soul Beast | Inspector preset bond (testing only) | **[Contract ritual](Beastman-Soul-Beast-Contract-And-Leveling-Requirements.md)** (v0: ritual circle); later story events |
+| Advance chain / level | Inspector preset path / level | **[Beast Blood](Beastman-Soul-Beast-Contract-And-Leveling-Requirements.md)** (v0); later alternate gates |
 
 ### 11.5 — Pattern B — **Resolved**
 
@@ -362,8 +362,8 @@ Existing Beastman actors without subsystem state: unbonded, empty path, baseline
 
 ### 11.7 — Open (not blocking v0)
 
-- **Acquisition event** fiction (shrine, trial, NPC, story flag).
-- **Progression event** fiction (training, hunt, soul feeding, etc.).
+- **Acquisition event** fiction beyond ritual circle — shrine variants, trial, story flag.
+- **Progression event** fiction beyond Beast Blood — hunt, soul feeding, etc.
 - **Summoning-type** beasts: whether some nodes spawn a **separate actor** vs only modify the Beastman.
 - **Type-shared ability** packaging: shared ScriptableObject references vs duplicated node payloads.
 - **Baseline Beastman loadout** numbers—content, not framework.
@@ -395,4 +395,5 @@ When implementing, expect to add or extend:
 - [Phase 3 — Barbarian Spirit Imprint](Phase3-Requirements.md) (path + node payload semantics)
 - [Dwarf — Patron Ancestor & common abilities](Dwarf-Ancestor-And-Common-Abilities-Requirements.md)
 - [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md)
+- [Beastman — Soul Beast contract ritual & leveling](Beastman-Soul-Beast-Contract-And-Leveling-Requirements.md) (acquisition ritual + Beast Blood leveling)
 - [Phase 5 — Additional folk & subsystem shapes](Phase5-Requirements.md)

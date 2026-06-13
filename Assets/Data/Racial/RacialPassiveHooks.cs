@@ -12,6 +12,7 @@ namespace JRogue.Racial
             actor.GetComponent<RacialLoadoutApplier>()?.RefreshPassives();
             actor.GetComponent<SpiritImprintRuntime>()?.RefreshPassives();
             actor.GetComponent<ElementalSpiritContractsRuntime>()?.RefreshPassives();
+            actor.GetComponent<BeastmanSoulBeastRuntime>()?.RefreshPassives();
             actor.GetComponent<TieflingImplantsRuntime>()?.RefreshPassives();
             actor.GetComponent<DwarfCommonAbilitiesRuntime>()?.RefreshPassives();
             actor.GetComponent<DwarfAncestorPathRuntime>()?.RefreshPassives();
@@ -23,6 +24,7 @@ namespace JRogue.Racial
             actor.GetComponent<RacialLoadoutApplier>()?.NotifyPassivesTurnStart();
             actor.GetComponent<SpiritImprintRuntime>()?.NotifyPassivesTurnStart();
             actor.GetComponent<ElementalSpiritContractsRuntime>()?.NotifyTurnStart();
+            actor.GetComponent<BeastmanSoulBeastRuntime>()?.NotifyPassivesTurnStart();
             actor.GetComponent<TieflingImplantsRuntime>()?.NotifyPassivesTurnStart();
             actor.GetComponent<DwarfCommonAbilitiesRuntime>()?.NotifyPassivesTurnStart();
             actor.GetComponent<DwarfAncestorPathRuntime>()?.NotifyPassivesTurnStart();

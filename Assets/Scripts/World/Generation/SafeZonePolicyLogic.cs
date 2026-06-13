@@ -18,6 +18,9 @@ namespace JRogue.World.Generation
             if (item is FairyStoneItemData)
                 return true;
 
+            if (item is BeastBloodItemData)
+                return true;
+
             return item.AllowUseInSafeZone;
         }
 

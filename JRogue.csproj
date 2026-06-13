@@ -146,6 +146,7 @@
     <Compile Include="Assets/Scripts/Interactables/Preconditions/AlwaysTruePrecondition.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PlayfieldLayout.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableBumpResult.cs" />
+    <Compile Include="Assets/Scripts/Racial/BeastBloodUseService.cs" />
     <Compile Include="Assets/Scripts/Item/EvocableChargeRules.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/RacialAbilitiesPartyStripView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacementUtility.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCompassRectResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlayerInteraction.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneBoundaryResolver.cs" />
+    <Compile Include="Assets/Scripts/Racial/SoulBeastRitualLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTileVariationMode.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonFloorZoneLayout.cs" />
@@ -253,6 +255,7 @@
     <Compile Include="Assets/Scripts/World/Lighting/LightingDebugOverlay.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadNecroticSustenancePassive.cs" />
+    <Compile Include="Assets/Scripts/Racial/SoulBeastPartyRules.cs" />
     <Compile Include="Assets/Scripts/Abilities/Teleport/TeleportAbility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarPlaceListBuilder.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberDeathDialogUI.cs" />
@@ -363,6 +366,7 @@
     <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyLogic.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/PartySkillDetection.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimeLogic.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownSoulBeastRitualSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/LightingInitPhase.cs" />
     <Compile Include="Assets/Scripts/Item/World/FloorItemWorldView.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInstance.cs" />
@@ -384,9 +388,11 @@
     <Compile Include="Assets/Scripts/Manager/Door/DoorTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceResolver.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SetTileEmissionEffect.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Effects/SoulBeastRitualEffect.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRollResult.cs" />
     <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePaletteResolver.cs" />
+    <Compile Include="Assets/Scripts/Racial/SoulBeastRitualService.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnGroupMembership.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />

@@ -47,6 +47,10 @@ MonoBehaviour:
     cell: {x: 14, y: 8, z: 0}
   - markerId: meditation_shrine
     cell: {x: 4, y: 5, z: 0}
+  - markerId: soul_beast_ritual_circle
+    cell: {x: 14, y: 5, z: 0}
+  - markerId: beast_blood_merchant
+    cell: {x: 2, y: 5, z: 0}
   - markerId: tiefling_fleshmetal_forgemaster
     cell: {x: 8, y: 5, z: 0}
   - markerId: playerStart

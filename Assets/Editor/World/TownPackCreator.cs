@@ -365,6 +365,8 @@ namespace JRogue.Editor.World
             stamp.SetMarker(StampMarkerIds.TownTimeLeverA, new Vector3Int(8, 6, 0));
             stamp.SetMarker(StampMarkerIds.TownTimeLeverB, new Vector3Int(9, 6, 0));
             stamp.SetMarker(StampMarkerIds.MeditationShrine, new Vector3Int(4, 5, 0));
+            stamp.SetMarker(StampMarkerIds.SoulBeastRitualCircle, new Vector3Int(14, 5, 0));
+            stamp.SetMarker(StampMarkerIds.BeastBloodMerchant, new Vector3Int(2, 5, 0));
             stamp.SetMarker(StampMarkerIds.ShamanBarbarian, new Vector3Int(10, 5, 0));
             stamp.SetMarker(StampMarkerIds.FairyMerchant, new Vector3Int(12, 5, 0));
             stamp.SetMarker(StampMarkerIds.FleshmetalForgemaster, new Vector3Int(8, 5, 0));

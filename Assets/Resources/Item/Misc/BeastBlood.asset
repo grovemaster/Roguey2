@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e567d90412bbb677688ca79fedc42c52, type: 3}
+  m_Name: BeastBlood
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Item.BeastBloodItemData
+  itemName: Beast Blood
+  category: 10
+  inventoryRiskHints: 0
+  slotType: 0
+  weight: 0.2
+  icon: {fileID: 0}
+  goldValue: 0
+  buyValue: 2
+  sellValue: 0
+  requiresAppraisal: 1
+  autoPickupOnStep: 0
+  requiresAutoPickupConfirmation: 0
+  floorLifetimePlayerPhases: 0
+  equipRequiresAllFlags: 0
+  equipExcludesActorFlags: 0
+  weaponType: 0
+  handsRequired: 1
+  requiresBow: 0
+  isThrowable: 1
+  damageModules: []
+  statModifiers: []
+  passiveEffects: []
+  activeAbilities: []
+  inventoryTargetedUseLogTag: 
+  allowUseInSafeZone: 1
