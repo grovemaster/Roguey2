@@ -20,6 +20,7 @@ namespace JRogue.Racial
 
         CharacterStats _stats;
 
+        public IReadOnlyList<MageSpellDefinition> KnownSpells => knownSpells;
         public IReadOnlyList<MageSpellDefinition> EquippedSpells => _equipped;
         public int RemainingEquipCapacity =>
             _stats != null ? Mathf.Max(0, _stats.MaxMagicPower - GetTotalEquippedCost()) : 0;
@@ -84,6 +85,35 @@ namespace JRogue.Racial
             }
 
             return false;
+        }
+
+        public bool HasLearned(string spellId) => TryFindKnown(spellId, out _);
+
+        public bool TryLearnSpell(string spellId, out string failureReason)
+        {
+            failureReason = null;
+            if (string.IsNullOrWhiteSpace(spellId))
+            {
+                failureReason = "Spell id is empty.";
+                return false;
+            }
+
+            if (!ValidateMageActor(out failureReason))
+                return false;
+
+            string trimmed = spellId.Trim();
+            if (TryFindKnown(trimmed, out _))
+                return true;
+
+            if (!MageSpellCatalogService.TryGetSpell(trimmed, out MageSpellDefinition spell)
+                || spell == null)
+            {
+                failureReason = $"Unknown spell '{trimmed}'.";
+                return false;
+            }
+
+            knownSpells.Add(spell);
+            return true;
         }
 
         public AbilityAction GetEquippedAbility(int equippedIndex)

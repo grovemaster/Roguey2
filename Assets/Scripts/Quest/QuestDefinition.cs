@@ -1,4 +1,5 @@
 using JRogue.Stats;
+using JRogue.Stats.Racial;
 using UnityEngine;
 
 namespace JRogue.Quest
@@ -15,6 +16,10 @@ namespace JRogue.Quest
         [Min(0)] public int requiredMinLevel;
         public Race requiredRace = Race.Unset;
         public string learnDragonianSpellId;
+        [Min(0)] public int turnInGoldCost;
+        public HumanClass commitHumanClass = HumanClass.None;
+        public bool requiresHumanClassNone;
+        public bool requiresNoConsumedEssences;
         public QuestPrerequisite[] acceptPrerequisites = System.Array.Empty<QuestPrerequisite>();
         public QuestObjectiveDefinition[] objectives = System.Array.Empty<QuestObjectiveDefinition>();
         public QuestRewardBundle rewards;

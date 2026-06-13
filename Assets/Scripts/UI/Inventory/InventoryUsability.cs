@@ -45,6 +45,9 @@ namespace JRogue.UI.Inventory
             if (item is BeastBloodItemData)
                 return SoulBeastPartyRules.CanUseBeastBlood(out _);
 
+            if (item is SpellbookItemData)
+                return MageSpellbookReadService.CanRead(row);
+
             bool hasActiveAbility = item.activeAbilities != null && item.activeAbilities.Count > 0;
 
             switch (item.category)

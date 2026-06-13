@@ -45,8 +45,8 @@ namespace JRogue.Stats.Racial
             return (stats.Wisdom.GetValue() * 5) + stats.levelDivinePowerBonus;
         }
 
-        public static int GetSpellEquipCost(int spellTier) =>
-            Mathf.Max(1, 10 - spellTier);
+        public static int GetSpellEquipCost(int spellTier, int extraEquipCost = 0) =>
+            Mathf.Max(1, 10 - spellTier) + Mathf.Max(0, extraEquipCost);
 
         public static bool CanCommitToClass(HumanClass from, HumanClass to, out string error)
         {

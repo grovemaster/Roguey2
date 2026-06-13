@@ -31,7 +31,7 @@ namespace JRogue.Editor.World
             ConfigureSpriteImports();
             AssetDatabase.Refresh();
 
-            PartyRacePortraitCatalog catalog = CreatePartyRacePortraitCatalog();
+            CreatePartyRacePortraitCatalog();
             PortraitDefinition miraPortrait = CreatePortrait("Portrait_Mira", "Assets/Art/Portraits/NPC/Portrait_Mira.png");
             PortraitDefinition lucPortrait = CreatePortrait("Portrait_Luc", "Assets/Art/Portraits/NPC/Portrait_Luc.png");
             PortraitDefinition eddaPortrait = CreatePortrait("Portrait_Edda", "Assets/Art/Portraits/NPC/Portrait_Edda.png");
@@ -40,7 +40,7 @@ namespace JRogue.Editor.World
             NpcDialogProfile lucProfile = CreateLucProfile();
             NpcDialogProfile eddaProfile = CreateEddaProfile();
 
-            GameObject humanNpcBase = CreateHumanNpcBasePrefab();
+            GameObject humanNpcBase = RefreshHumanNpcBasePrefab();
             CreateTownNpcPrefab("TownNpc_Mira", "Mira", TownNpcIds.Npc1,
                 "Assets/Art/NPC/Sprites/NPC_Mira.png", miraPortrait, miraProfile, humanNpcBase);
             CreateTownNpcPrefab("TownNpc_Luc", "Luc", TownNpcIds.Npc2,
@@ -215,23 +215,77 @@ namespace JRogue.Editor.World
                 line = new DialogLineData { textTemplate = text },
             };
 
-        static GameObject CreateHumanNpcBasePrefab()
+        /// <summary>
+        /// Rebuilds the shared Human NPC base prefab. Call after HumanPlayer prefab changes
+        /// (e.g. Mage pack wiring) so variant drift does not strip <see cref="NpcController"/>.
+        /// </summary>
+        public static void RebuildDialogTownNpcPrefabs(GameObject humanNpcBase)
+        {
+            if (humanNpcBase == null)
+                return;
+
+            PortraitDefinition miraPortrait =
+                AssetDatabase.LoadAssetAtPath<PortraitDefinition>(
+                    $"{ResourcesPortraitsFolder}/Portrait_Mira.asset");
+            PortraitDefinition lucPortrait =
+                AssetDatabase.LoadAssetAtPath<PortraitDefinition>(
+                    $"{ResourcesPortraitsFolder}/Portrait_Luc.asset");
+            PortraitDefinition eddaPortrait =
+                AssetDatabase.LoadAssetAtPath<PortraitDefinition>(
+                    $"{ResourcesPortraitsFolder}/Portrait_Edda.asset");
+
+            NpcDialogProfile miraProfile =
+                AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(
+                    $"{ResourcesProfilesFolder}/NpcDialog_Mira.asset");
+            NpcDialogProfile lucProfile =
+                AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(
+                    $"{ResourcesProfilesFolder}/NpcDialog_Luc.asset");
+            NpcDialogProfile eddaProfile =
+                AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(
+                    $"{ResourcesProfilesFolder}/NpcDialog_Edda.asset");
+
+            if (miraProfile == null || lucProfile == null || eddaProfile == null)
+            {
+                Debug.LogWarning("[NpcDialog] Missing dialog profiles — run Create NPC Dialog Pack first.");
+                return;
+            }
+
+            CreateTownNpcPrefab("TownNpc_Mira", "Mira", TownNpcIds.Npc1,
+                "Assets/Art/NPC/Sprites/NPC_Mira.png", miraPortrait, miraProfile, humanNpcBase);
+            CreateTownNpcPrefab("TownNpc_Luc", "Luc", TownNpcIds.Npc2,
+                "Assets/Art/NPC/Sprites/NPC_Luc.png", lucPortrait, lucProfile, humanNpcBase);
+            CreateTownNpcPrefab("TownNpc_Edda", "Edda", TownNpcIds.Npc3,
+                "Assets/Art/NPC/Sprites/NPC_Edda.png", eddaPortrait, eddaProfile, humanNpcBase);
+        }
+
+        public static GameObject RefreshHumanNpcBasePrefab()
         {
             GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>(HumanPlayerPrefabPath);
             if (source == null)
                 throw new FileNotFoundException($"Missing {HumanPlayerPrefabPath}");
 
-            GameObject instance = PrefabUtility.InstantiatePrefab(source) as GameObject;
+            // Plain instantiate so SaveAsPrefabAsset produces a standalone prefab, not a HumanPlayer variant.
+            GameObject instance = Object.Instantiate(source);
+            if (instance == null)
+                throw new InvalidDataException($"Could not instantiate {HumanPlayerPrefabPath}.");
+
             instance.name = "HumanNpc";
             instance.tag = "Untagged";
 
             Object.DestroyImmediate(instance.GetComponent<PlayerController>(), true);
-            instance.AddComponent<NpcController>();
+            DestroyIfPresent<HumanMageSpellsRuntime>(instance);
+
+            NpcController npc = instance.GetComponent<NpcController>();
+            if (npc == null)
+                npc = instance.AddComponent<NpcController>();
 
             DestroyIfPresent<InventoryManager>(instance);
             DestroyIfPresent<InventoryCollector>(instance);
             DestroyIfPresent<EquipmentManager>(instance);
             DestroyIfPresent<RacialLoadoutApplier>(instance);
+
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(HumanNpcPrefabPath) != null)
+                AssetDatabase.DeleteAsset(HumanNpcPrefabPath);
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(instance, HumanNpcPrefabPath);
             Object.DestroyImmediate(instance);
@@ -248,10 +302,14 @@ namespace JRogue.Editor.World
             GameObject humanNpcBase)
         {
             string path = $"{ResourcesNpcFolder}/{prefabName}.prefab";
+            DeletePrefabIfPresent(path);
             GameObject instance = PrefabUtility.InstantiatePrefab(humanNpcBase) as GameObject;
             instance.name = prefabName;
 
             NpcController npc = instance.GetComponent<NpcController>();
+            if (npc == null)
+                npc = instance.AddComponent<NpcController>();
+
             SerializedObject npcSo = new SerializedObject(npc);
             npcSo.FindProperty("npcId").stringValue = npcId;
             npcSo.FindProperty("dialogProfile").objectReferenceValue = profile;
@@ -280,10 +338,14 @@ namespace JRogue.Editor.World
                 return;
             }
 
-            stamp.SetMarker(StampMarkerIds.TownNpc1, new Vector3Int(4, 8, 0));
-            stamp.SetMarker(StampMarkerIds.TownNpc2, new Vector3Int(6, 8, 0));
-            stamp.SetMarker(StampMarkerIds.TownNpc3, new Vector3Int(8, 8, 0));
+            TownPlazaMarkerLayout.ApplyAll(stamp);
             EditorUtility.SetDirty(stamp);
+        }
+
+        internal static void DeletePrefabIfPresent(string path)
+        {
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null)
+                AssetDatabase.DeleteAsset(path);
         }
 
         static void DestroyIfPresent<T>(GameObject go) where T : Component

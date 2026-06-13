@@ -24,11 +24,17 @@ MonoBehaviour:
   requiresAppraisal: 0
   autoPickupOnStep: 0
   requiresAutoPickupConfirmation: 0
+  floorLifetimePlayerPhases: 0
   equipRequiresAllFlags: 0
   equipExcludesActorFlags: 0
+  weaponType: 0
+  handsRequired: 1
+  requiresBow: 0
+  isThrowable: 1
   damageModules: []
   statModifiers: []
   passiveEffects: []
   activeAbilities:
   - {fileID: 11400000, guid: d60f0b6a3f4242a2b0c5d286238c233c, type: 2}
   inventoryTargetedUseLogTag: Missile:ThrowingKnife
+  allowUseInSafeZone: 0

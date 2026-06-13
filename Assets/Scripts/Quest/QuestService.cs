@@ -9,6 +9,7 @@ using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
 using JRogue.Manager.Progression;
 using JRogue.Racial;
+using JRogue.Shop;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
 using JRogue.UI.Hotbar;
@@ -214,7 +215,7 @@ namespace JRogue.Quest
 
             QuestDefinition definition = GetDefinition(questId);
             if (definition?.ownership == QuestOwnership.PerPartyMember
-                && !SafeZonePolicyService.TryAllowDragonianElderQuestChange(out denyReason))
+                && !QuestLogic.TryAllowPerPartyMemberQuestChange(definition, out denyReason))
             {
                 return false;
             }
@@ -266,7 +267,7 @@ namespace JRogue.Quest
             }
 
             if (definition.ownership == QuestOwnership.PerPartyMember
-                && !SafeZonePolicyService.TryAllowDragonianElderQuestChange(out denyReason))
+                && !QuestLogic.TryAllowPerPartyMemberQuestChange(definition, out denyReason))
             {
                 return false;
             }
@@ -330,11 +331,26 @@ namespace JRogue.Quest
             if (!QuestLogic.TryRemoveDeliverItems(definition, instance, GetPartyMembers(), out denyReason))
                 return false;
 
-            if (!GrantRewards(definition.rewards, rewardRecipient, out denyReason))
+            if (!TryDeductTurnInGoldCost(definition, out denyReason))
                 return false;
 
-            if (!TryGrantLearnSpellReward(definition, instance, out denyReason))
+            if (!TryGrantCommitHumanClassReward(definition, instance, speaker, out denyReason))
+            {
+                RefundTurnInGoldCost(definition);
                 return false;
+            }
+
+            if (!GrantRewards(definition.rewards, rewardRecipient, out denyReason))
+            {
+                RefundTurnInGoldCost(definition);
+                return false;
+            }
+
+            if (!TryGrantLearnSpellReward(definition, instance, out denyReason))
+            {
+                RefundTurnInGoldCost(definition);
+                return false;
+            }
 
             ApplyFlags(definition.setFlagsOnComplete);
             instance.state = QuestRuntimeState.Completed;
@@ -683,6 +699,61 @@ namespace JRogue.Quest
                 PartyExperienceService.Instance?.AwardPartyExperience(rewards.partyExperience, "QuestReward");
 
             ApplyFlags(rewards.setFlagsOnComplete);
+            return true;
+        }
+
+        bool TryDeductTurnInGoldCost(QuestDefinition definition, out string denyReason)
+        {
+            denyReason = null;
+            if (definition == null || definition.turnInGoldCost <= 0)
+                return true;
+
+            if (ShopGoldUtility.GetPartyGoldTotal() < definition.turnInGoldCost)
+            {
+                denyReason = HumanMageClassCommitService.GoldDenyMessage;
+                return false;
+            }
+
+            if (!ShopGoldUtility.TrySpendPartyGold(definition.turnInGoldCost))
+            {
+                denyReason = HumanMageClassCommitService.GoldDenyMessage;
+                return false;
+            }
+
+            return true;
+        }
+
+        void RefundTurnInGoldCost(QuestDefinition definition)
+        {
+            if (definition == null || definition.turnInGoldCost <= 0)
+                return;
+
+            ShopGoldUtility.AddPartyGold(definition.turnInGoldCost);
+        }
+
+        bool TryGrantCommitHumanClassReward(
+            QuestDefinition definition,
+            QuestInstance instance,
+            BaseActor speaker,
+            out string denyReason)
+        {
+            denyReason = null;
+            if (definition == null || definition.commitHumanClass == HumanClass.None)
+                return true;
+
+            BaseActor owner = definition.ownership == QuestOwnership.PerPartyMember
+                ? QuestLogic.FindMemberById(GetPartyMembers(), instance?.ownerPartyMemberId) ?? speaker
+                : ResolveRewardRecipient();
+            if (owner == null)
+            {
+                denyReason = "Quest owner is not in the party.";
+                return false;
+            }
+
+            if (!HumanClassCommitment.TryCommit(owner.gameObject, definition.commitHumanClass, out denyReason))
+                return false;
+
+            AbilityHotbarUI.Instance?.RefreshAll();
             return true;
         }
 

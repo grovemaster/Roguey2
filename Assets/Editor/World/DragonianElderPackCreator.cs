@@ -377,7 +377,7 @@ namespace JRogue.Editor.World
             if (stamp == null)
                 return;
 
-            stamp.SetMarker(StampMarkerIds.DragonianElderVolscale, new Vector3Int(6, 5, 0));
+            TownPlazaMarkerLayout.ApplyAll(stamp);
             EditorUtility.SetDirty(stamp);
         }
 

@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Reinforced left-arm cybernetic sleeve.
   allowedSlots: 00
   installCost:
-    gold: 20
+    gold: 40
     items: []
     storyFlags: []
   removeCost:

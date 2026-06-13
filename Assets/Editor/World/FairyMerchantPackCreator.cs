@@ -56,6 +56,23 @@ namespace JRogue.Editor.World
             Debug.Log("[FairyMerchant] Created Fairy Merchant town NPC pack.");
         }
 
+        public static void RebuildTownNpcPrefab(GameObject humanNpcBase)
+        {
+            if (humanNpcBase == null)
+                return;
+
+            ShopNpcDefinition shop =
+                AssetDatabase.LoadAssetAtPath<ShopNpcDefinition>(
+                    $"{ResourcesShopFolder}/ShopNpc_FairyMerchant.asset");
+            if (shop == null)
+            {
+                Debug.LogWarning("[FairyMerchant] Missing shop definition — run Create Fairy Merchant Pack first.");
+                return;
+            }
+
+            CreateShopNpcPrefab("TownNpc_FairyMerchant", "Fairy Merchant", shop, MerchantSpritePath, humanNpcBase);
+        }
+
         static void EnsureFolders()
         {
             Directory.CreateDirectory("Assets/Art/NPC/Sprites");
@@ -132,6 +149,7 @@ namespace JRogue.Editor.World
             GameObject humanNpcBase)
         {
             string path = $"{ResourcesNpcFolder}/{prefabName}.prefab";
+            NpcDialogPackCreator.DeletePrefabIfPresent(path);
             GameObject instance = PrefabUtility.InstantiatePrefab(humanNpcBase) as GameObject;
             instance.name = prefabName;
 
@@ -165,7 +183,7 @@ namespace JRogue.Editor.World
             if (stamp == null)
                 return;
 
-            stamp.SetMarker(StampMarkerIds.FairyMerchant, new Vector3Int(12, 5, 0));
+            TownPlazaMarkerLayout.ApplyAll(stamp);
             EditorUtility.SetDirty(stamp);
         }
 

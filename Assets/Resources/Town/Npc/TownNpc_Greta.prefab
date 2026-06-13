@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1950475783365394732
+--- !u!1001 &7118458709956164058
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -8,75 +8,75 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2817757823611772585, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-      propertyPath: m_Name
-      value: TownNpc_Greta
-      objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5896509806898180168, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 5067676183637769181, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 2287316443353707248, guid: bf5b2d12c6c89e4b6963fe1b4ee583d9, type: 3}
+    - target: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_Name
+      value: TownNpc_Greta
+      objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 4648908138768638629, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2817757823611772585, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6950195791398399840}
+      addedObject: {fileID: 661096630514606367}
   m_SourcePrefab: {fileID: 100100000, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
---- !u!1 &4326785700760002437 stripped
+--- !u!1 &1702522001753443738 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 2817757823611772585, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-  m_PrefabInstance: {fileID: 1950475783365394732}
+  m_CorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+  m_PrefabInstance: {fileID: 7118458709956164058}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6950195791398399840
+--- !u!114 &661096630514606367
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4326785700760002437}
+  m_GameObject: {fileID: 1702522001753443738}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce2a220e93cdd928cab275c9d225d2fc, type: 3}

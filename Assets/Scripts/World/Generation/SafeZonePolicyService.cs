@@ -97,7 +97,41 @@ namespace JRogue.World.Generation
             return false;
         }
 
+        public const string MageTutorDenyMessage = "You can only begin arcane training in town.";
+        public const string MageEquipDenyMessage = "You can only adjust prepared spells in town.";
         public const string ElderQuestDenyMessage = "You can only speak of draconic trials in town.";
+
+        public static bool TryAllowHumanMageTutorQuestChange(out string denyReason, bool logDeny = true)
+        {
+            denyReason = null;
+            if (IsSafeZoneForActiveParty())
+                return true;
+
+            denyReason = MageTutorDenyMessage;
+            if (logDeny)
+                Debug.Log($"{LogPrefix} {denyReason}");
+            return false;
+        }
+
+        public static bool TryAllowHumanMageEquipChange(out string denyReason, bool logDeny = true)
+        {
+            denyReason = null;
+            if (CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat)
+            {
+                denyReason = CombatMemorizeDenyMessage;
+                if (logDeny)
+                    Debug.Log($"{LogPrefix} {denyReason}");
+                return false;
+            }
+
+            if (IsSafeZoneForActiveParty())
+                return true;
+
+            denyReason = MageEquipDenyMessage;
+            if (logDeny)
+                Debug.Log($"{LogPrefix} {denyReason}");
+            return false;
+        }
 
         public static bool TryAllowDragonianElderQuestChange(out string denyReason, bool logDeny = true)
         {

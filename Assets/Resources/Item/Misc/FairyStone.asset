@@ -22,7 +22,6 @@ MonoBehaviour:
   buyValue: 1
   sellValue: 0
   requiresAppraisal: 0
-  allowUseInSafeZone: 1
   autoPickupOnStep: 0
   requiresAutoPickupConfirmation: 0
   floorLifetimePlayerPhases: 0
@@ -37,4 +36,4 @@ MonoBehaviour:
   passiveEffects: []
   activeAbilities: []
   inventoryTargetedUseLogTag: 
-  allowUseInSafeZone: 0
+  allowUseInSafeZone: 1

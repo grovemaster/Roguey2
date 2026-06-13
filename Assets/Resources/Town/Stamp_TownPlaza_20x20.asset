@@ -53,7 +53,11 @@ MonoBehaviour:
     cell: {x: 2, y: 5, z: 0}
   - markerId: tiefling_fleshmetal_forgemaster
     cell: {x: 8, y: 5, z: 0}
-  - markerId: playerStart
-    cell: {x: 10, y: 8, z: 0}
   - markerId: dragonian_elder_volscale
     cell: {x: 6, y: 5, z: 0}
+  - markerId: town_npc_mage_tutor
+    cell: {x: 4, y: 7, z: 0}
+  - markerId: town_npc_arcane_vendor
+    cell: {x: 8, y: 7, z: 0}
+  - markerId: playerStart
+    cell: {x: 10, y: 8, z: 0}

@@ -4,10 +4,13 @@ using JRogue.Actors;
 using JRogue.Dialog;
 using JRogue.Item;
 using JRogue.Manager.Equipment;
+using JRogue.Manager.Essence;
 using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
+using JRogue.Racial;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Quest
@@ -266,8 +269,27 @@ namespace JRogue.Quest
             if (definition.requiredRace != Race.Unset
                 && (stats == null || stats.race != definition.requiredRace))
             {
-                denyReason = "Only Dragonians may undertake this trial.";
+                denyReason = definition.requiredRace == Race.Dragonian
+                    ? "Only Dragonians may undertake this trial."
+                    : "You do not meet the requirements for this quest.";
                 return false;
+            }
+
+            if (definition.requiresHumanClassNone
+                && (stats == null || stats.humanClass != HumanClass.None))
+            {
+                denyReason = HumanMageClassCommitService.ClassDenyMessage;
+                return false;
+            }
+
+            if (definition.requiresNoConsumedEssences)
+            {
+                EssenceSlotManager essence = speaker?.GetComponent<EssenceSlotManager>();
+                if (essence != null && essence.CountOccupiedSlots() > 0)
+                {
+                    denyReason = HumanMageClassCommitService.EssenceDenyMessage;
+                    return false;
+                }
             }
 
             if (definition.requiredMinLevel > 0
@@ -278,6 +300,20 @@ namespace JRogue.Quest
             }
 
             return true;
+        }
+
+        public static bool TryAllowPerPartyMemberQuestChange(
+            QuestDefinition definition,
+            out string denyReason)
+        {
+            denyReason = null;
+            if (definition == null)
+                return true;
+
+            if (definition.commitHumanClass != HumanClass.None || definition.requiresHumanClassNone)
+                return SafeZonePolicyService.TryAllowHumanMageTutorQuestChange(out denyReason);
+
+            return SafeZonePolicyService.TryAllowDragonianElderQuestChange(out denyReason);
         }
 
         public static string ResolveInstanceStorageKey(QuestDefinition definition, QuestInstance instance)

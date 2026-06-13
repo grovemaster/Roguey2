@@ -31,6 +31,10 @@ MonoBehaviour:
     - talked_npc_2
     trueNodeIndex: 1
     falseNodeIndex: 2
+    questId: 
+    expectedQuestState: 1
+    actionKind: 0
+    actionQuestId: 
   - kind: 0
     line:
       textTemplate: Greetings.
@@ -45,6 +49,10 @@ MonoBehaviour:
     anyTalkedNpcIds: []
     trueNodeIndex: -1
     falseNodeIndex: -1
+    questId: 
+    expectedQuestState: 1
+    actionKind: 0
+    actionQuestId: 
   - kind: 0
     line:
       textTemplate: Hello World.
@@ -59,5 +67,9 @@ MonoBehaviour:
     anyTalkedNpcIds: []
     trueNodeIndex: -1
     falseNodeIndex: -1
+    questId: 
+    expectedQuestState: 1
+    actionKind: 0
+    actionQuestId: 
   completionFlagId: 
   incrementTalkCountOnStart: 0

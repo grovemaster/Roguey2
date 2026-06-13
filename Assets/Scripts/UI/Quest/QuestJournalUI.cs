@@ -5,6 +5,7 @@ using JRogue.Item;
 using JRogue.Manager.Party;
 using JRogue.Quest;
 using JRogue.Racial;
+using JRogue.Stats.Racial;
 using JRogue.UI.Inventory;
 using TMPro;
 using UnityEngine;
@@ -368,6 +369,22 @@ namespace JRogue.UI.Quest
                     sb.Append(" Learn ").Append(definition.learnDragonianSpellId);
                 }
 
+                any = true;
+            }
+
+            if (definition.commitHumanClass != HumanClass.None)
+            {
+                if (any)
+                    sb.Append(',');
+                sb.Append(" Commit to ").Append(definition.commitHumanClass);
+                any = true;
+            }
+
+            if (definition.turnInGoldCost > 0)
+            {
+                if (any)
+                    sb.Append(',');
+                sb.Append(" Pay ").Append(definition.turnInGoldCost).Append(" gold");
                 any = true;
             }
 

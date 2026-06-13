@@ -178,7 +178,7 @@ namespace JRogue.Editor.World
             if (stamp == null)
                 return;
 
-            stamp.SetMarker(StampMarkerIds.ShamanBarbarian, new Vector3Int(10, 5, 0));
+            TownPlazaMarkerLayout.ApplyAll(stamp);
             EditorUtility.SetDirty(stamp);
         }
 

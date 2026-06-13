@@ -12,15 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9914b9fccfa0fcca3a71711f45463218, type: 3}
   m_Name: Fireball_Standard
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Ability.Fireball.FireballAbility
-  abilityName: 
+  abilityName: Fireball
   description: 
+  hotbarIcon: {fileID: 0}
   soulPowerCost: 0
+  magicPowerCost: 0
+  divinePowerCost: 0
   cooldownTurns: 0
   requiresTarget: 1
   range: 0
   splashZone: {fileID: 11400000, guid: f1e2d3c4b5a64789a0b1c2d3e4f56781, type: 2}
   splashRadius: 2
+  isMovementAbility: 0
   noiseVolume: 35
   noiseOriginAtTargetTile: 1
+  skipFriendlyFireConfirmation: 0
   fireDamage: 15
   canHurtCaster: 1

@@ -71,6 +71,23 @@ namespace JRogue.Editor.World
             Debug.Log("[BeastmanSoulBeast] Created Beastman Soul Beast pack (Beast Blood = 2 gold).");
         }
 
+        public static void RebuildTownNpcPrefab(GameObject humanNpcBase)
+        {
+            if (humanNpcBase == null)
+                return;
+
+            ShopNpcDefinition shop =
+                AssetDatabase.LoadAssetAtPath<ShopNpcDefinition>(
+                    $"{ResourcesShopFolder}/ShopNpc_BeastBloodMerchant.asset");
+            if (shop == null)
+            {
+                Debug.LogWarning("[BeastmanSoulBeast] Missing shop definition — run Create Beastman Soul Beast Pack first.");
+                return;
+            }
+
+            CreateShopNpcPrefab("TownNpc_BeastBloodMerchant", "Beast Blood Merchant", shop, MerchantSpritePath, humanNpcBase);
+        }
+
         static void EnsureFolders()
         {
             Directory.CreateDirectory("Assets/Art/NPC/Sprites");
@@ -299,6 +316,7 @@ namespace JRogue.Editor.World
             GameObject humanNpcBase)
         {
             string path = $"{ResourcesNpcFolder}/{prefabName}.prefab";
+            NpcDialogPackCreator.DeletePrefabIfPresent(path);
             GameObject instance = PrefabUtility.InstantiatePrefab(humanNpcBase) as GameObject;
             instance.name = prefabName;
 
@@ -349,8 +367,7 @@ namespace JRogue.Editor.World
             if (stamp == null)
                 return;
 
-            stamp.SetMarker(StampMarkerIds.SoulBeastRitualCircle, new Vector3Int(14, 5, 0));
-            stamp.SetMarker(StampMarkerIds.BeastBloodMerchant, new Vector3Int(2, 5, 0));
+            TownPlazaMarkerLayout.ApplyAll(stamp);
             EditorUtility.SetDirty(stamp);
         }
 

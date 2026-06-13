@@ -39,6 +39,19 @@ namespace JRogue.Racial
             return true;
         }
 
+        /// <summary>Ensures <see cref="HumanMageSpellsRuntime"/> exists for committed Mages (runtime bootstrap).</summary>
+        public static HumanMageSpellsRuntime ResolveMageSpellsRuntime(GameObject actor)
+        {
+            if (actor == null)
+                return null;
+
+            CharacterStats stats = actor.GetComponent<CharacterStats>();
+            if (stats == null || stats.humanClass != HumanClass.Mage)
+                return actor.GetComponent<HumanMageSpellsRuntime>();
+
+            return EnsureMageSpellsRuntime(actor, HumanClass.Mage);
+        }
+
         public static void BootstrapClass(GameObject actor, CharacterStats stats, HumanClass targetClass)
         {
             stats.humanClass = targetClass;
@@ -53,7 +66,7 @@ namespace JRogue.Racial
             for (int i = 0; i < trees.Length; i++)
                 trees[i]?.TryApplyFromSerializedState();
 
-            HumanMageSpellsRuntime mageSpells = actor.GetComponent<HumanMageSpellsRuntime>();
+            HumanMageSpellsRuntime mageSpells = EnsureMageSpellsRuntime(actor, targetClass);
             mageSpells?.RebuildEquippedFromPreset();
 
             if (!HumanClassRules.CanGainEssences(targetClass))
@@ -61,6 +74,18 @@ namespace JRogue.Racial
                 Debug.Log(
                     $"[HumanClass] Committed {actor.name} to {targetClass}: essences disabled, Soul Power max {stats.MaxSoulPower}.");
             }
+        }
+
+        static HumanMageSpellsRuntime EnsureMageSpellsRuntime(GameObject actor, HumanClass targetClass)
+        {
+            if (actor == null || targetClass != HumanClass.Mage)
+                return actor?.GetComponent<HumanMageSpellsRuntime>();
+
+            HumanMageSpellsRuntime runtime = actor.GetComponent<HumanMageSpellsRuntime>();
+            if (runtime == null)
+                runtime = actor.AddComponent<HumanMageSpellsRuntime>();
+
+            return runtime;
         }
     }
 }

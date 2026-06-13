@@ -21,7 +21,7 @@ MonoBehaviour:
   goldValue: 0
   buyValue: 2
   sellValue: 0
-  requiresAppraisal: 1
+  requiresAppraisal: 0
   autoPickupOnStep: 0
   requiresAutoPickupConfirmation: 0
   floorLifetimePlayerPhases: 0
@@ -30,7 +30,7 @@ MonoBehaviour:
   weaponType: 0
   handsRequired: 1
   requiresBow: 0
-  isThrowable: 1
+  isThrowable: 0
   damageModules: []
   statModifiers: []
   passiveEffects: []

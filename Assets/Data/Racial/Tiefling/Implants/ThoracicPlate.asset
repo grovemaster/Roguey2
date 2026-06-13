@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Chest-mounted alloy plating.
   allowedSlots: 02
   installCost:
-    gold: 25
+    gold: 60
     items: []
     storyFlags: []
   removeCost:

@@ -71,6 +71,27 @@ namespace JRogue.Editor.World
             Debug.Log("[ShopNpc] Created shop NPC pack. Run TownTest, talk to Fenn or Greta with Enter.");
         }
 
+        public static void RebuildTownNpcPrefabs(GameObject humanNpcBase)
+        {
+            if (humanNpcBase == null)
+                return;
+
+            ShopNpcDefinition fennShop =
+                AssetDatabase.LoadAssetAtPath<ShopNpcDefinition>($"{ResourcesShopFolder}/ShopNpc_Fenn.asset");
+            ShopNpcDefinition gretaShop =
+                AssetDatabase.LoadAssetAtPath<ShopNpcDefinition>($"{ResourcesShopFolder}/ShopNpc_Greta.asset");
+            if (fennShop == null || gretaShop == null)
+            {
+                Debug.LogWarning("[ShopNpc] Missing shop definitions — run Create Shop NPC Pack first.");
+                return;
+            }
+
+            CreateShopNpcPrefab("TownNpc_Fenn", "Fenn", fennShop,
+                "Assets/Art/NPC/Sprites/NPC_Fenn.png", humanNpcBase);
+            CreateShopNpcPrefab("TownNpc_Greta", "Greta", gretaShop,
+                "Assets/Art/NPC/Sprites/NPC_Greta.png", humanNpcBase);
+        }
+
         static void EnsureFolders()
         {
             Directory.CreateDirectory("Assets/Art/NPC/Sprites");
@@ -164,6 +185,7 @@ namespace JRogue.Editor.World
             GameObject humanNpcBase)
         {
             string path = $"{ResourcesNpcFolder}/{prefabName}.prefab";
+            NpcDialogPackCreator.DeletePrefabIfPresent(path);
             GameObject instance = PrefabUtility.InstantiatePrefab(humanNpcBase) as GameObject;
             instance.name = prefabName;
 
@@ -197,8 +219,7 @@ namespace JRogue.Editor.World
             if (stamp == null)
                 return;
 
-            stamp.SetMarker(StampMarkerIds.TownNpc4, new Vector3Int(2, 8, 0));
-            stamp.SetMarker(StampMarkerIds.TownNpc5, new Vector3Int(12, 8, 0));
+            TownPlazaMarkerLayout.ApplyAll(stamp);
             EditorUtility.SetDirty(stamp);
         }
 

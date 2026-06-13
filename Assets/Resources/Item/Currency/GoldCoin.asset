@@ -36,3 +36,4 @@ MonoBehaviour:
   passiveEffects: []
   activeAbilities: []
   inventoryTargetedUseLogTag: 
+  allowUseInSafeZone: 0

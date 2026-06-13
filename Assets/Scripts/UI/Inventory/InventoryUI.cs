@@ -2366,6 +2366,7 @@ namespace JRogue.UI.Inventory
             }
 
             RefreshInventoryDisplay();
+            AbilityHotbarUI.Instance?.RefreshAll();
         }
 
         void RefreshAfterDeferredInventoryUse()

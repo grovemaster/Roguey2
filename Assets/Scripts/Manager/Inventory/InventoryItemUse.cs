@@ -42,6 +42,9 @@ namespace JRogue.Manager.Inventory
             if (row.Item is BeastBloodItemData)
                 return BeastBloodUseService.TryBeginUse(row);
 
+            if (row.Item is SpellbookItemData)
+                return MageSpellbookReadService.TryRead(row);
+
             if (HealingPotionRules.IsHealingPotionItem(row.Item)
                 && inCombat
                 && !HealingPotionRules.IsExemptFromPainStun(row.Owner.gameObject))

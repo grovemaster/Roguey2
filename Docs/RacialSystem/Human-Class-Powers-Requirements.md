@@ -12,7 +12,7 @@ Design inspiration: *Surviving the Game as a Barbarian* (**STBGB**) — civilian
 
 **Contrast:** [Undead — Race requirements](Undead-Race-Requirements.md) (D4-style tree, **respec** allowed, folk always has the subsystem). [Phase 3 — Barbarian Spirit Imprint](Phase3-Requirements.md) (forward-only path, not point ranks). [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md) (Soul Power upkeep). Essences remain the default Human-**None** power source until class commitment.
 
-**Explicitly later:** NPC / ritual **class-change** requirements; Knight **training events**; Mage **spell learning** sources; Priest **god patronage** implementation; additional Human classes beyond the initial three.
+**Explicitly later:** NPC / ritual **class-change** requirements; Knight **training events**; Priest **god patronage** implementation; additional Human classes beyond the initial three. **Mage spell learning** is specified in [Human Mage — Spells & spellbooks](Human-Mage-Spells-And-Spellbooks-Requirements.md) (spellbooks); racial menu UI remains later.
 
 ---
 
@@ -51,7 +51,7 @@ Invalid saves (class without subsystem, Mage with essences equipped, etc.) clamp
 | STBGB idea | Human class model |
 |------------|-------------------|
 | Ordinary people enter the game without a “build” | `HumanClass.None` — essences / Soul Power like today’s generic hero |
-| Commitment to a role through story | One-way class change at a **special NPC** (later) |
+| Commitment to a role through story | One-way class change at a **special NPC** — **Mage:** tutor quest ([Human Mage §5](Human-Mage-Spells-And-Spellbooks-Requirements.md)) |
 | Knights train techniques over time | Knight skills unlocked via **training events** (later); tree structure is D2-like |
 | Priests serve a deity | **Patron god** (later); **Divine Power** instead of Soul Power |
 | Mages memorize / prepare spells | **Known** spell library vs **equipped** subset limited by Magic Power budget |
@@ -71,11 +71,12 @@ Invalid saves (class without subsystem, Mage with essences equipped, etc.) clamp
 | **Magic Power** | Mage-only resource pool (max + current). Replaces Soul Power for mages. Used for **casting** and as the **equip budget** (§8). |
 | **Divine Power** | Priest-only resource pool (max + current). Replaces Soul Power for priests. |
 | **Spell** | Mage-only `SpellDefinition` (or successor): ability payload + **tier** + equip cost. |
-| **Known spells** | Spells the mage has learned (library). Learning pipeline is **later**; v0 may preset known list. |
+| **Known spells** | Spells the mage has learned (library). Populated by **reading spellbooks** — see [Human Mage — Spells & spellbooks](Human-Mage-Spells-And-Spellbooks-Requirements.md). |
 | **Equipped spells** | Subset of known spells active for casting; subject to equip budget (§8). |
 | **Spell tier** | Integer **1** (highest, most expensive to equip) through **9** (lowest, cheapest). |
-| **Equip cost** | `10 - spellTier` — deducted from the mage’s **remaining equip capacity** (§8). |
+| **Equip cost** | `(10 - spellTier) + extraEquipCost` — deducted from the mage’s **remaining equip capacity** (§8). See [Human Mage — Spells & spellbooks](Human-Mage-Spells-And-Spellbooks-Requirements.md) §5. |
 | **Training event** | World/NPC interaction that grants Knight skill points or unlocks a specific training (later). |
+| **Consume (essence)** | **Equip** an essence into a slot — **equipping and consuming are the same** (*STBGB*). Distinct from carrying an unconsumed essence **item** in inventory. |
 
 ---
 
@@ -111,10 +112,17 @@ Invalid saves (class without subsystem, Mage with essences equipped, etc.) clamp
 - **Save / identity:** persist `humanClass` in `RacialIdentitySnapshot` (or party member save). Loads must not downgrade or swap class without migration tooling.
 - **Validation:** if save says `Mage` but actor still has equipped essences, **strip** essences and log warning (v0 policy).
 
-### C5.3 — Class-change requirements (later, not v0)
+### C5.3 — Class-change requirements
+
+| Class | v0 gate | Doc |
+|-------|---------|-----|
+| **Mage** | **Arcane Apprenticeship** quest — pay **5 gold** to **Mage Tutor**; requires **`HumanClass.None`** and **no consumed essences** (none equipped) | [Human Mage — Spells & spellbooks §5](Human-Mage-Spells-And-Spellbooks-Requirements.md) |
+| **Knight** | Training NPC / ritual (later) | TBD |
+| **Priest** | Shrine / patron NPC (later) | TBD |
 
 - Commitment requires interaction with a **special NPC** (or equivalent story gate): faction standing, quest flag, item sacrifice, etc.—**content-defined per gate**, not hard-coded in engine.
-- v0: **preset** class on test prefabs or debug command; document gate ids as **stable string keys** for future quests.
+- v0: **Mage** uses tutor quest above; Knight/Priest may use **preset** on test prefabs or debug command until their gates ship.
+- Document gate ids as **stable string keys** for future quests.
 
 ### C5.4 — Extensibility
 
@@ -212,11 +220,12 @@ Sample trees should wire **at least** these four nodes with a simple prerequisit
 
 | Rule | Requirement |
 |------|-------------|
-| **Max essence slots** | **0** — `EssenceSlotManager.totalSlots = 0`; cannot equip or pick up essences into essence slots |
-| **Gain essences** | Blocked at pickup/equip UI and pipeline |
+| **Max essence slots** | **0** — `EssenceSlotManager.totalSlots = 0`; cannot **consume (equip)** essences |
+| **Pre-commit gate** | Human must have **no consumed essences** (none equipped — **equip ≡ consume**) before Mage commitment; unconsumed inventory items **do not** block ([Human Mage §5.2](Human-Mage-Spells-And-Spellbooks-Requirements.md); *STBGB*) |
+| **Gain essences** | Blocked at consume/equip UI and pipeline — carrying unconsumed essence **items** in inventory is allowed |
 | **Max Soul Power** | **0** — `MaxSoulPower` returns 0 regardless of Int/Wis while Mage |
 | **Current Soul Power** | Clamped to **0** on class commit and each turn boundary |
-| **Use essences** | Any attempt fails with clear feedback |
+| **Use essences** | Any attempt to **consume (equip)** fails with clear feedback |
 
 Regression: `HumanClass.None` and **Knight** still use essences normally.
 
@@ -244,8 +253,10 @@ Regression: `HumanClass.None` and **Knight** still use essences normally.
 **Equip cost per spell:**
 
 ```text
-equipCost(spell) = 10 - spellTier
+equipCost(spell) = (10 - spellTier) + extraEquipCost
 ```
+
+where **`extraEquipCost ≥ 0`** is optional designer overhead (default **0**). Full spec: [Human Mage — Spells & spellbooks §5](Human-Mage-Spells-And-Spellbooks-Requirements.md).
 
 | Tier | Equip cost |
 |------|------------|
@@ -294,11 +305,15 @@ After equipping, recompute `remainingEquip`. **Unequip** frees capacity immediat
 
 **v0 equip example:** If `maxMagicPower = 20`, equipping Fireball (7) + Teleport (4) uses **11**, `remainingEquip = 9`. A tier-1 spell (cost 9) could still be equipped alone but not with both unless max is raised.
 
-### M8.6 — Spell learning (later)
+### M8.6 — Spell learning
 
-- Sources: scroll transcription, trainer NPC, level-up grimoire, quest rewards.
+**Specified in:** [Human Mage — Spells & spellbooks](Human-Mage-Spells-And-Spellbooks-Requirements.md).
+
+- **Primary v0 source:** read **spellbooks** (DCSS-style); books consumed on use.
+- Each spell learned **once**; multi-spell books require ≥ 1 unknown spell to use.
+- **Later sources:** dungeon loot, quests, enemy drops (same item type).
 - Learning adds to **known** only; does not auto-equip.
-- v0: preset `knownSpellIds` on test Mage prefab.
+- v0 QA: three spellbooks sold by **Arcane Vendor** at **1 gold** each.
 
 ### M8.7 — Runtime
 
@@ -352,9 +367,9 @@ Same hard rules as Mage (§M8.1): **zero** essence slots, **zero** Soul Power, c
 
 ## 11. Out of scope (v0)
 
-- Special NPC class-change quests and UI.
+- Special NPC class-change quests and UI — **Mage tutor quest** specified in [Human Mage — Spells & spellbooks §5](Human-Mage-Spells-And-Spellbooks-Requirements.md); Knight/Priest gates later.
 - Knight training event content pipeline.
-- Mage spell learning drops, shops, scrolls (distinct from [Fireball scroll](../Inventory/Fireball-Scroll-Requirements.md) consumable for non-mages).
+- Mage spell learning drops, shops, scrolls (distinct from [Fireball scroll](../Inventory/Fireball-Scroll-Requirements.md) consumable for non-mages) — **learning** spec: [Human Mage — Spells & spellbooks](Human-Mage-Spells-And-Spellbooks-Requirements.md); **Arcane Vendor shop** is in scope there.
 - God definitions, patron quests, deity-specific Priest subtrees.
 - Character sheet layout for three classes.
 - Balance pass on `maxMagicPower` / Divine formulas.
@@ -380,7 +395,9 @@ Same hard rules as Mage (§M8.1): **zero** essence slots, **zero** Soul Power, c
 ## 13. Acceptance criteria (examples)
 
 - Given `HumanClass.None`, essences and Soul Power behave as today (regression).
-- Given commit to **Mage**, `EssenceSlotManager.totalSlots == 0` and equipping an essence **fails**.
+- Given commit to **Mage** via tutor quest, `EssenceSlotManager.totalSlots == 0` and **consuming (equipping)** an essence **fails**.
+- Given **Human None** with a **consumed (equipped)** essence, Mage tutor quest **rejects** before commit.
+- Given **Human Knight**, attempting Mage tutor quest **rejects**; class unchanged.
 - Given **Mage** with `maxMagicPower = 20`, Fireball (tier 3, cost 7) + Teleport (tier 6, cost 4) equipped, `remainingEquip == 9`.
 - Given same loadout, attempting to equip a tier-1 spell (cost 9) **fails** without unequipping another spell.
 - Given **Mage** with only Fireball equipped, casting Fireball reduces `currentMagicPower` and does **not** use Soul Power.
@@ -417,7 +434,8 @@ Same hard rules as Mage (§M8.1): **zero** essence slots, **zero** Soul Power, c
 | Class count (initial) | Knight, Mage, Priest |
 | Class change count | **Once**, permanent |
 | Knight / Priest tree shape | **Diablo 2** prerequisites + per-skill max ranks + per-rank property scaling |
-| Mage essences / Soul Power | **Forbidden** |
+| Mage essences / Soul Power | **Forbidden** (*STBGB* — cannot **consume** essences; **equip ≡ consume**); training requires no consumed essences; unconsumed inventory items OK |
+| Mage class gate (v0) | **Tutor quest** — **5 gold**, `HumanClass.None` only |
 | Mage casting | **Equipped spells only** |
 | Equip cost formula | `10 - tier`; budget = `maxMagicPower - Σ equipped costs` |
 | Sample skills | Knight & Priest: +STR / +DEX passives; Mage: Fireball + Teleport |
@@ -444,7 +462,9 @@ Same hard rules as Mage (§M8.1): **zero** essence slots, **zero** Soul Power, c
 | `HumanClassAbilityResources` (Soul / Magic / Divine on abilities) | Done |
 | Sample assets (`KnightSkillTree_Sample`, `PriestSkillTree_Sample`, `Spell_*_Mage`) | Done |
 | Unit tests (`HumanClassPowersTests`) | Done |
-| NPC class-change gates, training events, spell learning, UI | Later (§11) |
+| NPC class-change gates (Knight/Priest), training events, Mage UI | Later (§11) |
+| Mage tutor quest + essence gate on commit | Planned — [Human Mage — Spells & spellbooks §5](Human-Mage-Spells-And-Spellbooks-Requirements.md) |
+| Mage spellbooks + learn pipeline | Planned — [Human Mage — Spells & spellbooks](Human-Mage-Spells-And-Spellbooks-Requirements.md) |
 
 ---
 
@@ -454,5 +474,6 @@ Same hard rules as Mage (§M8.1): **zero** essence slots, **zero** Soul Power, c
 - [Phase 5 — Additional folk & subsystem shapes](Phase5-Requirements.md) (§R5.4 Human class stretch)
 - [Undead — Race requirements](Undead-Race-Requirements.md) (contrasting tree policy)
 - [Sudden Strength essence](../Essence/Sudden-Strength-Essence-Requirements.md) (Soul Power pattern for Knight)
-- [Fireball scroll](../Inventory/Fireball-Scroll-Requirements.md) (non-mage consumable; Mage uses spell equip)
+- [Human Mage — Spells & spellbooks](Human-Mage-Spells-And-Spellbooks-Requirements.md) (learning, spellbooks, sample spells)
+- [Fireball scroll](../Inventory/Fireball-Scroll-Requirements.md) (non-mage consumable; distinct from Mage spellbooks)
 - [Party experience & leveling](../Progression/Party-Experience-And-Leveling-Requirements.md) (level gates for skill nodes)

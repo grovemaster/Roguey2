@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &5887380694150340876
+--- !u!1001 &3803110401921795281
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -8,75 +8,75 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2817757823611772585, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-      propertyPath: m_Name
-      value: TownNpc_FairyMerchant
-      objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3272637704001126638, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 476374379829414437, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5896509806898180168, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - target: {fileID: 5067676183637769181, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -4827167347653239212, guid: cf120a92f8e268644a53156588c36d17, type: 3}
+    - target: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      propertyPath: m_Name
+      value: TownNpc_FairyMerchant
+      objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 4648908138768638629, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2817757823611772585, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1517694612989385684}
+      addedObject: {fileID: 324451671639326292}
   m_SourcePrefab: {fileID: 100100000, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
---- !u!1 &8551915970173075365 stripped
+--- !u!1 &4732744464979832977 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 2817757823611772585, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-  m_PrefabInstance: {fileID: 5887380694150340876}
+  m_CorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+  m_PrefabInstance: {fileID: 3803110401921795281}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1517694612989385684
+--- !u!114 &324451671639326292
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8551915970173075365}
+  m_GameObject: {fileID: 4732744464979832977}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce2a220e93cdd928cab275c9d225d2fc, type: 3}

@@ -21,6 +21,9 @@ namespace JRogue.World.Generation
             if (item is BeastBloodItemData)
                 return true;
 
+            if (item is SpellbookItemData)
+                return true;
+
             return item.AllowUseInSafeZone;
         }
 

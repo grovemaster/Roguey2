@@ -24,6 +24,10 @@ MonoBehaviour:
   requiredMinLevel: 1
   requiredRace: 6
   learnDragonianSpellId: dragonian_spell_sudden_strength
+  turnInGoldCost: 0
+  commitHumanClass: 0
+  requiresHumanClassNone: 0
+  requiresNoConsumedEssences: 0
   acceptPrerequisites: []
   objectives:
   - objectiveId: collect_ember_scales

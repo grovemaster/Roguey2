@@ -110,6 +110,28 @@ namespace JRogue.Editor.World
             Debug.Log($"[Town] Fixed {ScenePath}. Save and press Play.");
         }
 
+        [MenuItem("JRogue/Town/Apply Town Plaza Marker Layout")]
+        public static void ApplyTownPlazaMarkerLayout()
+        {
+            var stamp = AssetDatabase.LoadAssetAtPath<DungeonLayoutStamp>(TownPlazaMarkerLayout.StampPath);
+            if (stamp == null)
+            {
+                Debug.LogError($"[Town] Missing stamp at {TownPlazaMarkerLayout.StampPath}.");
+                return;
+            }
+
+            if (!TownPlazaMarkerLayout.ValidateUniqueCells(out string error))
+            {
+                Debug.LogError($"[Town] Marker layout invalid: {error}");
+                return;
+            }
+
+            TownPlazaMarkerLayout.ApplyAll(stamp);
+            EditorUtility.SetDirty(stamp);
+            AssetDatabase.SaveAssets();
+            Debug.Log("[Town] Applied town plaza marker layout (one marker per tile).");
+        }
+
         static void CreateTownTestDataInternal()
         {
             EnsureFolder("Assets/Sprites/Environment/Town/KenneyTinyTown");
@@ -357,19 +379,7 @@ namespace JRogue.Editor.World
         {
             var stamp = LoadOrCreate<DungeonLayoutStamp>(path);
             stamp.InitializeGrid(width, height, borderWalls: true);
-            stamp.SetMarker(StampMarkerIds.PlayerStart, playerStart);
-            stamp.SetMarker(StampMarkerIds.TownDungeonPortal, dungeonPortalCell);
-            stamp.SetMarker(StampMarkerIds.TownNpc1, new Vector3Int(4, 8, 0));
-            stamp.SetMarker(StampMarkerIds.TownNpc2, new Vector3Int(6, 8, 0));
-            stamp.SetMarker(StampMarkerIds.TownNpc3, new Vector3Int(8, 8, 0));
-            stamp.SetMarker(StampMarkerIds.TownTimeLeverA, new Vector3Int(8, 6, 0));
-            stamp.SetMarker(StampMarkerIds.TownTimeLeverB, new Vector3Int(9, 6, 0));
-            stamp.SetMarker(StampMarkerIds.MeditationShrine, new Vector3Int(4, 5, 0));
-            stamp.SetMarker(StampMarkerIds.SoulBeastRitualCircle, new Vector3Int(14, 5, 0));
-            stamp.SetMarker(StampMarkerIds.BeastBloodMerchant, new Vector3Int(2, 5, 0));
-            stamp.SetMarker(StampMarkerIds.ShamanBarbarian, new Vector3Int(10, 5, 0));
-            stamp.SetMarker(StampMarkerIds.FairyMerchant, new Vector3Int(12, 5, 0));
-            stamp.SetMarker(StampMarkerIds.FleshmetalForgemaster, new Vector3Int(8, 5, 0));
+            TownPlazaMarkerLayout.ApplyAll(stamp);
             PaintDemoBuildingFacade(stamp, originX: 12, originY: 8, width: 5, depth: 3, doorLocalX: 2, doorLocalY: 0);
             EditorUtility.SetDirty(stamp);
             return stamp;
@@ -510,6 +520,22 @@ namespace JRogue.Editor.World
 
         static void EnsureDemoHostNpcAssets()
         {
+            GameObject humanNpc = AssetDatabase.LoadAssetAtPath<GameObject>(HumanNpcPrefabPath);
+            if (humanNpc == null)
+            {
+                Debug.LogWarning(
+                    $"[Town] Missing {HumanNpcPrefabPath}. Run JRogue/Town/Create NPC Dialog Pack first.");
+                return;
+            }
+
+            RebuildDemoHostNpcPrefab(humanNpc);
+        }
+
+        public static void RebuildDemoHostNpcPrefab(GameObject humanNpcBase)
+        {
+            if (humanNpcBase == null)
+                return;
+
             EnsureFolder(ResourcesDialogProfilesFolder);
             EnsureFolder(ResourcesNpcFolder);
 
@@ -529,19 +555,22 @@ namespace JRogue.Editor.World
 
             PortraitDefinition portrait =
                 AssetDatabase.LoadAssetAtPath<PortraitDefinition>(DemoHostPortraitPath);
-            GameObject humanNpc = AssetDatabase.LoadAssetAtPath<GameObject>(HumanNpcPrefabPath);
-            if (humanNpc == null)
+
+            string prefabPath = $"{ResourcesNpcFolder}/TownNpc_DemoHost.prefab";
+            NpcDialogPackCreator.DeletePrefabIfPresent(prefabPath);
+            GameObject instance = PrefabUtility.InstantiatePrefab(humanNpcBase) as GameObject;
+            if (instance == null)
             {
-                Debug.LogWarning(
-                    $"[Town] Missing {HumanNpcPrefabPath}. Run JRogue/Town/Create NPC Dialog Pack first.");
+                Debug.LogWarning($"[Town] Could not instantiate HumanNpc base for DemoHost.");
                 return;
             }
 
-            string prefabPath = $"{ResourcesNpcFolder}/TownNpc_DemoHost.prefab";
-            GameObject instance = PrefabUtility.InstantiatePrefab(humanNpc) as GameObject;
             instance.name = "TownNpc_DemoHost";
 
             NpcController npc = instance.GetComponent<NpcController>();
+            if (npc == null)
+                npc = instance.AddComponent<NpcController>();
+
             SerializedObject npcSo = new SerializedObject(npc);
             npcSo.FindProperty("npcId").stringValue = TownNpcIds.DemoHost;
             npcSo.FindProperty("dialogProfile").objectReferenceValue = profile;

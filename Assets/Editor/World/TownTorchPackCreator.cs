@@ -16,11 +16,11 @@ namespace JRogue.Editor.World
         const string TorchSpriteResourcesPath = "Assets/Resources/Lighting/WallTorch_Lit.png";
         const int MinTorchSeparation = 4;
 
-        static readonly (string markerId, Vector3Int cell, string label)[] TorchPlacements =
+        static readonly (string markerId, string label)[] TorchPlacements =
         {
-            (StampMarkerIds.TownTorchWest, new Vector3Int(0, 10, 0), "west"),
-            (StampMarkerIds.TownTorchNorth, new Vector3Int(10, 19, 0), "north"),
-            (StampMarkerIds.TownTorchEast, new Vector3Int(19, 10, 0), "east"),
+            (StampMarkerIds.TownTorchWest, "west"),
+            (StampMarkerIds.TownTorchNorth, "north"),
+            (StampMarkerIds.TownTorchEast, "east"),
         };
 
         [MenuItem("JRogue/Town/Place Town Torches")]
@@ -41,9 +41,13 @@ namespace JRogue.Editor.World
             Vector3Int playerStart = stamp.PlayerStart;
             int warnings = 0;
 
+            TownPlazaMarkerLayout.ApplyAll(stamp);
+
             for (int i = 0; i < TorchPlacements.Length; i++)
             {
-                (string markerId, Vector3Int cell, string label) = TorchPlacements[i];
+                (string markerId, string label) = TorchPlacements[i];
+                if (!TownPlazaMarkerLayout.TryGetCell(markerId, out Vector3Int cell))
+                    continue;
                 if (!stamp.IsWall(cell.x, cell.y))
                 {
                     Debug.LogWarning($"[TownTorch] {label} marker {cell} is not a wall cell in the stamp.");
@@ -59,15 +63,16 @@ namespace JRogue.Editor.World
 
                 for (int j = i + 1; j < TorchPlacements.Length; j++)
                 {
-                    if (ManhattanDistance(cell, TorchPlacements[j].cell) < MinTorchSeparation)
+                    if (!TownPlazaMarkerLayout.TryGetCell(TorchPlacements[j].markerId, out Vector3Int otherCell))
+                        continue;
+
+                    if (ManhattanDistance(cell, otherCell) < MinTorchSeparation)
                     {
                         Debug.LogWarning(
                             $"[TownTorch] {label} and {TorchPlacements[j].label} torches are closer than {MinTorchSeparation} tiles.");
                         warnings++;
                     }
                 }
-
-                stamp.SetMarker(markerId, cell);
             }
 
             EditorUtility.SetDirty(stamp);

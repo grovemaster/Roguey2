@@ -24,6 +24,10 @@ MonoBehaviour:
   requiredMinLevel: 3
   requiredRace: 6
   learnDragonianSpellId: dragonian_spell_fireball
+  turnInGoldCost: 0
+  commitHumanClass: 0
+  requiresHumanClassNone: 0
+  requiresNoConsumedEssences: 0
   acceptPrerequisites: []
   objectives:
   - objectiveId: kill_skeletons

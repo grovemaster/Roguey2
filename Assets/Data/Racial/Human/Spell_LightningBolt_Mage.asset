@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6d7c8b9a0f142658970fedcba098764, type: 3}
+  m_Name: Spell_LightningBolt_Mage
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.MageSpellDefinition
+  spellId: mage_spell_lightning_bolt
+  displayName: Lightning Bolt
+  description: 
+  tier: 5
+  ability: {fileID: 11400000, guid: 7f6320c86e480eb5da2d82a5d5d89149, type: 2}
+  magicPowerCost: 4
+  extraEquipCost: 1
