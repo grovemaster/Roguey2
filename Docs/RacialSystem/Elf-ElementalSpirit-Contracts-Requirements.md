@@ -241,7 +241,7 @@ Summon and dismiss are **player-facing hotbar abilities**, not a separate charac
 | Rule | Detail |
 |------|--------|
 | **One entry per contract instance** | Each row in `contractedSpirits` exposes **one** assignable hotbar action keyed by **`contractInstanceId`**. Duplicate spirit types → duplicate hotbar entries (e.g. two Ember Warden instances → two summon slots). |
-| **Toggle behavior** | If instance **not summoned**: hotbar press → **summon** (`TrySummon`). If **summoned**: same bound slot → **dismiss** (`TryDismiss`). Label/icon reflects state (*“Ember Warden — Summon”* / *“… — Dismiss”*). |
+| **Toggle behavior** | If instance **not summoned**: hotbar press → **summon** (`TrySummon`). If **summoned**: same bound slot → **dismiss** (`TryDismiss`). Label/icon reflects state (*“Ember Warden — Summon”* / *“… — Dismiss”*). **Display name** = optional instance **nickname** from [Elf racial menu](Elf-Racial-Abilities-Menu-Requirements.md) §6 when set; else canonical spirit name (with duplicate suffix). |
 | **Turn cost** | **None** — does **not** consume the actor’s turn (F4.5 / O5). |
 | **When allowed** | Active party member’s turn in combat (`TurnManager`); freely in town / safe zone when `GameplayModalGate` allows. Failed summon (insufficient Soul Power) → greyed entry + log message. |
 | **No targeting** | Summon/dismiss does **not** enter reticle / targeting mode. |

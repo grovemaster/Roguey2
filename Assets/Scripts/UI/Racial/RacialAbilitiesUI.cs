@@ -3,6 +3,7 @@ using JRogue.Actors;
 using JRogue.Manager.Party;
 using JRogue.Racial;
 using JRogue.Stats;
+using JRogue.Stats.Racial;
 using JRogue.UI.Inventory;
 using JRogue.UI.Quest;
 using TMPro;
@@ -100,6 +101,12 @@ namespace JRogue.UI.Racial
             Keyboard kb = Keyboard.current;
             if (kb.escapeKey.wasPressedThisFrame)
             {
+                if (_spiritContracts != null && _spiritContracts.IsNicknameFieldFocused())
+                {
+                    _spiritContracts.TryRevertFocusedNickname();
+                    return;
+                }
+
                 _panelRoot.SetActive(false);
                 return;
             }
@@ -448,16 +455,23 @@ namespace JRogue.UI.Racial
             _barbarianBodyRoot.SetActive(false);
             _elfBodyRoot.SetActive(true);
 
+            if (actor.stats == null || actor.stats.racialSubsystem != RacialSubsystemKind.ElfElementalContracts)
+            {
+                _bannerText.text = string.Empty;
+                _spiritContracts.SetPlainMessage("This character cannot form elemental spirit contracts.");
+                return;
+            }
+
             var runtime = actor.GetComponent<ElementalSpiritContractsRuntime>();
             if (runtime == null)
             {
                 _bannerText.text = string.Empty;
-                _spiritContracts.SetPlainMessage("This Elf has no elemental spirit contracts runtime.");
+                _spiritContracts.SetPlainMessage("This character cannot form elemental spirit contracts.");
                 return;
             }
 
             _bannerText.text = ElfElementalSpiritViewModel.BannerText;
-            _spiritContracts.Rebuild(ElfElementalSpiritViewModel.Build(actor));
+            _spiritContracts.Rebuild(actor, ElfElementalSpiritViewModel.Build(actor));
         }
 
         void ShowDefaultBody(BaseActor actor, Race race)

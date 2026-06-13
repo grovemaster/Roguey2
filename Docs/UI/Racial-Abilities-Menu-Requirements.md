@@ -174,6 +174,7 @@ RacialAbilitiesUI.Open(focusedIndex)
   → member = party[focusedIndex]
   → switch (member.stats.race, member.stats.racialSubsystem)
       Barbarian + SpiritImprint → BarbarianSpiritImprintBodyView
+      Elf + ElfElementalContracts → ElfElementalSpiritBodyView ([Elf menu doc](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md))
       default → DefaultRacialAbilitiesBodyView
 ```
 
@@ -201,7 +202,7 @@ Placeholder only — no mechanical lists until each race’s reference doc ships
 |------|--------------------------------|
 | Human | Class powers — coming soon. |
 | Dwarf | Ancestor path and common abilities — coming soon. |
-| Elf | Elemental spirit contracts — coming soon. |
+| Elf | [Elemental spirit contracts](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md) — roster reference + nicknames. |
 | Tiefling | Cyborg implants — coming soon. |
 | Undead / Beastman / other | Racial abilities — coming soon. |
 
@@ -415,7 +416,7 @@ BarbarianSpiritImprintViewModel.Build(BaseActor member)
 | **v0** | Shell, **`K`**, party strip, default placeholder, Barbarian read-only path, scroll + text cards |
 | **v0.1** | **Done** — full-screen layout, TMP chrome, portrait party strip, timeline node cards + ghost styling (§5.1) |
 | **v0.2** | Optional **next-at-Shaman** silhouettes (§8.4); passive/active row icons from assets; per-node imprint icons |
-| **v1** | Dwarf / Elf / Tiefling / Human reference bodies per racial docs |
+| **v1** | Dwarf / Tiefling / Human reference bodies per racial docs; **Elf body:** [Elf — racial abilities menu](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md) |
 | **v1.1** | Persist last focused member; hover tooltips on truncated descriptions |
 
 ---

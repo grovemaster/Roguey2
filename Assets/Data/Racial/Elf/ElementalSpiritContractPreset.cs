@@ -10,6 +10,8 @@ namespace JRogue.Racial
         public ElementalSpiritDefinition spirit;
         [Min(1)] public int contractLevel = 1;
         [Min(0)] public int contractExperience;
+        [Tooltip("Optional player label for hotbar summon/dismiss entries.")]
+        public string nickname;
 
         public void EnsureInstanceId()
         {

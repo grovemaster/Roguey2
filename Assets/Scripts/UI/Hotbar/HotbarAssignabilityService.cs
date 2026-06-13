@@ -262,26 +262,15 @@ namespace JRogue.UI.Hotbar
             if (contracts == null)
                 return;
 
-            var duplicateCounts = new Dictionary<string, int>();
-            foreach (ElementalSpiritContractPreset preset in contracts.ContractedSpirits)
+            IReadOnlyList<ElementalSpiritContractPreset> roster = contracts.ContractedSpirits;
+            foreach (ElementalSpiritContractPreset preset in roster)
             {
                 if (preset?.spirit == null)
                     continue;
 
                 preset.EnsureInstanceId();
-                string spiritId = preset.spirit.spiritId ?? string.Empty;
-                duplicateCounts.TryGetValue(spiritId, out int index);
-                index++;
-                duplicateCounts[spiritId] = index;
-
-                string spiritName = string.IsNullOrWhiteSpace(preset.spirit.displayName)
-                    ? preset.spirit.spiritId
-                    : preset.spirit.displayName.Trim();
-                if (index > 1)
-                    spiritName = $"{spiritName} ({index})";
-
                 bool summoned = contracts.IsInstanceSummoned(preset.contractInstanceId);
-                string label = summoned ? $"{spiritName} — Dismiss" : $"{spiritName} — Summon";
+                string label = ElementalSpiritDisplayNames.BuildSummonHotbarLabel(preset, roster, summoned);
 
                 pool.Add((
                     new HotbarEntry

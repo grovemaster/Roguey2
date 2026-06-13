@@ -3,6 +3,7 @@ using JRogue.Actors;
 using JRogue.Input;
 using JRogue.Manager.Combat;
 using JRogue.Manager.Party;
+using JRogue.Racial;
 using JRogue.UI.Gameplay;
 using TMPro;
 using UnityEngine;
@@ -214,10 +215,10 @@ namespace JRogue.UI.Hotbar
                 slotIndex,
                 MainSlotKeyLabels[slotIndex],
                 dimmedDuplicate: false,
-                displayName: ResolveDisplayName(resolved, entry));
+                displayName: ResolveDisplayName(actor, resolved, entry));
         }
 
-        static string ResolveDisplayName(HotbarResolvedAction resolved, HotbarEntry entry)
+        static string ResolveDisplayName(BaseActor actor, HotbarResolvedAction resolved, HotbarEntry entry)
         {
             if (entry.IsEmpty())
                 return null;
@@ -228,11 +229,26 @@ namespace JRogue.UI.Hotbar
             if (resolved.Ability != null && !string.IsNullOrWhiteSpace(resolved.Ability.name))
                 return resolved.Ability.name.Trim();
 
-            return entry.Kind switch
-            {
-                HotbarEntryKind.ElementalSpiritSummon => "Spirit",
-                _ => entry.Kind.ToString(),
-            };
+            if (entry.Kind == HotbarEntryKind.ElementalSpiritSummon)
+                return ResolveElementalSpiritSummonDisplayName(actor, entry);
+
+            return entry.Kind.ToString();
+        }
+
+        static string ResolveElementalSpiritSummonDisplayName(BaseActor actor, HotbarEntry entry)
+        {
+            if (actor == null || string.IsNullOrEmpty(entry.contractInstanceId))
+                return "Spirit";
+
+            ElementalSpiritContractsRuntime contracts = actor.GetComponent<ElementalSpiritContractsRuntime>();
+            if (contracts == null || !contracts.TryGetPreset(entry.contractInstanceId, out ElementalSpiritContractPreset preset))
+                return "Spirit";
+
+            bool summoned = contracts.IsInstanceSummoned(entry.contractInstanceId);
+            return ElementalSpiritDisplayNames.BuildSummonHotbarLabel(
+                preset,
+                contracts.ContractedSpirits,
+                summoned);
         }
 
         public void ToggleEditMode()

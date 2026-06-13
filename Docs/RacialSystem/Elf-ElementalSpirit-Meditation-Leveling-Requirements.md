@@ -477,7 +477,7 @@ Structured debug lines: `[SpiritMeditation] {elf} +{xp} → {instanceId} L{level
 | [Party experience & leveling](../Progression/Party-Experience-And-Leveling-Requirements.md) | Supplies `CharacterStats.level` for v0 cap policy. |
 | [Barbarian — Shaman NPC](Barbarian-Spirit-Imprint-Shaman-NPC-Requirements.md) | Parallel town progression UX. |
 | [Phase0 — Glossary](Phase0-Glossary-And-Data-Contracts.md) | Add **contract experience**, **meditation shrine** when implementing. |
-| [Racial abilities menu](../UI/Racial-Abilities-Menu-Requirements.md) | Spirit XP + level progress per instance (L16). |
+| [Racial abilities menu](../UI/Racial-Abilities-Menu-Requirements.md) | Spirit XP + roster reference + nicknames (L16). |
 | [Ability hotbar](../UI/Ability-Hotbar-Requirements.md) | Refresh assignables after level-up. |
 
 ---

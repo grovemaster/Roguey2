@@ -79,35 +79,8 @@ namespace JRogue.Racial
 
         public static string BuildInstanceDisplayName(
             ElementalSpiritContractPreset instance,
-            IReadOnlyList<ElementalSpiritContractPreset> roster)
-        {
-            if (instance?.spirit == null)
-                return "Spirit";
-
-            string spiritName = string.IsNullOrWhiteSpace(instance.spirit.displayName)
-                ? instance.spirit.spiritId
-                : instance.spirit.displayName.Trim();
-
-            if (roster == null)
-                return spiritName;
-
-            string spiritId = instance.spirit.spiritId ?? string.Empty;
-            int index = 0;
-            for (int i = 0; i < roster.Count; i++)
-            {
-                ElementalSpiritContractPreset row = roster[i];
-                if (row?.spirit == null || row.spirit.spiritId != spiritId)
-                    continue;
-
-                index++;
-                if (ReferenceEquals(row, instance) || row.contractInstanceId == instance.contractInstanceId)
-                {
-                    return index > 1 ? $"{spiritName} ({index})" : spiritName;
-                }
-            }
-
-            return spiritName;
-        }
+            IReadOnlyList<ElementalSpiritContractPreset> roster) =>
+            ElementalSpiritDisplayNames.GetCanonicalInstanceName(instance, roster);
 
         public static string FormatProgressLine(
             BaseActor elf,

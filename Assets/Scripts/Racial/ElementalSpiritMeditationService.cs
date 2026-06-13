@@ -186,7 +186,7 @@ namespace JRogue.Racial
                 int cap = ElementalSpiritProgressionLogic.GetEffectiveLevelCap(elf, preset);
                 ShowFeedback(
                     gate.displayName,
-                    $"Your bond with {ElementalSpiritProgressionLogic.BuildInstanceDisplayName(preset, runtime.ContractedSpirits)} cannot deepen until you grow stronger (level {cap}).");
+                    $"Your bond with {ElementalSpiritDisplayNames.GetDisplayLabel(preset, runtime.ContractedSpirits)} cannot deepen until you grow stronger (level {cap}).");
                 return;
             }
 
@@ -196,7 +196,7 @@ namespace JRogue.Racial
                 return;
             }
 
-            string spiritName = ElementalSpiritProgressionLogic.BuildInstanceDisplayName(preset, runtime.ContractedSpirits);
+            string spiritName = ElementalSpiritDisplayNames.GetDisplayLabel(preset, runtime.ContractedSpirits);
             if (!ElementalSpiritMeditationLogic.TryAwardSpiritExperience(
                     elf,
                     runtime,

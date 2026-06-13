@@ -121,6 +121,7 @@
     <Compile Include="Assets/Scripts/Shop/ShopDataTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneDebugOverlay.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntryKind.cs" />
+    <Compile Include="Assets/Scripts/Racial/ElementalSpiritNicknameService.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationState.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownPortalSetupPhase.cs" />
@@ -299,6 +300,7 @@
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnPlacementPolicy.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunState.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectController.cs" />
+    <Compile Include="Assets/Scripts/Racial/IElementalSpiritRosterSort.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileId.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryManager.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/MessageHistoryUI.cs" />
@@ -500,6 +502,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownTimeLeverSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorInstanceManager.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyCurrencyLedger.cs" />
+    <Compile Include="Assets/Scripts/Racial/ElementalSpiritDisplayNames.cs" />
     <Compile Include="Assets/Scripts/Combat/FriendlyFire/TargetedActionResolver.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/MapInteractOrthogonal.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyAiBrain.cs" />
