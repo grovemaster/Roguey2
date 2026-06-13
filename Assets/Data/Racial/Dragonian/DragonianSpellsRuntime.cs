@@ -86,6 +86,35 @@ namespace JRogue.Racial
             return false;
         }
 
+        public bool HasLearned(string spellId) => TryFindKnown(spellId, out _);
+
+        public bool TryLearnSpell(string spellId, out string failureReason)
+        {
+            failureReason = null;
+            if (string.IsNullOrWhiteSpace(spellId))
+            {
+                failureReason = "Spell id is empty.";
+                return false;
+            }
+
+            if (!ValidateDragonianActor(out failureReason))
+                return false;
+
+            string trimmed = spellId.Trim();
+            if (TryFindKnown(trimmed, out _))
+                return true;
+
+            if (!DragonianSpellCatalogService.TryGetSpell(trimmed, out DragonianSpellDefinition spell)
+                || spell == null)
+            {
+                failureReason = $"Unknown spell '{trimmed}'.";
+                return false;
+            }
+
+            knownSpells.Add(spell);
+            return true;
+        }
+
         public AbilityAction GetMemorizedAbility(int memorizedIndex)
         {
             if (memorizedIndex < 0 || memorizedIndex >= _memorized.Count)

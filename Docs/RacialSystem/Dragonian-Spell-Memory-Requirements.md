@@ -8,9 +8,9 @@
 
 **Depends on:** Phase 0–2 (`CharacterStats`, `Race`, `RacialSubsystemKind`, modifier stacking), [Sudden Strength essence](../Essence/Sudden-Strength-Essence-Requirements.md) (`SuddenStrength_Standard`), [Fireball scroll / ability](../Inventory/Fireball-Scroll-Requirements.md) (`Fireball_Standard`), [Soul Power regeneration](../Progression/Soul-Power-Regeneration-Requirements.md), [Ability hotbar](../UI/Ability-Hotbar-Requirements.md), `EssenceSlotManager`, `AbilityAction` / targeting pipeline, [Party composition presets](../../Assets/Scripts/World/Generation/PartyCompositionPresets.cs) (`DragonianPlayer` in Tiefling/Beastman/Dragonian/Dwarf roster).
 
-**Related:** [Human — Class powers](Human-Class-Powers-Requirements.md) (Mage spell equip budget — **different resource**), [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md) (Soul Power spend, race-exclusive actives), [Racial abilities menu](../UI/Racial-Abilities-Menu-Requirements.md) (future Dragonian body — read-only spell sheet).
+**Related:** [Human — Class powers](Human-Class-Powers-Requirements.md) (Mage spell equip budget — **different resource**), [Elf — Elemental Spirit contracts](Elf-ElementalSpirit-Contracts-Requirements.md) (Soul Power spend, race-exclusive actives), [Racial abilities menu](../UI/Racial-Abilities-Menu-Requirements.md) (future Dragonian body — read-only spell sheet), [Dragonian — Spell learning (Elder quests)](Dragonian-Spell-Learning-Elder-Quests-Requirements.md) (how spells enter **known library**).
 
-**Explicitly out of scope (v0):** Dragonian **learning** gates (NPC trainer, scrolls, level unlocks) beyond Inspector preset / dev menu; spell **tiers** derived from a formula (use explicit **`memorizeCost`** per spell); respec **refund** of learning costs; Dragonian racial menu UI (defer v0.1); gamepad layout; PvP spell steal; casting Dragonian spells from items scrolls owned by non-Dragonians.
+**Explicitly out of scope (v0):** Dragonian **learning** from NPCs (see [Elder quests](Dragonian-Spell-Learning-Elder-Quests-Requirements.md)); spell **tiers** derived from a formula (use explicit **`memorizeCost`** per spell); respec **refund** of learning costs; Dragonian racial menu UI (defer v0.1); gamepad layout; PvP spell steal; casting Dragonian spells from items scrolls owned by non-Dragonians.
 
 ---
 
@@ -132,7 +132,7 @@ remainingMemory >= memorizeCost(S)
 ### 5.2 — Learned gate
 
 - Only **learned** spells may be memorized.
-- v0: learning = preset list on `DragonianSpellsRuntime` / prefab (see §9).
+- v0: learning deferred to [Elder quests](Dragonian-Spell-Learning-Elder-Quests-Requirements.md); production prefab starts with **empty** known library (L13 there).
 
 ### 5.3 — Persistence
 
@@ -246,17 +246,21 @@ Validate `race` + subsystem on all mutations (mirror `HumanMageSpellsRuntime.Val
 | **`soulPowerCastCost`** | **5** (locked v0; subject to future balance pass) |
 | **Targeting** | Targeted tile + splash (inherited) |
 
-### 8.3 — v0 preset loadout (Dragonian test prefab)
+### 8.3 — Production prefab bootstrap (`DragonianPlayer`)
 
-Suggested **`DragonianPlayer`** bootstrap:
+**Locked (see [Elder quests L13](Dragonian-Spell-Learning-Elder-Quests-Requirements.md)):**
 
 | Set | Content |
 |-----|---------|
-| **Known** | Both sample spells |
-| **Memorized** | **`dragonian_spell_sudden_strength` only** (leaves room to test memorizing Fireball in UI) |
-| **Essences** | Empty **or** one non-conflicting essence for dual-path QA |
+| **Known** | **Empty** — spells earned via Elder quest turn-in |
+| **Memorized** | **Empty** — player memorizes in town after learning |
+| **Essences** | Empty (v0) |
 
-**Budget check example:** if `MaxSoulPower = 100`, memorizing both (3 + 7 = **10**) is legal; casting Fireball five times in one fight requires **25** current SP total.
+**Sample spell assets** (`Draconic Surge`, `Dragon Flame`) remain authored under `Assets/Data/Racial/Dragonian/` as **Elder rewards**, not prefab presets.
+
+**Budget check example:** after learning both sample spells, if `MaxSoulPower = 100`, memorizing both (3 + 7 = **10**) is legal; casting Dragon Flame five times in one fight requires **25** current SP total.
+
+**QA:** unit tests and dev tools use **`SetKnownAndMemorized`** — not production prefab data.
 
 ---
 
@@ -324,7 +328,7 @@ Replace a single party slot with Dragonian only if using a custom roster; defaul
 | **A6** | Human Mage cannot cast Dragonian spell hotbar entry; Dragonian cannot cast Human Mage spell entry. |
 | **A7** | Dragonian with essence equipped can still cast memorized spells if SP budgets allow. |
 | **A8** | Non-memorized learned spell cannot execute from hotbar. |
-| **A9** | Party preset with **DragonianPlayer** spawns actor with subsystem + sample known spells. |
+| **A9** | Party preset with **DragonianPlayer** spawns actor with subsystem + **empty** known/memorized spells until Elder quests grant learning. |
 | **A10** | `TryMemorize` / `TryUnmemorize` in dungeon returns failure; same operations succeed in town. |
 
 ---
@@ -335,7 +339,7 @@ Replace a single party slot with Dragonian only if using a custom roster; defaul
 |-------|-------|
 | **v0 (this doc)** | `DragonianSpellDefinition`, `DragonianSpellsRuntime`, memorize budget validation, cast pipeline, hotbar wiring, sample Sudden Strength + Fireball spells, `DragonianPlayer` preset |
 | **v0.1** | Racial menu read-only spell sheet; safe-zone memorize UI |
-| **v1** | Learn spells from NPC / loot; spell registry; content pack creator |
+| **v1** | [Learn spells from Elder quests](Dragonian-Spell-Learning-Elder-Quests-Requirements.md); spell registry tooling |
 
 ---
 
@@ -344,7 +348,7 @@ Replace a single party slot with Dragonian only if using a custom roster; defaul
 | # | Question | Resolution |
 |---|----------|------------|
 | **Q1** | Can the same spell be memorized twice? | **No** — at most one entry per `spellId`. |
-| **Q2** | Does learning a spell cost resources? | **Not in v0** — preset known list only. |
+| **Q2** | Does learning a spell cost resources? | **Not at learn time** — quest trial may cost items; casting uses **`soulPowerCastCost`** (see [Elder quests](Dragonian-Spell-Learning-Elder-Quests-Requirements.md)). |
 | **Q3** | Memorize changes in dungeon? | **Locked no** — safe zone only (§L10). |
 | **Q4** | `MaxSoulPower` formula for Dragonian long-term | **Same as Human None v0**; revisit in balance pass. |
 | **Q5** | Display name parity vs unique names? | **Locked distinct names** — `Draconic Surge`, `Dragon Flame` (§L12). |
@@ -367,6 +371,7 @@ Replace a single party slot with Dragonian only if using a custom roster; defaul
 
 | Date | Change |
 |------|--------|
-| 2026-06-05 | Implemented v0 — DragonianSpellsRuntime, hotbar wiring, sample spells, DragonianPlayer preset. |
+| 2026-06-13 | Production prefab: empty known/memorized spells; learning via Elder quests (L13). §8.3, A9 updated. |
+| 2026-06-05 | Implemented v0 — DragonianSpellsRuntime, hotbar wiring, sample spells, DragonianPlayer prefab. |
 | 2026-06-13 | Locked L10–L12: safe-zone-only memorize, Dragon Flame cast 5 SP, distinct spell names. |
 | 2026-06-13 | Initial draft — spell memory budget on MaxSoulPower, cast spend, essence coexistence, sample Sudden Strength + Fireball, party roster testing. |

@@ -55,3 +55,5 @@ MonoBehaviour:
     cell: {x: 8, y: 5, z: 0}
   - markerId: playerStart
     cell: {x: 10, y: 8, z: 0}
+  - markerId: dragonian_elder_volscale
+    cell: {x: 6, y: 5, z: 0}

@@ -25,6 +25,7 @@ namespace JRogue.World.Generation.Phases
             (StampMarkerIds.FairyMerchant, "Town/Npc/TownNpc_FairyMerchant", "Assets/Resources/Town/Npc/TownNpc_FairyMerchant.prefab"),
             (StampMarkerIds.BeastBloodMerchant, "Town/Npc/TownNpc_BeastBloodMerchant", "Assets/Resources/Town/Npc/TownNpc_BeastBloodMerchant.prefab"),
             (StampMarkerIds.FleshmetalForgemaster, "Town/Npc/TownNpc_FleshmetalForgemaster", "Assets/Resources/Town/Npc/TownNpc_FleshmetalForgemaster.prefab"),
+            (StampMarkerIds.DragonianElderVolscale, "Town/Npc/TownNpc_DragonianElderVolscale", "Assets/Resources/Town/Npc/TownNpc_DragonianElderVolscale.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)

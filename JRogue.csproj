@@ -149,6 +149,7 @@
     <Compile Include="Assets/Scripts/Racial/BeastBloodUseService.cs" />
     <Compile Include="Assets/Scripts/Item/EvocableChargeRules.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/RacialAbilitiesPartyStripView.cs" />
+    <Compile Include="Assets/Scripts/Quest/QuestInstanceKey.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacementUtility.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/PartyInventoryTransferService.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySectionHeaderView.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="Assets/Scripts/Shop/ShopGoldUtility.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceHost.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcDialogProfile.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/DragonianElderNpcController.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceEffect.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneTilePaintContext.cs" />
@@ -180,6 +182,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/EnterDungeonDialogUI.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionSettings.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleTypes.cs" />
+    <Compile Include="Assets/Scripts/Racial/DragonianElderQuestLogic.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlaceholderSprites.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/PortalSetupPhase.cs" />
@@ -191,6 +194,7 @@
     <Compile Include="Assets/Scripts/World/Generation/IDungeonGenerationPhase.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/TieflingForgemasterNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/GameStoryFlagService.cs" />
+    <Compile Include="Assets/Scripts/Dialog/DragonianElderDialogSession.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryPolicy.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentLegalityEvaluator.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopNpcDefinition.cs" />
@@ -217,10 +221,10 @@
     <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinitionCatalog.cs" />
-    <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceService.cs" />
-    <Compile Include="Assets/Scripts/UI/Gameplay/MessageConsoleUI.cs" />
-    <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeService.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/BeastmanSoulBeastBodyView.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/MessageConsoleUI.cs" />
+    <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceService.cs" />
+    <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeService.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
@@ -479,6 +483,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonEntryService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/TieflingImplantSlotGridView.cs" />
+    <Compile Include="Assets/Scripts/Racial/DragonianElderQuestService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/MonsterSpawnSchedulePhase.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceProfile.cs" />

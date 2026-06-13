@@ -4,6 +4,12 @@ using UnityEngine;
 
 namespace JRogue.Quest
 {
+    public enum QuestOwnership : byte
+    {
+        PartyShared = 0,
+        PerPartyMember = 1,
+    }
+
     public enum QuestRuntimeState
     {
         Active = 0,
@@ -107,6 +113,7 @@ namespace JRogue.Quest
     public sealed class QuestInstance
     {
         public string questId;
+        public string ownerPartyMemberId;
         public QuestRuntimeState state;
         public QuestObjectiveProgress[] progress = Array.Empty<QuestObjectiveProgress>();
         public int acceptOrder;

@@ -178,6 +178,46 @@ namespace JRogue.Tests.UnitTests.Quest
                     default));
         }
 
+        [Test]
+        public void CollectObjective_UsesOwnerInventoryOnlyForPerMemberQuest()
+        {
+            ItemData scale = CreateItem("Ember Scale");
+            QuestDefinition quest = CreateQuest("quest_dragonian_collect");
+            quest.ownership = QuestOwnership.PerPartyMember;
+            quest.objectives = new[]
+            {
+                new QuestObjectiveDefinition
+                {
+                    objectiveId = "collect_scales",
+                    kind = QuestObjectiveKind.CollectItem,
+                    item = scale,
+                    itemQuantity = 2,
+                },
+            };
+
+            TestPartyActor owner = CreateActor("DragonA");
+            TestPartyActor other = CreateActor("DragonB");
+            owner.gameObject.AddComponent<InventoryManager>();
+            other.gameObject.AddComponent<InventoryManager>();
+            owner.GetComponent<InventoryManager>().AddItem(new ItemInstance(scale, 2));
+
+            var instance = new QuestInstance
+            {
+                questId = quest.ResolvedQuestId,
+                ownerPartyMemberId = "DragonA",
+                progress = QuestLogic.CreateInitialProgress(quest),
+            };
+
+            QuestLogic.RefreshScanObjectives(
+                quest,
+                instance,
+                _flags,
+                new List<BaseActor> { owner, other },
+                null);
+
+            Assert.IsTrue(instance.progress[0].completed);
+        }
+
         TestPartyActor CreateActor(string memberId)
         {
             var go = new GameObject(memberId);

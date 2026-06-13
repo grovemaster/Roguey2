@@ -35,6 +35,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3747578214593972201}
+    - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3193362650125857630}
   m_SourcePrefab: {fileID: 100100000, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
 --- !u!1 &3218558407117122551 stripped
 GameObject:
@@ -53,9 +56,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7c8d9e0f1b2436586970a1b2c3d4e5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.DragonianSpellsRuntime
-  knownSpells:
-  - {fileID: 11400000, guid: b8d9e0f1a2c34567890abcdef0123456, type: 2}
-  - {fileID: 11400000, guid: c9e0f1a2b3d4567890abcdef01234567, type: 2}
-  presetMemorizedSpellIds:
-  - dragonian_spell_sudden_strength
-  - dragonian_spell_fireball
+  knownSpells: []
+  presetMemorizedSpellIds: []
+--- !u!114 &3193362650125857630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3218558407117122551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e4d0b3f5c2a9e7d1b6f8a4c0e3d5b7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Quest.PartyMemberId
+  memberId: DragonianPlayer

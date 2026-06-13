@@ -1,3 +1,4 @@
+using JRogue.Stats;
 using UnityEngine;
 
 namespace JRogue.Quest
@@ -10,6 +11,10 @@ namespace JRogue.Quest
         [TextArea(2, 6)] public string journalDescription;
         public string giverNpcId;
         public string giverDisplayName;
+        public QuestOwnership ownership;
+        [Min(0)] public int requiredMinLevel;
+        public Race requiredRace = Race.Unset;
+        public string learnDragonianSpellId;
         public QuestPrerequisite[] acceptPrerequisites = System.Array.Empty<QuestPrerequisite>();
         public QuestObjectiveDefinition[] objectives = System.Array.Empty<QuestObjectiveDefinition>();
         public QuestRewardBundle rewards;

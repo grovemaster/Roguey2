@@ -8,6 +8,11 @@ using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
 using JRogue.Manager.Progression;
+using JRogue.Racial;
+using JRogue.Stats;
+using JRogue.Stats.Racial;
+using JRogue.UI.Hotbar;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Quest
@@ -75,13 +80,47 @@ namespace JRogue.Quest
             return definition;
         }
 
-        public bool TryGetInstance(string questId, out QuestInstance instance)
+        public bool TryGetInstance(string questId, out QuestInstance instance) =>
+            TryGetInstance(questId, null, out instance);
+
+        public bool TryGetInstance(string questId, string ownerPartyMemberId, out QuestInstance instance)
         {
             instance = null;
             if (string.IsNullOrWhiteSpace(questId))
                 return false;
 
-            return _instances.TryGetValue(questId.Trim(), out instance);
+            QuestDefinition definition = GetDefinition(questId);
+            string storageKey = ResolveStorageKey(definition, questId.Trim(), ownerPartyMemberId);
+            return _instances.TryGetValue(storageKey, out instance);
+        }
+
+        public bool TryGetInstanceByStorageKey(string storageKey, out QuestInstance instance)
+        {
+            instance = null;
+            if (string.IsNullOrWhiteSpace(storageKey))
+                return false;
+
+            return _instances.TryGetValue(storageKey.Trim(), out instance);
+        }
+
+        public static string ResolveStorageKey(
+            QuestDefinition definition,
+            string questId,
+            string ownerPartyMemberId)
+        {
+            if (definition?.ownership == QuestOwnership.PerPartyMember)
+                return QuestInstanceKey.StorageKey(questId, ownerPartyMemberId);
+
+            return questId?.Trim() ?? string.Empty;
+        }
+
+        public string ResolveStorageKey(QuestInstance instance)
+        {
+            if (instance == null)
+                return string.Empty;
+
+            QuestDefinition definition = GetDefinition(instance.questId);
+            return ResolveStorageKey(definition, instance.questId, instance.ownerPartyMemberId);
         }
 
         public QuestConditionState GetConditionState(string questId) =>
@@ -118,7 +157,10 @@ namespace JRogue.Quest
             return QuestLogic.FindProgress(instance.progress, objectiveId);
         }
 
-        public bool TryOffer(string questId, out string denyReason)
+        public bool TryOffer(string questId, out string denyReason) =>
+            TryOfferForMember(questId, null, out denyReason);
+
+        public bool TryOfferForMember(string questId, BaseActor speaker, out string denyReason)
         {
             denyReason = null;
             QuestDefinition definition = GetDefinition(questId);
@@ -129,10 +171,18 @@ namespace JRogue.Quest
             }
 
             string resolvedId = definition.ResolvedQuestId;
-            if (_instances.TryGetValue(resolvedId, out QuestInstance existing)
+            string memberId = speaker != null ? QuestLogic.ResolveMemberId(speaker) : null;
+            string storageKey = ResolveStorageKey(definition, resolvedId, memberId);
+            if (_instances.TryGetValue(storageKey, out QuestInstance existing)
                 && existing.state != QuestRuntimeState.Failed)
             {
                 denyReason = "Quest already accepted or completed.";
+                return false;
+            }
+
+            if (speaker != null
+                && !QuestLogic.ValidateMemberAcceptRequirements(definition, speaker, out denyReason))
+            {
                 return false;
             }
 
@@ -141,6 +191,7 @@ namespace JRogue.Quest
                     _instances,
                     GameStoryFlagService.Instance,
                     GetPartyMembers(),
+                    memberId,
                     out denyReason))
             {
                 return false;
@@ -149,31 +200,56 @@ namespace JRogue.Quest
             return true;
         }
 
-        public bool TryAccept(string questId, out string denyReason)
+        public bool TryAccept(string questId, out string denyReason) =>
+            TryAcceptForMember(questId, ResolveRewardRecipient(), out denyReason);
+
+        public bool TryAcceptForMember(string questId, BaseActor speaker, out string denyReason)
         {
-            if (!TryOffer(questId, out denyReason))
+            denyReason = null;
+            if (speaker == null)
+            {
+                denyReason = "No quest owner.";
                 return false;
+            }
 
             QuestDefinition definition = GetDefinition(questId);
+            if (definition?.ownership == QuestOwnership.PerPartyMember
+                && !SafeZonePolicyService.TryAllowDragonianElderQuestChange(out denyReason))
+            {
+                return false;
+            }
+
+            if (!TryOfferForMember(questId, speaker, out denyReason))
+                return false;
+
+            definition = GetDefinition(questId);
             string resolvedId = definition.ResolvedQuestId;
+            string memberId = QuestLogic.ResolveMemberId(speaker);
+            string storageKey = ResolveStorageKey(definition, resolvedId, memberId);
             var instance = new QuestInstance
             {
                 questId = resolvedId,
+                ownerPartyMemberId = definition.ownership == QuestOwnership.PerPartyMember
+                    ? memberId
+                    : null,
                 state = QuestRuntimeState.Active,
                 progress = QuestLogic.CreateInitialProgress(definition),
                 acceptOrder = ++_acceptSequence,
                 isNew = true,
             };
 
-            _instances[resolvedId] = instance;
+            _instances[storageKey] = instance;
             ApplyFlags(definition.setFlagsOnAccept);
             RefreshQuest(definition, instance, logObjectiveUpdates: false);
-            Debug.Log($"{QuestLogic.LogPrefix} accepted '{definition.displayTitle}'.");
+            Debug.Log($"{QuestLogic.LogPrefix} accepted '{definition.displayTitle}' for {memberId}.");
             NotifyChanged();
             return true;
         }
 
-        public bool TryTurnIn(string questId, string npcId, out string denyReason)
+        public bool TryTurnIn(string questId, string npcId, out string denyReason) =>
+            TryTurnInForMember(questId, ResolveRewardRecipient(), npcId, out denyReason);
+
+        public bool TryTurnInForMember(string questId, BaseActor speaker, string npcId, out string denyReason)
         {
             denyReason = null;
             QuestDefinition definition = GetDefinition(questId);
@@ -183,8 +259,22 @@ namespace JRogue.Quest
                 return false;
             }
 
+            if (speaker == null)
+            {
+                denyReason = "No quest owner.";
+                return false;
+            }
+
+            if (definition.ownership == QuestOwnership.PerPartyMember
+                && !SafeZonePolicyService.TryAllowDragonianElderQuestChange(out denyReason))
+            {
+                return false;
+            }
+
             string resolvedId = definition.ResolvedQuestId;
-            if (!_instances.TryGetValue(resolvedId, out QuestInstance instance))
+            string memberId = QuestLogic.ResolveMemberId(speaker);
+            string storageKey = ResolveStorageKey(definition, resolvedId, memberId);
+            if (!_instances.TryGetValue(storageKey, out QuestInstance instance))
             {
                 denyReason = "Quest is not active.";
                 return false;
@@ -201,6 +291,18 @@ namespace JRogue.Quest
                 denyReason = "Quest has failed.";
                 return false;
             }
+
+            if (definition.ownership == QuestOwnership.PerPartyMember
+                && !QuestLogic.ActorIsQuestOwner(definition, instance, speaker))
+            {
+                BaseActor owner = QuestLogic.FindMemberById(GetPartyMembers(), instance.ownerPartyMemberId);
+                string ownerName = owner != null ? owner.DisplayName : instance.ownerPartyMemberId;
+                denyReason = $"This trial was sworn by {ownerName}. Let them speak.";
+                return false;
+            }
+
+            if (!QuestLogic.ValidateMemberAcceptRequirements(definition, speaker, out denyReason))
+                return false;
 
             if (!string.IsNullOrWhiteSpace(definition.giverNpcId)
                 && !string.Equals(definition.giverNpcId.Trim(), npcId?.Trim(), StringComparison.OrdinalIgnoreCase))
@@ -219,14 +321,19 @@ namespace JRogue.Quest
                 return false;
             }
 
-            BaseActor rewardRecipient = ResolveRewardRecipient();
+            BaseActor rewardRecipient = definition.ownership == QuestOwnership.PerPartyMember
+                ? speaker
+                : ResolveRewardRecipient();
             if (!QuestLogic.CanReceiveRewardItems(definition.rewards, rewardRecipient, out denyReason))
                 return false;
 
-            if (!QuestLogic.TryRemoveDeliverItems(definition, GetPartyMembers(), out denyReason))
+            if (!QuestLogic.TryRemoveDeliverItems(definition, instance, GetPartyMembers(), out denyReason))
                 return false;
 
             if (!GrantRewards(definition.rewards, rewardRecipient, out denyReason))
+                return false;
+
+            if (!TryGrantLearnSpellReward(definition, instance, out denyReason))
                 return false;
 
             ApplyFlags(definition.setFlagsOnComplete);
@@ -237,9 +344,12 @@ namespace JRogue.Quest
             return true;
         }
 
-        public void PinQuest(string questId)
+        public void PinQuest(string questId) =>
+            PinQuest(questId, null);
+
+        public void PinQuest(string questId, string ownerPartyMemberId)
         {
-            if (!TryGetInstance(questId, out QuestInstance instance))
+            if (!TryGetInstance(questId, ownerPartyMemberId, out QuestInstance instance))
                 return;
 
             if (instance.state != QuestRuntimeState.Active && instance.state != QuestRuntimeState.ReadyToTurnIn)
@@ -250,9 +360,20 @@ namespace JRogue.Quest
             NotifyChanged();
         }
 
-        public void UnpinQuest(string questId)
+        public void PinQuestInstance(QuestInstance instance)
         {
-            if (!TryGetInstance(questId, out QuestInstance instance))
+            if (instance == null)
+                return;
+
+            PinQuest(instance.questId, instance.ownerPartyMemberId);
+        }
+
+        public void UnpinQuest(string questId) =>
+            UnpinQuest(questId, null);
+
+        public void UnpinQuest(string questId, string ownerPartyMemberId)
+        {
+            if (!TryGetInstance(questId, ownerPartyMemberId, out QuestInstance instance))
                 return;
 
             instance.isPinned = false;
@@ -260,13 +381,32 @@ namespace JRogue.Quest
             NotifyChanged();
         }
 
-        public void ClearNewMarker(string questId)
+        public void UnpinQuestInstance(QuestInstance instance)
         {
-            if (!TryGetInstance(questId, out QuestInstance instance))
+            if (instance == null)
+                return;
+
+            UnpinQuest(instance.questId, instance.ownerPartyMemberId);
+        }
+
+        public void ClearNewMarker(string questId) =>
+            ClearNewMarker(questId, null);
+
+        public void ClearNewMarker(string questId, string ownerPartyMemberId)
+        {
+            if (!TryGetInstance(questId, ownerPartyMemberId, out QuestInstance instance))
                 return;
 
             instance.isNew = false;
             NotifyChanged();
+        }
+
+        public void ClearNewMarkerForInstance(QuestInstance instance)
+        {
+            if (instance == null)
+                return;
+
+            ClearNewMarker(instance.questId, instance.ownerPartyMemberId);
         }
 
         public void NotifyEnemyKilled(string speciesId, BaseActor killer)
@@ -278,7 +418,10 @@ namespace JRogue.Quest
             bool changed = false;
             foreach (KeyValuePair<string, QuestInstance> pair in _instances)
             {
-                QuestDefinition definition = GetDefinition(pair.Key);
+                if (!QuestInstanceKey.TryParseStorageKey(pair.Key, out string questId, out _))
+                    continue;
+
+                QuestDefinition definition = GetDefinition(questId);
                 QuestInstance instance = pair.Value;
                 if (definition == null
                     || instance.state == QuestRuntimeState.Completed
@@ -301,7 +444,10 @@ namespace JRogue.Quest
             bool changed = false;
             foreach (KeyValuePair<string, QuestInstance> pair in _instances)
             {
-                QuestDefinition definition = GetDefinition(pair.Key);
+                if (!QuestInstanceKey.TryParseStorageKey(pair.Key, out string questId, out _))
+                    continue;
+
+                QuestDefinition definition = GetDefinition(questId);
                 QuestInstance instance = pair.Value;
                 if (definition == null
                     || instance.state == QuestRuntimeState.Completed
@@ -333,7 +479,10 @@ namespace JRogue.Quest
             bool changed = false;
             foreach (KeyValuePair<string, QuestInstance> pair in _instances)
             {
-                QuestDefinition definition = GetDefinition(pair.Key);
+                if (!QuestInstanceKey.TryParseStorageKey(pair.Key, out string questId, out _))
+                    continue;
+
+                QuestDefinition definition = GetDefinition(questId);
                 QuestInstance instance = pair.Value;
                 if (definition == null
                     || instance.state == QuestRuntimeState.Completed
@@ -360,7 +509,10 @@ namespace JRogue.Quest
             bool changed = false;
             foreach (KeyValuePair<string, QuestInstance> pair in _instances)
             {
-                QuestDefinition definition = GetDefinition(pair.Key);
+                if (!QuestInstanceKey.TryParseStorageKey(pair.Key, out string questId, out _))
+                    continue;
+
+                QuestDefinition definition = GetDefinition(questId);
                 QuestInstance instance = pair.Value;
                 if (definition == null
                     || instance.state == QuestRuntimeState.Completed
@@ -384,7 +536,10 @@ namespace JRogue.Quest
             bool changed = false;
             foreach (KeyValuePair<string, QuestInstance> pair in _instances)
             {
-                QuestDefinition definition = GetDefinition(pair.Key);
+                if (!QuestInstanceKey.TryParseStorageKey(pair.Key, out string questId, out _))
+                    continue;
+
+                QuestDefinition definition = GetDefinition(questId);
                 QuestInstance instance = pair.Value;
                 if (definition == null
                     || instance.state == QuestRuntimeState.Completed
@@ -462,10 +617,13 @@ namespace JRogue.Quest
             if (!QuestLogic.CanReceiveRewardItems(definition.rewards, rewardRecipient, out _))
                 return false;
 
-            if (!QuestLogic.TryRemoveDeliverItems(definition, GetPartyMembers(), out _))
+            if (!QuestLogic.TryRemoveDeliverItems(definition, instance, GetPartyMembers(), out _))
                 return false;
 
             if (!GrantRewards(definition.rewards, rewardRecipient, out _))
+                return false;
+
+            if (!TryGrantLearnSpellReward(definition, instance, out _))
                 return false;
 
             ApplyFlags(definition.setFlagsOnComplete);
@@ -522,6 +680,35 @@ namespace JRogue.Quest
                 PartyExperienceService.Instance?.AwardPartyExperience(rewards.partyExperience, "QuestReward");
 
             ApplyFlags(rewards.setFlagsOnComplete);
+            return true;
+        }
+
+        bool TryGrantLearnSpellReward(QuestDefinition definition, QuestInstance instance, out string denyReason)
+        {
+            denyReason = null;
+            if (definition == null || string.IsNullOrWhiteSpace(definition.learnDragonianSpellId))
+                return true;
+
+            BaseActor owner = definition.ownership == QuestOwnership.PerPartyMember
+                ? QuestLogic.FindMemberById(GetPartyMembers(), instance?.ownerPartyMemberId)
+                : ResolveRewardRecipient();
+            if (owner == null)
+            {
+                denyReason = "Quest owner is not in the party.";
+                return false;
+            }
+
+            DragonianSpellsRuntime runtime = owner.GetComponent<DragonianSpellsRuntime>();
+            if (runtime == null)
+            {
+                denyReason = "Quest owner cannot learn draconic word-forms.";
+                return false;
+            }
+
+            if (!runtime.TryLearnSpell(definition.learnDragonianSpellId.Trim(), out denyReason))
+                return false;
+
+            AbilityHotbarUI.Instance?.RefreshAll();
             return true;
         }
 

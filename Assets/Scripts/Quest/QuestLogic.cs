@@ -6,6 +6,8 @@ using JRogue.Item;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
+using JRogue.Stats;
+using JRogue.Stats.Racial;
 using UnityEngine;
 
 namespace JRogue.Quest
@@ -13,6 +15,123 @@ namespace JRogue.Quest
     public static class QuestLogic
     {
         public const string LogPrefix = "[Quest]";
+
+        public static bool ActorIsQuestOwner(
+            QuestDefinition definition,
+            QuestInstance instance,
+            BaseActor actor)
+        {
+            if (definition == null || instance == null || actor == null)
+                return false;
+
+            if (definition.ownership != QuestOwnership.PerPartyMember)
+                return true;
+
+            if (string.IsNullOrWhiteSpace(instance.ownerPartyMemberId))
+                return false;
+
+            return string.Equals(
+                ResolveMemberId(actor),
+                instance.ownerPartyMemberId.Trim(),
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static string ResolveMemberId(BaseActor actor)
+        {
+            if (actor == null)
+                return string.Empty;
+
+            string id = PartyMemberId.GetMemberId(actor);
+            if (!string.IsNullOrWhiteSpace(id))
+                return id.Trim();
+
+            return actor.name ?? string.Empty;
+        }
+
+        public static BaseActor FindMemberById(IReadOnlyList<BaseActor> partyMembers, string memberId)
+        {
+            if (partyMembers == null || string.IsNullOrWhiteSpace(memberId))
+                return null;
+
+            for (int i = 0; i < partyMembers.Count; i++)
+            {
+                BaseActor member = partyMembers[i];
+                if (member == null)
+                    continue;
+
+                if (string.Equals(ResolveMemberId(member), memberId.Trim(), StringComparison.OrdinalIgnoreCase))
+                    return member;
+            }
+
+            return null;
+        }
+
+        public static bool IsQuestCompletedForMember(
+            IReadOnlyDictionary<string, QuestInstance> instances,
+            string questId,
+            string ownerPartyMemberId)
+        {
+            if (instances == null || string.IsNullOrWhiteSpace(questId))
+                return false;
+
+            string key = QuestInstanceKey.StorageKey(questId, ownerPartyMemberId);
+            return instances.TryGetValue(key, out QuestInstance instance)
+                   && instance.state == QuestRuntimeState.Completed;
+        }
+
+        public static bool HasActiveOrCompletedQuestForMember(
+            IReadOnlyDictionary<string, QuestInstance> instances,
+            string questId,
+            string ownerPartyMemberId)
+        {
+            if (instances == null || string.IsNullOrWhiteSpace(questId))
+                return false;
+
+            string key = QuestInstanceKey.StorageKey(questId, ownerPartyMemberId);
+            return instances.TryGetValue(key, out QuestInstance instance)
+                   && instance.state != QuestRuntimeState.Failed;
+        }
+
+        public static int CountItemForQuestOwner(
+            QuestDefinition definition,
+            QuestInstance instance,
+            IReadOnlyList<BaseActor> partyMembers,
+            ItemData item)
+        {
+            if (item == null)
+                return 0;
+
+            if (definition?.ownership == QuestOwnership.PerPartyMember)
+            {
+                BaseActor owner = FindMemberById(partyMembers, instance?.ownerPartyMemberId);
+                return CountItemInInventory(owner, item);
+            }
+
+            return CountItemInParty(
+                partyMembers,
+                item,
+                QuestActorRequirementKind.None,
+                default);
+        }
+
+        public static int CountItemInInventory(BaseActor actor, ItemData item)
+        {
+            if (actor == null || item == null)
+                return 0;
+
+            InventoryManager inventory = actor.GetComponent<InventoryManager>();
+            if (inventory == null)
+                return 0;
+
+            int total = 0;
+            foreach (ItemInstance carried in inventory.CarriedItems)
+            {
+                if (carried?.Definition == item)
+                    total += carried.Quantity;
+            }
+
+            return total;
+        }
 
         public static bool ActorMatchesRequirement(
             QuestActorRequirement requirement,
@@ -88,6 +207,15 @@ namespace JRogue.Quest
             IReadOnlyDictionary<string, QuestInstance> instances,
             GameStoryFlagService flags,
             IReadOnlyList<BaseActor> partyMembers,
+            out string denyReason) =>
+            EvaluatePrerequisites(definition, instances, flags, partyMembers, null, out denyReason);
+
+        public static bool EvaluatePrerequisites(
+            QuestDefinition definition,
+            IReadOnlyDictionary<string, QuestInstance> instances,
+            GameStoryFlagService flags,
+            IReadOnlyList<BaseActor> partyMembers,
+            string ownerPartyMemberId,
             out string denyReason)
         {
             denyReason = null;
@@ -103,8 +231,17 @@ namespace JRogue.Quest
             for (int i = 0; i < definition.acceptPrerequisites.Length; i++)
             {
                 QuestPrerequisite prerequisite = definition.acceptPrerequisites[i];
-                if (EvaluatePrerequisite(prerequisite, instances, flags, partyMembers, out denyReason))
+                if (EvaluatePrerequisite(
+                        prerequisite,
+                        definition,
+                        instances,
+                        flags,
+                        partyMembers,
+                        ownerPartyMemberId,
+                        out denyReason))
+                {
                     continue;
+                }
 
                 return false;
             }
@@ -113,11 +250,63 @@ namespace JRogue.Quest
             return true;
         }
 
+        public static bool ValidateMemberAcceptRequirements(
+            QuestDefinition definition,
+            BaseActor speaker,
+            out string denyReason)
+        {
+            denyReason = null;
+            if (definition == null)
+            {
+                denyReason = "Quest definition is missing.";
+                return false;
+            }
+
+            CharacterStats stats = speaker?.GetComponent<CharacterStats>();
+            if (definition.requiredRace != Race.Unset
+                && (stats == null || stats.race != definition.requiredRace))
+            {
+                denyReason = "Only Dragonians may undertake this trial.";
+                return false;
+            }
+
+            if (definition.requiredMinLevel > 0
+                && (stats == null || stats.level < definition.requiredMinLevel))
+            {
+                denyReason = $"Requires level {definition.requiredMinLevel}.";
+                return false;
+            }
+
+            return true;
+        }
+
+        public static string ResolveInstanceStorageKey(QuestDefinition definition, QuestInstance instance)
+        {
+            if (definition?.ownership == QuestOwnership.PerPartyMember)
+            {
+                return QuestInstanceKey.StorageKey(
+                    instance?.questId,
+                    instance?.ownerPartyMemberId);
+            }
+
+            return instance?.questId?.Trim() ?? string.Empty;
+        }
+
         public static bool EvaluatePrerequisite(
             QuestPrerequisite prerequisite,
             IReadOnlyDictionary<string, QuestInstance> instances,
             GameStoryFlagService flags,
             IReadOnlyList<BaseActor> partyMembers,
+            out string denyReason) =>
+            EvaluatePrerequisite(prerequisite, null, instances, flags, partyMembers, null, out denyReason);
+
+        public static bool EvaluatePrerequisite(
+            QuestPrerequisite prerequisite,
+            QuestDefinition definition,
+            IReadOnlyDictionary<string, QuestInstance> instances,
+            GameStoryFlagService flags,
+            IReadOnlyList<BaseActor> partyMembers,
+            string ownerPartyMemberId,
             out string denyReason)
         {
             denyReason = null;
@@ -143,6 +332,13 @@ namespace JRogue.Quest
                         return false;
                     }
 
+                    if (definition?.ownership == QuestOwnership.PerPartyMember
+                        && !string.IsNullOrWhiteSpace(ownerPartyMemberId)
+                        && IsQuestCompletedForMember(instances, questId, ownerPartyMemberId))
+                    {
+                        return true;
+                    }
+
                     if (instances != null
                         && instances.TryGetValue(questId, out QuestInstance instance)
                         && instance.state == QuestRuntimeState.Completed)
@@ -162,6 +358,16 @@ namespace JRogue.Quest
                         return false;
                     }
 
+                    if (definition?.ownership == QuestOwnership.PerPartyMember
+                        && !string.IsNullOrWhiteSpace(ownerPartyMemberId))
+                    {
+                        if (!HasActiveOrCompletedQuestForMember(instances, questId, ownerPartyMemberId))
+                            return true;
+
+                        denyReason = $"Quest '{questId}' already started.";
+                        return false;
+                    }
+
                     if (instances == null || !instances.TryGetValue(questId, out QuestInstance instance))
                         return true;
 
@@ -171,11 +377,22 @@ namespace JRogue.Quest
                 case QuestPrerequisiteKind.HasItem:
                 {
                     int required = Mathf.Max(1, prerequisite.itemQuantity);
-                    int owned = CountItemInParty(
-                        partyMembers,
-                        prerequisite.item,
-                        QuestActorRequirementKind.None,
-                        default);
+                    int owned;
+                    if (definition?.ownership == QuestOwnership.PerPartyMember
+                        && !string.IsNullOrWhiteSpace(ownerPartyMemberId))
+                    {
+                        BaseActor owner = FindMemberById(partyMembers, ownerPartyMemberId);
+                        owned = CountItemInInventory(owner, prerequisite.item);
+                    }
+                    else
+                    {
+                        owned = CountItemInParty(
+                            partyMembers,
+                            prerequisite.item,
+                            QuestActorRequirementKind.None,
+                            default);
+                    }
+
                     if (owned >= required)
                         return true;
 
@@ -314,12 +531,11 @@ namespace JRogue.Quest
                     case QuestObjectiveKind.CollectItem:
                     case QuestObjectiveKind.DeliverItem:
                     {
-                        int owned = CountItemInParty(
+                        int owned = CountItemForQuestOwner(
+                            definition,
+                            instance,
                             partyMembers,
-                            objective.item,
-                            objective.actorRequirement.kind,
-                            objective.actorRequirement,
-                            party);
+                            objective.item);
                         entry.current = Mathf.Min(owned, entry.required);
                         if (entry.current >= entry.required)
                             LatchObjective(ref entry, entry.required);
@@ -364,8 +580,15 @@ namespace JRogue.Quest
                 if (!string.Equals(objective.speciesId, speciesId, StringComparison.OrdinalIgnoreCase))
                     continue;
 
-                if (!ActorMatchesRequirement(objective.actorRequirement, killer, party))
+                if (definition.ownership == QuestOwnership.PerPartyMember)
+                {
+                    if (!ActorIsQuestOwner(definition, instance, killer))
+                        continue;
+                }
+                else if (!ActorMatchesRequirement(objective.actorRequirement, killer, party))
+                {
                     continue;
+                }
 
                 string objectiveId = ResolveObjectiveId(objective, i);
                 int progressIndex = FindProgressIndex(instance.progress, objectiveId);
@@ -579,6 +802,7 @@ namespace JRogue.Quest
 
         public static bool TryRemoveDeliverItems(
             QuestDefinition definition,
+            QuestInstance instance,
             IReadOnlyList<BaseActor> partyMembers,
             out string denyReason)
         {
@@ -593,11 +817,24 @@ namespace JRogue.Quest
                     continue;
 
                 int required = ResolveRequiredCount(objective);
-                int removed = RemoveMatchingItems(
-                    partyMembers,
-                    objective.item,
-                    required,
-                    objective.acceptGenericStacks);
+                int removed;
+                if (definition.ownership == QuestOwnership.PerPartyMember)
+                {
+                    BaseActor owner = FindMemberById(partyMembers, instance?.ownerPartyMemberId);
+                    removed = RemoveMatchingItemsFromActor(
+                        owner,
+                        objective.item,
+                        required,
+                        objective.acceptGenericStacks);
+                }
+                else
+                {
+                    removed = RemoveMatchingItems(
+                        partyMembers,
+                        objective.item,
+                        required,
+                        objective.acceptGenericStacks);
+                }
 
                 if (removed < required)
                 {
@@ -609,6 +846,49 @@ namespace JRogue.Quest
             }
 
             return true;
+        }
+
+        public static bool TryRemoveDeliverItems(
+            QuestDefinition definition,
+            IReadOnlyList<BaseActor> partyMembers,
+            out string denyReason) =>
+            TryRemoveDeliverItems(definition, null, partyMembers, out denyReason);
+
+        public static int RemoveMatchingItemsFromActor(
+            BaseActor actor,
+            ItemData item,
+            int quantity,
+            bool acceptGenericStacks)
+        {
+            if (actor == null || item == null || quantity <= 0)
+                return 0;
+
+            InventoryManager inventory = actor.GetComponent<InventoryManager>();
+            if (inventory == null)
+                return 0;
+
+            int remaining = quantity;
+            for (int itemIndex = inventory.CarriedItems.Count - 1;
+                 itemIndex >= 0 && remaining > 0;
+                 itemIndex--)
+            {
+                ItemInstance carried = inventory.CarriedItems[itemIndex];
+                if (carried?.Definition != item)
+                    continue;
+
+                if (!acceptGenericStacks && carried.Definition.category != ItemCategory.QuestItem)
+                    continue;
+
+                int take = Mathf.Min(remaining, carried.Quantity);
+                if (take >= carried.Quantity)
+                    inventory.TryRemoveCarriedAt(itemIndex);
+                else
+                    carried.Quantity -= take;
+
+                remaining -= take;
+            }
+
+            return quantity - remaining;
         }
 
         public static int RemoveMatchingItems(

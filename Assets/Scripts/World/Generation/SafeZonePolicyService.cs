@@ -87,6 +87,20 @@ namespace JRogue.World.Generation
             return false;
         }
 
+        public const string ElderQuestDenyMessage = "You can only speak of draconic trials in town.";
+
+        public static bool TryAllowDragonianElderQuestChange(out string denyReason, bool logDeny = true)
+        {
+            denyReason = null;
+            if (IsSafeZoneForActiveParty())
+                return true;
+
+            denyReason = ElderQuestDenyMessage;
+            if (logDeny)
+                Debug.Log($"{LogPrefix} {denyReason}");
+            return false;
+        }
+
         public static bool IsUtilityInventoryUse(ItemData item) =>
             SafeZonePolicyLogic.IsUtilityInventoryUse(item);
 

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Text;
+using JRogue.Actors;
 using JRogue.Item;
 using JRogue.Manager.Party;
 using JRogue.Quest;
+using JRogue.Racial;
 using JRogue.UI.Inventory;
 using TMPro;
 using UnityEngine;
@@ -166,9 +168,9 @@ namespace JRogue.UI.Quest
 
             QuestInstance selected = entries[_selectedIndex];
             if (selected.isPinned)
-                quests.UnpinQuest(selected.questId);
+                quests.UnpinQuestInstance(selected);
             else
-                quests.PinQuest(selected.questId);
+                quests.PinQuestInstance(selected);
         }
 
         void RefreshDisplay()
@@ -220,6 +222,7 @@ namespace JRogue.UI.Quest
                 QuestInstance entry = entries[i];
                 QuestDefinition definition = QuestService.Instance?.GetDefinition(entry.questId);
                 string title = definition != null ? definition.displayTitle : entry.questId;
+                title = FormatJournalListTitle(definition, entry, title);
                 if (entry.isPinned)
                     title = $"📌 {title}";
                 else if (entry.isNew)
@@ -252,10 +255,10 @@ namespace JRogue.UI.Quest
                 return;
             }
 
-            QuestService.Instance?.ClearNewMarker(entry.questId);
+            QuestService.Instance?.ClearNewMarkerForInstance(entry);
 
             var sb = new StringBuilder();
-            sb.AppendLine(definition.displayTitle);
+            sb.AppendLine(FormatJournalDetailTitle(definition, entry));
             sb.AppendLine();
             if (!string.IsNullOrWhiteSpace(definition.journalDescription))
                 sb.AppendLine(definition.journalDescription);
@@ -307,8 +310,29 @@ namespace JRogue.UI.Quest
             var sb = new StringBuilder("Rewards:");
             QuestRewardBundle rewards = definition.rewards;
             bool any = false;
+            if (!string.IsNullOrWhiteSpace(definition.learnDragonianSpellId))
+            {
+                if (DragonianSpellCatalogService.TryGetSpell(
+                        definition.learnDragonianSpellId,
+                        out DragonianSpellDefinition spell)
+                    && spell != null)
+                {
+                    sb.Append(" Learn ").Append(spell.displayName)
+                        .Append(" (memorize ").Append(spell.memorizeCost)
+                        .Append(" SP · cast ").Append(spell.soulPowerCastCost).Append(" SP)");
+                }
+                else
+                {
+                    sb.Append(" Learn ").Append(definition.learnDragonianSpellId);
+                }
+
+                any = true;
+            }
+
             if (rewards.gold > 0)
             {
+                if (any)
+                    sb.Append(',');
                 sb.Append(' ').Append(rewards.gold).Append(" gold");
                 any = true;
             }
@@ -333,6 +357,43 @@ namespace JRogue.UI.Quest
                 sb.Append(" none");
 
             return sb.ToString();
+        }
+
+        static string FormatJournalListTitle(QuestDefinition definition, QuestInstance entry, string title)
+        {
+            if (definition?.ownership != QuestOwnership.PerPartyMember
+                || string.IsNullOrWhiteSpace(entry.ownerPartyMemberId))
+            {
+                return title;
+            }
+
+            string ownerName = ResolveOwnerDisplayName(entry.ownerPartyMemberId);
+            return $"{ownerName}: {title}";
+        }
+
+        static string FormatJournalDetailTitle(QuestDefinition definition, QuestInstance entry)
+        {
+            if (definition?.ownership != QuestOwnership.PerPartyMember
+                || string.IsNullOrWhiteSpace(entry.ownerPartyMemberId))
+            {
+                return definition.displayTitle;
+            }
+
+            string ownerName = ResolveOwnerDisplayName(entry.ownerPartyMemberId);
+            return $"{ownerName}: {definition.displayTitle}";
+        }
+
+        static string ResolveOwnerDisplayName(string ownerPartyMemberId)
+        {
+            PartyManager party = PartyManager.Instance;
+            if (party?.partyMembers != null)
+            {
+                BaseActor owner = QuestLogic.FindMemberById(party.partyMembers, ownerPartyMemberId);
+                if (owner != null && !string.IsNullOrWhiteSpace(owner.DisplayName))
+                    return owner.DisplayName;
+            }
+
+            return ownerPartyMemberId;
         }
 
         static Color ResolveBorderColor(QuestRuntimeState state)

@@ -40,6 +40,28 @@ namespace JRogue.Tests.UnitTests.Racial
         }
 
         [Test]
+        public void TryLearnSpell_AddsKnownSpell_IdempotentOnRepeat()
+        {
+            DragonianSpellDefinition surge = CreateSpell("dragonian_spell_sudden_strength", 3, 1, CreateSuddenStrength());
+            DragonianSpellCatalog catalog = ScriptableObject.CreateInstance<DragonianSpellCatalog>();
+            catalog.spells = new System.Collections.Generic.List<DragonianSpellDefinition> { surge };
+            _assets.Add(catalog);
+            typeof(DragonianSpellCatalogService)
+                .GetField("_cached", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+                ?.SetValue(null, catalog);
+
+            GameObject actor = CreateDragonianActor(maxSoulPowerBudget: 100);
+            var runtime = actor.GetComponent<DragonianSpellsRuntime>();
+
+            Assert.IsTrue(runtime.TryLearnSpell(surge.spellId, out string reason1), reason1);
+            Assert.IsTrue(runtime.HasLearned(surge.spellId));
+            Assert.IsTrue(runtime.TryLearnSpell(surge.spellId, out string reason2), reason2);
+            Assert.AreEqual(1, runtime.KnownSpells.Count);
+
+            DragonianSpellCatalogService.ResetCacheForTests();
+        }
+
+        [Test]
         public void MemorizeBudget_BothSampleSpells_FitsWithinMaxSoulPower()
         {
             DragonianSpellDefinition surge = CreateSpell("dragonian_spell_sudden_strength", 3, 1, CreateSuddenStrength());
