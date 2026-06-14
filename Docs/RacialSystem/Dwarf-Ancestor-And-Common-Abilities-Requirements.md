@@ -352,7 +352,7 @@ Existing Dwarf actors without subsystem state: no patron, empty common slots, no
 
 ### 11.7 — Open (not blocking v0)
 
-- **Patron pick timing:** first shrine visit vs character creation UI.
+- **Patron pick timing:** superseded for player progression by [Dwarf — Clan & Hall of Ancestors](Dwarf-Clan-And-Hall-Of-Ancestors-Requirements.md) — join a clan at its hall; patron comes from clan. Inspector preset remains for NPCs/tests.
 - **Can common abilities be respec’d** after unlock, or permanent per id?
 - **Baseline dwarf loadout** numbers (poison resist, etc.)—content, not framework.
 - **Whether `RacialSubsystemKind` is required** on all Dwarves or only when any common/patron data is present.
@@ -377,6 +377,7 @@ When implementing, expect to add or extend:
 
 ## 13. Related documents
 
+- [Dwarf — Clan & Hall of Ancestors](Dwarf-Clan-And-Hall-Of-Ancestors-Requirements.md) — **player-facing progression**: membership, altar learn ceremony, prestige, clan buildings, **`K` menu** role
 - [Phase 0 — Glossary and data contracts](Phase0-Glossary-And-Data-Contracts.md)
 - [Phase 1 — Implementation summary](Phase1-Implementation.md)
 - [Phase 3 — Barbarian Spirit Imprint](Phase3-Requirements.md) (tree + path semantics)

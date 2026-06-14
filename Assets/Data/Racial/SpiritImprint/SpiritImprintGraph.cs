@@ -126,6 +126,93 @@ namespace JRogue.Racial
             return path;
         }
 
+        /// <summary>
+        /// Validates a root-connected learned set (supports branching). Returns normalized list with root first.
+        /// </summary>
+        public List<string> ValidateAndNormalizeLearnedSet(IReadOnlyList<string> learnedIds, out string error)
+        {
+            error = null;
+            if (nodes == null || nodes.Count == 0)
+            {
+                error = "Graph has no nodes.";
+                return null;
+            }
+
+            if (!TryBuildLookup(out Dictionary<string, SpiritImprintNodeData> byId, out string setupError))
+            {
+                error = setupError;
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(rootNodeId) || !byId.TryGetValue(rootNodeId, out SpiritImprintNodeData rootNode))
+            {
+                error = $"Root id '{rootNodeId}' is missing from graph.";
+                return null;
+            }
+
+            var learnedSet = new HashSet<string>(StringComparer.Ordinal);
+            if (learnedIds == null || learnedIds.Count == 0)
+            {
+                learnedSet.Add(rootNodeId);
+            }
+            else
+            {
+                for (int i = 0; i < learnedIds.Count; i++)
+                {
+                    string id = learnedIds[i];
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        error = "Learned set contains empty node id.";
+                        return null;
+                    }
+
+                    learnedSet.Add(id);
+                }
+
+                if (!learnedSet.Contains(rootNodeId))
+                    learnedSet.Add(rootNodeId);
+            }
+
+            foreach (string id in learnedSet)
+            {
+                if (!byId.TryGetValue(id, out SpiritImprintNodeData node))
+                {
+                    error = $"Unknown node id '{id}'.";
+                    return null;
+                }
+
+                if (string.IsNullOrEmpty(node.parentNodeId))
+                    continue;
+
+                if (!learnedSet.Contains(node.parentNodeId))
+                {
+                    error = $"Node '{id}' requires learned parent '{node.parentNodeId}'.";
+                    return null;
+                }
+            }
+
+            var ordered = new List<string> { rootNodeId };
+            if (learnedIds != null)
+            {
+                for (int i = 0; i < learnedIds.Count; i++)
+                {
+                    string id = learnedIds[i];
+                    if (string.IsNullOrEmpty(id) || id == rootNodeId || ordered.Contains(id))
+                        continue;
+
+                    ordered.Add(id);
+                }
+            }
+
+            if (!ValidateSiblingExclusivity(ordered, byId, out string exclError))
+            {
+                error = exclError;
+                return null;
+            }
+
+            return ordered;
+        }
+
         bool TryBuildLookup(out Dictionary<string, SpiritImprintNodeData> byId, out string error)
         {
             byId = new Dictionary<string, SpiritImprintNodeData>(StringComparer.Ordinal);

@@ -22,6 +22,7 @@ namespace JRogue.World.Generation
             new TownTimeLeverSetupPhase(),
             new TownMeditationShrineSetupPhase(),
             new TownSoulBeastRitualSetupPhase(),
+            new TownDwarfClanAltarSetupPhase(),
             new TownNpcSetupPhase(),
             new TownInteriorNpcSetupPhase(),
             new TownTorchSetupPhase(),

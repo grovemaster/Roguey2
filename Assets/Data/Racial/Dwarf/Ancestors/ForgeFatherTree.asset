@@ -16,9 +16,16 @@ MonoBehaviour:
   nodes:
   - nodeId: ancestor_root
     displayName: Patron acknowledged (dormant)
-    description: Rank 0 — no gameplay payload.
+    description: "Rank 0 \u2014 no gameplay payload."
     parentNodeId: 
     siblingExclusivityGroup: 0
+    unlockCost:
+      gold: 0
+      items: []
+      storyFlags: []
+    requiredCharacterLevel: 1
+    requiredClanMemberRank: 0
+    requiredClanPrestige: 0
     statModifiers: []
     resistanceModifiers: []
     passiveEffects: []
@@ -28,6 +35,13 @@ MonoBehaviour:
     description: +1 Strength from the Forge-Father's mark.
     parentNodeId: ancestor_root
     siblingExclusivityGroup: 0
+    unlockCost:
+      gold: 0
+      items: []
+      storyFlags: []
+    requiredCharacterLevel: 1
+    requiredClanMemberRank: 0
+    requiredClanPrestige: 0
     statModifiers:
     - attribute: 0
       value: 1
@@ -39,6 +53,13 @@ MonoBehaviour:
     description: +1 Constitution from ancestral endurance.
     parentNodeId: forge_blessing
     siblingExclusivityGroup: 0
+    unlockCost:
+      gold: 0
+      items: []
+      storyFlags: []
+    requiredCharacterLevel: 1
+    requiredClanMemberRank: 1
+    requiredClanPrestige: 0
     statModifiers:
     - attribute: 3
       value: 1

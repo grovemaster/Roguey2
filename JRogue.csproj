@@ -146,6 +146,7 @@
     <Compile Include="Assets/Scripts/Controller/Npc/HumanKnightDrillMasterNpcController.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Knight/KnightAuraPulseAbility.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfAncestorLearnService.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritMeditationLogic.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanMageHotbarSync.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanKnightHotbarSync.cs" />
@@ -263,18 +264,21 @@
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyKindMapping.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyLegacyMigration.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfAncestorAltarService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTileVariationMode.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanKnightDrillMasterQuestLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonFloorZoneLayout.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapTypes.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyMemberDeathService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusImmunity.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Effects/DwarfHallAncestorLearnEffect.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/VaultPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyCompositionPresets.cs" />
     <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberMapHighlight.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfAncestorLearnLogic.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadGraveTouchLingerPassive.cs" />
     <Compile Include="Assets/Scripts/Manager/Visibility/VisibilityManager.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneHybridCellAssigner.cs" />
@@ -313,10 +317,12 @@
     <Compile Include="Assets/Scripts/Manager/Turn/TurnManager.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionEvaluator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingIds.cs" />
+    <Compile Include="Assets/Scripts/Dialog/DwarfClanJoinDialogSession.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryHotkeyRuntimeOverrides.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryTargetedUseLog.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementEntry.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownDwarfClanAltarSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Dialog/HumanKnightDrillMasterDialogSession.cs" />
     <Compile Include="Assets/Scripts/Dialog/PortraitDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEffect.cs" />
@@ -326,6 +332,7 @@
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyController.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/LayoutStampPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimePhase.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/DwarfClanStewardNpcController.cs" />
     <Compile Include="Assets/Scripts/World/Altar/ManaStoneTierAcceptFilter.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TrapConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingScenarioController.cs" />
@@ -430,6 +437,7 @@
     <Compile Include="Assets/Scripts/Interactables/Preconditions/FlagPrecondition.cs" />
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/HealingPotionRules.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfClanJoinService.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarItemLookup.cs" />
     <Compile Include="Assets/Scripts/Racial/TieflingImplantForgemasterLogic.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/RacialUiTheme.cs" />
@@ -483,6 +491,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneRectProcGenerator.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/RestSessionService.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfClanIds.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyEligibility.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/RacialAbilitiesUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCellMapStats.cs" />
@@ -514,6 +523,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/DungeonEndedDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinition.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopTransactionService.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfClanJoinLogic.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FloorPickupHudButton.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyRuntime.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/TrapWhileAliveMapEffect.cs" />
@@ -553,6 +563,7 @@
     <Compile Include="Assets/Scripts/Controller/Npc/SpiritImprintShamanNpcController.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/OpenDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/NpcController.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfClanWorldState.cs" />
     <Compile Include="Assets/Scripts/Combat/Targeting/TargetingSightGate.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardMarker.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarManaStoneOffering.cs" />

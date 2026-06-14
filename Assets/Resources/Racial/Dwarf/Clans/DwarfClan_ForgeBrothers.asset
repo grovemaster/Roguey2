@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fb48df358f4e440ca1f1aae0cbe45ce, type: 3}
+  m_Name: DwarfClan_ForgeBrothers
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.DwarfClanDefinition
+  clanId: forge_brothers
+  displayName: Forge Brothers
+  shortName: Forge Brothers
+  description: Smith-clan dwarves who venerate the Forge-Father. Their hall keeps
+    the ancestral altar where initiates learn techniques of endurance and craft.
+  patronAncestor: {fileID: 11400000, guid: b2816eeba70c4442a7f0694d2197f628, type: 2}
+  startingPrestige: 5
+  altarFlavorTitle: The Forge-Father's ancestors await your offering.

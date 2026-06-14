@@ -41,6 +41,9 @@ namespace JRogue.World.Generation
             (StampMarkerIds.FairyMerchant, new Vector3Int(12, 5, 0)),
             (StampMarkerIds.SoulBeastRitualCircle, new Vector3Int(14, 5, 0)),
 
+            (StampMarkerIds.ForgeBrothersSteward, new Vector3Int(1, 6, 0)),
+            (StampMarkerIds.ForgeBrothersAltar, new Vector3Int(1, 5, 0)),
+
             (StampMarkerIds.TownTorchWest, new Vector3Int(0, 10, 0)),
             (StampMarkerIds.TownTorchNorth, new Vector3Int(10, 19, 0)),
             (StampMarkerIds.TownTorchEast, new Vector3Int(19, 10, 0)),

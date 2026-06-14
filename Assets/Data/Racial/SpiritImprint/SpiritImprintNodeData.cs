@@ -29,6 +29,16 @@ namespace JRogue.Racial
         [Tooltip("Price to append this node from its parent. Ignored on root.")]
         public SpiritImprintUnlockCost unlockCost;
 
+        [Header("Dwarf clan gates")]
+        [Tooltip("Minimum character level to learn at the Hall of Ancestors altar.")]
+        public int requiredCharacterLevel = 1;
+
+        [Tooltip("Minimum clan member rank (personal standing) required.")]
+        public int requiredClanMemberRank;
+
+        [Tooltip("Minimum clan-wide prestige required.")]
+        public int requiredClanPrestige;
+
         public List<AttributeModifier> statModifiers;
         public List<DamageResistanceModifier> resistanceModifiers;
         public List<PassiveEffect> passiveEffects;

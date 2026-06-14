@@ -105,6 +105,7 @@
     <Compile Include="Assets/Data/Status/StatusPolarity.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/CyborgImplantCostTypes.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanSkillNodeRankEntry.cs" />
+    <Compile Include="Assets/Data/Racial/Dwarf/DwarfClanDefinition.cs" />
     <Compile Include="Assets/Data/Item/RitualOfferingItemData.cs" />
     <Compile Include="Assets/Data/Racial/Beastman/SoulBeastModifierSource.cs" />
     <Compile Include="Assets/Data/Inventory/InventoryHotkeyProfile.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Assets/Data/Racial/Human/HumanClassSkillTreeRuntime.cs" />
     <Compile Include="Assets/Data/Item/SpellbookItemData.cs" />
     <Compile Include="Assets/Data/Racial/RacialPassiveHooks.cs" />
+    <Compile Include="Assets/Data/Racial/Dwarf/DwarfClanMembershipRuntime.cs" />
     <Compile Include="Assets/Data/Racial/RacialLoadoutApplier.cs" />
     <Compile Include="Assets/Data/Racial/Beastman/SoulBeastRitualTypeDefinition.cs" />
     <Compile Include="Assets/Data/Enemy/LootTableEntry.cs" />

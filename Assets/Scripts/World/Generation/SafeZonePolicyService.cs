@@ -102,6 +102,7 @@ namespace JRogue.World.Generation
         public const string MageEquipDenyMessage = "You can only adjust prepared spells in town.";
         public const string KnightSkillSpendDenyMessage = "You can only spend Knight skill points in town.";
         public const string ElderQuestDenyMessage = "You can only speak of draconic trials in town.";
+        public const string DwarfClanCeremonyDenyMessage = "You can only swear clan oaths and pay respects in town.";
 
         public static bool TryAllowHumanMageTutorQuestChange(out string denyReason, bool logDeny = true)
         {
@@ -189,6 +190,26 @@ namespace JRogue.World.Generation
 
         public static bool IsUtilityInventoryUse(ItemData item) =>
             SafeZonePolicyLogic.IsUtilityInventoryUse(item);
+
+        public static bool TryAllowDwarfClanCeremony(out string denyReason, bool logDeny = true)
+        {
+            denyReason = null;
+            if (CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat)
+            {
+                denyReason = CombatMemorizeDenyMessage;
+                if (logDeny)
+                    Debug.Log($"{LogPrefix} {denyReason}");
+                return false;
+            }
+
+            if (IsSafeZoneForActiveParty())
+                return true;
+
+            denyReason = DwarfClanCeremonyDenyMessage;
+            if (logDeny)
+                Debug.Log($"{LogPrefix} {denyReason}");
+            return false;
+        }
 
         public static bool IsProtectedTarget(BaseActor actor)
         {

@@ -53,6 +53,67 @@ namespace JRogue.Racial
 
         public IReadOnlyList<string> ChosenPathNodeIds => chosenPathNodeIds;
 
+        public bool IsNodeLearned(string nodeId)
+        {
+            if (string.IsNullOrEmpty(nodeId) || chosenPathNodeIds == null)
+                return false;
+
+            for (int i = 0; i < chosenPathNodeIds.Count; i++)
+            {
+                if (string.Equals(chosenPathNodeIds[i], nodeId, StringComparison.Ordinal))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool TryAppendLearnedNode(string nodeId, out string failureReason)
+        {
+            failureReason = null;
+            if (patronAncestor == null || patronAncestor.abilityTree == null)
+            {
+                failureReason = "No patron ability tree.";
+                return false;
+            }
+
+            SpiritImprintGraph graph = patronAncestor.abilityTree;
+            if (!graph.TryFindNode(nodeId, out SpiritImprintNodeData node))
+            {
+                failureReason = $"Unknown node '{nodeId}'.";
+                return false;
+            }
+
+            if (IsNodeLearned(nodeId))
+            {
+                failureReason = $"Node '{nodeId}' is already learned.";
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(node.parentNodeId))
+            {
+                failureReason = "Root is learned on join.";
+                return false;
+            }
+
+            if (!IsNodeLearned(node.parentNodeId))
+            {
+                failureReason = $"Parent '{node.parentNodeId}' is not learned.";
+                return false;
+            }
+
+            var trial = chosenPathNodeIds == null || chosenPathNodeIds.Count == 0
+                ? new List<string> { graph.rootNodeId, nodeId }
+                : new List<string>(chosenPathNodeIds) { nodeId };
+
+            List<string> normalized = graph.ValidateAndNormalizeLearnedSet(trial, out failureReason);
+            if (normalized == null)
+                return false;
+
+            chosenPathNodeIds = normalized;
+            TryApplyFromSerializedState();
+            return true;
+        }
+
         public void SetPatronAndPath(AncestorDefinition patron, IReadOnlyList<string> path)
         {
             patronAncestor = patron;

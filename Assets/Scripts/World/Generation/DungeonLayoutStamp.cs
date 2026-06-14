@@ -145,5 +145,7 @@ namespace JRogue.World.Generation
         public const string BuildingDemoArrival = "building_demo_arrival";
         public const string BuildingDemoExit = "building_demo_exit";
         public const string BuildingDemoNpc = "building_demo_npc";
+        public const string ForgeBrothersSteward = "forge_brothers_steward";
+        public const string ForgeBrothersAltar = "forge_brothers_altar";
     }
 }
