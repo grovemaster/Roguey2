@@ -73,6 +73,7 @@
     <Compile Include="Assets/Tests/UnitTests/Combat/ConeSightFootprintTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/VaultSourceTextTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantsRuntimeTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/UI/Proficiency/ProficiencyListBodyViewModelTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/BowEquipmentLegalityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/FloorEssenceLifetimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarPlaceListBuilderTests.cs" />

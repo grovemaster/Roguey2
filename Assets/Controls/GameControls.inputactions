@@ -142,6 +142,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "ToggleProficiencies",
+                    "type": "Button",
+                    "id": "f1a2b3c4-d5e6-7890-abcd-ef1234567891",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "PickupFloorItems",
                     "type": "Button",
                     "id": "f8a2c1d4-9e3b-4a7f-b2d1-8c5e6f0a1b2c",
@@ -1175,6 +1184,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "ToggleCharacterEquipment",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f1a2b3c4-d5e6-7890-abcd-ef1234567892",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleProficiencies",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

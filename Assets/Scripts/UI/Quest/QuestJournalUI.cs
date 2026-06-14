@@ -181,6 +181,7 @@ namespace JRogue.UI.Quest
             InventoryUI.ForceCloseIfOpen();
             JRogue.UI.Racial.RacialAbilitiesUI.ForceCloseIfOpen();
             JRogue.UI.Character.CharacterEquipmentUI.ForceCloseIfOpen();
+            JRogue.UI.Proficiency.ProficienciesUI.ForceCloseIfOpen();
 
             EnsurePanelBuilt();
             _open = true;

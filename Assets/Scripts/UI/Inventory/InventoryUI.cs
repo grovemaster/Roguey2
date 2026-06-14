@@ -879,6 +879,7 @@ namespace JRogue.UI.Inventory
             {
                 JRogue.UI.Racial.RacialAbilitiesUI.ForceCloseIfOpen();
                 JRogue.UI.Character.CharacterEquipmentUI.ForceCloseIfOpen();
+                JRogue.UI.Proficiency.ProficienciesUI.ForceCloseIfOpen();
             }
 
             inventoryPanel.SetActive(willOpen);

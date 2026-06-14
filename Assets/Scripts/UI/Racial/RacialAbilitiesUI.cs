@@ -380,6 +380,7 @@ namespace JRogue.UI.Racial
             InventoryUI.ForceCloseIfOpen();
             QuestJournalUI.ForceCloseIfOpen();
             JRogue.UI.Character.CharacterEquipmentUI.ForceCloseIfOpen();
+            JRogue.UI.Proficiency.ProficienciesUI.ForceCloseIfOpen();
 
             RefreshPartyActors();
             if (_partyActors.Count == 0)

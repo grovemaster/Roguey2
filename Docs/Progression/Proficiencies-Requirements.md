@@ -4,7 +4,7 @@
 
 **Status:** Implemented (`ProficiencyRuntime`, `ProficiencyXpDispatcher`, `ProficiencyCombatResolver`; wired to melee, bow, Human Mage / Dragonian spell casts).
 
-**Visual mock:** None (v0). Future: character sheet proficiency tab (see [Character equipment menu](../UI/Character-Equipment-Menu-Requirements.md) extension).
+**Visual mock:** [`Docs/UI/proficiencies-menu-mock.png`](../UI/proficiencies-menu-mock.png) — see [Proficiencies menu](Proficiencies-Menu-Requirements.md).
 
 **Depends on:** `CharacterStats`, `Stat` / modifier pipeline, `WeaponType`, `DamageType`, `SkillType`, `Race`, `HumanClass`, `ItemData` (`weaponType`, `damageModules`, armor slots), combat pipelines (`PlayerController`, `BowRangedCombatService`, ability execution), [Bow & arrow](../Combat/Bow-And-Arrow-Requirements.md) (existing bow proficiency hook), [Party experience & leveling](Party-Experience-And-Leveling-Requirements.md), [Human — Class powers](../RacialSystem/Human-Class-Powers-Requirements.md), [Human Mage — Spells & spellbooks](../RacialSystem/Human-Mage-Spells-And-Spellbooks-Requirements.md), [Dragonian — Spell memory](../RacialSystem/Dragonian-Spell-Memory-Requirements.md), [Phase 0 glossary](../RacialSystem/Phase0-Glossary-And-Data-Contracts.md).
 
@@ -574,11 +574,11 @@ Today `CharacterStats.Skills` holds **`Stealth`**, **`Athletics`**, **`Perceptio
 
 | Surface | Behavior |
 |---------|----------|
-| **Character equipment menu** (future tab) | List eligible proficiencies: **name, level, pxp / next**, aptitude badge (**+2**, **−1**). |
+| **[Proficiencies menu](../UI/Proficiencies-Menu-Requirements.md) (`P`)** | Full-screen list: **name, level / cap, pxp / next**, aptitude badge (**+2**, **−1**), detail pane. |
 | **Inspect / detail** | Weapon inspect shows **`Bow 7`**, **`Fighting 4`** contributing to formula breakdown. |
 | **Level-up toast** | `"Fire Magic increased to 5!"` (log + optional floating text). |
 | **Ineligible** | Grey **N/A** with reason string (§6.2). |
-| **Racial menu** | No proficiency editing — view-only link **“See proficiencies (C)”** when character sheet ships. |
+| **Racial menu (`K`)** | No proficiency editing — separate **`P`** proficiencies reference menu. |
 
 Hotkey **`C`** for character sheet is **future**; v0 may use debug overlay only.
 
@@ -801,4 +801,4 @@ See **§7.4.4**. Summary:
 - [Bow & arrow](../Combat/Bow-And-Arrow-Requirements.md) §8 — reference **`ProficiencyCombatResolver`**
 - [Party experience & leveling](Party-Experience-And-Leveling-Requirements.md) — character **`level`** drives proficiency **`trainingCap`** (§7.5); separate XP pools
 - [Human Mage spells](../RacialSystem/Human-Mage-Spells-And-Spellbooks-Requirements.md) — add **`proficiencyTags`** on spells
-- [Character equipment menu](../UI/Character-Equipment-Menu-Requirements.md) — proficiency tab
+- [Proficiencies menu](../UI/Proficiencies-Menu-Requirements.md) — party-scoped reference UI (`P`)

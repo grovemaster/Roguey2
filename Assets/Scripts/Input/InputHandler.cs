@@ -9,6 +9,7 @@ using JRogue.UI.Inventory;
 using JRogue.UI.Quest;
 using JRogue.UI.Racial;
 using JRogue.UI.Character;
+using JRogue.UI.Proficiency;
 using JRogue.UI.Targeting;
 using JRogue.World.Generation;
 using UnityEngine;
@@ -23,6 +24,7 @@ namespace JRogue.Input
         private InputAction toggleQuestJournalAction;
         private InputAction toggleRacialAbilitiesAction;
         private InputAction toggleCharacterEquipmentAction;
+        private InputAction toggleProficienciesAction;
         private InputAction pickupFloorItemsAction;
         private InputAction aimBowAction;
         private InputAction restAction;
@@ -123,6 +125,21 @@ namespace JRogue.Input
             else
             {
                 toggleCharacterEquipmentAction.performed += OnToggleCharacterEquipmentPerformed;
+            }
+
+            toggleProficienciesAction = playerInput != null
+                ? playerInput.actions.FindAction("ToggleProficiencies", throwIfNotFound: false)
+                : null;
+
+            if (toggleProficienciesAction == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(InputHandler)}: No <b>ToggleProficiencies</b> action on {nameof(PlayerInput)}. "
+                    + "Add it to GameControls (binding <Keyboard>/p).");
+            }
+            else
+            {
+                toggleProficienciesAction.performed += OnToggleProficienciesPerformed;
             }
 
             pickupFloorItemsAction = playerInput != null
@@ -251,6 +268,12 @@ namespace JRogue.Input
             {
                 toggleCharacterEquipmentAction.performed -= OnToggleCharacterEquipmentPerformed;
                 toggleCharacterEquipmentAction = null;
+            }
+
+            if (toggleProficienciesAction != null)
+            {
+                toggleProficienciesAction.performed -= OnToggleProficienciesPerformed;
+                toggleProficienciesAction = null;
             }
 
             if (pickupFloorItemsAction != null)
@@ -399,6 +422,9 @@ namespace JRogue.Input
 
             InventoryUI.ForceCloseIfOpen();
             QuestJournalUI.ForceCloseIfOpen();
+            RacialAbilitiesUI.ForceCloseIfOpen();
+            CharacterEquipmentUI.ForceCloseIfOpen();
+            ProficienciesUI.ForceCloseIfOpen();
 
             if (BlocksFloorGameplay())
                 return;
@@ -423,11 +449,37 @@ namespace JRogue.Input
             InventoryUI.ForceCloseIfOpen();
             QuestJournalUI.ForceCloseIfOpen();
             RacialAbilitiesUI.ForceCloseIfOpen();
+            ProficienciesUI.ForceCloseIfOpen();
 
             if (BlocksFloorGameplay())
                 return;
 
             CharacterEquipmentUI.TogglePanelFromGameplayInput();
+        }
+
+        void OnToggleProficienciesPerformed(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            if (GameOverService.IsGameOver)
+                return;
+
+            if (ProficienciesUI.BlocksGameplay)
+            {
+                ProficienciesUI.TogglePanelFromGameplayInput();
+                return;
+            }
+
+            InventoryUI.ForceCloseIfOpen();
+            QuestJournalUI.ForceCloseIfOpen();
+            RacialAbilitiesUI.ForceCloseIfOpen();
+            CharacterEquipmentUI.ForceCloseIfOpen();
+
+            if (BlocksFloorGameplay())
+                return;
+
+            ProficienciesUI.TogglePanelFromGameplayInput();
         }
 
         void OnAimBowPerformed(InputAction.CallbackContext context)

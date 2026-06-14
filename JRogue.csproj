@@ -83,6 +83,7 @@
     <Compile Include="Assets/Scripts/Service/Sensing/HearingUtility.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySortMode.cs" />
     <Compile Include="Assets/Scripts/Controller/Player/PlayerController.cs" />
+    <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyDisplayNames.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridManager.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/EssencePickupConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/IAdjacentMapInteractable.cs" />
@@ -281,6 +282,7 @@
     <Compile Include="Assets/Scripts/Abilities/Teleport/TeleportAbility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarPlaceListBuilder.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberDeathDialogUI.cs" />
+    <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyAptitudeFormatter.cs" />
     <Compile Include="Assets/Scripts/Manager/Loot/ManaStoneAutoPickupService.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarResolvedAction.cs" />
     <Compile Include="Assets/Scripts/Core/Targeting/TargetingResolver.cs" />
@@ -344,6 +346,7 @@
     <Compile Include="Assets/Scripts/World/Generation/PortalEntryService.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightCellData.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SpawnEnemyInteractableEffect.cs" />
+    <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyListBodyView.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInspectPaneView.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AltarUsedModalUI.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
@@ -398,6 +401,7 @@
     <Compile Include="Assets/Scripts/Item/World/FloorItemWorldView.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInstance.cs" />
     <Compile Include="Assets/Scripts/Dialog/PartyRacePortraitCatalog.cs" />
+    <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyTrainedByFormatter.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarBootstrap.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/ElementalSpiritStatPassive.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPresentationModel.cs" />
@@ -447,6 +451,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneGenerationRng.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementSet.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/EnemyPopulationPhase.cs" />
+    <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyDetailPaneView.cs" />
     <Compile Include="Assets/Scripts/Quest/QuestTypes.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotDefinition.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTile.cs" />
@@ -501,6 +506,7 @@
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRoller.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentManager.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneTilePainter.cs" />
+    <Compile Include="Assets/Scripts/UI/Proficiency/ProficienciesUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorInstance.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingFacadeOverlay.cs" />
     <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
@@ -518,6 +524,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonZonePopulationProfile.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/MapInteractPlayerInteraction.cs" />
     <Compile Include="Assets/Scripts/Racial/PartyRacialDevTools.cs" />
+    <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyBenefitFormatter.cs" />
     <Compile Include="Assets/Scripts/GridFeatures/GridOverlayPainter.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingQaPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyExperienceService.cs" />
@@ -536,6 +543,7 @@
     <Compile Include="Assets/Scripts/Dialog/INpcTalkTarget.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/AbilityCooldownService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonPortalVisuals.cs" />
+    <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyListBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/ZoneFillPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorFeatureSnapshot.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarAssignabilityService.cs" />
@@ -553,6 +561,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/GameLogSession.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownTimeLeverSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorInstanceManager.cs" />
+    <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyCategories.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyCurrencyLedger.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritDisplayNames.cs" />
     <Compile Include="Assets/Scripts/Combat/FriendlyFire/TargetedActionResolver.cs" />

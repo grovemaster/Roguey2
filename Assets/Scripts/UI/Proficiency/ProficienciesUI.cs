@@ -1,33 +1,33 @@
 using System.Collections.Generic;
 using JRogue.Actors;
-using JRogue.Item;
 using JRogue.Manager.Party;
+using JRogue.Stats;
+using JRogue.UI.Character;
 using JRogue.UI.Inventory;
 using JRogue.UI.Quest;
-using JRogue.UI.Proficiency;
 using JRogue.UI.Racial;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace JRogue.UI.Character
+namespace JRogue.UI.Proficiency
 {
-    public sealed class CharacterEquipmentUI : MonoBehaviour
+    public sealed class ProficienciesUI : MonoBehaviour
     {
-        public static CharacterEquipmentUI Instance { get; private set; }
+        public static ProficienciesUI Instance { get; private set; }
 
-        static CharacterEquipmentUI _instance;
+        static ProficienciesUI _instance;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap() => EnsureInstance();
 
-        public static CharacterEquipmentUI EnsureInstance()
+        public static ProficienciesUI EnsureInstance()
         {
             if (_instance != null)
                 return _instance;
 
-            var existing = FindAnyObjectByType<CharacterEquipmentUI>(FindObjectsInactive.Include);
+            var existing = FindAnyObjectByType<ProficienciesUI>(FindObjectsInactive.Include);
             if (existing != null)
             {
                 _instance = existing;
@@ -35,9 +35,9 @@ namespace JRogue.UI.Character
                 return existing;
             }
 
-            var go = new GameObject("CharacterEquipmentUI");
+            var go = new GameObject("ProficienciesUI");
             DontDestroyOnLoad(go);
-            _instance = go.AddComponent<CharacterEquipmentUI>();
+            _instance = go.AddComponent<ProficienciesUI>();
             Instance = _instance;
             return _instance;
         }
@@ -62,15 +62,17 @@ namespace JRogue.UI.Character
         }
 
         GameObject _panelRoot;
+        TextMeshProUGUI _bannerText;
+        TextMeshProUGUI _summaryText;
+        TextMeshProUGUI _capWarningText;
         RacialAbilitiesPartyStripView _partyStrip;
-        EquipmentSlotGridView _equipmentGrid;
-        EssenceSlotPanelView _essencePanel;
-        EquipmentDetailPaneView _detailPane;
+        ProficiencyListBodyView _listBody;
+        ProficiencyDetailPaneView _detailPane;
 
-        readonly List<BaseActor> _partyActors = new List<BaseActor>();
-        CharacterEquipmentSheetModel _sheet;
+        readonly List<BaseActor> _partyActors = new();
+        ProficiencySheetModel _sheet;
         int _focusedPartyIndex;
-        CharacterEquipmentSelection _selection = CharacterEquipmentSelection.None;
+        ProficiencyKind _selectedKind = ProficiencyKind.Fighting;
 
         void Awake()
         {
@@ -112,7 +114,7 @@ namespace JRogue.UI.Character
 
         void BuildUi()
         {
-            var canvasGo = new GameObject("CharacterEquipmentCanvas", typeof(RectTransform), typeof(Canvas),
+            var canvasGo = new GameObject("ProficienciesCanvas", typeof(RectTransform), typeof(Canvas),
                 typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasGo.transform.SetParent(transform, false);
 
@@ -125,7 +127,7 @@ namespace JRogue.UI.Character
             scaler.referenceResolution = new Vector2(1920f, 1080f);
             scaler.matchWidthOrHeight = 0.5f;
 
-            _panelRoot = new GameObject("CharacterEquipmentPanel", typeof(RectTransform), typeof(CanvasRenderer),
+            _panelRoot = new GameObject("ProficienciesPanel", typeof(RectTransform), typeof(CanvasRenderer),
                 typeof(Image));
             _panelRoot.transform.SetParent(canvasGo.transform, false);
             Image panelImage = _panelRoot.GetComponent<Image>();
@@ -146,41 +148,33 @@ namespace JRogue.UI.Character
             outer.childForceExpandWidth = true;
             outer.childForceExpandHeight = false;
 
-            TextMeshProUGUI title = CreateLayoutText("Title", "CHARACTER · EQUIPMENT",
+            TextMeshProUGUI title = CreateLayoutText("Title", "PROFICIENCIES",
                 RacialUiTheme.TitleFontSize, FontStyles.Bold, 36f);
             title.color = RacialUiTheme.TitleText;
 
+            _bannerText = CreateLayoutText("Banner",
+                "Practice in the field — levels rise from use, not party kill XP.",
+                RacialUiTheme.BannerFontSize, FontStyles.Italic, 26f);
+            _bannerText.color = RacialUiTheme.BannerText;
+
             _partyStrip = RacialAbilitiesPartyStripView.Create(_panelRoot.transform, SetFocusedPartyIndex);
 
-            var middleBand = new GameObject("MiddleBand", typeof(RectTransform));
-            middleBand.transform.SetParent(_panelRoot.transform, false);
-            var middleLe = middleBand.AddComponent<LayoutElement>();
-            middleLe.flexibleHeight = 1f;
-            middleLe.minHeight = 280f;
+            _summaryText = CreateLayoutText("Summary", string.Empty, 17f, FontStyles.Normal, 24f);
+            _summaryText.color = RacialUiTheme.BodyText;
 
-            var middleLayout = middleBand.AddComponent<HorizontalLayoutGroup>();
-            middleLayout.spacing = 10f;
-            middleLayout.childControlWidth = true;
-            middleLayout.childControlHeight = true;
-            middleLayout.childForceExpandWidth = true;
-            middleLayout.childForceExpandHeight = true;
+            _capWarningText = CreateLayoutText("CapWarning", string.Empty, 15f, FontStyles.Italic, 0f);
+            _capWarningText.color = RacialUiTheme.BannerText;
+            _capWarningText.gameObject.SetActive(false);
+            LayoutElement capLe = _capWarningText.gameObject.GetComponent<LayoutElement>() ??
+                                  _capWarningText.gameObject.AddComponent<LayoutElement>();
+            capLe.minHeight = 22f;
+            capLe.preferredHeight = 22f;
 
-            _equipmentGrid = EquipmentSlotGridView.Create(middleBand.transform, SelectEquipmentSlot);
-            var equipLe = _equipmentGrid.GetComponent<LayoutElement>() ??
-                          _equipmentGrid.gameObject.AddComponent<LayoutElement>();
-            equipLe.flexibleWidth = 0.55f;
-            equipLe.flexibleHeight = 1f;
-
-            _essencePanel = EssenceSlotPanelView.Create(middleBand.transform, SelectEssenceSlot);
-            var essenceLe = _essencePanel.GetComponent<LayoutElement>() ??
-                            _essencePanel.gameObject.AddComponent<LayoutElement>();
-            essenceLe.flexibleWidth = 0.45f;
-            essenceLe.flexibleHeight = 1f;
-
-            _detailPane = EquipmentDetailPaneView.Create(_panelRoot.transform);
+            _listBody = ProficiencyListBodyView.Create(_panelRoot.transform, SelectProficiency);
+            _detailPane = ProficiencyDetailPaneView.Create(_panelRoot.transform);
 
             TextMeshProUGUI hint = CreateLayoutText("Hint",
-                "C — character · Esc — close · F1–F5 — focus member",
+                "P — proficiencies · Esc — close · F1–F5 — focus member",
                 RacialUiTheme.FooterFontSize, FontStyles.Normal, 26f);
             hint.color = RacialUiTheme.FooterText;
 
@@ -190,9 +184,13 @@ namespace JRogue.UI.Character
         static TextMeshProUGUI CreateLayoutText(string name, string value, float size, FontStyles style, float height)
         {
             var go = new GameObject(name, typeof(RectTransform));
-            var le = go.AddComponent<LayoutElement>();
-            le.minHeight = height;
-            le.preferredHeight = height;
+            LayoutElement le = go.AddComponent<LayoutElement>();
+            if (height > 0f)
+            {
+                le.minHeight = height;
+                le.preferredHeight = height;
+            }
+
             le.flexibleWidth = 1f;
             TextMeshProUGUI tmp = RacialUiTheme.CreateText(go.transform, "Label", value, size,
                 TextAlignmentOptions.MidlineLeft, style);
@@ -216,15 +214,17 @@ namespace JRogue.UI.Character
             InventoryUI.ForceCloseIfOpen();
             QuestJournalUI.ForceCloseIfOpen();
             RacialAbilitiesUI.ForceCloseIfOpen();
-            ProficienciesUI.ForceCloseIfOpen();
+            CharacterEquipmentUI.ForceCloseIfOpen();
 
             RefreshPartyActors();
             if (_partyActors.Count == 0)
             {
                 _partyStrip.Rebuild(_partyActors, 0);
                 _sheet = null;
-                _selection = CharacterEquipmentSelection.None;
-                _detailPane.Refresh(null, _selection);
+                _summaryText.text = string.Empty;
+                _capWarningText.gameObject.SetActive(false);
+                _listBody.Refresh(null, ProficiencyKind.Fighting);
+                _detailPane.Refresh(null);
             }
             else
             {
@@ -250,67 +250,60 @@ namespace JRogue.UI.Character
 
         int ResolveDefaultFocusIndex()
         {
-            if (PartyManager.Instance == null)
-                return 0;
-
-            BaseActor active = PartyManager.Instance.GetActiveMember();
+            BaseActor active = PartyManager.Instance != null ? PartyManager.Instance.GetActiveMember() : null;
             if (active == null)
                 return 0;
 
-            int index = _partyActors.IndexOf(active);
-            return index >= 0 ? index : 0;
+            for (int i = 0; i < _partyActors.Count; i++)
+            {
+                if (_partyActors[i] == active)
+                    return i;
+            }
+
+            return 0;
         }
 
         void SetFocusedPartyIndex(int index)
         {
-            if (index < 0 || index >= _partyActors.Count)
+            if (_partyActors.Count == 0)
                 return;
 
-            _focusedPartyIndex = index;
+            _focusedPartyIndex = Mathf.Clamp(index, 0, _partyActors.Count - 1);
             RefreshSheet();
         }
 
-        void SelectEquipmentSlot(EquipmentSlot slot)
+        void SelectProficiency(ProficiencyKind kind)
         {
-            _selection = CharacterEquipmentSelection.ForEquipment(slot);
-            RefreshViews();
-        }
-
-        void SelectEssenceSlot(int slotIndex)
-        {
-            _selection = CharacterEquipmentSelection.ForEssence(slotIndex);
-            RefreshViews();
+            _selectedKind = kind;
+            RefreshPresentation();
         }
 
         void RefreshSheet()
         {
+            if (_partyActors.Count == 0)
+                return;
+
             BaseActor actor = _partyActors[_focusedPartyIndex];
-            _sheet = CharacterEquipmentViewModel.Build(actor);
-            _selection = _sheet.DefaultSelection;
-            RefreshViews();
+            _sheet = ProficiencyListBodyViewModel.Build(actor);
+            _selectedKind = _sheet.ResolveDefaultSelection();
+            _partyStrip.Rebuild(_partyActors, _focusedPartyIndex);
+            RefreshPresentation();
         }
 
-        void RefreshViews()
+        void RefreshPresentation()
         {
-            _partyStrip.Rebuild(_partyActors, _focusedPartyIndex);
-
             if (_sheet == null)
-            {
-                _detailPane.Refresh(null, CharacterEquipmentSelection.None);
                 return;
-            }
 
-            EquipmentSlot selectedEquip = _selection.Kind == CharacterEquipmentSelectionKind.Equipment
-                ? _selection.EquipmentSlot
-                : EquipmentSlot.MainHand;
+            _summaryText.text = _sheet.SummaryLine;
 
-            int selectedEssence = _selection.Kind == CharacterEquipmentSelectionKind.Essence
-                ? _selection.EssenceSlotIndex
-                : -1;
+            bool showCapWarning = !string.IsNullOrEmpty(_sheet.CapWarningLine);
+            _capWarningText.gameObject.SetActive(showCapWarning);
+            if (showCapWarning)
+                _capWarningText.text = _sheet.CapWarningLine;
 
-            _equipmentGrid.Rebuild(_sheet.EquipmentSlots, selectedEquip);
-            _essencePanel.Rebuild(_sheet, selectedEssence);
-            _detailPane.Refresh(_sheet, _selection);
+            _listBody.Refresh(_sheet, _selectedKind);
+            _detailPane.Refresh(_sheet.FindRow(_selectedKind));
         }
     }
 }

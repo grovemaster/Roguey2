@@ -3,6 +3,7 @@ using JRogue.UI.Inventory;
 using JRogue.UI.Quest;
 using JRogue.UI.Racial;
 using JRogue.UI.Character;
+using JRogue.UI.Proficiency;
 
 namespace JRogue.UI.Gameplay
 {
@@ -28,6 +29,7 @@ namespace JRogue.UI.Gameplay
             || QuestJournalUI.BlocksGameplay
             || RacialAbilitiesUI.BlocksGameplay
             || CharacterEquipmentUI.BlocksGameplay
+            || ProficienciesUI.BlocksGameplay
             || FriendlyFireConfirmDialogUI.BlocksGameplay
             || MessageHistoryUI.BlocksGameplay
             || InventoryGivePickerUI.IsOpen;
