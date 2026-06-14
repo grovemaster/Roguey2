@@ -11,5 +11,6 @@ namespace JRogue.UI.Hotbar
         InventoryUse = 6,
         ElementalSpiritSummon = 7,
         DragonianSpell = 8,
+        HumanKnightSkill = 9,
     }
 }

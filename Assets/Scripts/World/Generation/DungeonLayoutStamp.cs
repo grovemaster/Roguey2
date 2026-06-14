@@ -132,6 +132,7 @@ namespace JRogue.World.Generation
         public const string FleshmetalForgemaster = "tiefling_fleshmetal_forgemaster";
         public const string DragonianElderVolscale = "dragonian_elder_volscale";
         public const string MageTutor = "town_npc_mage_tutor";
+        public const string KnightDrillMaster = "town_npc_knight_drill_master";
         public const string ArcaneVendor = "town_npc_arcane_vendor";
         public const string MeditationShrine = "meditation_shrine";
         public const string SoulBeastRitualCircle = "soul_beast_ritual_circle";

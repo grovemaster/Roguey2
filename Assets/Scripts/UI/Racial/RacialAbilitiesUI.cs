@@ -74,6 +74,7 @@ namespace JRogue.UI.Racial
         BeastmanSoulBeastBodyView _beastmanSoulBeast;
         DragonianSpellBodyView _dragonianSpells;
         HumanMageSpellBodyView _humanMageSpells;
+        HumanKnightSkillBodyView _humanKnightSkills;
         RectTransform _scrollContent;
         RectTransform _elfScrollContent;
         GameObject _barbarianBodyRoot;
@@ -82,6 +83,7 @@ namespace JRogue.UI.Racial
         GameObject _beastmanBodyRoot;
         GameObject _dragonianBodyRoot;
         GameObject _humanMageBodyRoot;
+        GameObject _humanKnightBodyRoot;
         GameObject _defaultBodyRoot;
 
         readonly List<BaseActor> _partyActors = new List<BaseActor>();
@@ -293,6 +295,13 @@ namespace JRogue.UI.Racial
             humanMageBodyFlex.minHeight = 240f;
             _humanMageBodyRoot.SetActive(false);
 
+            _humanKnightBodyRoot = CreateBodyRoot(_panelRoot.transform, "HumanKnightBody");
+            _humanKnightSkills = HumanKnightSkillBodyView.Create(_humanKnightBodyRoot.transform);
+            var humanKnightBodyFlex = _humanKnightBodyRoot.AddComponent<LayoutElement>();
+            humanKnightBodyFlex.flexibleHeight = 1f;
+            humanKnightBodyFlex.minHeight = 240f;
+            _humanKnightBodyRoot.SetActive(false);
+
             _defaultBodyRoot = CreateBodyRoot(_panelRoot.transform, "DefaultBody");
             var defaultPanel = new GameObject("PlaceholderPanel", typeof(RectTransform), typeof(Image));
             defaultPanel.transform.SetParent(_defaultBodyRoot.transform, false);
@@ -406,7 +415,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
-            _humanMageBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
             _defaultBodyRoot.SetActive(false);
             _timeline.SetPlainMessage("No party members available.");
         }
@@ -460,7 +469,7 @@ namespace JRogue.UI.Racial
                 _tieflingBodyRoot.SetActive(false);
                 _beastmanBodyRoot.SetActive(false);
                 _dragonianBodyRoot.SetActive(false);
-                _humanMageBodyRoot.SetActive(false);
+                HideHumanSpecializationBodies();
                 _defaultBodyRoot.SetActive(false);
                 _timeline.SetPlainMessage("Invalid party member.");
                 return;
@@ -491,7 +500,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
-            _humanMageBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
             _barbarianBodyRoot.SetActive(true);
 
             var runtime = actor.GetComponent<SpiritImprintRuntime>();
@@ -514,7 +523,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
-            _humanMageBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
             _elfBodyRoot.SetActive(true);
 
             if (actor.stats == null || actor.stats.racialSubsystem != RacialSubsystemKind.ElfElementalContracts)
@@ -551,7 +560,7 @@ namespace JRogue.UI.Racial
             _elfBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
-            _humanMageBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
             _tieflingBodyRoot.SetActive(true);
 
             _bannerText.text = TieflingImplantBodyViewModel.BannerText;
@@ -573,7 +582,7 @@ namespace JRogue.UI.Racial
             _elfBodyRoot.SetActive(false);
             _tieflingBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
-            _humanMageBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
             _beastmanBodyRoot.SetActive(true);
 
             _bannerText.text = BeastmanSoulBeastBodyViewModel.BannerText;
@@ -595,7 +604,7 @@ namespace JRogue.UI.Racial
             _elfBodyRoot.SetActive(false);
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
-            _humanMageBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
             _dragonianBodyRoot.SetActive(true);
 
             DragonianSpellBodyViewModel vm = DragonianSpellBodyViewModel.Build(actor);
@@ -603,16 +612,37 @@ namespace JRogue.UI.Racial
             _dragonianSpells.Rebuild(actor, vm.SelectedSpellId);
         }
 
+        void HideHumanSpecializationBodies()
+        {
+            _humanMageBodyRoot.SetActive(false);
+            _humanKnightBodyRoot.SetActive(false);
+        }
+
         void ShowHumanBody(BaseActor actor)
         {
             if (actor.stats == null ||
-                actor.stats.humanClass != HumanClass.Mage ||
                 actor.stats.racialSubsystem != RacialSubsystemKind.HumanSpecialization)
             {
                 ShowHumanDefaultPlaceholder(actor);
                 return;
             }
 
+            switch (actor.stats.humanClass)
+            {
+                case HumanClass.Mage:
+                    ShowHumanMageBody(actor);
+                    break;
+                case HumanClass.Knight:
+                    ShowHumanKnightBody(actor);
+                    break;
+                default:
+                    ShowHumanDefaultPlaceholder(actor);
+                    break;
+            }
+        }
+
+        void ShowHumanMageBody(BaseActor actor)
+        {
             var runtime = actor.GetComponent<HumanMageSpellsRuntime>();
             if (runtime == null)
             {
@@ -626,11 +656,35 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
             _humanMageBodyRoot.SetActive(true);
 
             HumanMageSpellBodyViewModel vm = HumanMageSpellBodyViewModel.Build(actor);
             _bannerText.text = vm.BannerText;
             _humanMageSpells.Rebuild(actor, vm.SelectedSpellId);
+        }
+
+        void ShowHumanKnightBody(BaseActor actor)
+        {
+            var runtime = actor.GetComponent<HumanClassSkillTreeRuntime>();
+            if (runtime == null || runtime.SkillTree == null)
+            {
+                ShowHumanDefaultPlaceholder(actor, HumanKnightSkillBodyViewModel.MissingRuntimeMessage);
+                return;
+            }
+
+            _defaultBodyRoot.SetActive(false);
+            _barbarianBodyRoot.SetActive(false);
+            _elfBodyRoot.SetActive(false);
+            _tieflingBodyRoot.SetActive(false);
+            _beastmanBodyRoot.SetActive(false);
+            _dragonianBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
+            _humanKnightBodyRoot.SetActive(true);
+
+            HumanKnightSkillBodyViewModel vm = HumanKnightSkillBodyViewModel.Build(actor);
+            _bannerText.text = vm.BannerText;
+            _humanKnightSkills.Rebuild(actor, vm.SelectedNodeId);
         }
 
         void ShowHumanDefaultPlaceholder(BaseActor actor, string overrideMessage = null)
@@ -640,17 +694,24 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
-            _humanMageBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
             _defaultBodyRoot.SetActive(true);
 
             _bannerText.text = string.Empty;
             string message = overrideMessage;
             if (string.IsNullOrWhiteSpace(message))
             {
-                message = HumanMageSpellBodyViewModel.NotMageMessage;
                 HumanClass humanClass = actor.stats?.humanClass ?? HumanClass.None;
-                if (humanClass is HumanClass.Knight or HumanClass.Priest)
-                    message += "\n\n" + HumanMageSpellBodyViewModel.PermanentClassMessage;
+                message = humanClass switch
+                {
+                    HumanClass.Mage =>
+                        HumanMageSpellBodyViewModel.NotMageMessage + "\n\n"
+                        + HumanMageSpellBodyViewModel.PermanentClassMessage,
+                    HumanClass.Priest =>
+                        "This character has committed to the Priest path.\n\n"
+                        + HumanMageSpellBodyViewModel.PermanentClassMessage,
+                    _ => HumanKnightSkillBodyViewModel.UncommittedClassMessage,
+                };
             }
 
             _placeholderBody.text = $"<b>{actor.DisplayName}</b>\nHuman\n\n{message}";
@@ -663,7 +724,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
-            _humanMageBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
             _defaultBodyRoot.SetActive(true);
 
             _bannerText.text = string.Empty;

@@ -31,6 +31,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5829471630258147362}
+    - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8253194261465307559}
+    - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2737861325914204208}
+    - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 339046730152217508}
   m_SourcePrefab: {fileID: 100100000, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
 --- !u!1 &3218558407117122556 stripped
 GameObject:
@@ -51,3 +60,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.HumanMageSpellsRuntime
   knownSpells: []
   presetEquippedSpellIds: []
+--- !u!114 &8253194261465307559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3218558407117122556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eefa3a3f35da8804c98784b663629262, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.HumanClassSkillTreeRuntime
+  skillTree: {fileID: 11400000, guid: c1d2e3f4a5b6478990abcdef12345678, type: 2}
+  skillPointsTotal: 10
+  presetNodeRanks: []
+--- !u!114 &2737861325914204208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3218558407117122556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb20a45f785036c6f9942c29595f8d42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.KnightSkillMasteryRuntime
+  entries: []
+--- !u!114 &339046730152217508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3218558407117122556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34dd1d04f01e20d8796a32ad2fd3c970, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.KnightAuraStateRuntime
+  activeStanceNodeId: 
+  activeAuraNodeIds: []

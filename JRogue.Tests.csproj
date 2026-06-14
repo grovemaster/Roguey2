@@ -69,11 +69,12 @@
     <Compile Include="Assets/Tests/JRogueTestsRootSetupFixture.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/LightingQaPlacementResolverTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DragonianSpellsRuntimeTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Racial/KnightSkillSystemTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/MonsterSpawnScheduleLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/ConeSightFootprintTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/VaultSourceTextTests.cs" />
-    <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantsRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/UI/Proficiency/ProficiencyListBodyViewModelTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantsRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/BowEquipmentLegalityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/FloorEssenceLifetimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarPlaceListBuilderTests.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Assets/Tests/UnitTests/Status/StatusEffectPolarityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/BowRangedCombatTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Pathfinding/GridAStarPathfinderTest.cs" />
+    <Compile Include="Assets/Tests/UnitTests/UI/Racial/HumanKnightRacialAbilitiesMenuTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/MockMonoBehavior/TestQuietEssenceSlotManager.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/UndeadSkillTreeRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/DungeonTilePaletteResolverTests.cs" />
@@ -148,6 +150,7 @@
     <Compile Include="Assets/Tests/UnitTests/World/VaultFileParserTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/EnvironmentalHazardTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Input/PlayerCommandTest.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Racial/HumanKnightDrillMasterQuestTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Tests/Tests.asmdef" />

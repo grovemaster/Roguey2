@@ -98,7 +98,9 @@ namespace JRogue.World.Generation
         }
 
         public const string MageTutorDenyMessage = "You can only begin arcane training in town.";
+        public const string KnightDrillDenyMessage = "You can only begin drill training in town.";
         public const string MageEquipDenyMessage = "You can only adjust prepared spells in town.";
+        public const string KnightSkillSpendDenyMessage = "You can only spend Knight skill points in town.";
         public const string ElderQuestDenyMessage = "You can only speak of draconic trials in town.";
 
         public static bool TryAllowHumanMageTutorQuestChange(out string denyReason, bool logDeny = true)
@@ -128,6 +130,46 @@ namespace JRogue.World.Generation
                 return true;
 
             denyReason = MageEquipDenyMessage;
+            if (logDeny)
+                Debug.Log($"{LogPrefix} {denyReason}");
+            return false;
+        }
+
+        public static bool TryAllowHumanKnightDrillQuestChange(out string denyReason, bool logDeny = true)
+        {
+            denyReason = null;
+            if (CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat)
+            {
+                denyReason = CombatMemorizeDenyMessage;
+                if (logDeny)
+                    Debug.Log($"{LogPrefix} {denyReason}");
+                return false;
+            }
+
+            if (IsSafeZoneForActiveParty())
+                return true;
+
+            denyReason = KnightDrillDenyMessage;
+            if (logDeny)
+                Debug.Log($"{LogPrefix} {denyReason}");
+            return false;
+        }
+
+        public static bool TryAllowHumanKnightSkillSpend(out string denyReason, bool logDeny = true)
+        {
+            denyReason = null;
+            if (CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat)
+            {
+                denyReason = CombatMemorizeDenyMessage;
+                if (logDeny)
+                    Debug.Log($"{LogPrefix} {denyReason}");
+                return false;
+            }
+
+            if (IsSafeZoneForActiveParty())
+                return true;
+
+            denyReason = KnightSkillSpendDenyMessage;
             if (logDeny)
                 Debug.Log($"{LogPrefix} {denyReason}");
             return false;

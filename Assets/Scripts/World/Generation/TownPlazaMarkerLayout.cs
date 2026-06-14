@@ -27,6 +27,7 @@ namespace JRogue.World.Generation
             (StampMarkerIds.BuildingDemoDoor, new Vector3Int(14, 8, 0)),
 
             (StampMarkerIds.MageTutor, new Vector3Int(4, 7, 0)),
+            (StampMarkerIds.KnightDrillMaster, new Vector3Int(6, 7, 0)),
             (StampMarkerIds.ArcaneVendor, new Vector3Int(8, 7, 0)),
 
             (StampMarkerIds.TownTimeLeverA, new Vector3Int(8, 6, 0)),

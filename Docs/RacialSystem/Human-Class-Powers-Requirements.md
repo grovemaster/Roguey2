@@ -177,7 +177,7 @@ Sample trees should wire **at least** these four nodes with a simple prerequisit
 
 | Class | Point source (v0 / later) |
 |-------|---------------------------|
-| **Knight** | **Training events** (later) grant points or direct rank unlocks; v0 may **preset** ranks |
+| **Knight** | **Drill Master** quest in town (`quest_knight_drill_apprenticeship` — pay **5 gold**, commit to Knight); **later:** training events grant skill points |
 | **Priest** | **Later:** level curve, quests, or shrine offerings (TBD); v0 **preset** ranks |
 
 **Invariant:** spending a point increments **one** node’s rank if all gates pass; cannot exceed `maxRanks`.
@@ -196,18 +196,28 @@ Sample trees should wire **at least** these four nodes with a simple prerequisit
 
 ## 7. Knight
 
+**Auras & skill mastery (detailed spec):** [Human Knight — Auras & skill tree](Human-Knight-Auras-And-Skill-Tree-Requirements.md) — Aura family, use-based **per-skill mastery**, tree shape options, sample nodes.
+
+**Racial menu (`K`):** [Human Knight — racial menu](Human-Knight-Racial-Abilities-Menu-Requirements.md) — skill tree sheet, rank + mastery display, town point spend.
+
 ### K7.1 — Essences and Soul Power
 
 - Knight **may** equip and use **essences** (same slot rules as `HumanClass.None` unless loadout overrides).
 - Active Knight skills use **`soulPowerCost`** on `AbilityAction` (or successor field) when &gt; 0; insufficient Soul Power ⇒ existing **Not enough Soul Power!** behavior.
 
-### K7.2 — Training events (later)
+### K7.2 — Class commitment (Drill Master quest — v0)
 
-- **Training events** are the primary way to earn **skill points** or authorized rank-ups (fiction: drill master, mercenary captain, etc.).
+- **Drill Master** NPC (`human_knight_drill_master`) offers **`quest_knight_drill_apprenticeship`**: per-party-member quest, **no objectives**, **5 gold** on turn-in, sets **`humanClass == Knight`**.
+- **Town / safe zone only** (same discipline as Mage tutor).
+- Knights **keep essences + Soul Power** — no essence relinquish gate (unlike Mage).
+- Editor: **`JRogue/Racial/Create Human Knight Drill Master Pack`** creates quest asset, NPC prefab, plaza marker, and wires **`KnightSkillTree_Sample`** on **`HumanPlayer`**.
+
+### K7.3 — Training events (later)
+
+- **Training events** grant **skill points** or authorized rank-ups (fiction: drill master, mercenary captain, etc.).
 - Each event references: `trainingEventId`, optional `skillPointGrant`, optional `unlockNodeId`, prerequisite flags.
-- v0: no event pipeline; preset ranks on `KnightPlayer` test prefab acceptable.
 
-### K7.3 — Sample tree (minimum)
+### K7.4 — Sample tree (minimum)
 
 - Assets: `KnightSkillTree_Sample` with ≥ 2 passive nodes (§T6.3 table).
 - Runtime: `HumanKnightSkillTreeRuntime` (name flexible) eligible when `humanClass == Knight`.
@@ -475,5 +485,6 @@ Same hard rules as Mage (§M8.1): **zero** essence slots, **zero** Soul Power, c
 - [Undead — Race requirements](Undead-Race-Requirements.md) (contrasting tree policy)
 - [Sudden Strength essence](../Essence/Sudden-Strength-Essence-Requirements.md) (Soul Power pattern for Knight)
 - [Human Mage — Spells & spellbooks](Human-Mage-Spells-And-Spellbooks-Requirements.md) (learning, spellbooks, sample spells)
+- [Human Knight — Auras & skill tree](Human-Knight-Auras-And-Skill-Tree-Requirements.md) (Knight auras, use-based skill mastery, tree design)
 - [Fireball scroll](../Inventory/Fireball-Scroll-Requirements.md) (non-mage consumable; distinct from Mage spellbooks)
 - [Party experience & leveling](../Progression/Party-Experience-And-Leveling-Requirements.md) (level gates for skill nodes)

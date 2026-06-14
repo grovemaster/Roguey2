@@ -24,6 +24,10 @@ namespace JRogue.Ability
         [Tooltip("When > 0, replaces default pxp tier for awards from this ability.")]
         public int proficiencyXpOverride;
 
+        [Header("Knight")]
+        [Tooltip("Links resolve to Knight skill tree node id for mastery / rank pxp awards.")]
+        public string knightSkillId;
+
         [Header("Targeting Settings")]
         public bool requiresTarget; // Fixes 'does not have requiresTarget'
         public int range;

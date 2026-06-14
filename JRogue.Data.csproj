@@ -59,6 +59,7 @@
     <Compile Include="Assets/Data/Racial/Human/HumanClassSkillTreeDefinition.cs" />
     <Compile Include="Assets/Data/Enemy/EnemySpeciesDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/CyborgImplantDefinition.cs" />
+    <Compile Include="Assets/Data/Racial/Human/KnightSkillTag.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanPerRankStatModifier.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritRegistry.cs" />
     <Compile Include="Assets/Data/Door/DoorPlacement.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Assets/Data/Racial/RacialProgressionPayload.cs" />
     <Compile Include="Assets/Data/Racial/RacialBenefitDefinition.cs" />
     <Compile Include="Assets/Data/Status/PoisonStatusEffectDefinition.cs" />
+    <Compile Include="Assets/Data/Racial/Human/KnightAuraStateRuntime.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/TieflingImplantSlotModifierSource.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeDefinition.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="Assets/Data/Door/DoorDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritContractPreset.cs" />
     <Compile Include="Assets/Data/Enemy/LootTablePayload.cs" />
+    <Compile Include="Assets/Data/Racial/Human/KnightSkillMasteryRuntime.cs" />
     <Compile Include="Assets/Data/Door/EnemyDoorCapability.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeRankEntry.cs" />
     <Compile Include="Assets/Data/Item/Door/DoorKeyItemData.cs" />
@@ -149,6 +152,7 @@
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeNodeData.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritLevelData.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintUnlockCost.cs" />
+    <Compile Include="Assets/Data/Racial/Human/KnightSkillMasteryEntry.cs" />
     <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadLichBargainRestriction.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />

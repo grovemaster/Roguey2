@@ -69,6 +69,9 @@ namespace JRogue.Racial
             HumanMageSpellsRuntime mageSpells = EnsureMageSpellsRuntime(actor, targetClass);
             mageSpells?.RebuildEquippedFromPreset();
 
+            if (targetClass == HumanClass.Knight)
+                EnsureKnightRuntimes(actor);
+
             if (!HumanClassRules.CanGainEssences(targetClass))
             {
                 Debug.Log(
@@ -86,6 +89,22 @@ namespace JRogue.Racial
                 runtime = actor.AddComponent<HumanMageSpellsRuntime>();
 
             return runtime;
+        }
+
+        static void EnsureKnightRuntimes(GameObject actor)
+        {
+            if (actor == null)
+                return;
+
+            KnightSkillMasteryRuntime.EnsureOn(actor);
+            KnightAuraStateRuntime.EnsureOn(actor);
+
+            HumanClassSkillTreeRuntime[] trees = actor.GetComponents<HumanClassSkillTreeRuntime>();
+            for (int i = 0; i < trees.Length; i++)
+            {
+                if (trees[i]?.SkillTree != null && trees[i].SkillTree.humanClass == HumanClass.Knight)
+                    trees[i].TryApplyFromSerializedState();
+            }
         }
     }
 }

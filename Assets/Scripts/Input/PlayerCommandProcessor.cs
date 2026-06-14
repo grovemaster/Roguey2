@@ -565,6 +565,12 @@ namespace JRogue.Input
                         dragonianSpells,
                         pending.SlotIndex,
                         target),
+                PlayerAbilitySource.HumanKnightSkill =>
+                    HumanKnightSkillExecutionService.TryExecute(
+                        activeMember,
+                        pending.ResolvedAbility,
+                        target,
+                        out _),
                 PlayerAbilitySource.InventoryItem =>
                     TryExecuteInventoryItemTargetedUse(pending, activeMember, target),
                 PlayerAbilitySource.BowAim =>
@@ -610,6 +616,8 @@ namespace JRogue.Input
                 case PlayerAbilitySource.BowAim:
                     return TargetedActionContext.BowAim();
                 case PlayerAbilitySource.RacialActive:
+                    return TargetedActionContext.FromRacial(pending.ResolvedAbility);
+                case PlayerAbilitySource.HumanKnightSkill:
                     return TargetedActionContext.FromRacial(pending.ResolvedAbility);
                 default:
                     return TargetedActionContext.FromEssence(pending.SlotIndex, pending.AbilityIndex);
@@ -977,7 +985,10 @@ namespace JRogue.Input
                 Source = resolved.Source,
                 SlotIndex = resolved.SlotIndex,
                 AbilityIndex = resolved.AbilityIndex,
-                ResolvedAbility = resolved.Source == PlayerAbilitySource.RacialActive ? ability : null,
+                ResolvedAbility = resolved.Source == PlayerAbilitySource.RacialActive
+                    || resolved.Source == PlayerAbilitySource.HumanKnightSkill
+                        ? ability
+                        : null,
                 InventoryAbility = resolved.Source == PlayerAbilitySource.RacialActive ? ability : null,
             };
 
@@ -1045,6 +1056,12 @@ namespace JRogue.Input
                     TryExecuteMageSpellWithProficiency(actor, mageSpells, resolved.AbilityIndex),
                 PlayerAbilitySource.DragonianSpell =>
                     TryExecuteDragonianSpellWithProficiency(actor, dragonianSpells, resolved.AbilityIndex),
+                PlayerAbilitySource.HumanKnightSkill =>
+                    HumanKnightSkillExecutionService.TryExecute(
+                        actor,
+                        resolved.Ability,
+                        null,
+                        out _),
                 PlayerAbilitySource.RacialActive =>
                     TryExecuteHotbarRacialActive(actor, resolved),
                 PlayerAbilitySource.InventoryItem =>

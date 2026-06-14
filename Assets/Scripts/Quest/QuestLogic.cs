@@ -310,6 +310,9 @@ namespace JRogue.Quest
             if (definition == null)
                 return true;
 
+            if (definition.commitHumanClass == HumanClass.Knight)
+                return SafeZonePolicyService.TryAllowHumanKnightDrillQuestChange(out denyReason);
+
             if (definition.commitHumanClass != HumanClass.None || definition.requiresHumanClassNone)
                 return SafeZonePolicyService.TryAllowHumanMageTutorQuestChange(out denyReason);
 

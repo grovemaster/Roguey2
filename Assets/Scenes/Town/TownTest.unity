@@ -2184,7 +2184,7 @@ MonoBehaviour:
   applyOnAwake: 1
   partyMemberPrefabs:
   - {fileID: 3218558407117122559, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
-  - {fileID: 8847362519046285174, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+  - {fileID: 3218558407117122556, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
   - {fileID: 3218558407117122558, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
   - {fileID: 6218558407117122581, guid: dab31e272efb4de7858983fa9c5be2b7, type: 3}
   partyContainer: {fileID: 1243138353}

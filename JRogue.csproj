@@ -79,6 +79,7 @@
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupCoordinator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyDisplay.cs" />
     <Compile Include="Assets/Scripts/Abilities/Telekinesis/TelekinesisAbility.cs" />
+    <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillCombatResolver.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/HumanMageSpellBodyView.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/HearingUtility.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySortMode.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/ShopNpcMenuUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownInteriorNpcSetupPhase.cs" />
+    <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillProgressionRules.cs" />
     <Compile Include="Assets/Scripts/UI/Character/EquipmentSlotGridView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownBuildingDoorSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyAptitudeService.cs" />
@@ -141,15 +143,20 @@
     <Compile Include="Assets/Scripts/Abilities/ArcaneMight/ArcaneMightAbility.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultCellKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationUtility.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/HumanKnightDrillMasterNpcController.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingService.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Knight/KnightAuraPulseAbility.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritMeditationLogic.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanMageHotbarSync.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanKnightHotbarSync.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntry.cs" />
     <Compile Include="Assets/Scripts/Racial/TieflingImplantForgemasterService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneJigsawSolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
+    <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillProficiencyDispatcher.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneSelectionSolver.cs" />
     <Compile Include="Assets/Scripts/Controller/Enemy/EnemyMeleeCombat.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanKnightDrillMasterIds.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryUI.cs" />
     <Compile Include="Assets/Scripts/Actors/PartyMemberId.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimePhase.cs" />
@@ -200,6 +207,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractablePlaceholderSprites.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatTensionState.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/PortalSetupPhase.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/HumanKnightSkillBodyView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/PopulationPlacementUtility.cs" />
     <Compile Include="Assets/Scripts/Abilities/UndeadGraveTouchAbility.cs" />
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthBuffRuntime.cs" />
@@ -225,7 +233,9 @@
     <Compile Include="Assets/Scripts/Shop/ShopSellableQuery.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTestSceneValidator.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameOverModalUI.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Knight/KnightAuraToggleAbility.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTransitionService.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanKnightClassCommitService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonGenerationContext.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonWorldFeatureServices.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/TownTimeLeverEffect.cs" />
@@ -254,6 +264,7 @@
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyKindMapping.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyLegacyMigration.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTileVariationMode.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanKnightDrillMasterQuestLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonFloorZoneLayout.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapTypes.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyMemberDeathService.cs" />
@@ -272,6 +283,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarPlacement.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultStamper.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/HumanKnightSkillBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneGenerationDiagnostics.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileMarker.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultTileGlyph.cs" />
@@ -305,6 +317,7 @@
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryTargetedUseLog.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementEntry.cs" />
+    <Compile Include="Assets/Scripts/Dialog/HumanKnightDrillMasterDialogSession.cs" />
     <Compile Include="Assets/Scripts/Dialog/PortraitDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/HealthRegenerationService.cs" />
@@ -321,6 +334,7 @@
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardBootstrap.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcDialogSession.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileService.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanKnightSkillExecutionService.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/ElementalSpiritContractsView.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopPriceResolver.cs" />
     <Compile Include="Assets/Scripts/Racial/DragonianElderDefinition.cs" />
@@ -345,8 +359,9 @@
     <Compile Include="Assets/Scripts/World/Lighting/LightingPhase3SampleContent.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalEntryService.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightCellData.cs" />
-    <Compile Include="Assets/Scripts/Interactables/Effects/SpawnEnemyInteractableEffect.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanKnightSkillTreeService.cs" />
     <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyListBodyView.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Effects/SpawnEnemyInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInspectPaneView.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AltarUsedModalUI.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
@@ -372,6 +387,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorGenerator.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FriendlyFireConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingDoorInteraction.cs" />
+    <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillProficiencyEventKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeService.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/BeastmanSoulBeastBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleProfile.cs" />
@@ -381,6 +397,7 @@
     <Compile Include="Assets/Scripts/Hazards/HazardExitEvaluator.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarUsabilityService.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorLifetimeTicker.cs" />
+    <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillAwardService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryUseResult.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AutoPickupConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/Input/AutoPickupMoveGate.cs" />
@@ -510,6 +527,7 @@
     <Compile Include="Assets/Scripts/Manager/Door/DoorInstance.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingFacadeOverlay.cs" />
     <Compile Include="Assets/Scripts/Input/InputHandler.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanKnightDrillMasterQuestService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableEffect.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableActivationSource.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameLogService.cs" />

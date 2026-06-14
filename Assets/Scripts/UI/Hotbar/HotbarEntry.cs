@@ -13,6 +13,7 @@ namespace JRogue.UI.Hotbar
         public string contractInstanceId;
         public string racialBindingKey;
         public string abilityAssetName;
+        public string knightNodeId;
 
         public bool IsEmpty() => Kind == HotbarEntryKind.Empty;
 
@@ -31,6 +32,8 @@ namespace JRogue.UI.Hotbar
                     $"mage:{abilityIndex}",
                 HotbarEntryKind.DragonianSpell =>
                     $"dragonian:{abilityIndex}",
+                HotbarEntryKind.HumanKnightSkill =>
+                    $"knight:{knightNodeId ?? string.Empty}:{abilityIndex}",
                 HotbarEntryKind.RacialActive =>
                     $"racial:{racialBindingKey ?? string.Empty}",
                 HotbarEntryKind.InventoryActive =>
@@ -62,6 +65,9 @@ namespace JRogue.UI.Hotbar
                     abilityIndex == other.abilityIndex,
                 HotbarEntryKind.DragonianSpell =>
                     abilityIndex == other.abilityIndex,
+                HotbarEntryKind.HumanKnightSkill =>
+                    string.Equals(knightNodeId, other.knightNodeId, StringComparison.Ordinal)
+                    && abilityIndex == other.abilityIndex,
                 HotbarEntryKind.RacialActive =>
                     string.Equals(racialBindingKey, other.racialBindingKey, StringComparison.Ordinal),
                 HotbarEntryKind.InventoryActive =>
@@ -86,6 +92,7 @@ namespace JRogue.UI.Hotbar
                 contractInstanceId = contractInstanceId,
                 racialBindingKey = racialBindingKey,
                 abilityAssetName = abilityAssetName,
+                knightNodeId = knightNodeId,
             };
     }
 }

@@ -176,6 +176,7 @@ RacialAbilitiesUI.Open(focusedIndex)
       Barbarian + SpiritImprint → BarbarianSpiritImprintBodyView
       Elf + ElfElementalContracts → ElfElementalSpiritBodyView ([Elf menu doc](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md))
       Human + Mage + HumanSpecialization → HumanMageSpellBodyView ([Human Mage menu doc](../RacialSystem/Human-Mage-Racial-Abilities-Menu-Requirements.md))
+      Human + Knight + HumanSpecialization → HumanKnightSkillBodyView ([Human Knight menu doc](../RacialSystem/Human-Knight-Racial-Abilities-Menu-Requirements.md))
       default → DefaultRacialAbilitiesBodyView
 ```
 
@@ -201,7 +202,8 @@ Placeholder only — no mechanical lists until each race’s reference doc ships
 
 | Race | Placeholder subtitle (v0 copy) |
 |------|--------------------------------|
-| Human | [Human Mage — grimoire & prepared spells](../RacialSystem/Human-Mage-Racial-Abilities-Menu-Requirements.md) when `HumanClass.Mage`; otherwise class placeholder. |
+| Human + **Mage** | [Human Mage — grimoire & prepared spells](../RacialSystem/Human-Mage-Racial-Abilities-Menu-Requirements.md) when `HumanClass.Mage`; otherwise class placeholder. |
+| Human + **Knight** | [Human Knight — skill tree & auras](../RacialSystem/Human-Knight-Racial-Abilities-Menu-Requirements.md) when `HumanClass.Knight`. |
 | Dwarf | Ancestor path and common abilities — coming soon. |
 | Elf | [Elemental spirit contracts](../RacialSystem/Elf-Racial-Abilities-Menu-Requirements.md) — roster reference + nicknames. |
 | Tiefling | [Cyborg implants — racial menu body](Tiefling-Racial-Abilities-Menu-Requirements.md) — slot grid + detail pane; change at [Fleshmetal Forgemaster](../RacialSystem/Tiefling-Fleshmetal-Forgemaster-NPC-Requirements.md). |

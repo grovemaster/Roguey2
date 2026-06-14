@@ -19,6 +19,8 @@ namespace JRogue.Input
         RacialActive = 5,
         /// <summary>Memorized Dragonian spell from Soul Power memory loadout.</summary>
         DragonianSpell = 6,
+        /// <summary>Human Knight skill tree active (aura, pulse, etc.).</summary>
+        HumanKnightSkill = 7,
     }
 
     /// <summary>Discriminant for <see cref="PlayerCommand"/>; stable for serialization.</summary>

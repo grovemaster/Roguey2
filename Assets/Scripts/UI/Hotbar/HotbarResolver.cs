@@ -35,6 +35,7 @@ namespace JRogue.UI.Hotbar
                 HotbarEntryKind.EquipmentActive => ResolveEquipment(actor, entry),
                 HotbarEntryKind.HumanMageSpell => ResolveHumanMageSpell(actor, entry),
                 HotbarEntryKind.DragonianSpell => ResolveDragonianSpell(actor, entry),
+                HotbarEntryKind.HumanKnightSkill => ResolveHumanKnightSkill(actor, entry),
                 HotbarEntryKind.RacialActive => ResolveRacial(actor, entry),
                 HotbarEntryKind.ElementalSpiritSummon => ResolveElementalSpiritSummon(actor, entry),
                 HotbarEntryKind.InventoryActive => ResolveInventoryActive(actor, entry),
@@ -142,6 +143,48 @@ namespace JRogue.UI.Hotbar
                 PlayerAbilitySource.DragonianSpell,
                 entry.abilityIndex,
                 entry.abilityIndex);
+        }
+
+        static HotbarResolvedAction ResolveHumanKnightSkill(BaseActor actor, HotbarEntry entry)
+        {
+            CharacterStats stats = actor.stats;
+            if (stats == null || stats.humanClass != HumanClass.Knight)
+                return Stale(entry.Kind, "Not a Knight.");
+
+            if (string.IsNullOrEmpty(entry.knightNodeId))
+                return Stale(entry.Kind, "Missing Knight node id.");
+
+            HumanClassSkillTreeRuntime tree = actor.GetComponent<HumanClassSkillTreeRuntime>();
+            if (tree == null || tree.SkillTree == null)
+                return Stale(entry.Kind, "No Knight skill tree runtime.");
+
+            if (!tree.SkillTree.TryFindNode(entry.knightNodeId, out HumanClassSkillTreeNodeData node)
+                || !node.HasActiveAbilities)
+            {
+                return Stale(entry.Kind, "Knight skill unavailable.");
+            }
+
+            if (tree.GetRank(entry.knightNodeId) < 1)
+                return Stale(entry.Kind, "Knight skill is not unlocked.");
+
+            if (entry.abilityIndex < 0 || entry.abilityIndex >= node.activeAbilities.Count)
+                return Stale(entry.Kind, "Knight ability index out of range.");
+
+            AbilityAction ability = node.activeAbilities[entry.abilityIndex];
+            if (ability == null)
+                return Stale(entry.Kind, "Knight ability missing.");
+
+            return new HotbarResolvedAction
+            {
+                IsValid = true,
+                IsStale = false,
+                Kind = entry.Kind,
+                Ability = ability,
+                Source = PlayerAbilitySource.HumanKnightSkill,
+                SlotIndex = entry.abilityIndex,
+                AbilityIndex = entry.abilityIndex,
+                KnightNodeId = entry.knightNodeId,
+            };
         }
 
         static HotbarResolvedAction ResolveRacial(BaseActor actor, HotbarEntry entry)

@@ -49,6 +49,13 @@ namespace JRogue.UI.Racial
         public static readonly Color HumanMageRowBackground = new Color(0.14f, 0.14f, 0.2f, 0.95f);
         public static readonly Color HumanMageRowBorder = new Color(0.24f, 0.22f, 0.38f, 0.95f);
         public static readonly Color HumanMageActionButtonBackground = new Color(0.22f, 0.18f, 0.38f, 0.98f);
+        public static readonly Color HumanKnightSectionAccent = new Color(0.784f, 0.627f, 0.376f, 1f);
+        public static readonly Color HumanKnightSecondaryAccent = new Color(0.91f, 0.72f, 0.28f, 1f);
+        public static readonly Color HumanKnightBudgetBackground = new Color(0.14f, 0.12f, 0.1f, 0.95f);
+        public static readonly Color HumanKnightColumnBackground = new Color(0.11f, 0.115f, 0.12f, 0.92f);
+        public static readonly Color HumanKnightRowBackground = new Color(0.16f, 0.14f, 0.12f, 0.95f);
+        public static readonly Color HumanKnightRowBorder = new Color(0.32f, 0.26f, 0.18f, 0.95f);
+        public static readonly Color HumanKnightActionButtonBackground = new Color(0.28f, 0.22f, 0.14f, 0.98f);
 
         static Sprite _placeholderSprite;
         static Sprite _imprintEmblemSprite;
@@ -58,6 +65,7 @@ namespace JRogue.UI.Racial
         static Sprite _soulBeastActiveEmblemSprite;
         static Sprite _dragonianSpellEmblemSprite;
         static Sprite _humanMageSpellEmblemSprite;
+        static Sprite _humanKnightSkillEmblemSprite;
         static TMP_FontAsset _font;
 
         static TMP_FontAsset UiFont
@@ -164,6 +172,17 @@ namespace JRogue.UI.Racial
             }
         }
 
+        public static Sprite HumanKnightSkillEmblemSprite
+        {
+            get
+            {
+                if (_humanKnightSkillEmblemSprite == null)
+                    _humanKnightSkillEmblemSprite = CreateHumanKnightSkillEmblemSprite();
+
+                return _humanKnightSkillEmblemSprite;
+            }
+        }
+
         public static TextMeshProUGUI CreateText(
             Transform parent,
             string name,
@@ -261,6 +280,34 @@ namespace JRogue.UI.Racial
             Vector2 center = new Vector2(size * 0.5f, size * 0.5f);
             Color ring = new Color(0.42f, 0.34f, 0.82f, 0.95f);
             Color core = new Color(0.28f, 0.52f, 0.88f, 0.9f);
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dist = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), center);
+                    Color c = Color.clear;
+                    if (dist <= size * 0.42f && dist >= size * 0.24f)
+                        c = ring;
+                    else if (dist < size * 0.18f)
+                        c = core;
+
+                    tex.SetPixel(x, y, c);
+                }
+            }
+
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+        }
+
+        static Sprite CreateHumanKnightSkillEmblemSprite()
+        {
+            const int size = 32;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.filterMode = FilterMode.Bilinear;
+            Vector2 center = new Vector2(size * 0.5f, size * 0.5f);
+            Color ring = new Color(0.784f, 0.627f, 0.376f, 0.95f);
+            Color core = new Color(0.91f, 0.72f, 0.28f, 0.9f);
 
             for (int y = 0; y < size; y++)
             {

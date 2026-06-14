@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: 2081
-    y: 104
+    x: 1824
+    y: 114
     width: 1859
     height: 1416
   m_ShowMode: 4
-  m_Title: Inspector
+  m_Title: Console
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -1176,7 +1176,13 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -1380
+      - m_Data: -129648
+      - m_Data: -112696
+      - m_Data: -2616
+      - m_Data: 56320
+      - m_Data: 56334
+      - m_Data: 56410
+      - m_Data: 56470
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1224,8 +1230,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Game\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 2394
-    y: 168
+    x: 2137
+    y: 178
     width: 1024
     height: 831
   m_SerializedDataModeController:
@@ -1327,8 +1333,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Project\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1524
-    y: 1062
+    x: 1824
+    y: 1035
     width: 1338
     height: 477
   m_SerializedDataModeController:
@@ -1372,41 +1378,41 @@ MonoBehaviour:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
+    scrollPos: {x: 0, y: 1143}
     m_SelectedIDs:
-    - m_Data: 57532
+    - m_Data: 61448
     m_LastClickedID:
-      m_Data: 57532
+      m_Data: 61448
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 56598
-    - m_Data: 56600
-    - m_Data: 56602
-    - m_Data: 56604
-    - m_Data: 56606
-    - m_Data: 56608
-    - m_Data: 56610
-    - m_Data: 56612
-    - m_Data: 56614
-    - m_Data: 56616
-    - m_Data: 56618
-    - m_Data: 56620
-    - m_Data: 56622
-    - m_Data: 56624
-    - m_Data: 56626
-    - m_Data: 56628
-    - m_Data: 56630
-    - m_Data: 56632
-    - m_Data: 56634
-    - m_Data: 56636
-    - m_Data: 56638
-    - m_Data: 56640
-    - m_Data: 56642
-    - m_Data: 56644
-    - m_Data: 56646
-    - m_Data: 56648
-    - m_Data: 56650
-    - m_Data: 56652
+    - m_Data: 56482
+    - m_Data: 56484
+    - m_Data: 56486
+    - m_Data: 56488
+    - m_Data: 56490
+    - m_Data: 56492
+    - m_Data: 56494
+    - m_Data: 56496
+    - m_Data: 56498
+    - m_Data: 56500
+    - m_Data: 56502
+    - m_Data: 56504
+    - m_Data: 56506
+    - m_Data: 56508
+    - m_Data: 56510
+    - m_Data: 56512
+    - m_Data: 56514
+    - m_Data: 56516
+    - m_Data: 56518
+    - m_Data: 56520
+    - m_Data: 56522
+    - m_Data: 56524
+    - m_Data: 56526
+    - m_Data: 56528
+    - m_Data: 56530
+    - m_Data: 56532
+    - m_Data: 56534
+    - m_Data: 56536
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1441,34 +1447,34 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 56598
-    - m_Data: 56600
-    - m_Data: 56602
-    - m_Data: 56604
-    - m_Data: 56606
-    - m_Data: 56608
-    - m_Data: 56610
-    - m_Data: 56612
-    - m_Data: 56614
-    - m_Data: 56616
-    - m_Data: 56618
-    - m_Data: 56620
-    - m_Data: 56622
-    - m_Data: 56624
-    - m_Data: 56626
-    - m_Data: 56628
-    - m_Data: 56630
-    - m_Data: 56632
-    - m_Data: 56634
-    - m_Data: 56636
-    - m_Data: 56638
-    - m_Data: 56640
-    - m_Data: 56642
-    - m_Data: 56644
-    - m_Data: 56646
-    - m_Data: 56648
-    - m_Data: 56650
-    - m_Data: 56652
+    - m_Data: 56482
+    - m_Data: 56484
+    - m_Data: 56486
+    - m_Data: 56488
+    - m_Data: 56490
+    - m_Data: 56492
+    - m_Data: 56494
+    - m_Data: 56496
+    - m_Data: 56498
+    - m_Data: 56500
+    - m_Data: 56502
+    - m_Data: 56504
+    - m_Data: 56506
+    - m_Data: 56508
+    - m_Data: 56510
+    - m_Data: 56512
+    - m_Data: 56514
+    - m_Data: 56516
+    - m_Data: 56518
+    - m_Data: 56520
+    - m_Data: 56522
+    - m_Data: 56524
+    - m_Data: 56526
+    - m_Data: 56528
+    - m_Data: 56530
+    - m_Data: 56532
+    - m_Data: 56534
+    - m_Data: 56536
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1497,10 +1503,10 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: 53752
+    - m_Data: -65656
     m_LastClickedEntityId:
-      m_Data: 53752
-    m_HadKeyboardFocusLastEvent: 1
+      m_Data: -65656
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs:
     - m_Data: 52882
     - m_Data: 50910

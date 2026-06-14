@@ -27,6 +27,7 @@ namespace JRogue.World.Generation.Phases
             (StampMarkerIds.FleshmetalForgemaster, "Town/Npc/TownNpc_FleshmetalForgemaster", "Assets/Resources/Town/Npc/TownNpc_FleshmetalForgemaster.prefab"),
             (StampMarkerIds.DragonianElderVolscale, "Town/Npc/TownNpc_DragonianElderVolscale", "Assets/Resources/Town/Npc/TownNpc_DragonianElderVolscale.prefab"),
             (StampMarkerIds.MageTutor, "Town/Npc/TownNpc_MageTutor", "Assets/Resources/Town/Npc/TownNpc_MageTutor.prefab"),
+            (StampMarkerIds.KnightDrillMaster, "Town/Npc/TownNpc_KnightDrillMaster", "Assets/Resources/Town/Npc/TownNpc_KnightDrillMaster.prefab"),
             (StampMarkerIds.ArcaneVendor, "Town/Npc/TownNpc_ArcaneVendor", "Assets/Resources/Town/Npc/TownNpc_ArcaneVendor.prefab"),
         };
 

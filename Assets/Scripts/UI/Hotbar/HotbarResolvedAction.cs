@@ -19,5 +19,6 @@ namespace JRogue.UI.Hotbar
         public HotbarEntryKind Kind;
         public string RacialBindingKey;
         public string ContractInstanceId;
+        public string KnightNodeId;
     }
 }

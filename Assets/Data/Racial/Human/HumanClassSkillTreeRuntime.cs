@@ -26,6 +26,10 @@ namespace JRogue.Racial
         bool _applied;
 
         public HumanClassSkillTreeDefinition SkillTree => skillTree;
+        public int SkillPointsTotal => skillPointsTotal;
+        public int SpentPoints => skillTree != null ? skillTree.GetTotalSpentPoints(_ranksByNodeId) : 0;
+        public int UnspentPoints => skillTree != null ? skillTree.GetUnspentPoints(skillPointsTotal, _ranksByNodeId) : 0;
+        public IReadOnlyDictionary<string, int> RanksSnapshot => _ranksByNodeId;
 
         public void SetSkillTreeAndRanks(
             HumanClassSkillTreeDefinition tree,
@@ -59,6 +63,91 @@ namespace JRogue.Racial
             _applied = true;
         }
 
+        public int GetRank(string nodeId)
+        {
+            if (string.IsNullOrEmpty(nodeId))
+                return 0;
+
+            return _ranksByNodeId.TryGetValue(nodeId, out int rank) ? rank : 0;
+        }
+
+        public bool TrySpendPoint(string nodeId, out string failureReason)
+        {
+            failureReason = null;
+            if (skillTree == null)
+            {
+                failureReason = "Skill tree is null.";
+                return false;
+            }
+
+            if (!ValidateActor(out failureReason))
+                return false;
+
+            int before = GetRank(nodeId);
+            if (!skillTree.TrySpendPoint(
+                    nodeId,
+                    skillPointsTotal,
+                    _stats.level,
+                    _ranksByNodeId,
+                    out failureReason))
+            {
+                return false;
+            }
+
+            int after = GetRank(nodeId);
+            if (after != before)
+                SetNodeRank(nodeId, after);
+
+            SyncPresetEntry(nodeId, after);
+            return true;
+        }
+
+        public bool TryIncrementRankFromCombat(string nodeId, out string failureReason)
+        {
+            failureReason = null;
+            if (skillTree == null)
+            {
+                failureReason = "Skill tree is null.";
+                return false;
+            }
+
+            if (!ValidateActor(out failureReason))
+                return false;
+
+            int before = GetRank(nodeId);
+            if (!skillTree.TryIncrementRankFromCombat(
+                    nodeId,
+                    _stats.level,
+                    _ranksByNodeId,
+                    out failureReason))
+            {
+                return false;
+            }
+
+            int after = GetRank(nodeId);
+            if (after != before)
+                SetNodeRank(nodeId, after);
+
+            SyncPresetEntry(nodeId, after);
+            return true;
+        }
+
+        void SyncPresetEntry(string nodeId, int rank)
+        {
+            presetNodeRanks ??= new List<HumanSkillNodeRankEntry>();
+            for (int i = 0; i < presetNodeRanks.Count; i++)
+            {
+                HumanSkillNodeRankEntry entry = presetNodeRanks[i];
+                if (entry == null || entry.nodeId != nodeId)
+                    continue;
+
+                entry.rank = rank;
+                return;
+            }
+
+            presetNodeRanks.Add(new HumanSkillNodeRankEntry { nodeId = nodeId, rank = rank });
+        }
+
         void LoadRanksFromPreset()
         {
             _ranksByNodeId.Clear();
@@ -78,13 +167,19 @@ namespace JRogue.Racial
             foreach (KeyValuePair<string, int> kv in _ranksByNodeId)
             {
                 if (kv.Value > 0)
-                    ApplyNode(kv.Key, kv.Value);
+                    SetNodeRank(kv.Key, kv.Value);
             }
         }
 
-        void ApplyNode(string nodeId, int rank)
+        void SetNodeRank(string nodeId, int rank)
         {
-            if (_appliedNodeIds.Contains(nodeId) || !skillTree.TryFindNode(nodeId, out HumanClassSkillTreeNodeData node))
+            if (rank < 1)
+            {
+                RemoveNode(nodeId);
+                return;
+            }
+
+            if (!skillTree.TryFindNode(nodeId, out HumanClassSkillTreeNodeData node))
                 return;
 
             if (!_sources.TryGetValue(nodeId, out HumanClassSkillNodeModifierSource src))
@@ -95,6 +190,7 @@ namespace JRogue.Racial
 
             HumanClassSkillTreePayloadApplicator.ApplyRankedStats(_stats, src, node, rank);
             _appliedNodeIds.Add(nodeId);
+            _ranksByNodeId[nodeId] = rank;
         }
 
         void RemoveNode(string nodeId)
@@ -106,6 +202,7 @@ namespace JRogue.Racial
                 HumanClassSkillTreePayloadApplicator.RemoveRankedStats(_stats, src, node);
 
             _appliedNodeIds.Remove(nodeId);
+            _ranksByNodeId.Remove(nodeId);
         }
 
         void RemoveAllApplied()
