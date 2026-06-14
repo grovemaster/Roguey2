@@ -52,6 +52,7 @@
     <Compile Include="Assets/Tests/UnitTests/Loot/FloorPickupManualTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/LightingReceivedLightAggregationTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Loot/EnemyLootRollerTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/UI/Racial/DwarfClanRacialAbilitiesMenuTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/IlluminationVisibilityLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Inventory/InventoryValueDisplayTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/MapPresenceTrapUnregisterTests.cs" />

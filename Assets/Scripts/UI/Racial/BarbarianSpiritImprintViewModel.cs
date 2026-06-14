@@ -65,15 +65,31 @@ namespace JRogue.UI.Racial
             var path = graph.ValidateAndNormalizePath(chosenPath, out _) ??
                        new List<string> { graph.rootNodeId };
 
-            var pathSet = new HashSet<string>(path);
-            var foreclosed = ComputeForeclosedGhostIds(graph, pathSet);
+            vm.Cards.AddRange(BuildCardsFromLearnedSet(graph, path));
+            return vm;
+        }
 
-            foreach (string nodeId in path)
+        public static List<SpiritImprintCardViewModel> BuildCardsFromLearnedSet(
+            SpiritImprintGraph graph,
+            IReadOnlyList<string> learnedIds,
+            string foreclosedGhostDescription = "New marks only at the Shaman Barbarian.")
+        {
+            var cards = new List<SpiritImprintCardViewModel>();
+            if (graph == null)
+                return cards;
+
+            var learned = graph.ValidateAndNormalizeLearnedSet(learnedIds, out _) ??
+                          new List<string> { graph.rootNodeId };
+
+            var learnedSet = new HashSet<string>(learned);
+            var foreclosed = ComputeForeclosedGhostIds(graph, learnedSet);
+
+            foreach (string nodeId in learned)
             {
                 if (!graph.TryFindNode(nodeId, out var node))
                     continue;
 
-                vm.Cards.Add(BuildCommittedCard(graph, nodeId, node));
+                cards.Add(BuildCommittedCard(graph, nodeId, node));
 
                 if (string.IsNullOrEmpty(node.parentNodeId))
                     continue;
@@ -83,14 +99,14 @@ namespace JRogue.UI.Racial
                     if (sibling == null || !foreclosed.Contains(sibling.nodeId))
                         continue;
 
-                    if (!pathSet.TryGetChosenSibling(sibling, graph, out var chosenSibling))
+                    if (!learnedSet.TryGetChosenSibling(sibling, graph, out var chosenSibling))
                         continue;
 
-                    vm.Cards.Add(BuildGhostCard(sibling, chosenSibling));
+                    cards.Add(BuildGhostCard(sibling, chosenSibling, foreclosedGhostDescription));
                 }
             }
 
-            return vm;
+            return cards;
         }
 
         static SpiritImprintCardViewModel BuildCommittedCard(
@@ -114,7 +130,8 @@ namespace JRogue.UI.Racial
 
         static SpiritImprintCardViewModel BuildGhostCard(
             SpiritImprintNodeData ghost,
-            SpiritImprintNodeData chosenSibling)
+            SpiritImprintNodeData chosenSibling,
+            string learnHint = "New marks only at the Shaman Barbarian.")
         {
             return new SpiritImprintCardViewModel
             {
@@ -122,7 +139,7 @@ namespace JRogue.UI.Racial
                 NodeId = ghost.nodeId,
                 Title = ResolveDisplayName(ghost),
                 Subtitle = $"Not chosen (exclusive with {ResolveDisplayName(chosenSibling)})",
-                Description = "New marks only at the Shaman Barbarian.",
+                Description = learnHint,
                 IsRoot = false
             };
         }

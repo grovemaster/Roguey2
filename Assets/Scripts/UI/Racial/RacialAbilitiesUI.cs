@@ -75,6 +75,7 @@ namespace JRogue.UI.Racial
         DragonianSpellBodyView _dragonianSpells;
         HumanMageSpellBodyView _humanMageSpells;
         HumanKnightSkillBodyView _humanKnightSkills;
+        DwarfClanBodyView _dwarfClanBody;
         RectTransform _scrollContent;
         RectTransform _elfScrollContent;
         GameObject _barbarianBodyRoot;
@@ -84,6 +85,7 @@ namespace JRogue.UI.Racial
         GameObject _dragonianBodyRoot;
         GameObject _humanMageBodyRoot;
         GameObject _humanKnightBodyRoot;
+        GameObject _dwarfBodyRoot;
         GameObject _defaultBodyRoot;
 
         readonly List<BaseActor> _partyActors = new List<BaseActor>();
@@ -302,6 +304,13 @@ namespace JRogue.UI.Racial
             humanKnightBodyFlex.minHeight = 240f;
             _humanKnightBodyRoot.SetActive(false);
 
+            _dwarfBodyRoot = CreateBodyRoot(_panelRoot.transform, "DwarfBody");
+            _dwarfClanBody = DwarfClanBodyView.Create(_dwarfBodyRoot.transform);
+            var dwarfBodyFlex = _dwarfBodyRoot.AddComponent<LayoutElement>();
+            dwarfBodyFlex.flexibleHeight = 1f;
+            dwarfBodyFlex.minHeight = 240f;
+            _dwarfBodyRoot.SetActive(false);
+
             _defaultBodyRoot = CreateBodyRoot(_panelRoot.transform, "DefaultBody");
             var defaultPanel = new GameObject("PlaceholderPanel", typeof(RectTransform), typeof(Image));
             defaultPanel.transform.SetParent(_defaultBodyRoot.transform, false);
@@ -415,6 +424,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
             HideHumanSpecializationBodies();
             _defaultBodyRoot.SetActive(false);
             _timeline.SetPlainMessage("No party members available.");
@@ -469,6 +479,7 @@ namespace JRogue.UI.Racial
                 _tieflingBodyRoot.SetActive(false);
                 _beastmanBodyRoot.SetActive(false);
                 _dragonianBodyRoot.SetActive(false);
+                _dwarfBodyRoot.SetActive(false);
                 HideHumanSpecializationBodies();
                 _defaultBodyRoot.SetActive(false);
                 _timeline.SetPlainMessage("Invalid party member.");
@@ -489,8 +500,39 @@ namespace JRogue.UI.Racial
                 ShowDragonianBody(actor);
             else if (race == Race.Human)
                 ShowHumanBody(actor);
+            else if (race == Race.Dwarf)
+                ShowDwarfBody(actor);
             else
                 ShowDefaultBody(actor, race);
+        }
+
+        void HideAllRaceBodies()
+        {
+            _barbarianBodyRoot.SetActive(false);
+            _elfBodyRoot.SetActive(false);
+            _tieflingBodyRoot.SetActive(false);
+            _beastmanBodyRoot.SetActive(false);
+            _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
+            _defaultBodyRoot.SetActive(false);
+        }
+
+        void ShowDwarfBody(BaseActor actor)
+        {
+            if (actor.stats == null ||
+                actor.stats.racialSubsystem != RacialSubsystemKind.DwarfAncestry)
+            {
+                ShowDefaultBody(actor, Race.Dwarf);
+                return;
+            }
+
+            HideAllRaceBodies();
+            _dwarfBodyRoot.SetActive(true);
+
+            DwarfClanBodyViewModel vm = DwarfClanBodyViewModel.Build(actor);
+            _bannerText.text = vm.CanDisplay ? vm.BannerText : string.Empty;
+            _dwarfClanBody.Rebuild(vm);
         }
 
         void ShowBarbarianBody(BaseActor actor)
@@ -500,6 +542,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
             HideHumanSpecializationBodies();
             _barbarianBodyRoot.SetActive(true);
 
@@ -523,6 +566,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
             HideHumanSpecializationBodies();
             _elfBodyRoot.SetActive(true);
 
@@ -560,6 +604,7 @@ namespace JRogue.UI.Racial
             _elfBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
             HideHumanSpecializationBodies();
             _tieflingBodyRoot.SetActive(true);
 
@@ -582,6 +627,7 @@ namespace JRogue.UI.Racial
             _elfBodyRoot.SetActive(false);
             _tieflingBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
             HideHumanSpecializationBodies();
             _beastmanBodyRoot.SetActive(true);
 
@@ -656,6 +702,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
             HideHumanSpecializationBodies();
             _humanMageBodyRoot.SetActive(true);
 
@@ -679,6 +726,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
             HideHumanSpecializationBodies();
             _humanKnightBodyRoot.SetActive(true);
 
@@ -694,6 +742,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
             HideHumanSpecializationBodies();
             _defaultBodyRoot.SetActive(true);
 
@@ -724,6 +773,7 @@ namespace JRogue.UI.Racial
             _tieflingBodyRoot.SetActive(false);
             _beastmanBodyRoot.SetActive(false);
             _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
             HideHumanSpecializationBodies();
             _defaultBodyRoot.SetActive(true);
 

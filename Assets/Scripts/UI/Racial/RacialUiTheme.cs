@@ -56,6 +56,12 @@ namespace JRogue.UI.Racial
         public static readonly Color HumanKnightRowBackground = new Color(0.16f, 0.14f, 0.12f, 0.95f);
         public static readonly Color HumanKnightRowBorder = new Color(0.32f, 0.26f, 0.18f, 0.95f);
         public static readonly Color HumanKnightActionButtonBackground = new Color(0.28f, 0.22f, 0.14f, 0.98f);
+        public static readonly Color DwarfSectionAccent = new Color(0.72f, 0.58f, 0.34f, 1f);
+        public static readonly Color DwarfSecondaryAccent = new Color(0.58f, 0.62f, 0.68f, 1f);
+        public static readonly Color DwarfBudgetBackground = new Color(0.13f, 0.12f, 0.11f, 0.95f);
+        public static readonly Color DwarfColumnBackground = new Color(0.11f, 0.115f, 0.12f, 0.92f);
+        public static readonly Color DwarfRowBackground = new Color(0.15f, 0.14f, 0.13f, 0.95f);
+        public static readonly Color DwarfRowBorder = new Color(0.28f, 0.24f, 0.18f, 0.95f);
 
         static Sprite _placeholderSprite;
         static Sprite _imprintEmblemSprite;
