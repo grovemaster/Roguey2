@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fd1ab42bbe394391baf7f2c5e85d6f8, type: 3}
+  m_Name: PatronGod_ArgentVigil
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.PatronGodDefinition
+  godId: argent_vigil
+  displayName: Argent Vigil
+  description: Patron of watchful light, undead-slaying, and covenant oaths.
+  conductRules:
+  - conductId: argent_slay_undead
+    kind: 0
+    triggerId: Kill.Undead
+    pietyDelta: 2
+    cooldownTurns: 0
+    description: Slay the undead.
+  - conductId: argent_explore
+    kind: 0
+    triggerId: Explore.NewTile
+    pietyDelta: 1
+    cooldownTurns: 0
+    description: Explore new ground.
+  - conductId: argent_no_poison
+    kind: 2
+    triggerId: Item.Use.Poison
+    pietyDelta: 5
+    cooldownTurns: 0
+    description: Poison is anathema to the Vigil.
+  invocationIds:
+  - priest_lay_on_hands
+  - priest_ward
+  - priest_smites_undead
+  - priest_sanctuary
+  vowIds:
+  - vow_peacebound
+  - vow_essence_abstinence

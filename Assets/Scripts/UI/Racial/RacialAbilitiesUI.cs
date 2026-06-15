@@ -681,6 +681,9 @@ namespace JRogue.UI.Racial
                 case HumanClass.Knight:
                     ShowHumanKnightBody(actor);
                     break;
+                case HumanClass.Priest:
+                    ShowHumanPriestPlaceholder(actor);
+                    break;
                 default:
                     ShowHumanDefaultPlaceholder(actor);
                     break;
@@ -733,6 +736,15 @@ namespace JRogue.UI.Racial
             HumanKnightSkillBodyViewModel vm = HumanKnightSkillBodyViewModel.Build(actor);
             _bannerText.text = vm.BannerText;
             _humanKnightSkills.Rebuild(actor, vm.SelectedNodeId);
+        }
+
+        void ShowHumanPriestPlaceholder(BaseActor actor)
+        {
+            ShowHumanDefaultPlaceholder(
+                actor,
+                "Argent Vigil covenant.\n\n"
+                + "Prepare devotions at the shrine steward in town. "
+                + "Assign prepared invocations on your ability hotbar.");
         }
 
         void ShowHumanDefaultPlaceholder(BaseActor actor, string overrideMessage = null)

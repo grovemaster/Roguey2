@@ -21,6 +21,8 @@ namespace JRogue.Input
         DragonianSpell = 6,
         /// <summary>Human Knight skill tree active (aura, pulse, etc.).</summary>
         HumanKnightSkill = 7,
+        /// <summary>Human Priest prepared devotion invocation.</summary>
+        HumanPriestInvocation = 8,
     }
 
     /// <summary>Discriminant for <see cref="PlayerCommand"/>; stable for serialization.</summary>

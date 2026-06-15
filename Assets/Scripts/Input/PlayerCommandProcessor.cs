@@ -544,6 +544,7 @@ namespace JRogue.Input
             EquipmentManager equipManager = activeMember.GetComponent<EquipmentManager>();
             HumanMageSpellsRuntime mageSpells = activeMember.GetComponent<HumanMageSpellsRuntime>();
             DragonianSpellsRuntime dragonianSpells = activeMember.GetComponent<DragonianSpellsRuntime>();
+            HumanPriestDevotionRuntime priestDevotion = activeMember.GetComponent<HumanPriestDevotionRuntime>();
 
             bool ok = pending.Source switch
             {
@@ -571,6 +572,11 @@ namespace JRogue.Input
                         pending.ResolvedAbility,
                         target,
                         out _),
+                PlayerAbilitySource.HumanPriestInvocation =>
+                    HumanPriestInvocationExecutionService.TryExecute(
+                        activeMember,
+                        priestDevotion?.GetEquippedAbility(pending.AbilityIndex),
+                        target),
                 PlayerAbilitySource.InventoryItem =>
                     TryExecuteInventoryItemTargetedUse(pending, activeMember, target),
                 PlayerAbilitySource.BowAim =>
@@ -619,6 +625,8 @@ namespace JRogue.Input
                     return TargetedActionContext.FromRacial(pending.ResolvedAbility);
                 case PlayerAbilitySource.HumanKnightSkill:
                     return TargetedActionContext.FromRacial(pending.ResolvedAbility);
+                case PlayerAbilitySource.HumanPriestInvocation:
+                    return TargetedActionContext.FromHumanPriestInvocation(pending.AbilityIndex);
                 default:
                     return TargetedActionContext.FromEssence(pending.SlotIndex, pending.AbilityIndex);
             }
@@ -1046,6 +1054,7 @@ namespace JRogue.Input
             EquipmentManager equipManager = actor.GetComponent<EquipmentManager>();
             HumanMageSpellsRuntime mageSpells = actor.GetComponent<HumanMageSpellsRuntime>();
             DragonianSpellsRuntime dragonianSpells = actor.GetComponent<DragonianSpellsRuntime>();
+            HumanPriestDevotionRuntime priestDevotion = actor.GetComponent<HumanPriestDevotionRuntime>();
 
             return resolved.Source switch
             {
@@ -1062,6 +1071,11 @@ namespace JRogue.Input
                         resolved.Ability,
                         null,
                         out _),
+                PlayerAbilitySource.HumanPriestInvocation =>
+                    HumanPriestInvocationExecutionService.TryExecute(
+                        actor,
+                        priestDevotion?.GetEquippedAbility(resolved.AbilityIndex),
+                        null),
                 PlayerAbilitySource.RacialActive =>
                     TryExecuteHotbarRacialActive(actor, resolved),
                 PlayerAbilitySource.InventoryItem =>

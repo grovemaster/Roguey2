@@ -241,6 +241,15 @@ namespace JRogue.UI.Hotbar
                     return spell.displayName.Trim();
             }
 
+            if (entry.Kind == HotbarEntryKind.HumanPriestInvocation)
+            {
+                PriestInvocationDefinition invocation = actor
+                    ?.GetComponent<HumanPriestDevotionRuntime>()
+                    ?.GetEquippedInvocation(entry.abilityIndex);
+                if (!string.IsNullOrWhiteSpace(invocation?.displayName))
+                    return invocation.displayName.Trim();
+            }
+
             if (!string.IsNullOrWhiteSpace(resolved.Ability?.abilityName))
                 return resolved.Ability.abilityName.Trim();
 

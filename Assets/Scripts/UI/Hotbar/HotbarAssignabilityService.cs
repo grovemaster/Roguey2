@@ -22,6 +22,8 @@ namespace JRogue.UI.Hotbar
         public const string GroupMage = "Mage Spells";
         public const string GroupDragonian = "Dragonian Spells";
         public const string GroupInventory = "Inventory";
+        public const string GroupKnight = "Knight Skills";
+        public const string GroupPriest = "Priest Devotions";
         public const string GroupRacial = "Racial Actives";
 
         public static List<(HotbarEntry entry, string displayName, string group)> BuildPool(BaseActor actor)
@@ -33,6 +35,7 @@ namespace JRogue.UI.Hotbar
             AppendEssenceActives(actor, pool);
             AppendEquipmentActives(actor, pool);
             AppendMageSpells(actor, pool);
+            AppendPriestInvocations(actor, pool);
             AppendDragonianSpells(actor, pool);
             AppendInventoryEntries(actor, pool);
             AppendRacialActives(actor, pool);
@@ -137,6 +140,46 @@ namespace JRogue.UI.Hotbar
                     FormatSpellDisplayName(spell.displayName, ability),
                     GroupMage));
             }
+        }
+
+        static void AppendPriestInvocations(
+            BaseActor actor,
+            List<(HotbarEntry, string, string)> pool)
+        {
+            CharacterStats stats = actor.stats;
+            if (stats == null || stats.humanClass != HumanClass.Priest)
+                return;
+
+            HumanPriestDevotionRuntime devotion = actor.GetComponent<HumanPriestDevotionRuntime>();
+            if (devotion == null)
+                return;
+
+            IReadOnlyList<PriestInvocationDefinition> equipped = devotion.EquippedInvocations;
+            for (int i = 0; i < equipped.Count; i++)
+            {
+                PriestInvocationDefinition invocation = equipped[i];
+                AbilityAction ability = invocation?.ability;
+                if (ability == null)
+                    continue;
+
+                pool.Add((
+                    new HotbarEntry
+                    {
+                        Kind = HotbarEntryKind.HumanPriestInvocation,
+                        abilityIndex = i,
+                        abilityAssetName = ability.name,
+                    },
+                    FormatInvocationDisplayName(invocation.displayName, ability),
+                    GroupPriest));
+            }
+        }
+
+        static string FormatInvocationDisplayName(string displayName, AbilityAction ability)
+        {
+            if (!string.IsNullOrWhiteSpace(displayName))
+                return displayName.Trim();
+
+            return ability != null ? ability.abilityName : "Invocation";
         }
 
         static void AppendDragonianSpells(

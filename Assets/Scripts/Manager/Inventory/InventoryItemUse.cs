@@ -95,6 +95,8 @@ namespace JRogue.Manager.Inventory
             if (!ability.Execute(row.Owner.gameObject))
                 return InventoryUseResult.Fail("Item use failed.");
 
+            TryNotifyPoisonConduct(activeMember, row.Item);
+
             InventoryManager inventory = row.Owner.GetComponent<InventoryManager>();
             if (inventory != null && row.Instance != null)
                 inventory.TryConsumeCarriedQuantity(row.Instance, 1);
@@ -160,6 +162,8 @@ namespace JRogue.Manager.Inventory
 
             if (!ability.Execute(row.Owner.gameObject))
                 return InventoryUseResult.Fail("Item use failed.");
+
+            TryNotifyPoisonConduct(activeMember, row.Item);
 
             InventoryManager inventory = row.Owner.GetComponent<InventoryManager>();
             if (inventory != null)
@@ -290,6 +294,16 @@ namespace JRogue.Manager.Inventory
                 restoreOffHand,
                 resumeSelectionIndex: 0);
             return InventoryUseResult.StartBowAim(bowPending);
+        }
+
+        static void TryNotifyPoisonConduct(BaseActor actor, ItemData item)
+        {
+            if (actor == null || item == null)
+                return;
+
+            string name = item.itemName ?? string.Empty;
+            if (name.IndexOf("poison", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                DivineConductService.NotifyPoisonItemUsed(actor);
         }
     }
 }

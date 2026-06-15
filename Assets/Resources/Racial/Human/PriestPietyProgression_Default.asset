@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38194cd6f3b05214b93613d09edf7ec5, type: 3}
+  m_Name: PriestPietyProgression_Default
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.PriestPietyProgressionDefinition
+  maxPiety: 100
+  startingPietyOnCommit: 10
+  bands:
+  - minPietyInclusive: 0
+    devotionSlots: 2
+    starLabel: "\u2605\u2606\u2606\u2606\u2606"
+    passiveModifiers: []
+  - minPietyInclusive: 20
+    devotionSlots: 3
+    starLabel: "\u2605\u2605\u2606\u2606\u2606"
+    passiveModifiers: []
+  - minPietyInclusive: 40
+    devotionSlots: 4
+    starLabel: "\u2605\u2605\u2605\u2606\u2606"
+    passiveModifiers: []
+  - minPietyInclusive: 60
+    devotionSlots: 6
+    starLabel: "\u2605\u2605\u2605\u2605\u2606"
+    passiveModifiers: []
+  - minPietyInclusive: 80
+    devotionSlots: 8
+    starLabel: "\u2605\u2605\u2605\u2605\u2605"
+    passiveModifiers: []

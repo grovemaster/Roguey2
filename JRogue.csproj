@@ -75,6 +75,8 @@
     <Compile Include="Assets/Scripts/World/Generation/PartyFormationSpawnProfile.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyRestState.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryConsumePolicy.cs" />
+    <Compile Include="Assets/Scripts/Dialog/HumanPriestShrineDialogSession.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestShrineQuestLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridCellWorld.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupCoordinator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyDisplay.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotAcceptFilter.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/ShopNpcMenuUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyManager.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestInvocationExecutionService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownInteriorNpcSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillProgressionRules.cs" />
     <Compile Include="Assets/Scripts/UI/Character/EquipmentSlotGridView.cs" />
@@ -139,6 +142,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownPortalSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestCovenantService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingDoorInteractable.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/DwarfClanBodyView.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
@@ -264,6 +268,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCompassRectResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlayerInteraction.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestDevotionLoadoutService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneBoundaryResolver.cs" />
     <Compile Include="Assets/Scripts/Racial/SoulBeastRitualLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
@@ -282,6 +287,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/VaultPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/DwarfClanQuestService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyCompositionPresets.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestVowLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberMapHighlight.cs" />
@@ -302,6 +308,7 @@
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadNecroticSustenancePassive.cs" />
     <Compile Include="Assets/Scripts/Racial/SoulBeastPartyRules.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestVowService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Teleport/TeleportAbility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarPlaceListBuilder.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberDeathDialogUI.cs" />
@@ -329,9 +336,10 @@
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryTargetedUseLog.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementEntry.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/HumanPriestShrineNpcController.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownDwarfClanAltarSetupPhase.cs" />
-    <Compile Include="Assets/Scripts/Dialog/HumanKnightDrillMasterDialogSession.cs" />
     <Compile Include="Assets/Scripts/Racial/DwarfClanQuestLogic.cs" />
+    <Compile Include="Assets/Scripts/Dialog/HumanKnightDrillMasterDialogSession.cs" />
     <Compile Include="Assets/Scripts/Dialog/PortraitDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/HealthRegenerationService.cs" />
@@ -382,6 +390,7 @@
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/AbilityHotbarUI.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryDetailFormatter.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestPietyService.cs" />
     <Compile Include="Assets/Scripts/Input/EssenceMoveGate.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryCarriedSorter.cs" />
     <Compile Include="Assets/Scripts/Combat/FriendlyFire/FriendlyFireTargetGate.cs" />
@@ -429,6 +438,7 @@
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyAwardService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimeLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownSoulBeastRitualSetupPhase.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestClassCommitService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/LightingInitPhase.cs" />
     <Compile Include="Assets/Scripts/Item/World/FloorItemWorldView.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInstance.cs" />
@@ -474,6 +484,7 @@
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritContractService.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkInteraction.cs" />
     <Compile Include="Assets/Scripts/Racial/FairyStoneUseService.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestHotbarSync.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritMeditationService.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarUtility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarDefinition.cs" />
@@ -492,6 +503,7 @@
     <Compile Include="Assets/Scripts/UI/Character/EssenceDetailFormatter.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneAmbientApplicator.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotState.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestShrineIds.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardDefinition.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownPlazaMarkerLayout.cs" />
@@ -528,6 +540,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultAssetRegistry.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/FloorItemPopulationPhase.cs" />
+    <Compile Include="Assets/Scripts/Racial/DivineConductService.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/DungeonEndedDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinition.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopTransactionService.cs" />
@@ -608,6 +621,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarPlacementSet.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/TownLightingSync.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryValueDisplay.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestShrineQuestService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/FloorLayoutMode.cs" />
   </ItemGroup>
   <ItemGroup>

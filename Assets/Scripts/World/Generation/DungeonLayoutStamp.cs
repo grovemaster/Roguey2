@@ -134,6 +134,7 @@ namespace JRogue.World.Generation
         public const string MageTutor = "town_npc_mage_tutor";
         public const string KnightDrillMaster = "town_npc_knight_drill_master";
         public const string ArcaneVendor = "town_npc_arcane_vendor";
+        public const string PriestShrineSteward = "argent_vigil_shrine_steward";
         public const string MeditationShrine = "meditation_shrine";
         public const string SoulBeastRitualCircle = "soul_beast_ritual_circle";
         public const string TownTorchWest = "town_torch_w";

@@ -34,6 +34,8 @@ namespace JRogue.UI.Hotbar
                     $"dragonian:{abilityIndex}",
                 HotbarEntryKind.HumanKnightSkill =>
                     $"knight:{knightNodeId ?? string.Empty}:{abilityIndex}",
+                HotbarEntryKind.HumanPriestInvocation =>
+                    $"priest:{abilityIndex}",
                 HotbarEntryKind.RacialActive =>
                     $"racial:{racialBindingKey ?? string.Empty}",
                 HotbarEntryKind.InventoryActive =>
@@ -68,6 +70,8 @@ namespace JRogue.UI.Hotbar
                 HotbarEntryKind.HumanKnightSkill =>
                     string.Equals(knightNodeId, other.knightNodeId, StringComparison.Ordinal)
                     && abilityIndex == other.abilityIndex,
+                HotbarEntryKind.HumanPriestInvocation =>
+                    abilityIndex == other.abilityIndex,
                 HotbarEntryKind.RacialActive =>
                     string.Equals(racialBindingKey, other.racialBindingKey, StringComparison.Ordinal),
                 HotbarEntryKind.InventoryActive =>

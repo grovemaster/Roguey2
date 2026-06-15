@@ -51,6 +51,14 @@ namespace JRogue.Combat.FriendlyFire
                 AbilityIndex = abilityIndex,
             };
 
+        public static TargetedActionContext FromHumanPriestInvocation(int abilityIndex) =>
+            new TargetedActionContext
+            {
+                Source = PlayerAbilitySource.HumanPriestInvocation,
+                SlotIndex = abilityIndex,
+                AbilityIndex = abilityIndex,
+            };
+
         public static TargetedActionContext BowAim() =>
             new TargetedActionContext { Source = PlayerAbilitySource.BowAim };
 

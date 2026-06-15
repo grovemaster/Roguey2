@@ -272,6 +272,23 @@ namespace JRogue.UI.Hotbar
                 return dragonianSpells != null && dragonianSpells.CanAffordCast(resolved.AbilityIndex);
             }
 
+            if (resolved.Source == PlayerAbilitySource.HumanPriestInvocation)
+            {
+                HumanPriestDevotionRuntime devotion = actor.GetComponent<HumanPriestDevotionRuntime>();
+                PriestInvocationDefinition invocation = devotion?.GetEquippedInvocation(resolved.AbilityIndex);
+                if (invocation == null)
+                    return false;
+
+                if (stats.currentDivinePower < invocation.divinePowerCost)
+                    return false;
+
+                if (invocation.pietyInvokeCost <= 0)
+                    return true;
+
+                HumanPriestCovenantRuntime covenant = actor.GetComponent<HumanPriestCovenantRuntime>();
+                return covenant != null && covenant.Piety >= invocation.pietyInvokeCost;
+            }
+
             if (resolved.Source == PlayerAbilitySource.Essence)
             {
                 EssenceSlotManager essence = actor.GetComponent<EssenceSlotManager>();

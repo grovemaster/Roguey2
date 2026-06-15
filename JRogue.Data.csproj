@@ -51,11 +51,15 @@
   <ItemGroup>
     <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadLichBargainBenefit.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/TieflingImplantsRuntime.cs" />
+    <Compile Include="Assets/Data/Racial/Human/PriestInvocationDefinition.cs" />
+    <Compile Include="Assets/Data/Racial/Human/HumanPriestDevotionRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/TieflingForgemasterDefinition.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintDevActiveInvoker.cs" />
     <Compile Include="Assets/Data/Item/LightSource/LightSourceItemData.cs" />
     <Compile Include="Assets/Data/Racial/Beastman/SoulBeastRegistryService.cs" />
+    <Compile Include="Assets/Data/Racial/Human/PriestPietyBandData.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritActiveEntry.cs" />
+    <Compile Include="Assets/Data/Racial/Human/HumanPriestCovenantRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanClassSkillTreeDefinition.cs" />
     <Compile Include="Assets/Data/Enemy/EnemySpeciesDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/CyborgImplantDefinition.cs" />
@@ -147,8 +151,10 @@
     <Compile Include="Assets/Data/Lighting/LightingScenarioDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonAbilitiesRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeClusterData.cs" />
+    <Compile Include="Assets/Data/Racial/Human/PriestPietyProgressionDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/AncestorDefinition.cs" />
     <Compile Include="Assets/Data/Item/FairyStoneItemData.cs" />
+    <Compile Include="Assets/Data/Racial/Human/PatronGodDefinition.cs" />
     <Compile Include="Assets/Data/Status/StatusEffectDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadRacialEffectTracker.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeNodeData.cs" />
@@ -156,10 +162,12 @@
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintUnlockCost.cs" />
     <Compile Include="Assets/Data/Racial/Human/KnightSkillMasteryEntry.cs" />
     <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadLichBargainRestriction.cs" />
+    <Compile Include="Assets/Data/Racial/Human/PriestVowDefinition.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />
     <Compile Include="Assets/Data/Ability/PassiveEffect.cs" />
     <Compile Include="Assets/Data/Racial/Human/MageSpellDefinition.cs" />
+    <Compile Include="Assets/Data/Racial/Human/PriestPietyLogic.cs" />
     <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadExtraRadiantWeaknessRestriction.cs" />
     <Compile Include="Assets/Data/Item/Essence/EssenceData.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritActiveKind.cs" />

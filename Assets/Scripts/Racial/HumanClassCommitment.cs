@@ -72,6 +72,12 @@ namespace JRogue.Racial
             if (targetClass == HumanClass.Knight)
                 EnsureKnightRuntimes(actor);
 
+            if (targetClass == HumanClass.Priest)
+                HumanPriestCovenantService.InitializeOnCommit(
+                    actor,
+                    HumanPriestShrineIds.ArgentVigilGodId,
+                    out _);
+
             if (!HumanClassRules.CanGainEssences(targetClass))
             {
                 Debug.Log(

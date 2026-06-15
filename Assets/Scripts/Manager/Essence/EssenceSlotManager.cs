@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using JRogue.Actors;
 using JRogue.Item.Essence;
 using JRogue.Ability;
 using JRogue.Stats;
@@ -90,6 +91,7 @@ namespace JRogue.Manager.Essence
                 newEssence.Apply(gameObject);
                 RegisterEssenceBodyContribution(slotIndex, newEssence);
                 Debug.Log($"{gameObject.name} equipped {newEssence.essenceName}!");
+                HumanPriestVowLogic.NotifyEssenceEquipped(GetComponent<BaseActor>());
             }
 
             return true;

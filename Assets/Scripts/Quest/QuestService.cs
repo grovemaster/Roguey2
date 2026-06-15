@@ -456,6 +456,8 @@ namespace JRogue.Quest
 
             if (changed)
                 NotifyChanged();
+
+            DivineConductService.NotifyEnemyKilled(speciesId.Trim(), killer);
         }
 
         public void NotifyInventoryChanged()

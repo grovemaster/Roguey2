@@ -103,6 +103,8 @@ namespace JRogue.World.Generation
         public const string KnightSkillSpendDenyMessage = "You can only spend Knight skill points in town.";
         public const string ElderQuestDenyMessage = "You can only speak of draconic trials in town.";
         public const string DwarfClanCeremonyDenyMessage = "You can only swear clan oaths and pay respects in town.";
+        public const string PriestShrineDenyMessage = "You can only swear covenant oaths at the Argent Vigil shrine in town.";
+        public const string PriestDevotionDenyMessage = "You can only prepare devotions at the shrine in town.";
 
         public static bool TryAllowHumanMageTutorQuestChange(out string denyReason, bool logDeny = true)
         {
@@ -206,6 +208,46 @@ namespace JRogue.World.Generation
                 return true;
 
             denyReason = DwarfClanCeremonyDenyMessage;
+            if (logDeny)
+                Debug.Log($"{LogPrefix} {denyReason}");
+            return false;
+        }
+
+        public static bool TryAllowHumanPriestShrineQuestChange(out string denyReason, bool logDeny = true)
+        {
+            denyReason = null;
+            if (CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat)
+            {
+                denyReason = CombatMemorizeDenyMessage;
+                if (logDeny)
+                    Debug.Log($"{LogPrefix} {denyReason}");
+                return false;
+            }
+
+            if (IsSafeZoneForActiveParty())
+                return true;
+
+            denyReason = PriestShrineDenyMessage;
+            if (logDeny)
+                Debug.Log($"{LogPrefix} {denyReason}");
+            return false;
+        }
+
+        public static bool TryAllowHumanPriestDevotionChange(out string denyReason, bool logDeny = true)
+        {
+            denyReason = null;
+            if (CombatThreatCoordinator.Instance != null && CombatThreatCoordinator.Instance.IsInCombat)
+            {
+                denyReason = CombatMemorizeDenyMessage;
+                if (logDeny)
+                    Debug.Log($"{LogPrefix} {denyReason}");
+                return false;
+            }
+
+            if (IsSafeZoneForActiveParty())
+                return true;
+
+            denyReason = PriestDevotionDenyMessage;
             if (logDeny)
                 Debug.Log($"{LogPrefix} {denyReason}");
             return false;

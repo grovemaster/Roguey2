@@ -36,6 +36,7 @@ namespace JRogue.UI.Hotbar
                 HotbarEntryKind.HumanMageSpell => ResolveHumanMageSpell(actor, entry),
                 HotbarEntryKind.DragonianSpell => ResolveDragonianSpell(actor, entry),
                 HotbarEntryKind.HumanKnightSkill => ResolveHumanKnightSkill(actor, entry),
+                HotbarEntryKind.HumanPriestInvocation => ResolveHumanPriestInvocation(actor, entry),
                 HotbarEntryKind.RacialActive => ResolveRacial(actor, entry),
                 HotbarEntryKind.ElementalSpiritSummon => ResolveElementalSpiritSummon(actor, entry),
                 HotbarEntryKind.InventoryActive => ResolveInventoryActive(actor, entry),
@@ -185,6 +186,28 @@ namespace JRogue.UI.Hotbar
                 AbilityIndex = entry.abilityIndex,
                 KnightNodeId = entry.knightNodeId,
             };
+        }
+
+        static HotbarResolvedAction ResolveHumanPriestInvocation(BaseActor actor, HotbarEntry entry)
+        {
+            CharacterStats stats = actor.stats;
+            if (stats == null || stats.humanClass != HumanClass.Priest)
+                return Stale(entry.Kind, "Not a Priest.");
+
+            HumanPriestDevotionRuntime devotion = actor.GetComponent<HumanPriestDevotionRuntime>();
+            if (devotion == null)
+                return Stale(entry.Kind, "No priest devotion runtime.");
+
+            AbilityAction ability = devotion.GetEquippedAbility(entry.abilityIndex);
+            if (ability == null)
+                return Stale(entry.Kind, "Priest invocation unavailable.");
+
+            return Valid(
+                entry.Kind,
+                ability,
+                PlayerAbilitySource.HumanPriestInvocation,
+                entry.abilityIndex,
+                entry.abilityIndex);
         }
 
         static HotbarResolvedAction ResolveRacial(BaseActor actor, HotbarEntry entry)

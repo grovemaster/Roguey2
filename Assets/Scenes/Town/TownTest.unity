@@ -2183,10 +2183,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonRunBootstrap
   applyOnAwake: 1
   partyMemberPrefabs:
-  - {fileID: 5218558407117122561, guid: a1e2f3a4b5d6789012345678abcdef03, type: 3}
-  - {fileID: 3218558407117122548, guid: b2e3f4a5c6d7488990ab1c2d3e4f5b02, type: 3}
-  - {fileID: 3218558407117122551, guid: d2e3f4a5b6c7488990ab1c2d3e4f5d03, type: 3}
-  - {fileID: 6218558407117122571, guid: d4a0f200b3c6478990ab1c2d3e4f5d02, type: 3}
+  - {fileID: 3218558407117122559, guid: e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9, type: 3}
+  - {fileID: 3218558407117122556, guid: 6d4adc1695e54d62a98af9ce54e8eb29, type: 3}
+  - {fileID: 3218558407117122558, guid: e4f2a3b4c5d6789012345678abcdef02, type: 3}
+  - {fileID: 6218558407117122581, guid: dab31e272efb4de7858983fa9c5be2b7, type: 3}
   partyContainer: {fileID: 1243138353}
   floorInstanceManager: {fileID: 434795520}
 --- !u!4 &1243138353

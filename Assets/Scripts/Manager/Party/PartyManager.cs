@@ -5,6 +5,7 @@ using JRogue.Data.Progression;
 using JRogue.Manager.Floor;
 using JRogue.Manager.Loot;
 using JRogue.Manager.Progression;
+using JRogue.Racial;
 using JRogue.View;
 using JRogue.World.Generation.Zones;
 using UnityEngine;
@@ -244,6 +245,9 @@ namespace JRogue.Manager.Party
 
             EnsureHistoryLength();
             RecordMemberPosition(0, newPos, positionHistory[0]);
+            BaseActor leader = partyMembers[0];
+            if (leader != null)
+                DivineConductService.NotifyPartyLeaderMoved(leader, newPos);
         }
 
         /// <summary>
