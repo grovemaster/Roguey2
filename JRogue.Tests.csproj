@@ -142,6 +142,7 @@
     <Compile Include="Assets/Tests/UnitTests/Combat/InteractableTileTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Altar/AltarCompletionEvaluatorTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/TownLightingSyncTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Racial/DwarfClanP4Tests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/MapCellOccupancyTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/SpiritImprintUpgradeLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Inventory/EvocableChargeRulesTests.cs" />

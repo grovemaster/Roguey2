@@ -42,12 +42,6 @@ namespace JRogue.Racial
                 return true;
             }
 
-            if (!DwarfAncestorLearnLogic.HasSelectableOffer(offers))
-            {
-                ShowFeedback(ResolveAltarName(clan), DwarfAncestorLearnLogic.BlockedMessage);
-                return true;
-            }
-
             ShowLearnChoice(speaker, clan, offers);
             return true;
         }

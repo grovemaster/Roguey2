@@ -698,6 +698,9 @@ namespace JRogue.Quest
             if (rewards.partyExperience > 0)
                 PartyExperienceService.Instance?.AwardPartyExperience(rewards.partyExperience, "QuestReward");
 
+            if (!DwarfClanPrestigeService.TryApplyQuestReward(rewards, out denyReason))
+                return false;
+
             ApplyFlags(rewards.setFlagsOnComplete);
             return true;
         }

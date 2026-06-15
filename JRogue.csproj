@@ -119,6 +119,7 @@
     <Compile Include="Assets/Scripts/World/Generation/TownPhaseAdvanceSource.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRule.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapService.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfClanRegistry.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/SpiritImprintTimelineView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonZoneDefinition.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/StatMinimumPrecondition.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="Assets/Scripts/Actors/PartyMemberId.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimePhase.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/AlwaysTruePrecondition.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfClanDonationLogic.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PlayfieldLayout.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableBumpResult.cs" />
     <Compile Include="Assets/Scripts/Racial/BeastBloodUseService.cs" />
@@ -248,6 +250,7 @@
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritProgressionLogic.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
+    <Compile Include="Assets/Scripts/Dialog/DwarfClanStewardDialogSession.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinitionCatalog.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/DwarfClanBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/BeastmanSoulBeastBodyView.cs" />
@@ -266,6 +269,7 @@
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyKindMapping.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyLegacyMigration.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfClanPrestigeService.cs" />
     <Compile Include="Assets/Scripts/Racial/DwarfAncestorAltarService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTileVariationMode.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanKnightDrillMasterQuestLogic.cs" />
@@ -276,6 +280,7 @@
     <Compile Include="Assets/Scripts/Interactables/Effects/DwarfHallAncestorLearnEffect.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/VaultPlacementPhase.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfClanQuestService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyCompositionPresets.cs" />
     <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadBoneMendPassive.cs" />
@@ -326,6 +331,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapPlacementEntry.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownDwarfClanAltarSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Dialog/HumanKnightDrillMasterDialogSession.cs" />
+    <Compile Include="Assets/Scripts/Racial/DwarfClanQuestLogic.cs" />
     <Compile Include="Assets/Scripts/Dialog/PortraitDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/HealthRegenerationService.cs" />

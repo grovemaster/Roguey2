@@ -2,13 +2,13 @@
 
 **Purpose:** Specify how **Dwarf clans** gate racial ability progression: **clan membership**, **personal clan rank**, **clan prestige**, and **learning techniques** at each clan’s **Hall of Ancestors** altar. Each clan has its own **patron Ancestor** and **branching skill tree**. This doc is the **player-facing progression layer** on top of the data/runtime contracts in [Dwarf — Patron Ancestor & common abilities](Dwarf-Ancestor-And-Common-Abilities-Requirements.md).
 
-**Status:** Partially implemented (v0 — Forge Brothers + Stone Wardens clans, plaza Hall altars, frontier learn dialog, **`K` read-only Dwarf body**).
+**Status:** Partially implemented (v0 — Forge Brothers + Stone Wardens clans, plaza Hall altars, frontier learn dialog, **`K` read-only Dwarf body**, **clan prestige raising** via steward devotion errands + treasury donations).
 
 **Depends on:** [Dwarf — Patron Ancestor & common abilities](Dwarf-Ancestor-And-Common-Abilities-Requirements.md) (`AncestorDefinition`, `SpiritImprintGraph`, `DwarfAncestorPathRuntime`, `DwarfCommonAbilitiesRuntime`), [Phase 3 — Barbarian Spirit Imprint](Phase3-Requirements.md) (tree graph shape, sibling exclusivity), [Barbarian Spirit Imprint — Shaman NPC](Barbarian-Spirit-Imprint-Shaman-NPC-Requirements.md) (town NPC upgrade dialog pattern), [Town building entry & exit](../World/Town-Building-Entry-And-Exit-Requirements.md) (interior floor instances), [NPC dialog](../World/NPC-Dialog-Requirements.md), [Racial abilities menu](../UI/Racial-Abilities-Menu-Requirements.md), [Safe zones](../World/Safe-Zone-Requirements.md), `PartyManager`, `CharacterStats.level`, `Race.Dwarf`.
 
 **Related:** [Quest system](../World/Quest-Requirements.md) (future clan prestige + rank quests), [Shop NPCs](../World/Shop-NPC-Requirements.md) (donation UX patterns).
 
-**Explicitly out of scope (v0):** Switching clans; respec / unlearn clan nodes; raising **clan prestige** in play (gates exist in data but prestige is **authored baseline** only); multi-clan party politics; PvP clan warfare; clan creation by the player; interior art for every clan (one sample clan vertical slice); hotbar execution polish for new actives; **Proficiencies menu (`P`)** Dwarf section.
+**Explicitly out of scope (v0):** Switching clans; respec / unlearn clan nodes; multi-clan party politics; PvP clan warfare; clan creation by the player; interior art for every clan (one sample clan vertical slice); hotbar execution polish for new actives; **Proficiencies menu (`P`)** Dwarf section.
 
 ---
 
@@ -26,7 +26,7 @@
 | **L8** | When the frontier is **empty** (maxed, gated out, or exclusivity closed all branches), altar shows an appropriate **complete / blocked** message — no choice dialog. |
 | **L9** | Node eligibility uses **three independent gates** (all must pass): **character level**, **clan member rank**, **clan prestige** (§6). Unmet gates appear in choice rows as disabled reasons (greyed out, not selectable). |
 | **L10** | **Clan member rank** (personal) increases by **+1** each time the Dwarf learns a **new non-root** node at the altar in v0. Rank **0** = newly joined (root only). |
-| **L11** | **Clan prestige** (clan-wide) is **serialized per clan** but **not raised in v0** — designers author a starting value per clan; future systems consume it (§9). |
+| **L11** | **Clan prestige** (clan-wide) is **serialized per clan** and **raised in play** via clan devotion quests (+5) and steward treasury donations (10/25/50 gold → +1/+2/+3 prestige). **`K` menu** displays current prestige read-only. |
 | **L12** | **Common racial abilities** (0–3 slots, no clan required) remain a **separate track** unlocked by **character level** (see [ancestor doc §5](Dwarf-Ancestor-And-Common-Abilities-Requirements.md)); clan membership does not replace them. |
 | **L13** | Altars and join dialogs work in **town safe zone** only; no combat side effects; no turn cost. |
 
@@ -240,14 +240,14 @@ Use `SpiritImprintNodeData` active ability hotbar icon when present; else clan *
 
 **Clan prestige** is a **single integer per clan** representing the clan’s standing in the world. It gates **deeper tree nodes** (`requiredClanPrestige`) so individual Dwarves cannot outpace their clan’s reputation.
 
-### 9.2 — v0
+### 9.2 — v0 (implemented)
 
 | Rule | v0 |
 |------|-----|
-| Storage | `DwarfClanDefinition.startingPrestige` copied into run save on first touch |
-| Raising | **Not implemented** — value stays at start unless debug/cheat |
+| Storage | `DwarfClanDefinition.startingPrestige` copied into run save on first touch (`DwarfClanWorldState`) |
+| Raising | **Steward dialog** — one-shot devotion errand per clan (+5 prestige on turn-in); treasury donations 10/25/50 gold → +1/+2/+3 prestige (town safe zone only) |
 | UI | **`K` menu** displays current prestige read-only |
-| Gates | Nodes with `requiredClanPrestige > startingPrestige` appear **blocked** at altar with reason |
+| Gates | Nodes with `requiredClanPrestige` above current clan total appear **disabled** at altar with reason; become selectable once prestige is raised |
 
 ### 9.3 — Future raising (recommended — post-v0)
 
@@ -442,7 +442,7 @@ Race.Dwarf + DwarfAncestry
 | **P1** | One clan building interior + altar interactable + learn dialog (forced choice) |
 | **P2** | **`K` Dwarf body** (read-only) — **implemented** |
 | **P3** | Second clan + exclusivity branch proof — **implemented** (Stone Wardens) |
-| **P4** | Prestige raising (quests + donations) + blocked node unlock in play |
+| **P4** | Prestige raising (quests + donations) + blocked node unlock in play — **implemented** |
 
 ---
 
@@ -451,7 +451,7 @@ Race.Dwarf + DwarfAncestry
 | Question | Recommendation |
 |----------|----------------|
 | Should quests raise prestige? | **Yes — primary channel** (§9.3) |
-| Should donating gold raise prestige? | **Yes — secondary sink**, post-v0; not required for first tree nodes |
+| Should donating gold raise prestige? | **Yes — secondary sink** (10/25/50 gold tiers at clan steward) |
 | Should certain **actions** (boss kills, crafting) raise prestige? | **Optional tertiary** via flagged world events; avoid always-on grinds |
 | Should **`K` menu** do more than static display? | **v0: no.** Optional v0.1: highlight altar-available nodes read-only |
 | Patron pick without clan? | **Player Dwarves: no.** NPCs / debug presets only |

@@ -98,6 +98,8 @@ namespace JRogue.Quest
         public int[] itemQuantities;
         public string[] setFlagsOnComplete;
         [Min(0)] public int partyExperience;
+        [Min(0)] public int clanPrestige;
+        public string clanPrestigeClanId;
     }
 
     [Serializable]

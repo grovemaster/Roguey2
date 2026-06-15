@@ -10,7 +10,7 @@ namespace JRogue.Controller.Npc
 
         public override void BeginDialog(BaseActor speaker)
         {
-            var session = new DwarfClanJoinDialogSession(speaker, this, clan);
+            var session = new DwarfClanStewardDialogSession(speaker, this, clan);
             session.Start();
         }
     }

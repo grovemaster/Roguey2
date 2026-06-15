@@ -7,6 +7,7 @@ using JRogue.Interactables;
 using JRogue.Item;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
+using JRogue.Quest;
 using JRogue.Racial;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
@@ -29,6 +30,8 @@ namespace JRogue.Editor.World
         const string StewardSpritePath = "Assets/Art/NPC/Sprites/NPC_ForgeBrothersSteward.png";
         const string StewardPortraitPath = "Assets/Art/Portraits/NPC/Portrait_ForgeBrothersSteward.png";
 
+        const string ResourcesQuestFolder = "Assets/Resources/Quest";
+
         [MenuItem("JRogue/Racial/Create Forge Brothers Clan Pack")]
         public static void CreateForgeBrothersClanPack()
         {
@@ -48,6 +51,12 @@ namespace JRogue.Editor.World
             }
 
             DwarfClanDefinition clan = CreateClanDefinition(forgeFather);
+            CreateDevotionQuest(
+                DwarfClanIds.ForgeBrothersDevotionQuestId,
+                DwarfClanIds.ForgeBrothersStewardNpcId,
+                DwarfClanIds.ForgeBrothersClanId,
+                "Forge Brothers Devotion",
+                "Report to the Forge Brothers steward to seal a simple act of clan service.");
             CreateAltarAssets(clan);
             PortraitDefinition portrait = CreatePortrait("Portrait_ForgeBrothersSteward", StewardPortraitPath);
             CreateStewardNpcPrefab(clan, portrait);
@@ -71,7 +80,38 @@ namespace JRogue.Editor.World
             Directory.CreateDirectory(ResourcesNpcFolder);
             Directory.CreateDirectory(ResourcesInteractablesFolder);
             Directory.CreateDirectory(ResourcesPortraitsFolder);
+            Directory.CreateDirectory(ResourcesQuestFolder);
             Directory.CreateDirectory(EffectsFolder);
+        }
+
+        static void CreateDevotionQuest(
+            string questId,
+            string stewardNpcId,
+            string clanId,
+            string title,
+            string journalDescription)
+        {
+            string path = $"{ResourcesQuestFolder}/{questId}.asset";
+            var quest = LoadOrCreate<QuestDefinition>(path);
+            quest.questId = questId;
+            quest.displayTitle = title;
+            quest.journalDescription = journalDescription;
+            quest.giverNpcId = stewardNpcId;
+            quest.giverDisplayName = title;
+            quest.ownership = QuestOwnership.PartyShared;
+            quest.requiredMinLevel = 1;
+            quest.requiredRace = Race.Dwarf;
+            quest.turnInGoldCost = 0;
+            quest.acceptPrerequisites = System.Array.Empty<QuestPrerequisite>();
+            quest.objectives = System.Array.Empty<QuestObjectiveDefinition>();
+            quest.autoCompleteOnObjectives = false;
+            quest.rewards = new QuestRewardBundle
+            {
+                clanPrestige = 5,
+                clanPrestigeClanId = clanId,
+            };
+            quest.sortOrder = 20;
+            EditorUtility.SetDirty(quest);
         }
 
         static DwarfClanDefinition CreateClanDefinition(AncestorDefinition patron)
@@ -190,7 +230,7 @@ namespace JRogue.Editor.World
                 {
                     node.requiredCharacterLevel = 1;
                     node.requiredClanMemberRank = 1;
-                    node.requiredClanPrestige = 0;
+                    node.requiredClanPrestige = 10;
                 }
             }
 

@@ -59,7 +59,7 @@ MonoBehaviour:
       storyFlags: []
     requiredCharacterLevel: 1
     requiredClanMemberRank: 1
-    requiredClanPrestige: 0
+    requiredClanPrestige: 10
     statModifiers:
     - attribute: 3
       value: 1

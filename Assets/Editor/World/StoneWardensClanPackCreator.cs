@@ -9,6 +9,7 @@ using JRogue.Item;
 using JRogue.Item.Essence;
 using JRogue.Manager.Equipment;
 using JRogue.Manager.Inventory;
+using JRogue.Quest;
 using JRogue.Racial;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
@@ -29,6 +30,7 @@ namespace JRogue.Editor.World
         const string ResourcesInteractablesFolder = "Assets/Resources/Interactables";
         const string ResourcesPortraitsFolder = "Assets/Resources/Dialog/Portraits";
         const string EffectsFolder = "Assets/Data/Interactables/Effects";
+        const string ResourcesQuestFolder = "Assets/Resources/Quest";
         const string StewardSpritePath = "Assets/Art/NPC/Sprites/NPC_StoneWardensSteward.png";
         const string StewardPortraitPath = "Assets/Art/Portraits/NPC/Portrait_StoneWardensSteward.png";
 
@@ -46,6 +48,12 @@ namespace JRogue.Editor.World
             SpiritImprintGraph tree = CreateStoneMotherTree();
             AncestorDefinition stoneMother = CreateStoneMotherAncestor(tree);
             DwarfClanDefinition clan = CreateClanDefinition(stoneMother);
+            CreateDevotionQuest(
+                DwarfClanIds.StoneWardensDevotionQuestId,
+                DwarfClanIds.StoneWardensStewardNpcId,
+                DwarfClanIds.StoneWardensClanId,
+                "Stone Wardens Devotion",
+                "Report to the Stone Wardens steward to seal a simple act of clan service.");
             CreateAltarAssets(clan);
             PortraitDefinition portrait = CreatePortrait("Portrait_StoneWardensSteward", StewardPortraitPath);
             CreateStewardNpcPrefab(clan, portrait);
@@ -73,7 +81,38 @@ namespace JRogue.Editor.World
             Directory.CreateDirectory(ResourcesNpcFolder);
             Directory.CreateDirectory(ResourcesInteractablesFolder);
             Directory.CreateDirectory(ResourcesPortraitsFolder);
+            Directory.CreateDirectory(ResourcesQuestFolder);
             Directory.CreateDirectory(EffectsFolder);
+        }
+
+        static void CreateDevotionQuest(
+            string questId,
+            string stewardNpcId,
+            string clanId,
+            string title,
+            string journalDescription)
+        {
+            string path = $"{ResourcesQuestFolder}/{questId}.asset";
+            var quest = LoadOrCreate<QuestDefinition>(path);
+            quest.questId = questId;
+            quest.displayTitle = title;
+            quest.journalDescription = journalDescription;
+            quest.giverNpcId = stewardNpcId;
+            quest.giverDisplayName = title;
+            quest.ownership = QuestOwnership.PartyShared;
+            quest.requiredMinLevel = 1;
+            quest.requiredRace = Race.Dwarf;
+            quest.turnInGoldCost = 0;
+            quest.acceptPrerequisites = System.Array.Empty<QuestPrerequisite>();
+            quest.objectives = System.Array.Empty<QuestObjectiveDefinition>();
+            quest.autoCompleteOnObjectives = false;
+            quest.rewards = new QuestRewardBundle
+            {
+                clanPrestige = 5,
+                clanPrestigeClanId = clanId,
+            };
+            quest.sortOrder = 21;
+            EditorUtility.SetDirty(quest);
         }
 
         static SpiritImprintGraph CreateStoneMotherTree()
@@ -128,7 +167,7 @@ namespace JRogue.Editor.World
                 parentNodeId = "mountain_fist",
                 requiredCharacterLevel = 1,
                 requiredClanMemberRank = 1,
-                requiredClanPrestige = 0,
+                requiredClanPrestige = 10,
                 statModifiers = new List<AttributeModifier>
                 {
                     new AttributeModifier { attribute = StatType.Constitution, value = 1 },
@@ -143,7 +182,7 @@ namespace JRogue.Editor.World
                 parentNodeId = "earth_sight",
                 requiredCharacterLevel = 1,
                 requiredClanMemberRank = 1,
-                requiredClanPrestige = 0,
+                requiredClanPrestige = 10,
                 statModifiers = new List<AttributeModifier>
                 {
                     new AttributeModifier { attribute = StatType.Intelligence, value = 1 },

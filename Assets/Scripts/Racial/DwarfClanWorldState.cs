@@ -90,6 +90,18 @@ namespace JRogue.Racial
             return value;
         }
 
+        public int AddPrestige(string clanId, int amount)
+        {
+            if (string.IsNullOrWhiteSpace(clanId) || amount <= 0)
+                return GetPrestige(clanId);
+
+            string trimmed = clanId.Trim();
+            int next = GetPrestige(trimmed) + amount;
+            _prestigeByClanId[trimmed] = next;
+            UpsertEntry(trimmed, next);
+            return next;
+        }
+
         void UpsertEntry(string clanId, int prestige)
         {
             prestigeEntries ??= new List<DwarfClanPrestigeEntry>();
