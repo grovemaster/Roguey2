@@ -31,5 +31,33 @@ namespace JRogue.Tests.UnitTests.World
             Assert.AreNotEqual(arcaneVendor, forgemaster);
             Assert.AreNotEqual(mageTutor, arcaneVendor);
         }
+
+        [Test]
+        public void ValidateMarkersOnFloor_DefaultPlazaStampGeometry()
+        {
+            var stamp = ScriptableObject.CreateInstance<DungeonLayoutStamp>();
+            stamp.InitializeGrid(20, 20, borderWalls: true);
+            TownPlazaMarkerLayout.ApplyAll(stamp);
+
+            Assert.IsTrue(
+                TownPlazaMarkerLayout.ValidateMarkersOnFloor(stamp, out string error),
+                error);
+        }
+
+        [Test]
+        public void StoneWardensMarkers_SitOnInteriorFloor()
+        {
+            var stamp = ScriptableObject.CreateInstance<DungeonLayoutStamp>();
+            stamp.InitializeGrid(20, 20, borderWalls: true);
+            TownPlazaMarkerLayout.ApplyAll(stamp);
+
+            Assert.IsTrue(
+                TownPlazaMarkerLayout.TryGetCell(StampMarkerIds.StoneWardensAltar, out Vector3Int altar));
+            Assert.IsTrue(
+                TownPlazaMarkerLayout.TryGetCell(StampMarkerIds.StoneWardensSteward, out Vector3Int steward));
+
+            Assert.IsTrue(stamp.IsFloor(altar.x, altar.y));
+            Assert.IsTrue(stamp.IsFloor(steward.x, steward.y));
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 **Purpose:** Specify how **Dwarf clans** gate racial ability progression: **clan membership**, **personal clan rank**, **clan prestige**, and **learning techniques** at each clan’s **Hall of Ancestors** altar. Each clan has its own **patron Ancestor** and **branching skill tree**. This doc is the **player-facing progression layer** on top of the data/runtime contracts in [Dwarf — Patron Ancestor & common abilities](Dwarf-Ancestor-And-Common-Abilities-Requirements.md).
 
-**Status:** Partially implemented (v0 — Forge Brothers clan join, plaza Hall altar, frontier learn dialog, **`K` read-only Dwarf body**).
+**Status:** Partially implemented (v0 — Forge Brothers + Stone Wardens clans, plaza Hall altars, frontier learn dialog, **`K` read-only Dwarf body**).
 
 **Depends on:** [Dwarf — Patron Ancestor & common abilities](Dwarf-Ancestor-And-Common-Abilities-Requirements.md) (`AncestorDefinition`, `SpiritImprintGraph`, `DwarfAncestorPathRuntime`, `DwarfCommonAbilitiesRuntime`), [Phase 3 — Barbarian Spirit Imprint](Phase3-Requirements.md) (tree graph shape, sibling exclusivity), [Barbarian Spirit Imprint — Shaman NPC](Barbarian-Spirit-Imprint-Shaman-NPC-Requirements.md) (town NPC upgrade dialog pattern), [Town building entry & exit](../World/Town-Building-Entry-And-Exit-Requirements.md) (interior floor instances), [NPC dialog](../World/NPC-Dialog-Requirements.md), [Racial abilities menu](../UI/Racial-Abilities-Menu-Requirements.md), [Safe zones](../World/Safe-Zone-Requirements.md), `PartyManager`, `CharacterStats.level`, `Race.Dwarf`.
 
@@ -404,6 +404,7 @@ Race.Dwarf + DwarfAncestry
 | Asset | Purpose |
 |-------|---------|
 | `DwarfClan_ForgeBrothers` | First clan; patron `ForgeFather` |
+| `DwarfClan_StoneWardens` | Second clan; patron `StoneMother`; exclusive branch `mountain_fist` / `earth_sight` |
 | `town_interior_clan_forgefather` | Interior with Hall + altar marker |
 | Plaza door marker | Enter clan hall from town |
 | `ForgeFatherTree` (extend) | Add **branch** with exclusivity + prestige/rank gates for tests |
@@ -440,7 +441,7 @@ Race.Dwarf + DwarfAncestry
 | **P0** | `DwarfClanDefinition`, membership runtime, join dialog, extend node gate fields |
 | **P1** | One clan building interior + altar interactable + learn dialog (forced choice) |
 | **P2** | **`K` Dwarf body** (read-only) — **implemented** |
-| **P3** | Second clan + exclusivity branch proof |
+| **P3** | Second clan + exclusivity branch proof — **implemented** (Stone Wardens) |
 | **P4** | Prestige raising (quests + donations) + blocked node unlock in play |
 
 ---

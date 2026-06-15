@@ -249,11 +249,11 @@
     <Compile Include="Assets/Scripts/Status/StatusEffectInstance.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyPanelView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorDefinitionCatalog.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/DwarfClanBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/BeastmanSoulBeastBodyView.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/MessageConsoleUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceService.cs" />
     <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeService.cs" />
-    <Compile Include="Assets/Scripts/UI/Racial/DwarfClanBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
@@ -446,8 +446,8 @@
     <Compile Include="Assets/Scripts/Manager/Door/DoorTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceResolver.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SetTileEmissionEffect.cs" />
-    <Compile Include="Assets/Scripts/Interactables/Effects/SoulBeastRitualEffect.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRollResult.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Effects/SoulBeastRitualEffect.cs" />
     <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePaletteResolver.cs" />
     <Compile Include="Assets/Scripts/Racial/SoulBeastRitualService.cs" />
@@ -492,8 +492,8 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRunner.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneRectProcGenerator.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/RestSessionService.cs" />
-    <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
     <Compile Include="Assets/Scripts/Racial/DwarfClanIds.cs" />
+    <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyEligibility.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/RacialAbilitiesUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCellMapStats.cs" />
@@ -575,6 +575,7 @@
     <Compile Include="Assets/Scripts/Manager/Inventory/AbilityCooldownService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonPortalVisuals.cs" />
     <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyListBodyViewModel.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DwarfClanTownEntries.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/ZoneFillPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorFeatureSnapshot.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarAssignabilityService.cs" />

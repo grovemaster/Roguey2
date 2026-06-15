@@ -126,6 +126,12 @@ namespace JRogue.Editor.World
                 return;
             }
 
+            if (!TownPlazaMarkerLayout.ValidateMarkersOnFloor(stamp, out string floorError))
+            {
+                Debug.LogError($"[Town] Marker layout invalid: {floorError}");
+                return;
+            }
+
             TownPlazaMarkerLayout.ApplyAll(stamp);
             EditorUtility.SetDirty(stamp);
             AssetDatabase.SaveAssets();

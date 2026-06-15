@@ -15,22 +15,35 @@ namespace JRogue.World.Generation.Phases
         public const string TownFloorId = "town_main";
 
         static readonly (string markerId, string resourcesPath, string editorPath)[] SpawnEntries =
+            BuildSpawnEntries();
+
+        static (string markerId, string resourcesPath, string editorPath)[] BuildSpawnEntries()
         {
-            (StampMarkerIds.TownNpc1, "Town/Npc/TownNpc_Mira", "Assets/Resources/Town/Npc/TownNpc_Mira.prefab"),
-            (StampMarkerIds.TownNpc2, "Town/Npc/TownNpc_Luc", "Assets/Resources/Town/Npc/TownNpc_Luc.prefab"),
-            (StampMarkerIds.TownNpc3, "Town/Npc/TownNpc_Edda", "Assets/Resources/Town/Npc/TownNpc_Edda.prefab"),
-            (StampMarkerIds.TownNpc4, "Town/Npc/TownNpc_Fenn", "Assets/Resources/Town/Npc/TownNpc_Fenn.prefab"),
-            (StampMarkerIds.TownNpc5, "Town/Npc/TownNpc_Greta", "Assets/Resources/Town/Npc/TownNpc_Greta.prefab"),
-            (StampMarkerIds.ShamanBarbarian, "Town/Npc/TownNpc_ShamanBarbarian", "Assets/Resources/Town/Npc/TownNpc_ShamanBarbarian.prefab"),
-            (StampMarkerIds.FairyMerchant, "Town/Npc/TownNpc_FairyMerchant", "Assets/Resources/Town/Npc/TownNpc_FairyMerchant.prefab"),
-            (StampMarkerIds.BeastBloodMerchant, "Town/Npc/TownNpc_BeastBloodMerchant", "Assets/Resources/Town/Npc/TownNpc_BeastBloodMerchant.prefab"),
-            (StampMarkerIds.FleshmetalForgemaster, "Town/Npc/TownNpc_FleshmetalForgemaster", "Assets/Resources/Town/Npc/TownNpc_FleshmetalForgemaster.prefab"),
-            (StampMarkerIds.DragonianElderVolscale, "Town/Npc/TownNpc_DragonianElderVolscale", "Assets/Resources/Town/Npc/TownNpc_DragonianElderVolscale.prefab"),
-            (StampMarkerIds.MageTutor, "Town/Npc/TownNpc_MageTutor", "Assets/Resources/Town/Npc/TownNpc_MageTutor.prefab"),
-            (StampMarkerIds.KnightDrillMaster, "Town/Npc/TownNpc_KnightDrillMaster", "Assets/Resources/Town/Npc/TownNpc_KnightDrillMaster.prefab"),
-            (StampMarkerIds.ArcaneVendor, "Town/Npc/TownNpc_ArcaneVendor", "Assets/Resources/Town/Npc/TownNpc_ArcaneVendor.prefab"),
-            (StampMarkerIds.ForgeBrothersSteward, "Town/Npc/TownNpc_ForgeBrothersSteward", "Assets/Resources/Town/Npc/TownNpc_ForgeBrothersSteward.prefab"),
-        };
+            var entries = new System.Collections.Generic.List<(string, string, string)>
+            {
+                (StampMarkerIds.TownNpc1, "Town/Npc/TownNpc_Mira", "Assets/Resources/Town/Npc/TownNpc_Mira.prefab"),
+                (StampMarkerIds.TownNpc2, "Town/Npc/TownNpc_Luc", "Assets/Resources/Town/Npc/TownNpc_Luc.prefab"),
+                (StampMarkerIds.TownNpc3, "Town/Npc/TownNpc_Edda", "Assets/Resources/Town/Npc/TownNpc_Edda.prefab"),
+                (StampMarkerIds.TownNpc4, "Town/Npc/TownNpc_Fenn", "Assets/Resources/Town/Npc/TownNpc_Fenn.prefab"),
+                (StampMarkerIds.TownNpc5, "Town/Npc/TownNpc_Greta", "Assets/Resources/Town/Npc/TownNpc_Greta.prefab"),
+                (StampMarkerIds.ShamanBarbarian, "Town/Npc/TownNpc_ShamanBarbarian", "Assets/Resources/Town/Npc/TownNpc_ShamanBarbarian.prefab"),
+                (StampMarkerIds.FairyMerchant, "Town/Npc/TownNpc_FairyMerchant", "Assets/Resources/Town/Npc/TownNpc_FairyMerchant.prefab"),
+                (StampMarkerIds.BeastBloodMerchant, "Town/Npc/TownNpc_BeastBloodMerchant", "Assets/Resources/Town/Npc/TownNpc_BeastBloodMerchant.prefab"),
+                (StampMarkerIds.FleshmetalForgemaster, "Town/Npc/TownNpc_FleshmetalForgemaster", "Assets/Resources/Town/Npc/TownNpc_FleshmetalForgemaster.prefab"),
+                (StampMarkerIds.DragonianElderVolscale, "Town/Npc/TownNpc_DragonianElderVolscale", "Assets/Resources/Town/Npc/TownNpc_DragonianElderVolscale.prefab"),
+                (StampMarkerIds.MageTutor, "Town/Npc/TownNpc_MageTutor", "Assets/Resources/Town/Npc/TownNpc_MageTutor.prefab"),
+                (StampMarkerIds.KnightDrillMaster, "Town/Npc/TownNpc_KnightDrillMaster", "Assets/Resources/Town/Npc/TownNpc_KnightDrillMaster.prefab"),
+                (StampMarkerIds.ArcaneVendor, "Town/Npc/TownNpc_ArcaneVendor", "Assets/Resources/Town/Npc/TownNpc_ArcaneVendor.prefab"),
+            };
+
+            for (int i = 0; i < DwarfClanTownEntries.Stewards.Length; i++)
+            {
+                DwarfClanTownEntries.StewardEntry steward = DwarfClanTownEntries.Stewards[i];
+                entries.Add((steward.MarkerId, steward.PrefabResourcesPath, steward.PrefabEditorPath));
+            }
+
+            return entries.ToArray();
+        }
 
         public void Execute(DungeonGenerationContext context)
         {

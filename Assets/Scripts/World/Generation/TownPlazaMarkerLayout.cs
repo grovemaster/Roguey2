@@ -43,6 +43,8 @@ namespace JRogue.World.Generation
 
             (StampMarkerIds.ForgeBrothersSteward, new Vector3Int(1, 6, 0)),
             (StampMarkerIds.ForgeBrothersAltar, new Vector3Int(1, 5, 0)),
+            (StampMarkerIds.StoneWardensSteward, new Vector3Int(17, 6, 0)),
+            (StampMarkerIds.StoneWardensAltar, new Vector3Int(17, 5, 0)),
 
             (StampMarkerIds.TownTorchWest, new Vector3Int(0, 10, 0)),
             (StampMarkerIds.TownTorchNorth, new Vector3Int(10, 19, 0)),
@@ -73,6 +75,33 @@ namespace JRogue.World.Generation
 
             for (int i = 0; i < Markers.Length; i++)
                 stamp.SetMarker(Markers[i].markerId, Markers[i].cell);
+        }
+
+        /// <summary>
+        /// Ensures every marker sits on a walkable floor tile (not border wall / void).
+        /// </summary>
+        public static bool ValidateMarkersOnFloor(DungeonLayoutStamp stamp, out string error)
+        {
+            error = null;
+            if (stamp == null)
+            {
+                error = "Stamp is null.";
+                return false;
+            }
+
+            for (int i = 0; i < Markers.Length; i++)
+            {
+                (string markerId, Vector3Int cell) = Markers[i];
+                if (stamp.IsFloor(cell.x, cell.y))
+                    continue;
+
+                error =
+                    $"Town plaza marker '{markerId}' at {cell} is not on floor "
+                    + $"(border wall or void). Pick an interior cell.";
+                return false;
+            }
+
+            return true;
         }
 
         public static bool ValidateUniqueCells(out string error)

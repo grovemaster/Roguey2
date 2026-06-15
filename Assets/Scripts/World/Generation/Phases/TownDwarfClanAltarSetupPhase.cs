@@ -8,15 +8,10 @@ using UnityEditor;
 
 namespace JRogue.World.Generation.Phases
 {
-    /// <summary>Registers the Forge Brothers Hall of Ancestors altar on town_main.</summary>
+    /// <summary>Registers dwarf clan Hall of Ancestors altars on town_main.</summary>
     public sealed class TownDwarfClanAltarSetupPhase : IDungeonGenerationPhase
     {
         public const string TownFloorId = "town_main";
-
-        const string AltarResourcesPath = "Interactables/HallOfAncestorsAltar_ForgeBrothers";
-        const string AltarEditorPath = "Assets/Resources/Interactables/HallOfAncestorsAltar_ForgeBrothers.asset";
-        const string ClanResourcesPath = "Racial/Dwarf/Clans/DwarfClan_ForgeBrothers";
-        const string ClanEditorPath = "Assets/Resources/Racial/Dwarf/Clans/DwarfClan_ForgeBrothers.asset";
 
         public void Execute(DungeonGenerationContext context)
         {
@@ -33,57 +28,49 @@ namespace JRogue.World.Generation.Phases
 
             interactables.SetOverlayMap(context.Instance.Tilemaps.InteractableOverlayMap);
 
-            if (!TryResolveMarkerCell(context, StampMarkerIds.ForgeBrothersAltar, out Vector3Int cell))
+            int registered = 0;
+            for (int i = 0; i < DwarfClanTownEntries.Altars.Length; i++)
             {
-                DungeonGenerationLog.Warn($"{nameof(TownDwarfClanAltarSetupPhase)} missing altar marker.");
-                return;
+                if (TryRegisterAltar(context, interactables, DwarfClanTownEntries.Altars[i]))
+                    registered++;
             }
 
-            InteractableTileDefinition altar = LoadAltarDefinition();
+            DungeonGenerationLog.Phase(
+                nameof(TownDwarfClanAltarSetupPhase),
+                $"registered {registered} Hall altar(s).");
+        }
+
+        static bool TryRegisterAltar(
+            DungeonGenerationContext context,
+            InteractableTileService interactables,
+            DwarfClanTownEntries.AltarEntry entry)
+        {
+            if (!TryResolveMarkerCell(context, entry.MarkerId, out Vector3Int cell))
+            {
+                DungeonGenerationLog.Warn(
+                    $"{nameof(TownDwarfClanAltarSetupPhase)} missing altar marker '{entry.MarkerId}'.");
+                return false;
+            }
+
+            InteractableTileDefinition altar = LoadAltarDefinition(entry);
             if (altar == null)
             {
-                DungeonGenerationLog.Warn($"{nameof(TownDwarfClanAltarSetupPhase)} missing altar definition.");
-                return;
+                DungeonGenerationLog.Warn(
+                    $"{nameof(TownDwarfClanAltarSetupPhase)} missing altar definition '{entry.AltarResourcesPath}'.");
+                return false;
             }
-
-            BindClanToEffect(altar);
 
             interactables.Register(cell, altar);
-            DungeonGenerationLog.Phase(nameof(TownDwarfClanAltarSetupPhase), $"Hall altar at {cell}");
+            DungeonGenerationLog.Phase(nameof(TownDwarfClanAltarSetupPhase), $"Hall altar at {cell} ({entry.MarkerId})");
+            return true;
         }
 
-        static void BindClanToEffect(InteractableTileDefinition altar)
+        static InteractableTileDefinition LoadAltarDefinition(DwarfClanTownEntries.AltarEntry entry)
         {
-            if (altar?.onActivateEffects == null)
-                return;
-
-            DwarfClanDefinition clan = LoadClanDefinition();
-            if (clan == null)
-                return;
-
-            for (int i = 0; i < altar.onActivateEffects.Length; i++)
-            {
-                if (altar.onActivateEffects[i] is DwarfHallAncestorLearnEffect effect)
-                    effect.clan = clan;
-            }
-        }
-
-        static InteractableTileDefinition LoadAltarDefinition()
-        {
-            InteractableTileDefinition def = Resources.Load<InteractableTileDefinition>(AltarResourcesPath);
+            InteractableTileDefinition def = Resources.Load<InteractableTileDefinition>(entry.AltarResourcesPath);
 #if UNITY_EDITOR
             if (def == null)
-                def = AssetDatabase.LoadAssetAtPath<InteractableTileDefinition>(AltarEditorPath);
-#endif
-            return def;
-        }
-
-        static DwarfClanDefinition LoadClanDefinition()
-        {
-            DwarfClanDefinition def = Resources.Load<DwarfClanDefinition>(ClanResourcesPath);
-#if UNITY_EDITOR
-            if (def == null)
-                def = AssetDatabase.LoadAssetAtPath<DwarfClanDefinition>(ClanEditorPath);
+                def = AssetDatabase.LoadAssetAtPath<InteractableTileDefinition>(entry.AltarEditorPath);
 #endif
             return def;
         }
