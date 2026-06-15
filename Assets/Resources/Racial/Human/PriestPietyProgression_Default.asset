@@ -22,7 +22,9 @@ MonoBehaviour:
   - minPietyInclusive: 20
     devotionSlots: 3
     starLabel: "\u2605\u2605\u2606\u2606\u2606"
-    passiveModifiers: []
+    passiveModifiers:
+    - attribute: 5
+      valuePerRank: 1
   - minPietyInclusive: 40
     devotionSlots: 4
     starLabel: "\u2605\u2605\u2605\u2606\u2606"

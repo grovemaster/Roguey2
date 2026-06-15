@@ -39,6 +39,8 @@ MonoBehaviour:
   - priest_ward
   - priest_smites_undead
   - priest_sanctuary
+  - priest_aura_of_truce
   vowIds:
   - vow_peacebound
+  - vow_full_vigor
   - vow_essence_abstinence

@@ -9,8 +9,9 @@ namespace JRogue.Ability.Heal
 
         public override bool CanExecute(GameObject user)
         {
-            Debug.Log($"{user.name} wants to heal!");
-            var stats = user.GetComponent<JRogue.Stats.CharacterStats>();
+            if (user == null || !user.TryGetComponent(out JRogue.Stats.CharacterStats stats))
+                return false;
+
             return stats.currentHP < stats.MaxHP;
         }
 

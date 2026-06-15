@@ -7,7 +7,9 @@ using JRogue.Racial;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
 using JRogue.UI.Gameplay;
+using JRogue.World.Generation;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace JRogue.Dialog
@@ -17,7 +19,6 @@ namespace JRogue.Dialog
         const string AcceptPayload = "__accept__";
         const string TurnInPayload = "__turn_in__";
         const string CancelPayload = "__cancel__";
-        const string PreparePayload = "__prepare__";
         const string VowsPayload = "__vows__";
         const string ReportVowsPayload = "__report_vows__";
         const string RepentPayload = "__repent__";
@@ -196,28 +197,25 @@ namespace JRogue.Dialog
             int piety = covenant != null ? covenant.Piety : 0;
             ShowLine(
                 $"You swear covenant to the Argent Vigil. Divine Power flows where Soul Power once lived. "
-                + $"Piety: {piety}. Prepare devotions before you descend.");
+                + $"Piety: {piety}. Open K to prepare devotions before you descend.");
         }
 
         void ShowPriestMenu()
         {
-            HumanPriestCovenantRuntime covenant = _speaker.GetComponent<HumanPriestCovenantRuntime>();
+            HumanPriestCovenantRuntime covenant = ResolveCovenantRuntime();
             int piety = covenant != null ? covenant.Piety : 0;
             int slots = HumanPriestPietyService.ResolveDevotionSlotCap(covenant);
+            bool canTakeVows = covenant != null
+                && covenant.IsCommittedPriest
+                && covenant.PenanceDebt <= 0;
 
             var options = new List<DialogChoiceOptionData>
             {
                 new()
                 {
-                    label = "Prepare devotions",
-                    payload = PreparePayload,
-                    enabled = true,
-                },
-                new()
-                {
                     label = "Take vows before descent",
                     payload = VowsPayload,
-                    enabled = covenant != null && covenant.PenanceDebt <= 0,
+                    enabled = canTakeVows,
                 },
                 new()
                 {
@@ -242,7 +240,9 @@ namespace JRogue.Dialog
             var step = new DialogChoiceStep
             {
                 SpeakerName = _displayName,
-                PromptText = $"Argent Vigil shrine. Piety {piety}. Devotion slots: {slots}.",
+                PromptText =
+                    $"Argent Vigil shrine. Piety {piety}. Devotion slots: {slots}. "
+                    + "Prepare devotions with K in town.",
                 Portrait = _portrait,
                 Options = options.ToArray(),
             };
@@ -252,25 +252,27 @@ namespace JRogue.Dialog
 
         void OnPriestMenuChoice(DialogChoiceOptionData option)
         {
-            NpcDialogBoxUI.EnsureInstance().Close();
-
             if (option == null || option.payload == CancelPayload)
             {
+                NpcDialogBoxUI.EnsureInstance().Close();
                 Complete();
-                return;
-            }
-
-            if (option.payload == PreparePayload)
-            {
-                ShowPrepareDevotions();
                 return;
             }
 
             if (option.payload == VowsPayload)
             {
+                if (!SafeZonePolicyService.TryAllowHumanPriestShrineQuestChange(out string denyReason))
+                {
+                    NpcDialogBoxUI.EnsureInstance().Close();
+                    ShowLine(denyReason ?? "Cannot take vows here.");
+                    return;
+                }
+
                 ShowVowPicker();
                 return;
             }
+
+            NpcDialogBoxUI.EnsureInstance().Close();
 
             if (option.payload == ReportVowsPayload)
             {
@@ -292,44 +294,52 @@ namespace JRogue.Dialog
             }
         }
 
-        void ShowPrepareDevotions()
+        void ShowVowPicker(string statusMessage = null)
         {
-            if (!HumanPriestDevotionLoadoutService.TryAllowEdit(_speaker, out string deny))
+            var options = new List<DialogChoiceOptionData>();
+            HumanPriestCovenantRuntime covenant = ResolveCovenantRuntime();
+            var activeVowIds = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
+            int activeCount = 0;
+
+            if (covenant?.ActiveVows != null)
             {
-                ShowLine(deny ?? "You cannot prepare devotions here.");
-                return;
+                for (int i = 0; i < covenant.ActiveVows.Count; i++)
+                {
+                    PriestActiveVowState state = covenant.ActiveVows[i];
+                    if (state == null || state.failed || state.completed || string.IsNullOrWhiteSpace(state.vowId))
+                        continue;
+
+                    if (activeVowIds.Add(state.vowId.Trim()))
+                        activeCount++;
+                }
             }
 
-            HumanPriestCovenantRuntime covenant = _speaker.GetComponent<HumanPriestCovenantRuntime>();
-            int cap = HumanPriestPietyService.ResolveDevotionSlotCap(covenant);
-            HumanPriestDevotionRuntime devotion = _speaker.GetComponent<HumanPriestDevotionRuntime>();
+            bool atVowCap = activeCount >= 3;
 
-            var options = new List<DialogChoiceOptionData>();
-            IReadOnlyList<PriestInvocationDefinition> all = PriestInvocationCatalogService.GetAllInvocations();
-            CharacterStats stats = _speaker.GetComponent<CharacterStats>();
-
-            for (int i = 0; i < all.Count; i++)
+            if (PatronGodCatalogService.TryGetGod(covenant?.PatronGodId, out PatronGodDefinition god)
+                && god.vowIds != null)
             {
-                PriestInvocationDefinition invocation = all[i];
-                if (invocation == null)
-                    continue;
-
-                bool unlocked = HumanPriestPietyService.IsInvocationUnlocked(stats, covenant, invocation);
-                string label = unlocked
-                    ? invocation.displayName
-                    : $"{invocation.displayName} — {HumanPriestPietyService.BuildLockedReason(stats, covenant, invocation)}";
-
-                options.Add(new DialogChoiceOptionData
+                for (int i = 0; i < god.vowIds.Count; i++)
                 {
-                    label = label,
-                    payload = invocation.invocationId,
-                    enabled = unlocked,
-                });
+                    string vowId = god.vowIds[i];
+                    if (!PriestVowCatalogService.TryGetVow(vowId, out PriestVowDefinition vow))
+                        continue;
+
+                    bool alreadyActive = activeVowIds.Contains(vowId);
+                    options.Add(new DialogChoiceOptionData
+                    {
+                        label = alreadyActive
+                            ? $"{vow.displayName} ({vow.scope}) — chosen"
+                            : $"{vow.displayName} ({vow.scope})",
+                        payload = vowId,
+                        enabled = !alreadyActive && !atVowCap,
+                    });
+                }
             }
 
             options.Add(new DialogChoiceOptionData
             {
-                label = "Done",
+                label = activeCount > 0 ? $"Done ({activeCount} vow{(activeCount == 1 ? string.Empty : "s")} chosen)" : "Done",
                 payload = CancelPayload,
                 enabled = true,
             });
@@ -337,83 +347,7 @@ namespace JRogue.Dialog
             var step = new DialogChoiceStep
             {
                 SpeakerName = _displayName,
-                PromptText = $"Choose up to {cap} prepared devotions (toggle to equip).",
-                Portrait = _portrait,
-                Options = options.ToArray(),
-            };
-
-            NpcDialogBoxUI.EnsureInstance().ShowChoice(step, OnPrepareChoice, Complete);
-        }
-
-        void OnPrepareChoice(DialogChoiceOptionData option)
-        {
-            NpcDialogBoxUI.EnsureInstance().Close();
-
-            if (option == null || option.payload == CancelPayload)
-            {
-                HumanPriestHotbarSync.TryAssignEquippedToEmptyMainSlots(_speaker);
-                ShowLine("Devotions prepared. Assign them on your ability hotbar if needed.");
-                return;
-            }
-
-            HumanPriestDevotionRuntime devotion = _speaker.GetComponent<HumanPriestDevotionRuntime>();
-            if (devotion == null)
-            {
-                ShowLine("No devotion runtime.");
-                return;
-            }
-
-            string id = option.payload;
-            if (devotion.EquippedInvocations.Count > 0)
-            {
-                for (int i = 0; i < devotion.EquippedInvocations.Count; i++)
-                {
-                    if (devotion.EquippedInvocations[i]?.invocationId == id)
-                    {
-                        devotion.TryUnequip(id);
-                        ShowPrepareDevotions();
-                        return;
-                    }
-                }
-            }
-
-            if (!HumanPriestDevotionLoadoutService.TryEquip(_speaker, id, out string error))
-            {
-                ShowLine(error ?? "Cannot prepare that devotion.");
-                return;
-            }
-
-            ShowPrepareDevotions();
-        }
-
-        void ShowVowPicker()
-        {
-            var options = new List<DialogChoiceOptionData>
-            {
-                new()
-                {
-                    label = "Peacebound (personal)",
-                    payload = "vow_peacebound",
-                    enabled = true,
-                },
-                new()
-                {
-                    label = "Essence abstinence (party)",
-                    payload = "vow_essence_abstinence",
-                    enabled = true,
-                },
-                new()
-                {
-                    label = "Confirm vows & descend",
-                    payload = CancelPayload,
-                    enabled = true,
-                },
-            };
-
-            var step = new DialogChoiceStep
-            {
-                SpeakerName = _displayName,
-                PromptText = "Select vows for this delve (party vows bind allies; only you are judged).",
+                PromptText = BuildVowPickerPrompt(activeCount, statusMessage),
                 Portrait = _portrait,
                 Options = options.ToArray(),
             };
@@ -421,18 +355,36 @@ namespace JRogue.Dialog
             NpcDialogBoxUI.EnsureInstance().ShowChoice(step, OnVowChoice, Complete);
         }
 
+        static string BuildVowPickerPrompt(int activeCount, string statusMessage)
+        {
+            var sb = new StringBuilder();
+            if (!string.IsNullOrWhiteSpace(statusMessage))
+            {
+                sb.Append(statusMessage.Trim());
+                sb.Append("\n\n");
+            }
+
+            sb.Append("Select up to three vows for this delve (party vows bind allies; only you are judged).");
+            if (activeCount > 0)
+                sb.Append($"\n\nChosen: {activeCount}/3.");
+            else
+                sb.Append("\n\nNo vows chosen yet.");
+
+            return sb.ToString();
+        }
+
         void OnVowChoice(DialogChoiceOptionData option)
         {
-            NpcDialogBoxUI.EnsureInstance().Close();
-
             if (option == null)
             {
+                NpcDialogBoxUI.EnsureInstance().Close();
                 Complete();
                 return;
             }
 
             if (option.payload == CancelPayload)
             {
+                NpcDialogBoxUI.EnsureInstance().Close();
                 ShowLine("May the Vigil watch your path.");
                 return;
             }
@@ -442,12 +394,33 @@ namespace JRogue.Dialog
                     BuildVowSelectionWithAdded(_speaker, option.payload),
                     out string error))
             {
+                NpcDialogBoxUI.EnsureInstance().Close();
                 ShowLine(error ?? "Cannot take that vow.");
                 return;
             }
 
-            ShowLine($"Vow recorded: {option.payload}.");
-            ShowVowPicker();
+            string vowLabel = option.payload;
+            if (PriestVowCatalogService.TryGetVow(option.payload, out PriestVowDefinition vow))
+                vowLabel = vow.displayName;
+
+            ShowVowPicker($"Vow recorded: {vowLabel}.");
+        }
+
+        HumanPriestCovenantRuntime ResolveCovenantRuntime()
+        {
+            HumanPriestCovenantRuntime covenant = _speaker.GetComponent<HumanPriestCovenantRuntime>();
+            CharacterStats stats = _speaker.GetComponent<CharacterStats>();
+            if (covenant != null && covenant.IsCommittedPriest)
+                return covenant;
+
+            if (stats == null || stats.humanClass != HumanClass.Priest)
+                return covenant;
+
+            HumanPriestCovenantService.InitializeOnCommit(
+                _speaker.gameObject,
+                HumanPriestShrineIds.ArgentVigilGodId,
+                out _);
+            return _speaker.GetComponent<HumanPriestCovenantRuntime>();
         }
 
         static List<string> BuildVowSelectionWithAdded(BaseActor speaker, string vowId)

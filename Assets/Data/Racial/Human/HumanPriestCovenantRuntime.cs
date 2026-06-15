@@ -34,6 +34,8 @@ namespace JRogue.Racial
         [SerializeField] List<DivineConductLogEntry> recentConduct = new();
 
         CharacterStats _stats;
+        readonly PriestPietyBandModifierSource _bandPassiveSource = new();
+        [SerializeField] int appliedBandMinPiety = -1;
 
         public string PatronGodId => patronGodId;
         public int Piety => piety;
@@ -163,6 +165,21 @@ namespace JRogue.Racial
         public void ClearActiveVows()
         {
             activeVows?.Clear();
+        }
+
+        public void ApplyBandPassives(PriestPietyBandData band)
+        {
+            if (_stats == null)
+                return;
+
+            int newMin = band?.minPietyInclusive ?? -1;
+            if (newMin == appliedBandMinPiety)
+                return;
+
+            PriestPietyPassiveApplicator.RemoveBandPassives(_stats, _bandPassiveSource);
+            appliedBandMinPiety = newMin;
+            if (band != null)
+                PriestPietyPassiveApplicator.ApplyBandPassives(_stats, _bandPassiveSource, band);
         }
 
         void LogConduct(string conductId, int delta, string message)

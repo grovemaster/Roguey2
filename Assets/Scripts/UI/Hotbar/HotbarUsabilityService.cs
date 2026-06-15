@@ -279,13 +279,16 @@ namespace JRogue.UI.Hotbar
                 if (invocation == null)
                     return false;
 
+                HumanPriestCovenantRuntime covenant = actor.GetComponent<HumanPriestCovenantRuntime>();
+                if (covenant != null && PriestPietyLogic.IsInvocationBlockedByPenance(covenant, invocation))
+                    return false;
+
                 if (stats.currentDivinePower < invocation.divinePowerCost)
                     return false;
 
                 if (invocation.pietyInvokeCost <= 0)
                     return true;
 
-                HumanPriestCovenantRuntime covenant = actor.GetComponent<HumanPriestCovenantRuntime>();
                 return covenant != null && covenant.Piety >= invocation.pietyInvokeCost;
             }
 

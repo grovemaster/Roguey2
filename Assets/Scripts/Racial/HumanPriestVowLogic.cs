@@ -1,7 +1,5 @@
 using JRogue.Actors;
-using JRogue.Manager.Essence;
-using JRogue.Manager.Equipment;
-using JRogue.Stats.Racial;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Racial
@@ -17,8 +15,27 @@ namespace JRogue.Racial
                 return false;
             }
 
-            // v0: floor/time gates stub — satisfied when reporting at shrine after dungeon return.
-            // Full integration hooks dungeon floor index + day/night counters later.
+            DungeonTimeService time = DungeonTimeService.Instance;
+            if (time == null || !time.DungeonRunActive)
+                return true;
+
+            int floorIndex = HumanPriestVowProgressService.ResolveCurrentFloorIndex();
+            if (floorIndex < vow.minFloorIndex)
+            {
+                failureReason =
+                    $"Delve deeper before reporting this vow (floor {floorIndex}/{vow.minFloorIndex}).";
+                return false;
+            }
+
+            int cycles = HumanPriestVowProgressService.ResolveElapsedDayNightCycles();
+            if (cycles < vow.minDayNightInDungeon)
+            {
+                failureReason =
+                    $"Spend more time in the delve before reporting "
+                    + $"({cycles}/{vow.minDayNightInDungeon} day-night cycles).";
+                return false;
+            }
+
             return true;
         }
 
@@ -40,7 +57,7 @@ namespace JRogue.Racial
             }
         }
 
-        public static bool IsPartyVowBroken(PriestVowDefinition vow, BaseActor actor, string triggerId)
+        public static bool IsPartyVowBroken(PriestVowDefinition vow, JRogue.Actors.BaseActor actor, string triggerId)
         {
             if (vow == null || actor == null)
                 return false;
@@ -54,18 +71,28 @@ namespace JRogue.Racial
             return false;
         }
 
-        public static void NotifyEssenceEquipped(BaseActor actor)
+        public static void NotifyEssenceEquipped(JRogue.Actors.BaseActor actor)
         {
             if (actor == null)
                 return;
 
             HumanPriestVowService.NotifyPartyAction(actor, "essence_equipped");
+        }
 
-            EssenceSlotManager essence = actor.GetComponent<EssenceSlotManager>();
-            if (essence == null)
+        public static void NotifyBladedWeaponEquipped(JRogue.Actors.BaseActor actor)
+        {
+            if (actor == null)
                 return;
 
-            // Priest personal essence vow check is N/A — priests cannot equip essences.
+            HumanPriestVowService.NotifyPersonalAction(actor.gameObject, "bladed_weapon");
+        }
+
+        public static void NotifyInvokeNotAtFullHealth(GameObject priestActor)
+        {
+            if (priestActor == null)
+                return;
+
+            HumanPriestVowService.NotifyPersonalAction(priestActor, "invoke_not_full_hp");
         }
     }
 }

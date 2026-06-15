@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f7736e51f0ab3fc71b12a5af6e381399, type: 3}
-  m_Name: PriestVow_Peacebound
+  m_Name: PriestVow_FullVigor
   m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.PriestVowDefinition
-  vowId: vow_peacebound
-  displayName: Peacebound
+  vowId: vow_full_vigor
+  displayName: Full Vigor
   description: 
   scope: 0
-  ruleKind: 0
+  ruleKind: 1
   ruleParam: 0
   minFloorIndex: 2
   minDayNightInDungeon: 2
   pietyRewardOnSuccess: 10
-  grantSealId: peacebound
+  grantSealId: 

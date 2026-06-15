@@ -7,6 +7,7 @@ namespace JRogue.Racial
     public static class PriestPietyLogic
     {
         const string ProgressionResourcePath = "Racial/Human/PriestPietyProgression_Default";
+        public const int PenanceBlockedInvocationPietyThreshold = 20;
 
         static PriestPietyProgressionDefinition _progression;
 
@@ -93,7 +94,21 @@ namespace JRogue.Racial
                 return false;
             }
 
+            if (IsInvocationBlockedByPenance(covenant, invocation))
+                return false;
+
             return true;
+        }
+
+        public static bool IsInvocationBlockedByPenance(
+            HumanPriestCovenantRuntime covenant,
+            PriestInvocationDefinition invocation)
+        {
+            if (covenant == null || invocation == null)
+                return false;
+
+            return covenant.PenanceDebt > 0
+                && invocation.requiredPiety >= PenanceBlockedInvocationPietyThreshold;
         }
 
         public static string BuildLockedReason(
@@ -116,23 +131,18 @@ namespace JRogue.Racial
                 return $"Requires Covenant Seal '{invocation.requiredSealId}'.";
             }
 
+            if (covenant != null && IsInvocationBlockedByPenance(covenant, invocation))
+                return "Repent at the shrine — penance blocks high-tier invocations.";
+
             return "Invocation locked.";
         }
 
         public static void ApplyBandPassives(GameObject actor, HumanPriestCovenantRuntime covenant)
         {
-            if (actor == null || covenant == null)
+            if (covenant == null)
                 return;
 
-            CharacterStats stats = actor.GetComponent<CharacterStats>();
-            if (stats == null)
-                return;
-
-            PriestPietyBandData band = ResolveCurrentBand(covenant);
-            if (band?.passiveModifiers == null)
-                return;
-
-            // Pattern B: source id per band tier — full stat application deferred to racial passive hooks.
+            covenant.ApplyBandPassives(ResolveCurrentBand(covenant));
         }
 
         public static void ResetCacheForTests() => _progression = null;

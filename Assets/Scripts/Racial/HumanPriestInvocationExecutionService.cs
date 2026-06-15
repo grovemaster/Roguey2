@@ -29,6 +29,16 @@ namespace JRogue.Racial
             if (invocation == null)
                 return false;
 
+            HumanPriestCovenantRuntime covenant = actor.GetComponent<HumanPriestCovenantRuntime>();
+            if (covenant != null && PriestPietyLogic.IsInvocationBlockedByPenance(covenant, invocation))
+            {
+                Debug.Log("Repent at the shrine — penance blocks high-tier invocations.");
+                return false;
+            }
+
+            if (stats.currentHP < stats.MaxHP)
+                HumanPriestVowLogic.NotifyInvokeNotAtFullHealth(actor.gameObject);
+
             if (stats.currentDivinePower < invocation.divinePowerCost)
             {
                 Debug.Log(HumanClassAbilityResources.InsufficientResourceMessage(HumanClass.Priest));
@@ -37,7 +47,6 @@ namespace JRogue.Racial
 
             if (invocation.pietyInvokeCost > 0)
             {
-                HumanPriestCovenantRuntime covenant = actor.GetComponent<HumanPriestCovenantRuntime>();
                 if (covenant == null || covenant.Piety < invocation.pietyInvokeCost)
                 {
                     Debug.Log("Not enough piety for that invocation.");
@@ -57,7 +66,6 @@ namespace JRogue.Racial
 
             if (invocation.pietyInvokeCost > 0)
             {
-                HumanPriestCovenantRuntime covenant = actor.GetComponent<HumanPriestCovenantRuntime>();
                 covenant?.ApplyPietyLoss(invocation.pietyInvokeCost, "invoke", "Invocation offering.");
             }
 

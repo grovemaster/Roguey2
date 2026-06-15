@@ -121,8 +121,31 @@ namespace JRogue.Manager.Equipment
             }
 
             JRogue.Quest.QuestService.Instance?.NotifyItemEquipped(GetComponent<BaseActor>(), newItem, slot);
+            TryNotifyPriestBladedWeaponEquip(slot, newItem);
             PartyLightEmitterBridge.RefreshMember(GetComponent<BaseActor>());
             LightingService.Instance?.OnPartyVisionActivity();
+        }
+
+        static bool IsBladedWeapon(ItemData item)
+        {
+            if (item == null || item.category != ItemCategory.Weapon)
+                return false;
+
+            return item.weaponType is WeaponType.Sword
+                or WeaponType.Axe
+                or WeaponType.Dagger
+                or WeaponType.Polearm;
+        }
+
+        void TryNotifyPriestBladedWeaponEquip(EquipmentSlot slot, ItemInstance item)
+        {
+            if (slot != EquipmentSlot.MainHand || item?.Definition == null || !IsBladedWeapon(item.Definition))
+                return;
+
+            BaseActor actor = GetComponent<BaseActor>();
+            HumanPriestCovenantRuntime covenant = actor?.GetComponent<HumanPriestCovenantRuntime>();
+            if (covenant != null && covenant.IsCommittedPriest)
+                HumanPriestVowLogic.NotifyBladedWeaponEquipped(actor);
         }
 
         void TryClearIllegalOffHandForBow(InventoryManager inv)

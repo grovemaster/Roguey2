@@ -80,6 +80,7 @@
     <Compile Include="Assets/Scripts/Manager/Grid/GridCellWorld.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupCoordinator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyDisplay.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/HumanPriestDevotionBodyView.cs" />
     <Compile Include="Assets/Scripts/Abilities/Telekinesis/TelekinesisAbility.cs" />
     <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillCombatResolver.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/HumanMageSpellBodyView.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Assets/Scripts/Effects/Timed/TimedStatModifierRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarOfferingService.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritLevelCapPolicy.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/HumanPriestDevotionBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/IlluminationVisibilityLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopDataTypes.cs" />
@@ -349,6 +351,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/LayoutStampPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimePhase.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/DwarfClanStewardNpcController.cs" />
+    <Compile Include="Assets/Scripts/Racial/HumanPriestVowProgressService.cs" />
     <Compile Include="Assets/Scripts/World/Altar/ManaStoneTierAcceptFilter.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TrapConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingScenarioController.cs" />

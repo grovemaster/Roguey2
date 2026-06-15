@@ -75,6 +75,7 @@ namespace JRogue.UI.Racial
         DragonianSpellBodyView _dragonianSpells;
         HumanMageSpellBodyView _humanMageSpells;
         HumanKnightSkillBodyView _humanKnightSkills;
+        HumanPriestDevotionBodyView _humanPriestDevotions;
         DwarfClanBodyView _dwarfClanBody;
         RectTransform _scrollContent;
         RectTransform _elfScrollContent;
@@ -85,6 +86,7 @@ namespace JRogue.UI.Racial
         GameObject _dragonianBodyRoot;
         GameObject _humanMageBodyRoot;
         GameObject _humanKnightBodyRoot;
+        GameObject _humanPriestBodyRoot;
         GameObject _dwarfBodyRoot;
         GameObject _defaultBodyRoot;
 
@@ -303,6 +305,13 @@ namespace JRogue.UI.Racial
             humanKnightBodyFlex.flexibleHeight = 1f;
             humanKnightBodyFlex.minHeight = 240f;
             _humanKnightBodyRoot.SetActive(false);
+
+            _humanPriestBodyRoot = CreateBodyRoot(_panelRoot.transform, "HumanPriestBody");
+            _humanPriestDevotions = HumanPriestDevotionBodyView.Create(_humanPriestBodyRoot.transform);
+            var humanPriestBodyFlex = _humanPriestBodyRoot.AddComponent<LayoutElement>();
+            humanPriestBodyFlex.flexibleHeight = 1f;
+            humanPriestBodyFlex.minHeight = 240f;
+            _humanPriestBodyRoot.SetActive(false);
 
             _dwarfBodyRoot = CreateBodyRoot(_panelRoot.transform, "DwarfBody");
             _dwarfClanBody = DwarfClanBodyView.Create(_dwarfBodyRoot.transform);
@@ -662,6 +671,7 @@ namespace JRogue.UI.Racial
         {
             _humanMageBodyRoot.SetActive(false);
             _humanKnightBodyRoot.SetActive(false);
+            _humanPriestBodyRoot.SetActive(false);
         }
 
         void ShowHumanBody(BaseActor actor)
@@ -682,7 +692,7 @@ namespace JRogue.UI.Racial
                     ShowHumanKnightBody(actor);
                     break;
                 case HumanClass.Priest:
-                    ShowHumanPriestPlaceholder(actor);
+                    ShowHumanPriestBody(actor);
                     break;
                 default:
                     ShowHumanDefaultPlaceholder(actor);
@@ -738,13 +748,29 @@ namespace JRogue.UI.Racial
             _humanKnightSkills.Rebuild(actor, vm.SelectedNodeId);
         }
 
-        void ShowHumanPriestPlaceholder(BaseActor actor)
+        void ShowHumanPriestBody(BaseActor actor)
         {
-            ShowHumanDefaultPlaceholder(
-                actor,
-                "Argent Vigil covenant.\n\n"
-                + "Prepare devotions at the shrine steward in town. "
-                + "Assign prepared invocations on your ability hotbar.");
+            var covenant = actor.GetComponent<HumanPriestCovenantRuntime>();
+            var devotion = actor.GetComponent<HumanPriestDevotionRuntime>();
+            if (covenant == null || devotion == null)
+            {
+                ShowHumanDefaultPlaceholder(actor, HumanPriestDevotionBodyViewModel.MissingRuntimeMessage);
+                return;
+            }
+
+            _defaultBodyRoot.SetActive(false);
+            _barbarianBodyRoot.SetActive(false);
+            _elfBodyRoot.SetActive(false);
+            _tieflingBodyRoot.SetActive(false);
+            _beastmanBodyRoot.SetActive(false);
+            _dragonianBodyRoot.SetActive(false);
+            _dwarfBodyRoot.SetActive(false);
+            HideHumanSpecializationBodies();
+            _humanPriestBodyRoot.SetActive(true);
+
+            HumanPriestDevotionBodyViewModel vm = HumanPriestDevotionBodyViewModel.Build(actor);
+            _bannerText.text = vm.BannerText;
+            _humanPriestDevotions.Rebuild(actor, vm.SelectedInvocationId);
         }
 
         void ShowHumanDefaultPlaceholder(BaseActor actor, string overrideMessage = null)

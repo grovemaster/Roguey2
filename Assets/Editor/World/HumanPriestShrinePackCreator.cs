@@ -76,11 +76,20 @@ namespace JRogue.Editor.World
                 3,
                 8,
                 CreateSanctuaryAbility());
+            PriestInvocationDefinition auraOfTruce = CreateInvocation(
+                "PriestInvocation_AuraOfTruce",
+                "priest_aura_of_truce",
+                "Aura of Truce",
+                20,
+                3,
+                6,
+                CreateWardAbility(),
+                requiredSealId: "peacebound");
 
-            CreateInvocationCatalog(layOnHands, ward, smiteUndead, sanctuary);
+            CreateInvocationCatalog(layOnHands, ward, smiteUndead, sanctuary, auraOfTruce);
             CreateVows();
             CreateInitiationQuest();
-            UpdatePatronInvocationIds(patron, layOnHands, ward, smiteUndead, sanctuary);
+            UpdatePatronInvocationIds(patron, layOnHands, ward, smiteUndead, sanctuary, auraOfTruce);
 
             GameObject humanNpc = AssetDatabase.LoadAssetAtPath<GameObject>(HumanNpcPrefabPath);
             if (humanNpc == null)
@@ -119,7 +128,16 @@ namespace JRogue.Editor.World
             progression.bands = new List<PriestPietyBandData>
             {
                 new() { minPietyInclusive = 0, devotionSlots = 2, starLabel = "★☆☆☆☆" },
-                new() { minPietyInclusive = 20, devotionSlots = 3, starLabel = "★★☆☆☆" },
+                new()
+                {
+                    minPietyInclusive = 20,
+                    devotionSlots = 3,
+                    starLabel = "★★☆☆☆",
+                    passiveModifiers = new List<HumanPerRankStatModifier>
+                    {
+                        new() { attribute = StatType.Wisdom, valuePerRank = 1 },
+                    },
+                },
                 new() { minPietyInclusive = 40, devotionSlots = 4, starLabel = "★★★☆☆" },
                 new() { minPietyInclusive = 60, devotionSlots = 6, starLabel = "★★★★☆" },
                 new() { minPietyInclusive = 80, devotionSlots = 8, starLabel = "★★★★★" },
@@ -162,7 +180,12 @@ namespace JRogue.Editor.World
                     description = "Poison is anathema to the Vigil.",
                 },
             };
-            patron.vowIds = new List<string> { "vow_peacebound", "vow_essence_abstinence" };
+            patron.vowIds = new List<string>
+            {
+                "vow_peacebound",
+                "vow_full_vigor",
+                "vow_essence_abstinence",
+            };
             EditorUtility.SetDirty(patron);
             return patron;
         }
@@ -239,7 +262,8 @@ namespace JRogue.Editor.World
             int requiredPiety,
             int requiredLevel,
             int divinePowerCost,
-            JRogue.Ability.AbilityAction ability)
+            JRogue.Ability.AbilityAction ability,
+            string requiredSealId = null)
         {
             string path = $"{ResourcesInvocationFolder}/{fileName}.asset";
             var invocation = LoadOrCreate<PriestInvocationDefinition>(path);
@@ -249,6 +273,7 @@ namespace JRogue.Editor.World
             invocation.requiredCharacterLevel = requiredLevel;
             invocation.divinePowerCost = divinePowerCost;
             invocation.pietyInvokeCost = 0;
+            invocation.requiredSealId = requiredSealId ?? string.Empty;
             invocation.ability = ability;
             EditorUtility.SetDirty(invocation);
             return invocation;
@@ -257,8 +282,12 @@ namespace JRogue.Editor.World
         static void CreateInvocationCatalog(params PriestInvocationDefinition[] invocations)
         {
             string path = $"{ResourcesCatalogFolder}/PriestInvocationCatalog.asset";
-            var catalog = LoadOrCreate<PriestInvocationCatalog>(path);
+            if (AssetDatabase.LoadAssetAtPath<ScriptableObject>(path) != null)
+                AssetDatabase.DeleteAsset(path);
+
+            var catalog = ScriptableObject.CreateInstance<PriestInvocationCatalog>();
             catalog.invocations = new List<PriestInvocationDefinition>(invocations);
+            AssetDatabase.CreateAsset(catalog, path);
             EditorUtility.SetDirty(catalog);
         }
 
@@ -269,7 +298,14 @@ namespace JRogue.Editor.World
                 "vow_peacebound",
                 "Peacebound",
                 PriestVowScope.Personal,
-                PriestVowRuleKind.NoBladedWeapons);
+                PriestVowRuleKind.NoBladedWeapons,
+                grantSealId: "peacebound");
+            CreateVow(
+                "PriestVow_FullVigor",
+                "vow_full_vigor",
+                "Full Vigor",
+                PriestVowScope.Personal,
+                PriestVowRuleKind.InvokeOnlyAtFullHealth);
             CreateVow(
                 "PriestVow_EssenceAbstinence",
                 "vow_essence_abstinence",
@@ -283,7 +319,8 @@ namespace JRogue.Editor.World
             string vowId,
             string displayName,
             PriestVowScope scope,
-            PriestVowRuleKind ruleKind)
+            PriestVowRuleKind ruleKind,
+            string grantSealId = null)
         {
             string path = $"{ResourcesVowFolder}/{fileName}.asset";
             var vow = LoadOrCreate<PriestVowDefinition>(path);
@@ -291,7 +328,10 @@ namespace JRogue.Editor.World
             vow.displayName = displayName;
             vow.scope = scope;
             vow.ruleKind = ruleKind;
+            vow.minFloorIndex = 2;
+            vow.minDayNightInDungeon = 2;
             vow.pietyRewardOnSuccess = 10;
+            vow.grantSealId = grantSealId ?? string.Empty;
             EditorUtility.SetDirty(vow);
         }
 

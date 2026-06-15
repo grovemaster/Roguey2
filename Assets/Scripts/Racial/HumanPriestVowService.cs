@@ -92,7 +92,10 @@ namespace JRogue.Racial
             return true;
         }
 
-        public static void NotifyPersonalTaboo(GameObject priestActor, string triggerId)
+        public static void NotifyPersonalTaboo(GameObject priestActor, string triggerId) =>
+            NotifyPersonalAction(priestActor, triggerId);
+
+        public static void NotifyPersonalAction(GameObject priestActor, string triggerId)
         {
             if (priestActor == null)
                 return;

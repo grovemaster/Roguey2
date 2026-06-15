@@ -23,12 +23,6 @@ namespace JRogue.Racial
         public List<ProficiencyKind> proficiencyTags = new();
     }
 
-    [CreateAssetMenu(fileName = "PriestInvocationCatalog", menuName = "JRogue/Racial/Priest Invocation Catalog")]
-    public sealed class PriestInvocationCatalog : ScriptableObject
-    {
-        public List<PriestInvocationDefinition> invocations = new();
-    }
-
     public static class PriestInvocationCatalogService
     {
         const string DefaultResourcePath = "Racial/Human/PriestInvocationCatalog";

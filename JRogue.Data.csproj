@@ -99,6 +99,7 @@
     <Compile Include="Assets/Data/Door/DoorDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritContractPreset.cs" />
     <Compile Include="Assets/Data/Enemy/LootTablePayload.cs" />
+    <Compile Include="Assets/Data/Racial/Human/PriestPietyPassiveApplicator.cs" />
     <Compile Include="Assets/Data/Racial/Human/KnightSkillMasteryRuntime.cs" />
     <Compile Include="Assets/Data/Door/EnemyDoorCapability.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeRankEntry.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Assets/Data/Racial/Beastman/SoulBeastDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonSlotPreset.cs" />
     <Compile Include="Assets/Data/Item/Evocable/EvocableItemData.cs" />
+    <Compile Include="Assets/Data/Racial/Human/PriestPietyBandModifierSource.cs" />
     <Compile Include="Assets/Data/Status/StatusPolarity.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/CyborgImplantCostTypes.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanSkillNodeRankEntry.cs" />
@@ -158,6 +160,7 @@
     <Compile Include="Assets/Data/Status/StatusEffectDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadRacialEffectTracker.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeNodeData.cs" />
+    <Compile Include="Assets/Data/Racial/Human/PriestInvocationCatalog.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritLevelData.cs" />
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintUnlockCost.cs" />
     <Compile Include="Assets/Data/Racial/Human/KnightSkillMasteryEntry.cs" />

@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: a6bba1dca0fff76229fab62495dff087, type: 3}
   m_Name: PriestInvocationCatalog
-  m_EditorClassIdentifier: JRogue.Data:JRogue.Racial:PriestInvocationCatalog
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.PriestInvocationCatalog
   invocations:
   - {fileID: 11400000, guid: 7bf6b7f9e83bab4879ddbb25e81c57df, type: 2}
   - {fileID: 11400000, guid: 4dc36d418bf5fcd14a97360cbf48bbdd, type: 2}
   - {fileID: 11400000, guid: f490a40e6e55bddda8bc0c3bc83b21d2, type: 2}
   - {fileID: 11400000, guid: 9ed0e52c443f6a6fcb4fda70c8cc60bd, type: 2}
+  - {fileID: 11400000, guid: 34b02e00c56c4a760bf1b1d3c2c3100e, type: 2}

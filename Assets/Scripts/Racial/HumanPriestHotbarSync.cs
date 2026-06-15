@@ -67,5 +67,80 @@ namespace JRogue.Racial
                 nextEmptySlot++;
             }
         }
+
+        public static bool TryAssignEquippedInvocationToHotbar(
+            BaseActor actor,
+            string invocationId,
+            out string failureReason)
+        {
+            failureReason = null;
+            if (actor == null)
+            {
+                failureReason = "No actor.";
+                return false;
+            }
+
+            HumanPriestDevotionRuntime runtime = actor.GetComponent<HumanPriestDevotionRuntime>();
+            if (runtime == null)
+            {
+                failureReason = "No priest devotion runtime.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(invocationId))
+            {
+                failureReason = "Invocation id is empty.";
+                return false;
+            }
+
+            string trimmed = invocationId.Trim();
+            int equippedIndex = -1;
+            IReadOnlyList<PriestInvocationDefinition> equipped = runtime.EquippedInvocations;
+            for (int i = 0; i < equipped.Count; i++)
+            {
+                if (equipped[i] != null
+                    && string.Equals(equipped[i].invocationId, trimmed, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    equippedIndex = i;
+                    break;
+                }
+            }
+
+            if (equippedIndex < 0)
+            {
+                failureReason = "Invocation is not prepared.";
+                return false;
+            }
+
+            HotbarLayout layout = HotbarLayout.EnsureOn(actor);
+            for (int slot = 0; slot < HotbarLayout.HotbarMainSlotCount; slot++)
+            {
+                HotbarEntry entry = layout.GetSlot(slot);
+                if (entry.Kind == HotbarEntryKind.HumanPriestInvocation
+                    && entry.abilityIndex == equippedIndex)
+                {
+                    failureReason = "Already on hotbar.";
+                    return false;
+                }
+            }
+
+            for (int slot = 0; slot < HotbarLayout.HotbarMainSlotCount; slot++)
+            {
+                if (!layout.GetSlot(slot).IsEmpty())
+                    continue;
+
+                PriestInvocationDefinition invocation = equipped[equippedIndex];
+                layout.SetSlot(slot, new HotbarEntry
+                {
+                    Kind = HotbarEntryKind.HumanPriestInvocation,
+                    abilityIndex = equippedIndex,
+                    abilityAssetName = invocation?.ability != null ? invocation.ability.name : string.Empty,
+                });
+                return true;
+            }
+
+            failureReason = "Hotbar full.";
+            return false;
+        }
     }
 }

@@ -43,6 +43,7 @@ namespace JRogue.UI.Gameplay
         readonly List<DialogChoiceOptionData> _choiceOptions = new List<DialogChoiceOptionData>();
         bool _blocking;
         bool _suppressConfirmUntilReleased;
+        bool _confirmFromKeyboard;
         Action _onAdvance;
         Action<DialogChoiceOptionData> _onChoice;
         Action _onDismiss;
@@ -129,7 +130,6 @@ namespace JRogue.UI.Gameplay
 
             ApplyPortrait(step.Portrait);
             SetChoiceMode(false);
-            _suppressConfirmUntilReleased = true;
             _panelRoot.SetActive(true);
             _panelRoot.transform.SetAsLastSibling();
         }
@@ -155,7 +155,6 @@ namespace JRogue.UI.Gameplay
             ApplyPortrait(step.Portrait);
             BuildChoiceButtons(step.Options);
             SetChoiceMode(true);
-            _suppressConfirmUntilReleased = true;
             _panelRoot.SetActive(true);
             _panelRoot.transform.SetAsLastSibling();
         }
@@ -167,6 +166,7 @@ namespace JRogue.UI.Gameplay
 
             _blocking = false;
             _suppressConfirmUntilReleased = false;
+            _confirmFromKeyboard = false;
             _onAdvance = null;
             _onChoice = null;
             _onDismiss = null;
@@ -291,7 +291,8 @@ namespace JRogue.UI.Gameplay
             if (index < 0 || index >= _choiceOptions.Count || !_choiceOptions[index].enabled)
                 return;
 
-            _choiceButtons[index].onClick.Invoke();
+            _confirmFromKeyboard = true;
+            SelectChoice(_choiceOptions[index]);
         }
 
         int GetSelectedChoiceIndex()
@@ -329,6 +330,12 @@ namespace JRogue.UI.Gameplay
             _onChoice = null;
             _onDismiss = null;
             SetChoiceMode(false);
+            if (_confirmFromKeyboard)
+            {
+                _suppressConfirmUntilReleased = true;
+                _confirmFromKeyboard = false;
+            }
+
             act?.Invoke(option);
         }
 
@@ -360,6 +367,7 @@ namespace JRogue.UI.Gameplay
             tmp.fontSize = 18f;
             tmp.alignment = TextAlignmentOptions.MidlineLeft;
             tmp.color = enabled ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1f);
+            tmp.raycastTarget = false;
 
             return button;
         }
@@ -452,6 +460,11 @@ namespace JRogue.UI.Gameplay
             RectTransform portraitRt = (RectTransform)portraitImageGo.transform;
             Stretch(portraitRt, 8f);
             _portraitImage = portraitImageGo.GetComponent<Image>();
+            _portraitImage.raycastTarget = false;
+
+            Image portraitFrameImage = portraitFrame.GetComponent<Image>();
+            if (portraitFrameImage != null)
+                portraitFrameImage.raycastTarget = false;
 
             portraitFrame.transform.SetAsLastSibling();
 

@@ -24,6 +24,21 @@ namespace JRogue.World.Generation
         public DungeonTimePhase CurrentPhase => _state.CurrentPhase;
         public int PhasePlayerTurnsElapsed => _state.PhasePlayerTurnsElapsed;
 
+        public int ResolveActiveFloorChainIndex()
+        {
+            if (!_dungeonRunActive || _floorChain == null || string.IsNullOrEmpty(_state.ActiveTimeFloorId))
+                return 0;
+
+            for (int i = 0; i < _floorChain.Length; i++)
+            {
+                DungeonFloorDefinition def = _floorChain[i];
+                if (def != null && def.FloorId == _state.ActiveTimeFloorId)
+                    return i + 1;
+            }
+
+            return 1;
+        }
+
         void Awake()
         {
             if (Instance != null && Instance != this)

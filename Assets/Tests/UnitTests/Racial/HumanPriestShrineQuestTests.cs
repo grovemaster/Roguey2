@@ -80,6 +80,37 @@ namespace JRogue.Tests.UnitTests.Racial
             Assert.AreEqual(3, HumanPriestPietyService.ResolveDevotionSlotCap(20));
         }
 
+        [Test]
+        public void IsInvocationBlockedByPenance_BlocksHighTierOnly()
+        {
+            var covenant = new GameObject("PenanceTest").AddComponent<HumanPriestCovenantRuntime>();
+            _created.Add(covenant.gameObject);
+            covenant.InitializeOnCommit("argent_vigil", 20);
+
+            var lowTier = ScriptableObject.CreateInstance<PriestInvocationDefinition>();
+            lowTier.invocationId = "priest_ward";
+            lowTier.requiredPiety = 0;
+
+            var highTier = ScriptableObject.CreateInstance<PriestInvocationDefinition>();
+            highTier.invocationId = "priest_sanctuary";
+            highTier.requiredPiety = 20;
+
+            Assert.IsFalse(PriestPietyLogic.IsInvocationBlockedByPenance(covenant, lowTier));
+
+            covenant.AddPenance(5, "test");
+            Assert.IsFalse(PriestPietyLogic.IsInvocationBlockedByPenance(covenant, lowTier));
+            Assert.IsTrue(PriestPietyLogic.IsInvocationBlockedByPenance(covenant, highTier));
+        }
+
+        [Test]
+        public void MeetsCompletionGates_AllowsReportWhenDungeonInactive()
+        {
+            var vow = ScriptableObject.CreateInstance<PriestVowDefinition>();
+            vow.minFloorIndex = 2;
+            vow.minDayNightInDungeon = 2;
+            Assert.IsTrue(HumanPriestVowLogic.MeetsCompletionGates(vow, out string reason), reason);
+        }
+
         GameObject CreateHumanActor(HumanClass humanClass)
         {
             var go = new GameObject("HumanPriestQuestTest");
