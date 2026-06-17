@@ -175,5 +175,62 @@ namespace JRogue.Tests.UnitTests.Dialog
             Object.DestroyImmediate(npcGo);
             Object.DestroyImmediate(gridGo);
         }
+
+        [Test]
+        public void TryTalkFacing_FindsNpcViaSceneQueryWhenGridMissesRegistration()
+        {
+            var gridGo = new GameObject("GridManager");
+            gridGo.AddComponent<GridManager>();
+
+            var playerGo = new GameObject("Player");
+            var player = playerGo.AddComponent<PlayerController>();
+
+            var npcGo = new GameObject("Mira");
+            var npc = npcGo.AddComponent<NpcController>();
+
+            var playerMover = playerGo.AddComponent<JRogue.Actors.Components.GridMover>();
+            var npcMover = npcGo.AddComponent<JRogue.Actors.Components.GridMover>();
+            playerMover.InitializeAtGridAnchor(new Vector3Int(4, 9, 0));
+            npcMover.InitializeAtGridAnchor(new Vector3Int(4, 8, 0));
+
+            GridManager.Instance.UnregisterActor(new Vector3Int(4, 8, 0));
+
+            Assert.IsTrue(NpcTalkInteraction.TryTalkFacing(player));
+
+            Object.DestroyImmediate(playerGo);
+            Object.DestroyImmediate(npcGo);
+            Object.DestroyImmediate(gridGo);
+        }
+
+        [Test]
+        public void TryTalkFacing_MultipleAdjacentNpcs_OpensPickerWhenFacingIsAmbiguous()
+        {
+            var gridGo = new GameObject("GridManager");
+            gridGo.AddComponent<GridManager>();
+
+            var playerGo = new GameObject("Player");
+            var player = playerGo.AddComponent<PlayerController>();
+            player.currentFacing = FacingDirection.North;
+
+            var miraGo = new GameObject("Mira");
+            miraGo.AddComponent<NpcController>();
+            var lucGo = new GameObject("Luc");
+            lucGo.AddComponent<NpcController>();
+
+            var playerMover = playerGo.AddComponent<JRogue.Actors.Components.GridMover>();
+            var miraMover = miraGo.AddComponent<JRogue.Actors.Components.GridMover>();
+            var lucMover = lucGo.AddComponent<JRogue.Actors.Components.GridMover>();
+            playerMover.InitializeAtGridAnchor(new Vector3Int(5, 8, 0));
+            miraMover.InitializeAtGridAnchor(new Vector3Int(4, 8, 0));
+            lucMover.InitializeAtGridAnchor(new Vector3Int(6, 8, 0));
+
+            Assert.IsTrue(NpcTalkInteraction.TryTalkFacing(player));
+            Assert.IsTrue(JRogue.UI.Gameplay.NpcTalkPickerModalUI.BlocksGameplay);
+
+            Object.DestroyImmediate(playerGo);
+            Object.DestroyImmediate(miraGo);
+            Object.DestroyImmediate(lucGo);
+            Object.DestroyImmediate(gridGo);
+        }
     }
 }

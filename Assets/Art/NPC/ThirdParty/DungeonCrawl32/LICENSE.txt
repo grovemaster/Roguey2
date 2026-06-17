@@ -1,0 +1,11 @@
+Dungeon Crawl 32x32 tiles — town NPC subset
+
+Source: https://opengameart.org/content/dungeon-crawl-32x32-tiles
+Archive: crawl-tiles Oct-5-2010.zip
+Original game: Dungeon Crawl Stone Soup — http://crawl.develz.org/
+
+License: CC0 — free to use in commercial and non-commercial projects.
+Attribution not required; courtesy link to the OpenGameArt page above is appreciated.
+
+Town NPC sprites in Assets/Art/NPC/Sprites/ are composited from layer PNGs stored under
+originals/ in this folder. See README.md for recipes.

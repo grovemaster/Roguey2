@@ -3,6 +3,7 @@ using JRogue.Actors;
 using JRogue.Controller.Npc;
 using JRogue.Core.Actor;
 using JRogue.Manager.Grid;
+using JRogue.UI.Gameplay;
 using JRogue.World.MapInteract;
 using UnityEngine;
 
@@ -69,18 +70,30 @@ namespace JRogue.Dialog
                 return false;
             }
 
-            INpcTalkTarget matched = ResolveTalkTarget(actor, CandidateBuffer);
-            if (matched == null)
+            if (CandidateBuffer.Count == 1)
             {
-                if (CandidateBuffer.Count > 1)
-                    Debug.Log($"{LogPrefix} Multiple adjacent NPCs — face the one you want to talk to.");
-                else
-                    Debug.Log($"{LogPrefix} Could not resolve talk target.");
-                return false;
+                INpcTalkTarget only = CandidateBuffer[0];
+                NpcTalkFacingUtility.FaceToward(actor, only.Cell);
+                only.BeginDialog(actor);
+                return true;
             }
 
-            NpcTalkFacingUtility.FaceToward(actor, matched.Cell);
-            matched.BeginDialog(actor);
+            INpcTalkTarget matched = ResolveTalkTarget(actor, CandidateBuffer);
+            if (matched != null)
+            {
+                NpcTalkFacingUtility.FaceToward(actor, matched.Cell);
+                matched.BeginDialog(actor);
+                return true;
+            }
+
+            NpcTalkPickerModalUI.EnsureInstance().Show(actor, CandidateBuffer, selected =>
+            {
+                if (selected == null)
+                    return;
+
+                NpcTalkFacingUtility.FaceToward(actor, selected.Cell);
+                selected.BeginDialog(actor);
+            });
             return true;
         }
 
@@ -120,9 +133,6 @@ namespace JRogue.Dialog
                     TryAddTalkTarget(results, occupant?.Owner);
                 }
             }
-
-            if (results.Count > 0)
-                return;
 
             NpcController[] npcs = Object.FindObjectsByType<NpcController>();
             for (int i = 0; i < npcs.Length; i++)

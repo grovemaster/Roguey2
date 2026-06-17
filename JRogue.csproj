@@ -53,6 +53,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTilemaps.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationService.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/HealthComponent.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/NpcTalkPickerModalUI.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/CarriedLitTorchPrecondition.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePlacementSet.cs" />
     <Compile Include="Assets/Scripts/Abilities/Passive/HeroicSpirit.cs" />

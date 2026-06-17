@@ -21,6 +21,7 @@ namespace JRogue.UI.Gameplay
             || DungeonEndedDialogUI.BlocksGameplay
             || EnterDungeonDialogUI.BlocksGameplay
             || AdjacentInteractPickerModalUI.BlocksGameplay
+            || NpcTalkPickerModalUI.BlocksGameplay
             || AltarOfferingModalUI.BlocksGameplay
             || AltarUsedModalUI.BlocksGameplay
             || EssencePickupConfirmDialogUI.BlocksGameplay

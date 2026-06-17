@@ -132,6 +132,7 @@ namespace JRogue.UI.Gameplay
             SetChoiceMode(false);
             _panelRoot.SetActive(true);
             _panelRoot.transform.SetAsLastSibling();
+            SuppressHeldConfirmOnOpen();
         }
 
         public void ShowChoice(DialogChoiceStep step, Action<DialogChoiceOptionData> onChoice, Action onDismissed = null)
@@ -157,6 +158,7 @@ namespace JRogue.UI.Gameplay
             SetChoiceMode(true);
             _panelRoot.SetActive(true);
             _panelRoot.transform.SetAsLastSibling();
+            SuppressHeldConfirmOnOpen();
         }
 
         public void Close()
@@ -179,6 +181,17 @@ namespace JRogue.UI.Gameplay
             Action act = _onAdvance;
             _onAdvance = null;
             act?.Invoke();
+        }
+
+        /// <summary>
+        /// Enter often opens the dialog (InputHandler OnConfirm) and is still held the same frame;
+        /// without this, line dialogs advance/close before the player sees them.
+        /// </summary>
+        void SuppressHeldConfirmOnOpen()
+        {
+            Keyboard kb = Keyboard.current;
+            if (kb != null && (kb.enterKey.isPressed || kb.spaceKey.isPressed))
+                _suppressConfirmUntilReleased = true;
         }
 
         void ApplyPortrait(PortraitDefinition portrait)

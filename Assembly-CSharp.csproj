@@ -94,6 +94,7 @@
     <None Include="Assets/Art/Interactables/ThirdParty/DungeonTileset32/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Examples &amp; Extras/Fonts/Roboto-Bold - License.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile-2-Pass.shader" />
+    <None Include="Assets/Art/NPC/StyleComparison/_temp/crawl-tiles Oct-5-2010/dc-mon/animals/animals.txt" />
     <None Include="Assets/TextMesh Pro/Examples &amp; Extras/Fonts/Unity - OFL.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader" />
     <None Include="Assets/TextMesh Pro/Examples &amp; Extras/Fonts/Oswald-Bold - OFL.txt" />
@@ -104,7 +105,11 @@
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader" />
     <None Include="Assets/Art/Traps/ThirdParty/Stealthix/LICENSE.txt" />
+    <None Include="Assets/Art/NPC/StyleComparison/_temp/crawl-tiles Oct-5-2010/utility/Raw List.txt" />
+    <None Include="Assets/Art/NPC/StyleComparison/_temp/crawl-tiles Oct-5-2010/utility/Deleted List.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets/Art/NPC/StyleComparison/_temp/crawl-tiles Oct-5-2010/utility/README.txt" />
+    <None Include="Assets/Art/NPC/ThirdParty/DungeonCrawl32/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl" />
     <None Include="Assets/Sprites/Environment/Town/KenneyTinyTown/Tilesheet.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader" />
@@ -115,7 +120,9 @@
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc" />
     <None Include="Assets/Art/Doors/ThirdParty/DungeonCrawl32/LICENSE.txt" />
     <None Include="Assets/Art/Portal/LICENSE.txt" />
+    <None Include="Assets/Art/NPC/StyleComparison/_temp/crawl-tiles Oct-5-2010/README.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc" />
+    <None Include="Assets/Art/NPC/StyleComparison/_temp/crawl-tiles Oct-5-2010/utility/Filtered List.txt" />
     <None Include="Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt" />
     <None Include="Assets/Art/Hazards/ThirdParty/DungeonCrawl32/LICENSE.txt" />
     <None Include="Assets/Art/Items/ThirdParty/AntumDelugeTorch/LICENSE.txt" />
@@ -125,6 +132,7 @@
     <None Include="Assets/Art/Items/ThirdParty/IdylwildAerialArsenal/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader" />
     <None Include="Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt" />
+    <None Include="Assets/Art/NPC/StyleComparison/_temp/crawl-tiles Oct-5-2010/LICENSE.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_Sprite.shader" />
     <None Include="Assets/TextMesh Pro/Examples &amp; Extras/Fonts/Bangers - OFL.txt" />
