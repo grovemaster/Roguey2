@@ -51,7 +51,7 @@ PrefabInstance:
     - target: {fileID: 5067676183637769181, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 3435984339958743271, guid: 0ac52a3305dc5bcb08e8741b3e9f28bd, type: 3}
+      objectReference: {fileID: 21300000, guid: 888bcfb9441045a38477fc70d910b912, type: 3}
     - target: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Name
       value: TownNpc_ArcaneVendor

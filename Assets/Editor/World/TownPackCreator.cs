@@ -58,7 +58,7 @@ namespace JRogue.Editor.World
         const string HumanNpcPrefabPath = "Assets/Prefabs/Actor/Npc/HumanNpc.prefab";
         const string ResourcesDialogProfilesFolder = "Assets/Resources/Dialog/Profiles";
         const string ResourcesNpcFolder = "Assets/Resources/Town/Npc";
-        const string DemoHostSpritePath = "Assets/Art/NPC/Sprites/NPC_Edda.png";
+        const string DemoHostSpritePath = "Assets/Art/NPC/Sprites/NPC_DemoHost.png";
         const string DemoHostPortraitPath = "Assets/Art/Portraits/NPC/Portrait_Edda.png";
 
         const int SheetColumns = 12;

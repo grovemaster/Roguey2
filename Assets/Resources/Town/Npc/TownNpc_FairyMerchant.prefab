@@ -51,7 +51,7 @@ PrefabInstance:
     - target: {fileID: 5067676183637769181, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -4827167347653239212, guid: cf120a92f8e268644a53156588c36d17, type: 3}
+      objectReference: {fileID: 21300000, guid: 80a45bc17c594ae6946740b94040c5b1, type: 3}
     - target: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Name
       value: TownNpc_FairyMerchant

@@ -9,9 +9,41 @@ namespace JRogue.Editor.World
     {
         static readonly string[] TownNpcSpritePaths =
         {
+            // Humans (10)
             "Assets/Art/NPC/Sprites/NPC_Mira.png",
             "Assets/Art/NPC/Sprites/NPC_Luc.png",
             "Assets/Art/NPC/Sprites/NPC_Edda.png",
+            "Assets/Art/NPC/Sprites/NPC_Fenn.png",
+            "Assets/Art/NPC/Sprites/NPC_Greta.png",
+            "Assets/Art/NPC/Sprites/NPC_MageTutor.png",
+            "Assets/Art/NPC/Sprites/NPC_KnightDrillMaster.png",
+            "Assets/Art/NPC/Sprites/NPC_ArcaneVendor.png",
+            "Assets/Art/NPC/Sprites/NPC_PriestShrineSteward.png",
+            "Assets/Art/NPC/Sprites/NPC_DemoHost.png",
+            // Barbarian (2)
+            "Assets/Art/NPC/Sprites/NPC_ShamanBarbarian.png",
+            "Assets/Art/NPC/Sprites/NPC_Barbarian_Warchief.png",
+            // Dwarf (2)
+            "Assets/Art/NPC/Sprites/NPC_ForgeBrothersSteward.png",
+            "Assets/Art/NPC/Sprites/NPC_StoneWardensSteward.png",
+            // Beastman (2)
+            "Assets/Art/NPC/Sprites/NPC_BeastBloodMerchant.png",
+            "Assets/Art/NPC/Sprites/NPC_Beastman_Brute.png",
+            // Dragonian (2)
+            "Assets/Art/NPC/Sprites/NPC_DragonianElderVolscale.png",
+            "Assets/Art/NPC/Sprites/NPC_Dragonian_Guard.png",
+            // Tiefling (2)
+            "Assets/Art/NPC/Sprites/NPC_FleshmetalForgemaster.png",
+            "Assets/Art/NPC/Sprites/NPC_Tiefling_Smith.png",
+            // Fairy (2)
+            "Assets/Art/NPC/Sprites/NPC_FairyMerchant.png",
+            "Assets/Art/NPC/Sprites/NPC_Fairy_Spriggan.png",
+            // Elf (2)
+            "Assets/Art/NPC/Sprites/NPC_Elf_Ranger.png",
+            "Assets/Art/NPC/Sprites/NPC_Elf_Sage.png",
+            // Undead (2)
+            "Assets/Art/NPC/Sprites/NPC_Undead_Wight.png",
+            "Assets/Art/NPC/Sprites/NPC_Undead_Revenant.png",
         };
 
         [MenuItem("JRogue/Town/Configure DCSS Town NPC Sprites")]

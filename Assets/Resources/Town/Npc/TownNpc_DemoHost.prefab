@@ -63,7 +63,7 @@ PrefabInstance:
     - target: {fileID: 5067676183637769181, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: bfd81242f6914217945f253747eaf17b, type: 3}
+      objectReference: {fileID: 21300000, guid: fd853c158c9344b78929a7e0ed636ef5, type: 3}
     - target: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Name
       value: TownNpc_DemoHost
