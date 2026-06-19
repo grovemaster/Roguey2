@@ -48,18 +48,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-      propertyPath: npcId
-      value: market_item_shop_clerk
-      objectReference: {fileID: 0}
-    - target: {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-      propertyPath: displayName
-      value: Item Shop Clerk
-      objectReference: {fileID: 0}
-    - target: {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-      propertyPath: dialogProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: 152dd1b6abd3530f2b1c801ffec342d2, type: 2}
     - target: {fileID: 5067676183637769181, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -72,20 +60,45 @@ PrefabInstance:
       propertyPath: m_Name
       value: TownNpc_MarketItemShopClerk
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7500063396923985808}
+      addedObject: {fileID: 1260857498348216420}
+    - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1520314488515448250}
   m_SourcePrefab: {fileID: 100100000, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
 --- !u!1 &1214709130063783233 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
   m_PrefabInstance: {fileID: 7328140830484844801}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7500063396923985808
+--- !u!114 &1260857498348216420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214709130063783233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2a220e93cdd928cab275c9d225d2fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Controller.Npc.ShopNpcController
+  stats: {fileID: 0}
+  currentFacing: 0
+  displayName: Item Shop Clerk
+  portraitOverride: {fileID: 0}
+  essenceType: 1
+  npcId: market_item_shop_clerk
+  dialogProfile: {fileID: 0}
+  portrait: {fileID: 11400000, guid: 01663789f8f9458398527143b6ac18bf, type: 2}
+  shopDefinition: {fileID: 11400000, guid: 7f3a9c2e1b4d5a6890c1d2e3f4a5b6c7, type: 2}
+--- !u!114 &1520314488515448250
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

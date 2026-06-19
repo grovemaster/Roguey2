@@ -77,6 +77,16 @@ namespace JRogue.Shop
             _snapshots[snapshot.shopNpcId.Trim()] = snapshot.Clone();
         }
 
+        public void ResetSnapshotFromDefinition(ShopNpcDefinition definition)
+        {
+            if (definition == null || string.IsNullOrWhiteSpace(definition.shopNpcId))
+                return;
+
+            string id = definition.shopNpcId.Trim();
+            _snapshots[id] = CreateInitialSnapshot(definition);
+            Debug.Log($"[TownShop] Reset '{id}' to baseline (gold={definition.initialGold}).");
+        }
+
         static ShopStateSnapshot CreateInitialSnapshot(ShopNpcDefinition definition)
         {
             var snapshot = new ShopStateSnapshot

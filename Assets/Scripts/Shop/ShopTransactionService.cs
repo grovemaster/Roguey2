@@ -156,6 +156,7 @@ namespace JRogue.Shop
                 return ShopTransactionResult.InsufficientStock;
             }
 
+            snapshot.goldOnHand += totalCost;
             message = $"Purchased {lines.Count} line(s) for {totalCost} gold.";
             return ShopTransactionResult.Success;
         }
@@ -236,6 +237,7 @@ namespace JRogue.Shop
                 return ShopTransactionResult.InsufficientStock;
             }
 
+            snapshot.goldOnHand += totalCost;
             message = $"Purchased {quantity} × {item.itemName} for {totalCost} gold.";
             return ShopTransactionResult.Success;
         }

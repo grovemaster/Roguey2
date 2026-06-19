@@ -328,7 +328,10 @@ namespace JRogue.UI.Gameplay
             else
             {
                 IReadOnlyList<BaseActor> party = PartyManager.Instance?.partyMembers;
-                ShopSellableQuery.BuildPartySellOffers(party, _sellRows);
+                ShopSellableQuery.BuildPartySellOffers(
+                    party,
+                    _sellRows,
+                    _definition == null || _definition.allowPlayerSellManaStones);
                 for (int i = 0; i < _sellRows.Count; i++)
                 {
                     ShopSellOffer offer = _sellRows[i];

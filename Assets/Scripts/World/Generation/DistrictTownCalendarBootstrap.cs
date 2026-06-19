@@ -1,4 +1,5 @@
 using JRogue.UI.Gameplay;
+using JRogue.World.Town;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -16,6 +17,7 @@ namespace JRogue.World.Generation
             GameCalendarService calendar = GameCalendarService.EnsureInstance();
             calendar.ConfigureAndEnable(dungeonPortalIntervalDays, dungeonPortalStartDay);
             GameCalendarHudUI.EnsureInstance();
+            MarketItemShopResetService.TryResetForCurrentPostPortalDay();
         }
     }
 }

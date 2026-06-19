@@ -65,5 +65,31 @@ namespace JRogue.Tests.UnitTests.World
             Assert.AreEqual(3, GameCalendarLogic.GetNextPortalAbsoluteDayExclusive(2, 3, 1));
             Assert.AreEqual(6, GameCalendarLogic.GetNextPortalAbsoluteDayExclusive(3, 3, 1));
         }
+
+        [Test]
+        public void IsPostPortalDay_FollowsDayAfterPortal()
+        {
+            var day1 = new GameCalendarDate(330, 1, 1);
+            var day2 = new GameCalendarDate(330, 1, 2);
+            var day3 = new GameCalendarDate(330, 1, 3);
+            var day4 = new GameCalendarDate(330, 1, 4);
+            var day5 = new GameCalendarDate(330, 1, 5);
+
+            Assert.IsFalse(GameCalendarLogic.IsPostPortalDay(day1, 3, 1));
+            Assert.IsTrue(GameCalendarLogic.IsPostPortalDay(day2, 3, 1));
+            Assert.IsFalse(GameCalendarLogic.IsPostPortalDay(day3, 3, 1));
+            Assert.IsFalse(GameCalendarLogic.IsPostPortalDay(day4, 3, 1));
+            Assert.IsTrue(GameCalendarLogic.IsPostPortalDay(day5, 3, 1));
+        }
+
+        [Test]
+        public void RewindOneDay_RollsMonthBoundary()
+        {
+            var monthStart = new GameCalendarDate(330, 2, 1);
+            var previous = GameCalendarLogic.RewindOneDay(monthStart);
+            Assert.AreEqual(330, previous.Year);
+            Assert.AreEqual(1, previous.Month);
+            Assert.AreEqual(30, previous.Day);
+        }
     }
 }

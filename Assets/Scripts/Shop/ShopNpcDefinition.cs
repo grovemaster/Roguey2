@@ -13,6 +13,7 @@ namespace JRogue.Shop
         public PortraitDefinition portrait;
         public bool allowPlayerBuy = true;
         public bool allowPlayerSell = true;
+        public bool allowPlayerSellManaStones = true;
         [Min(0)] public int initialGold = 100;
         public ShopStockEntry[] initialStock = Array.Empty<ShopStockEntry>();
     }

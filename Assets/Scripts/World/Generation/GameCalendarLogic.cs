@@ -49,6 +49,36 @@ namespace JRogue.World.Generation
             return new GameCalendarDate(year, month, day);
         }
 
+        public static GameCalendarDate RewindOneDay(GameCalendarDate date)
+        {
+            int day = date.Day - 1;
+            int month = date.Month;
+            int year = date.Year;
+
+            if (day < 1)
+            {
+                month--;
+                if (month < 1)
+                {
+                    month = MonthsPerYear;
+                    year--;
+                }
+
+                day = DaysPerMonth;
+            }
+
+            return new GameCalendarDate(year, month, day);
+        }
+
+        public static bool IsPostPortalDay(
+            GameCalendarDate date,
+            int portalIntervalDays,
+            int portalStartDay = DefaultPortalStartDay)
+        {
+            GameCalendarDate previous = RewindOneDay(date);
+            return IsDungeonPortalDay(previous, portalIntervalDays, portalStartDay);
+        }
+
         public static string FormatDisplayDate(GameCalendarDate date) =>
             $"Year {date.Year} · Month {date.Month} · Day {date.Day}";
 

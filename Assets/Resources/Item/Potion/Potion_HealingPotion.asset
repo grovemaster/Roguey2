@@ -13,19 +13,28 @@ MonoBehaviour:
   m_Name: Potion_HealingPotion
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Healing Potion
-  autoPickupOnStep: 0
-  requiresAutoPickupConfirmation: 0
   category: 10
   inventoryRiskHints: 0
   slotType: 0
   weight: 0.5
   icon: {fileID: 0}
   goldValue: 15
+  buyValue: 2
+  sellValue: 1
   requiresAppraisal: 0
+  autoPickupOnStep: 0
+  requiresAutoPickupConfirmation: 0
+  floorLifetimePlayerPhases: 0
   equipRequiresAllFlags: 0
   equipExcludesActorFlags: 0
+  weaponType: 0
+  handsRequired: 1
+  requiresBow: 0
+  isThrowable: 1
   damageModules: []
   statModifiers: []
   passiveEffects: []
   activeAbilities:
   - {fileID: 11400000, guid: 6a0099c101254e638124ee007ae988de, type: 2}
+  inventoryTargetedUseLogTag: 
+  allowUseInSafeZone: 0

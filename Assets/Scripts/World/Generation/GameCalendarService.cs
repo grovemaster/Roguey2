@@ -106,6 +106,10 @@ namespace JRogue.World.Generation
 
             RefreshTownPortalVisual();
             DateChanged?.Invoke(currentDate);
+            MarketItemShopResetService.TryResetForPostPortalDay(
+                currentDate,
+                dungeonPortalIntervalDays,
+                dungeonPortalStartDay);
             DungeonPortalReminderService.TryShowPortalDayReminder();
         }
 

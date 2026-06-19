@@ -43,7 +43,8 @@ namespace JRogue.Shop
     {
         public static void BuildPartySellOffers(
             IReadOnlyList<BaseActor> partyMembers,
-            List<ShopSellOffer> results)
+            List<ShopSellOffer> results,
+            bool allowManaStones = true)
         {
             results.Clear();
             if (partyMembers == null)
@@ -52,7 +53,8 @@ namespace JRogue.Shop
             for (int m = 0; m < partyMembers.Count; m++)
                 AppendMemberOffers(partyMembers[m], results);
 
-            AppendManaStoneOffers(results);
+            if (allowManaStones)
+                AppendManaStoneOffers(results);
         }
 
         static void AppendMemberOffers(BaseActor member, List<ShopSellOffer> results)

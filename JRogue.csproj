@@ -566,6 +566,7 @@
     <Compile Include="Assets/Scripts/Dialog/NpcTalkCounterService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingFacadeSight.cs" />
     <Compile Include="Assets/Scripts/Item/LightSourceItemRules.cs" />
+    <Compile Include="Assets/Scripts/World/Town/MarketItemShopResetService.cs" />
     <Compile Include="Assets/Scripts/Interactables/PartyCarriedLightSource.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/ElfElementalSpiritViewModel.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanMageClassCommitService.cs" />

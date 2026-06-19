@@ -4,7 +4,9 @@ using System.IO;
 using JRogue.Controller.Npc;
 using JRogue.Dialog;
 using JRogue.GridFeatures;
+using JRogue.Item;
 using JRogue.Manager.Grid;
+using JRogue.Shop;
 using JRogue.World.Generation;
 using JRogue.World.Town;
 using UnityEditor;
@@ -30,7 +32,9 @@ namespace JRogue.Editor.World
             TownDistrictTestPaths.MarketItemShopFolder + "/PartyFormation_ShopInterior.asset";
         const string HumanNpcPrefabPath = "Assets/Prefabs/Actor/Npc/HumanNpc.prefab";
         const string ClerkPrefabPath = "Assets/Resources/Town/Npc/TownNpc_MarketItemShopClerk.prefab";
-        const string ClerkDialogPath = "Assets/Resources/Dialog/Profiles/NpcDialog_MarketItemShopClerk.asset";
+        const string ClerkShopPath = "Assets/Resources/Shop/ShopNpc_MarketItemShopClerk.asset";
+        const string HealingPotionPath = "Assets/Resources/Item/Potion/Potion_HealingPotion.asset";
+        const string ClerkPortraitPath = "Assets/Resources/Dialog/Portraits/Portrait_Edda.asset";
         const string ClerkSpritePath = "Assets/Art/NPC/Sprites/NPC_Edda.png";
 
         [MenuItem("JRogue/Town/Setup Market Item Shop")]
@@ -38,7 +42,8 @@ namespace JRogue.Editor.World
         {
             EnsureFolders();
             DcssRectGrayFloorVarietyEditor.ConfigureRectGrayFloorTiles();
-            EnsureClerkDialog();
+            EnsureHealingPotionShopPrices();
+            EnsureClerkShopDefinition();
             EnsureClerkPrefab();
             PartyFormationSpawnProfile shopFormation = EnsureShopInteriorFormationProfile();
             EnsureInteriorFloorDefinition(shopFormation);
@@ -66,32 +71,49 @@ namespace JRogue.Editor.World
         {
             EnsureFolder(TownDistrictTestPaths.MarketItemShopFolder);
             EnsureFolder("Assets/Resources/Town/Npc");
-            EnsureFolder("Assets/Resources/Dialog/Profiles");
+            EnsureFolder("Assets/Resources/Shop");
         }
 
-        static void EnsureClerkDialog()
+        static void EnsureHealingPotionShopPrices()
         {
-            var profile = AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(ClerkDialogPath);
-            if (profile == null)
+            var potion = AssetDatabase.LoadAssetAtPath<ItemData>(HealingPotionPath);
+            if (potion == null)
             {
-                profile = ScriptableObject.CreateInstance<NpcDialogProfile>();
-                AssetDatabase.CreateAsset(profile, ClerkDialogPath);
+                Debug.LogWarning("[MarketItemShop] Missing Healing Potion asset.");
+                return;
             }
 
-            var so = new SerializedObject(profile);
-            so.FindProperty("npcId").stringValue = MarketItemShopLayout.NpcId;
-            so.FindProperty("rootNodeIndex").intValue = 0;
-            so.FindProperty("incrementTalkCountOnStart").boolValue = true;
-
-            SerializedProperty nodes = so.FindProperty("nodes");
-            nodes.arraySize = 1;
-            SerializedProperty node = nodes.GetArrayElementAtIndex(0);
-            node.FindPropertyRelative("kind").enumValueIndex = (int)DialogNodeKind.Line;
-            node.FindPropertyRelative("line").FindPropertyRelative("textTemplate").stringValue =
-                "Browse if you like, {partyName}. Stock rotates with the dimensions.";
-            node.FindPropertyRelative("nextNodeIndex").intValue = DialogGraph.NoNode;
+            var so = new SerializedObject(potion);
+            so.FindProperty("buyValue").intValue = MarketItemShopLayout.HealingPotionBuyValue;
+            so.FindProperty("sellValue").intValue = MarketItemShopLayout.HealingPotionSellValue;
             so.ApplyModifiedPropertiesWithoutUndo();
-            EditorUtility.SetDirty(profile);
+            EditorUtility.SetDirty(potion);
+        }
+
+        static void EnsureClerkShopDefinition()
+        {
+            ItemData healingPotion = AssetDatabase.LoadAssetAtPath<ItemData>(HealingPotionPath);
+            PortraitDefinition portrait = AssetDatabase.LoadAssetAtPath<PortraitDefinition>(ClerkPortraitPath);
+
+            var shop = LoadOrCreate<ShopNpcDefinition>(ClerkShopPath);
+            shop.shopNpcId = MarketItemShopLayout.NpcId;
+            shop.displayName = "Item Shop Clerk";
+            shop.portrait = portrait;
+            shop.allowPlayerBuy = true;
+            shop.allowPlayerSell = true;
+            shop.allowPlayerSellManaStones = false;
+            shop.initialGold = MarketItemShopLayout.InitialGold;
+            shop.initialStock = healingPotion != null
+                ? new[]
+                {
+                    new ShopStockEntry
+                    {
+                        item = healingPotion,
+                        quantity = MarketItemShopLayout.InitialHealingPotionStock,
+                    },
+                }
+                : System.Array.Empty<ShopStockEntry>();
+            EditorUtility.SetDirty(shop);
         }
 
         static void EnsureClerkPrefab()
@@ -114,16 +136,27 @@ namespace JRogue.Editor.World
             {
                 instance.name = "TownNpc_MarketItemShopClerk";
 
-                NpcController npc = instance.GetComponent<NpcController>();
-                if (npc != null)
-                {
-                    var npcSo = new SerializedObject(npc);
-                    npcSo.FindProperty("npcId").stringValue = MarketItemShopLayout.NpcId;
-                    npcSo.FindProperty("displayName").stringValue = "Item Shop Clerk";
-                    npcSo.FindProperty("dialogProfile").objectReferenceValue =
-                        AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(ClerkDialogPath);
-                    npcSo.ApplyModifiedPropertiesWithoutUndo();
-                }
+                ShopNpcDefinition shopDefinition =
+                    AssetDatabase.LoadAssetAtPath<ShopNpcDefinition>(ClerkShopPath);
+
+                NpcCounterTalkBinding existingBinding = instance.GetComponent<NpcCounterTalkBinding>();
+                if (existingBinding != null)
+                    Object.DestroyImmediate(existingBinding);
+
+                NpcController existingNpc = instance.GetComponent<NpcController>();
+                if (existingNpc != null && existingNpc.GetType() != typeof(ShopNpcController))
+                    Object.DestroyImmediate(existingNpc);
+
+                ShopNpcController clerk = instance.GetComponent<ShopNpcController>()
+                    ?? instance.AddComponent<ShopNpcController>();
+
+                var clerkSo = new SerializedObject(clerk);
+                clerkSo.FindProperty("npcId").stringValue = MarketItemShopLayout.NpcId;
+                clerkSo.FindProperty("displayName").stringValue = "Item Shop Clerk";
+                clerkSo.FindProperty("dialogProfile").objectReferenceValue = null;
+                clerkSo.FindProperty("shopDefinition").objectReferenceValue = shopDefinition;
+                clerkSo.FindProperty("portrait").objectReferenceValue = shopDefinition?.portrait;
+                clerkSo.ApplyModifiedPropertiesWithoutUndo();
 
                 if (clerkSprite != null)
                 {

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace JRogue.World.Town
 {
-    /// <summary>Market item shop — 5×4 exterior west of the general store; scene-painted shop interior (item shop TBD).</summary>
+    /// <summary>Market item shop — 5×4 exterior west of the general store; two-way healing potion merchant interior.</summary>
     public static class MarketItemShopLayout
     {
         public const string InteriorFloorId = "town_interior_market_item_shop";
@@ -11,6 +11,12 @@ namespace JRogue.World.Town
         public const string ExitLinkId = "building_market_item_shop_exit";
         public const string NpcMarkerId = "market_item_shop_clerk";
         public const string NpcId = "market_item_shop_clerk";
+
+        public const string ShopDefinitionResourcePath = "Shop/ShopNpc_MarketItemShopClerk";
+        public const int InitialGold = 500;
+        public const int InitialHealingPotionStock = 10;
+        public const int HealingPotionBuyValue = 2;
+        public const int HealingPotionSellValue = 1;
 
         public const int ExteriorWidth = 5;
         public const int ExteriorDepth = 4;
