@@ -43,7 +43,7 @@ namespace JRogue.Editor.World
             PartyFormationSpawnProfile shopFormation = EnsureShopInteriorFormationProfile();
             EnsureInteriorFloorDefinition(shopFormation);
             EnsureInteriorFacadeOverlay();
-            MarketTownBuildingPortalsEditor.EnsureMarketBuildingPortals();
+            MarketTownDistrictPortalsEditor.EnsureMarketDistrictPortals();
             MarketTownPackCreator.EnsureMarketFacadeOverlay();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

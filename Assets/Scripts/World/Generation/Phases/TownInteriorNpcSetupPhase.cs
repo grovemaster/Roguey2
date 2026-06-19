@@ -36,6 +36,11 @@ namespace JRogue.World.Generation.Phases
                 MarketItemShopLayout.NpcMarkerId,
                 "Town/Npc/TownNpc_MarketItemShopClerk",
                 "Assets/Resources/Town/Npc/TownNpc_MarketItemShopClerk.prefab"),
+            (
+                ResidentialInnLayout.InteriorFloorId,
+                ResidentialInnLayout.NpcMarkerId,
+                "Town/Npc/TownNpc_ResidentialInnKeeper",
+                "Assets/Resources/Town/Npc/TownNpc_ResidentialInnKeeper.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)
@@ -128,6 +133,14 @@ namespace JRogue.World.Generation.Phases
                 counterBinding.Configure(
                     MarketItemShopLayout.CustomerRowY,
                     MarketItemShopLayout.CounterRowY);
+                return;
+            }
+
+            if (floorId == ResidentialInnLayout.InteriorFloorId)
+            {
+                counterBinding.Configure(
+                    ResidentialInnLayout.CustomerRowY,
+                    ResidentialInnLayout.CounterRowY);
             }
         }
 

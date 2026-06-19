@@ -1,0 +1,254 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e0224dc9f34f4f92efbfa176094eb2, type: 3}
+  m_Name: Floor_town_residential
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinition
+  floorId: town_residential
+  layoutMode: 2
+  layoutStamp: {fileID: 0}
+  zoneLayout: {fileID: 0}
+  floorTile: {fileID: 11400000, guid: 0034a01c676d39e6599ffbc90ceff704, type: 2}
+  wallTile: {fileID: 11400000, guid: c3d4e5f6a7b84990a1b2c3d4e5f67812, type: 2}
+  defaultFloorPalette: {fileID: 11400000, guid: bcb386a374fd40c7d82fa13127ac03ad, type: 2}
+  defaultWallPalette: {fileID: 11400000, guid: 3837822b14d1332749ad4cf1a36781d9, type: 2}
+  playerSafeRadius: 5
+  formationProfile: {fileID: 11400000, guid: bc9b8ea4cc7eebeef321ff560e79df53, type: 2}
+  enemyPopulation: []
+  hazardPopulation: []
+  trapPopulation: []
+  interactablePopulation: []
+  floorItemPopulation: []
+  useFloorPopulationAsFallback: 1
+  monsterPopulationMode: 0
+  monsterSpawnSchedule: {fileID: 0}
+  portals:
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 0, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 1, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 2, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 3, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 4, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 5, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 6, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 7, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 8, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 9, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 10, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 11, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 12, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 13, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 14, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 15, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 16, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 17, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 18, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 19, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 20, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 21, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 22, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 23, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 24, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 25, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 26, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 27, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 28, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_residential_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 29, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: building_residential_inn_enter_west
+    targetFloorId: town_interior_residential_inn
+    portalMarkerId: 
+    portalCell: {x: 7, y: 13, z: 0}
+    listLabel: Residential Inn
+    adjacentConfirmOnly: 0
+  - portalLinkId: building_residential_inn_enter_center
+    targetFloorId: town_interior_residential_inn
+    portalMarkerId: 
+    portalCell: {x: 9, y: 13, z: 0}
+    listLabel: Residential Inn
+    adjacentConfirmOnly: 0
+  - portalLinkId: building_residential_inn_enter_east
+    targetFloorId: town_interior_residential_inn
+    portalMarkerId: 
+    portalCell: {x: 11, y: 13, z: 0}
+    listLabel: Residential Inn
+    adjacentConfirmOnly: 0
+  edgePortals: []
+  arrivalBindings:
+  - portalLinkId: district_market_to_residential
+    arrivalAnchor: {x: 18, y: 15, z: 0}
+  - portalLinkId: building_residential_inn_exit_west
+    arrivalAnchor: {x: 7, y: 13, z: 0}
+  - portalLinkId: building_residential_inn_exit_center
+    arrivalAnchor: {x: 9, y: 13, z: 0}
+  - portalLinkId: building_residential_inn_exit_east
+    arrivalAnchor: {x: 11, y: 13, z: 0}
+  orthogonalEdgePortalCount: 0
+  orthogonalEdgeInset: 2
+  portalPlacementRules: []
+  participatesInDungeonTime: 0
+  baseDayNightCycles: 7
+  additionalDayNightCycles: 0
+  playerTurnsPerDay: 5
+  playerTurnsPerNight: 5
+  combatPolicy: 1
+  safeZoneRegions: []
+  doorPolicy: 0
+  vaults: []
+  vaultCatalog: {fileID: 0}

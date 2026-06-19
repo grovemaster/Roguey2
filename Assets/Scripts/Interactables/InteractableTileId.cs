@@ -13,5 +13,6 @@ namespace JRogue.Interactables
         MeditationShrine = 8,
         SoulBeastRitualCircle = 9,
         HallOfAncestorsAltar = 10,
+        InnBed = 11,
     }
 }

@@ -13,7 +13,7 @@ namespace JRogue.World.Generation.Phases
         public void Execute(DungeonGenerationContext context)
         {
             DungeonFloorDefinition def = context.Definition;
-            if (def == null || !IsHubFloor(def.FloorId))
+            if (def == null || !HasTownDungeonPortal(def.FloorId))
                 return;
 
             Vector3Int portalCell = ResolvePortalCell(context);
@@ -25,10 +25,16 @@ namespace JRogue.World.Generation.Phases
             DungeonGenerationLog.Phase(nameof(TownPortalSetupPhase), $"town portal at {portalCell}");
         }
 
+        /// <summary>Outdoor hub districts that participate in town time (not building interiors).</summary>
         public static bool IsHubFloor(string floorId) =>
             floorId == TownFloorId
             || floorId == DimensionSquareFloorIds.FloorId
-            || floorId == MarketTownFloorIds.FloorId;
+            || floorId == MarketTownFloorIds.FloorId
+            || floorId == ResidentialTownFloorIds.FloorId;
+
+        /// <summary>Only dimension_square (and legacy town_main) expose the town → dungeon portal.</summary>
+        public static bool HasTownDungeonPortal(string floorId) =>
+            floorId == TownFloorId || floorId == DimensionSquareFloorIds.FloorId;
 
         public static bool IsTownInterior(string floorId) =>
             !string.IsNullOrEmpty(floorId) && floorId.StartsWith("town_interior");

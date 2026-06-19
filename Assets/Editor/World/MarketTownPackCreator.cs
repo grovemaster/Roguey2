@@ -33,6 +33,7 @@ namespace JRogue.Editor.World
             DcssRectGrayFloorVarietyEditor.ConfigureRectGrayFloorTiles();
             EnsureMarketPalettes();
             EnsureMarketFloorDefinition();
+            MarketTownDistrictPortalsEditor.EnsureMarketDistrictPortals();
             EnsureDimensionSquarePortals();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -124,16 +125,20 @@ namespace JRogue.Editor.World
         public static void UpdateDistrictCatalog(
             DungeonFloorDefinition squareDef,
             DungeonFloorDefinition marketDef,
+            DungeonFloorDefinition residentialDef,
             DungeonFloorDefinition guildInteriorDef,
             DungeonFloorDefinition storeInteriorDef,
-            DungeonFloorDefinition itemShopInteriorDef)
+            DungeonFloorDefinition itemShopInteriorDef,
+            DungeonFloorDefinition innInteriorDef)
         {
             DistrictTestCatalogUpdater.UpdateCatalog(
                 squareDef,
                 marketDef,
+                residentialDef,
                 guildInteriorDef,
                 storeInteriorDef,
-                itemShopInteriorDef);
+                itemShopInteriorDef,
+                innInteriorDef);
         }
 
         static void EnsureMarketPalettes()

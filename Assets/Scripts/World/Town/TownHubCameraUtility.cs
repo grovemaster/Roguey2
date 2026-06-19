@@ -23,8 +23,10 @@ namespace JRogue.World.Town
             if (floorId == AdventureGuildExchangeLayout.InteriorFloorId
                 || floorId == MarketGeneralStoreLayout.InteriorFloorId
                 || floorId == MarketItemShopLayout.InteriorFloorId
+                || floorId == ResidentialInnLayout.InteriorFloorId
                 || floorId == DimensionSquareFloorIds.FloorId
-                || floorId == MarketTownFloorIds.FloorId)
+                || floorId == MarketTownFloorIds.FloorId
+                || floorId == ResidentialTownFloorIds.FloorId)
             {
                 size = AdventureGuildExchangeLayout.DistrictHubCameraOrthoSize;
                 return true;

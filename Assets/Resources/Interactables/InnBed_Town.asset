@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7da8c259564a2d4e19f9c81db1953269, type: 3}
+  m_Name: InnBed_Town
+  m_EditorClassIdentifier: JRogue::JRogue.Interactables.InteractableTileDefinition
+  interactableId: 11
+  displayName: Bed
+  kind: 2
+  blocksOccupancy: 1
+  bumpEnabled: 1
+  allowRepeatActivation: 1
+  preconditions:
+  - {fileID: 11400000, guid: 307b0277118640a5889d05da1e59446b, type: 2}
+  onActivateEffects:
+  - {fileID: 11400000, guid: c20cecfcc4d5602858fbae7f9f173189, type: 2}
+  spriteOff: {fileID: -4548539189877249549, guid: 8038de658e2f2f8b984b9b8288c93a71, type: 3}
+  spriteOn: {fileID: -4548539189877249549, guid: 8038de658e2f2f8b984b9b8288c93a71, type: 3}

@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Assets/Editor/World/ShamanBarbarianPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DungeonTilePalettePackCreator.cs" />
+    <Compile Include="Assets/Editor/World/ResidentialDistrictPortalsEditor.cs" />
     <Compile Include="Assets/Editor/World/DcssRectGrayFloorVarietyEditor.cs" />
     <Compile Include="Assets/Editor/World/DragonianElderPackCreator.cs" />
     <Compile Include="Assets/Editor/Party/MainCharacterSampleSceneSetup.cs" />
@@ -62,8 +63,8 @@
     <Compile Include="Assets/Editor/World/AdventureGuildExchangePackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/HealingPotionSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/World/KnightDrillMasterPackCreator.cs" />
-    <Compile Include="Assets/Editor/World/MarketTownBuildingPortalsEditor.cs" />
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/ResidentialTownPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />
     <Compile Include="Assets/Editor/World/DimensionSquareSceneCreator.cs" />
     <Compile Include="Assets/Editor/Interactables/EnemySpawnAssetPackCreator.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Assets/Editor/World/MarketItemShopPackCreator.cs" />
     <Compile Include="Assets/Editor/Racial/PartyRacialDevSwapMenu.cs" />
     <Compile Include="Assets/Editor/Essence/EssenceAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/ResidentialInnPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/SampleScenePrefabInstanceRepair.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioQaPack.cs" />
     <Compile Include="Assets/Editor/World/DungeonZonePackCreator.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="Assets/Editor/World/StoneWardensClanPackCreator.cs" />
     <Compile Include="Assets/Editor/World/HumanPriestShrinePackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingQaSampleSceneEditor.cs" />
+    <Compile Include="Assets/Editor/World/MarketTownDistrictPortalsEditor.cs" />
     <Compile Include="Assets/Editor/Traps/TrapAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DcssTownNpcSpritePackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioSampleSceneBootstrap.cs" />

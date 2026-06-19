@@ -27,6 +27,7 @@ namespace JRogue.World.Generation
             new TownNpcSetupPhase(),
             new TownInteriorNpcSetupPhase(),
             new TownShopCounterSetupPhase(),
+            new TownInnBedSetupPhase(),
             new TownTorchSetupPhase(),
             new LightingInitPhase(),
             new DoorPlacementPhase(),

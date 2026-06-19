@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c00b93224db4501a69a199f254dd92d, type: 3}
+  m_Name: NpcDialog_ResidentialInnKeeper
+  m_EditorClassIdentifier: JRogue::JRogue.Dialog.NpcDialogProfile
+  npcId: residential_inn_keeper
+  rootNodeIndex: 0
+  nodes:
+  - kind: 0
+    line:
+      textTemplate: Welcome to the inn, {partyName}. Need a room or just passing
+        through?
+    nextNodeIndex: -1
+    choices: []
+    conditionKind: 0
+    flagId: 
+    expectedFlagValue: 0
+    npcIdForTalkCount: 
+    talkCountMin: 0
+    talkCountMax: 0
+    anyTalkedNpcIds: []
+    trueNodeIndex: 0
+    falseNodeIndex: 0
+    questId: 
+    expectedQuestState: 0
+    actionKind: 0
+    actionQuestId: 
+  completionFlagId: 
+  incrementTalkCountOnStart: 1

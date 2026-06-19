@@ -3,7 +3,7 @@ using UnityEngine.Tilemaps;
 
 namespace JRogue.World.Town
 {
-    /// <summary>40×40 open market district with walls on north, east, and west; south strip links to dimension_square.</summary>
+    /// <summary>40×40 open market district; south strip links to dimension_square, west strip links to town_residential.</summary>
     public static class MarketTownLayout
     {
         public const int MapSize = 40;
@@ -24,8 +24,9 @@ namespace JRogue.World.Town
                 {
                     var cell = new Vector3Int(x, y, 0);
                     bool isSouthTransition = DistrictSquareMarketTransition.IsMarketSouthTransitionCell(cell);
+                    bool isWestResidentialTransition = MarketResidentialTransition.IsMarketWestTransitionCell(cell);
                     bool isPerimeterWall = x == 0 || x == MapSize - 1 || y == MapSize - 1 || y == 0;
-                    if (isPerimeterWall && !isSouthTransition)
+                    if (isPerimeterWall && !isSouthTransition && !isWestResidentialTransition)
                     {
                         wallMap.SetTile(cell, wallTile);
                         continue;

@@ -134,10 +134,12 @@
     <Compile Include="Assets/Scripts/World/Generation/TownToDungeonPortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedStatModifierRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarOfferingService.cs" />
+    <Compile Include="Assets/Scripts/World/Town/ResidentialInnLayout.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritLevelCapPolicy.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/HumanPriestDevotionBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/IlluminationVisibilityLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
+    <Compile Include="Assets/Scripts/World/Town/ResidentialTownFloorIds.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopDataTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneDebugOverlay.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyRules.cs" />
@@ -161,10 +163,12 @@
     <Compile Include="Assets/Scripts/Abilities/Knight/KnightAuraPulseAbility.cs" />
     <Compile Include="Assets/Scripts/Racial/DwarfAncestorLearnService.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritMeditationLogic.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/TownInnBedSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanMageHotbarSync.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanKnightHotbarSync.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntry.cs" />
     <Compile Include="Assets/Scripts/Racial/TieflingImplantForgemasterService.cs" />
+    <Compile Include="Assets/Scripts/World/Town/InnBedSleepPromptService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneJigsawSolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
     <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillProficiencyDispatcher.cs" />
@@ -245,6 +249,7 @@
     <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeLogic.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/UnlockDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Dialog/DialogGraphEvaluator.cs" />
+    <Compile Include="Assets/Scripts/World/Town/MarketResidentialTransition.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownBuildingFacadeVisualPhase.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/GrantPartyExperienceEffect.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopSellableQuery.cs" />
@@ -319,6 +324,7 @@
     <Compile Include="Assets/Scripts/Abilities/Passive/UndeadNecroticSustenancePassive.cs" />
     <Compile Include="Assets/Scripts/Racial/SoulBeastPartyRules.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestVowService.cs" />
+    <Compile Include="Assets/Scripts/World/Town/ResidentialTownLayout.cs" />
     <Compile Include="Assets/Scripts/Abilities/Teleport/TeleportAbility.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarPlaceListBuilder.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/PartyMemberDeathDialogUI.cs" />
@@ -487,6 +493,7 @@
     <Compile Include="Assets/Scripts/Racial/SoulBeastRitualService.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnGroupMembership.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Effects/InnBedSleepPromptEffect.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/PartyLightEmitterBridge.cs" />
     <Compile Include="Assets/Scripts/Racial/DragonianSpellLoadoutService.cs" />
