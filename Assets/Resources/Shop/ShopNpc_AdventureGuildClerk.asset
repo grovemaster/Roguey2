@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4e8f2a19b3d4056a7c9e1f0b2d3e5f7, type: 3}
-  m_Name: ShopNpc_ResidentialInnKeeper
+  m_Name: ShopNpc_AdventureGuildClerk
   m_EditorClassIdentifier: JRogue::JRogue.Shop.ShopNpcDefinition
-  shopNpcId: residential_inn_keeper
-  displayName: Innkeeper
-  portrait: {fileID: 0}
+  shopNpcId: adventure_guild_clerk
+  displayName: Guild Clerk
+  portrait: {fileID: 11400000, guid: 6683a623ae69a5d9780aef4e1d3de0a6, type: 2}
   allowPlayerBuy: 0
-  allowPlayerSell: 0
-  allowPlayerSellCarriedItems: 1
+  allowPlayerSell: 1
+  allowPlayerSellCarriedItems: 0
   allowPlayerSellManaStones: 1
-  manaStoneSellPricing: 0
-  initialGold: 0
+  manaStoneSellPricing: 1
+  initialGold: 9999
   initialStock: []

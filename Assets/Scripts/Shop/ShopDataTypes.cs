@@ -5,6 +5,12 @@ using UnityEngine;
 
 namespace JRogue.Shop
 {
+    public enum ShopManaStoneSellPricing
+    {
+        Default = 0,
+        GuildExchange = 1,
+    }
+
     public static class TownShopNpcIds
     {
         public const string Npc4 = "town_npc_4";
@@ -14,6 +20,7 @@ namespace JRogue.Shop
         public const string ResidentialInnKeeper = "residential_inn_keeper";
         public const string MarketItemShopClerk = "market_item_shop_clerk";
         public const string MarketBlacksmith = "market_blacksmith";
+        public const string AdventureGuildClerk = "adventure_guild_clerk";
     }
 
     [Serializable]

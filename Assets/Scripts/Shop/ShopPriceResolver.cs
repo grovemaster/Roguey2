@@ -28,7 +28,7 @@ namespace JRogue.Shop
                 return 0;
 
             if (item is ManaStoneItemData manaStone)
-                return GetManaStoneSellPrice(manaStone.tier);
+                return GetManaStoneSellPrice(manaStone.tier, ShopManaStoneSellPricing.Default);
 
             if (item.sellValue > 0)
                 return item.sellValue;
@@ -41,6 +41,16 @@ namespace JRogue.Shop
         }
 
         public static int GetManaStoneSellPrice(int tier) =>
-            (9 - Mathf.Clamp(tier, 1, 9)) + 1;
+            GetManaStoneSellPrice(tier, ShopManaStoneSellPricing.Default);
+
+        public static int GetManaStoneSellPrice(int tier, ShopManaStoneSellPricing pricing)
+        {
+            tier = Mathf.Clamp(tier, 1, 9);
+            return pricing switch
+            {
+                ShopManaStoneSellPricing.GuildExchange => (10 - tier) * 2,
+                _ => (9 - tier) + 1,
+            };
+        }
     }
 }

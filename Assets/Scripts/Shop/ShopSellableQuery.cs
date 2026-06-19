@@ -44,17 +44,20 @@ namespace JRogue.Shop
         public static void BuildPartySellOffers(
             IReadOnlyList<BaseActor> partyMembers,
             List<ShopSellOffer> results,
-            bool allowManaStones = true)
+            ShopNpcDefinition shopDefinition)
         {
             results.Clear();
-            if (partyMembers == null)
+            if (partyMembers == null || shopDefinition == null || !shopDefinition.allowPlayerSell)
                 return;
 
-            for (int m = 0; m < partyMembers.Count; m++)
-                AppendMemberOffers(partyMembers[m], results);
+            if (shopDefinition.allowPlayerSellCarriedItems)
+            {
+                for (int m = 0; m < partyMembers.Count; m++)
+                    AppendMemberOffers(partyMembers[m], results);
+            }
 
-            if (allowManaStones)
-                AppendManaStoneOffers(results);
+            if (shopDefinition.allowPlayerSellManaStones)
+                AppendManaStoneOffers(results, shopDefinition.manaStoneSellPricing);
         }
 
         static void AppendMemberOffers(BaseActor member, List<ShopSellOffer> results)
@@ -87,7 +90,9 @@ namespace JRogue.Shop
             }
         }
 
-        static void AppendManaStoneOffers(List<ShopSellOffer> results)
+        static void AppendManaStoneOffers(
+            List<ShopSellOffer> results,
+            ShopManaStoneSellPricing pricing)
         {
             PartyManaStoneLedger ledger = PartyManaStoneLedger.Instance;
             if (ledger == null)
@@ -109,7 +114,7 @@ namespace JRogue.Shop
                     ManaTier = kv.Key.Tier,
                     ManaSpeciesId = kv.Key.SourceSpeciesId,
                     Quantity = kv.Value,
-                    UnitSellPrice = ShopPriceResolver.GetManaStoneSellPrice(kv.Key.Tier),
+                    UnitSellPrice = ShopPriceResolver.GetManaStoneSellPrice(kv.Key.Tier, pricing),
                 });
             }
         }

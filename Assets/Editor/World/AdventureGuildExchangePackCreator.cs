@@ -5,6 +5,7 @@ using JRogue.Controller.Npc;
 using JRogue.Dialog;
 using JRogue.GridFeatures;
 using JRogue.Manager.Grid;
+using JRogue.Shop;
 using JRogue.World.Generation;
 using JRogue.World.Town;
 using UnityEditor;
@@ -32,7 +33,8 @@ namespace JRogue.Editor.World
             TownDistrictTestPaths.AdventureGuildExchangeFolder + "/PartyFormation_ShopInterior.asset";
         const string HumanNpcPrefabPath = "Assets/Prefabs/Actor/Npc/HumanNpc.prefab";
         const string GuildClerkPrefabPath = "Assets/Resources/Town/Npc/TownNpc_AdventureGuildClerk.prefab";
-        const string GuildDialogPath = "Assets/Resources/Dialog/Profiles/NpcDialog_AdventureGuildClerk.asset";
+        const string GuildShopPath = "Assets/Resources/Shop/ShopNpc_AdventureGuildClerk.asset";
+        const string GuildClerkPortraitPath = "Assets/Resources/Dialog/Portraits/Portrait_Fenn.asset";
         const string GuildClerkSpritePath = "Assets/Art/NPC/Sprites/NPC_Fenn.png";
 
         [MenuItem("JRogue/Town/Setup Adventure Guild Exchange")]
@@ -40,7 +42,7 @@ namespace JRogue.Editor.World
         {
             EnsureFolders();
             DcssRectGrayFloorVarietyEditor.ConfigureRectGrayFloorTiles();
-            EnsureGuildClerkDialog();
+            EnsureGuildShopDefinition();
             EnsureGuildClerkPrefab();
             PartyFormationSpawnProfile shopFormation = EnsureShopInteriorFormationProfile();
             DungeonFloorDefinition interiorDef = EnsureInteriorFloorDefinition(shopFormation);
@@ -68,32 +70,25 @@ namespace JRogue.Editor.World
         {
             EnsureFolder(TownDistrictTestPaths.AdventureGuildExchangeFolder);
             EnsureFolder("Assets/Resources/Town/Npc");
-            EnsureFolder("Assets/Resources/Dialog/Profiles");
+            EnsureFolder("Assets/Resources/Shop");
         }
 
-        static void EnsureGuildClerkDialog()
+        static void EnsureGuildShopDefinition()
         {
-            var profile = AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(GuildDialogPath);
-            if (profile == null)
-            {
-                profile = ScriptableObject.CreateInstance<NpcDialogProfile>();
-                AssetDatabase.CreateAsset(profile, GuildDialogPath);
-            }
+            PortraitDefinition portrait = AssetDatabase.LoadAssetAtPath<PortraitDefinition>(GuildClerkPortraitPath);
 
-            var so = new SerializedObject(profile);
-            so.FindProperty("npcId").stringValue = AdventureGuildExchangeLayout.NpcId;
-            so.FindProperty("rootNodeIndex").intValue = 0;
-            so.FindProperty("incrementTalkCountOnStart").boolValue = true;
-
-            SerializedProperty nodes = so.FindProperty("nodes");
-            nodes.arraySize = 1;
-            SerializedProperty node = nodes.GetArrayElementAtIndex(0);
-            node.FindPropertyRelative("kind").enumValueIndex = (int)DialogNodeKind.Line;
-            node.FindPropertyRelative("line").FindPropertyRelative("textTemplate").stringValue =
-                "Welcome to the Adventure Guild Exchange, {partyName}. Posting quests is my trade.";
-            node.FindPropertyRelative("nextNodeIndex").intValue = DialogGraph.NoNode;
-            so.ApplyModifiedPropertiesWithoutUndo();
-            EditorUtility.SetDirty(profile);
+            var shop = LoadOrCreate<ShopNpcDefinition>(GuildShopPath);
+            shop.shopNpcId = AdventureGuildExchangeLayout.NpcId;
+            shop.displayName = "Guild Clerk";
+            shop.portrait = portrait;
+            shop.allowPlayerBuy = false;
+            shop.allowPlayerSell = true;
+            shop.allowPlayerSellCarriedItems = false;
+            shop.allowPlayerSellManaStones = true;
+            shop.manaStoneSellPricing = ShopManaStoneSellPricing.GuildExchange;
+            shop.initialGold = AdventureGuildExchangeLayout.InitialGold;
+            shop.initialStock = System.Array.Empty<ShopStockEntry>();
+            EditorUtility.SetDirty(shop);
         }
 
         static void EnsureGuildClerkPrefab()
@@ -116,16 +111,27 @@ namespace JRogue.Editor.World
             {
                 instance.name = "TownNpc_AdventureGuildClerk";
 
-                NpcController npc = instance.GetComponent<NpcController>();
-                if (npc != null)
-                {
-                    var npcSo = new SerializedObject(npc);
-                    npcSo.FindProperty("npcId").stringValue = AdventureGuildExchangeLayout.NpcId;
-                    npcSo.FindProperty("displayName").stringValue = "Guild Clerk";
-                    npcSo.FindProperty("dialogProfile").objectReferenceValue =
-                        AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(GuildDialogPath);
-                    npcSo.ApplyModifiedPropertiesWithoutUndo();
-                }
+                ShopNpcDefinition shopDefinition =
+                    AssetDatabase.LoadAssetAtPath<ShopNpcDefinition>(GuildShopPath);
+
+                NpcCounterTalkBinding existingBinding = instance.GetComponent<NpcCounterTalkBinding>();
+                if (existingBinding != null)
+                    Object.DestroyImmediate(existingBinding);
+
+                NpcController existingNpc = instance.GetComponent<NpcController>();
+                if (existingNpc != null && existingNpc.GetType() != typeof(ShopNpcController))
+                    Object.DestroyImmediate(existingNpc);
+
+                ShopNpcController clerk = instance.GetComponent<ShopNpcController>()
+                    ?? instance.AddComponent<ShopNpcController>();
+
+                var clerkSo = new SerializedObject(clerk);
+                clerkSo.FindProperty("npcId").stringValue = AdventureGuildExchangeLayout.NpcId;
+                clerkSo.FindProperty("displayName").stringValue = "Guild Clerk";
+                clerkSo.FindProperty("dialogProfile").objectReferenceValue = null;
+                clerkSo.FindProperty("shopDefinition").objectReferenceValue = shopDefinition;
+                clerkSo.FindProperty("portrait").objectReferenceValue = shopDefinition?.portrait;
+                clerkSo.ApplyModifiedPropertiesWithoutUndo();
 
                 if (clerkSprite != null)
                 {

@@ -46,6 +46,14 @@ namespace JRogue.Tests.UnitTests.Shop
         }
 
         [Test]
+        public void GetManaStoneSellPrice_GuildExchangeFormula()
+        {
+            Assert.AreEqual(2, ShopPriceResolver.GetManaStoneSellPrice(9, ShopManaStoneSellPricing.GuildExchange));
+            Assert.AreEqual(4, ShopPriceResolver.GetManaStoneSellPrice(8, ShopManaStoneSellPricing.GuildExchange));
+            Assert.AreEqual(18, ShopPriceResolver.GetManaStoneSellPrice(1, ShopManaStoneSellPricing.GuildExchange));
+        }
+
+        [Test]
         public void GetBuyPrice_ManaStoneIsZero()
         {
             var stone = ScriptableObject.CreateInstance<ManaStoneItemData>();

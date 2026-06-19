@@ -12,6 +12,9 @@ namespace JRogue.World.Town
         public const string NpcMarkerId = "adventure_guild_clerk";
         public const string NpcId = "adventure_guild_clerk";
 
+        public const string ShopDefinitionResourcePath = "Shop/ShopNpc_AdventureGuildClerk";
+        public const int InitialGold = 9999;
+
         public const int ExteriorWidth = 5;
         public const int ExteriorDepth = 5;
         public const int ExteriorOriginX = 29;

@@ -328,10 +328,7 @@ namespace JRogue.UI.Gameplay
             else
             {
                 IReadOnlyList<BaseActor> party = PartyManager.Instance?.partyMembers;
-                ShopSellableQuery.BuildPartySellOffers(
-                    party,
-                    _sellRows,
-                    _definition == null || _definition.allowPlayerSellManaStones);
+                ShopSellableQuery.BuildPartySellOffers(party, _sellRows, _definition);
                 for (int i = 0; i < _sellRows.Count; i++)
                 {
                     ShopSellOffer offer = _sellRows[i];
@@ -357,7 +354,9 @@ namespace JRogue.UI.Gameplay
             {
                 string emptyBody = _mode == ShopMode.Buy
                     ? "This shop has nothing for sale."
-                    : "You have nothing this shop will buy.";
+                    : _definition.allowPlayerSellCarriedItems
+                        ? "You have nothing this shop will buy."
+                        : "You have no mana stones to sell.";
                 if (_inspectPane != null)
                 {
                     _inspectPane.SetContent(

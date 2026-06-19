@@ -17,7 +17,9 @@ MonoBehaviour:
   portrait: {fileID: 11400000, guid: bf86b5d0d8432d7998462c224c3e82e2, type: 2}
   allowPlayerBuy: 1
   allowPlayerSell: 1
+  allowPlayerSellCarriedItems: 1
   allowPlayerSellManaStones: 0
+  manaStoneSellPricing: 0
   initialGold: 800
   initialStock:
   - item: {fileID: 11400000, guid: a863ad60dbff48b7bd2b27cf4ba7cd3a, type: 2}

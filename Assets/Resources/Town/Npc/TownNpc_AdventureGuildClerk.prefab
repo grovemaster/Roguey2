@@ -48,18 +48,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-      propertyPath: npcId
-      value: adventure_guild_clerk
-      objectReference: {fileID: 0}
-    - target: {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-      propertyPath: displayName
-      value: Guild Clerk
-      objectReference: {fileID: 0}
-    - target: {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-      propertyPath: dialogProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: ce36deb8bb80427d4bf3dcc04671b02c, type: 2}
     - target: {fileID: 5067676183637769181, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -72,20 +60,45 @@ PrefabInstance:
       propertyPath: m_Name
       value: TownNpc_AdventureGuildClerk
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1131792305129974091}
+      addedObject: {fileID: 2131792305129974092}
+    - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 374658055941867414}
   m_SourcePrefab: {fileID: 100100000, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
 --- !u!1 &5045610397226336184 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
   m_PrefabInstance: {fileID: 3705566574594526200}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1131792305129974091
+--- !u!114 &2131792305129974092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5045610397226336184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2a220e93cdd928cab275c9d225d2fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Controller.Npc.ShopNpcController
+  stats: {fileID: 0}
+  currentFacing: 0
+  displayName: Guild Clerk
+  portraitOverride: {fileID: 0}
+  essenceType: 1
+  npcId: adventure_guild_clerk
+  dialogProfile: {fileID: 0}
+  portrait: {fileID: 11400000, guid: 6683a623ae69a5d9780aef4e1d3de0a6, type: 2}
+  shopDefinition: {fileID: 11400000, guid: 27f8542ce96d4bb49b91d97f76d99710, type: 2}
+--- !u!114 &374658055941867414
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
