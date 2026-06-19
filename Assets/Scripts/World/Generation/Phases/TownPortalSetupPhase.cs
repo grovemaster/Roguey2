@@ -28,6 +28,9 @@ namespace JRogue.World.Generation.Phases
         public static bool IsHubFloor(string floorId) =>
             floorId == TownFloorId || floorId == DimensionSquareFloorIds.FloorId;
 
+        public static bool IsTownInterior(string floorId) =>
+            !string.IsNullOrEmpty(floorId) && floorId.StartsWith("town_interior");
+
         static Vector3Int ResolvePortalCell(DungeonGenerationContext context)
         {
             if (context.Definition?.LayoutMode == FloorLayoutMode.ScenePainted

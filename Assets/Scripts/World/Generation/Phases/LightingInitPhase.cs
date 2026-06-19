@@ -38,6 +38,8 @@ namespace JRogue.World.Generation.Phases
 
             if (context.Definition != null && context.Definition.FloorId == TownTorchSetupPhase.TownFloorId)
                 TownLightingSync.ApplyForCurrentPhase();
+            else if (context.Definition != null && TownPortalSetupPhase.IsTownInterior(context.Definition.FloorId))
+                lighting.ApplyFullInteriorDaylight();
             else
                 lighting.OnPartyVisionActivity();
 

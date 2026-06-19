@@ -54,6 +54,40 @@ namespace JRogue.World.Generation
         public DungeonFloorDefinition Definition => definition;
         public string FloorId => definition != null ? definition.FloorId : name;
         public bool IsGenerated => _isGenerated;
+
+        public bool HasPaintedFloorTiles()
+        {
+            if (floorMap == null)
+                return false;
+
+            BoundsInt bounds = floorMap.cellBounds;
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                for (int x = bounds.xMin; x < bounds.xMax; x++)
+                {
+                    if (floorMap.HasTile(new Vector3Int(x, y, bounds.zMin)))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void InvalidateGeneratedState()
+        {
+            _isGenerated = false;
+            _featuresLiveOnServices = false;
+            floorMap?.ClearAllTiles();
+            wallMap?.ClearAllTiles();
+            hazardOverlayMap?.ClearAllTiles();
+            interactableOverlayMap?.ClearAllTiles();
+            trapOverlayMap?.ClearAllTiles();
+            doorOverlayMap?.ClearAllTiles();
+            _portals.Clear();
+            _extraMapInteractables.Clear();
+            _portalVisuals.Clear();
+        }
+
         public bool FeaturesLiveOnServices => _featuresLiveOnServices;
         public Vector3Int PlayerStart => _playerStart;
         public Transform EnemyContainer => enemyContainer;

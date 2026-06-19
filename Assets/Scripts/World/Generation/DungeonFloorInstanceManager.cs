@@ -124,8 +124,17 @@ namespace JRogue.World.Generation
             instance.BindToMapManager(map);
             FloorItemPileService.Instance?.BindViewRoot(instance.DynamicViewsRoot);
 
-            if (!instance.IsGenerated)
+            if (!instance.IsGenerated || !instance.HasPaintedFloorTiles())
+            {
+                if (instance.IsGenerated)
+                {
+                    DungeonGenerationLog.Warn(
+                        $"Floor '{floorId}' was marked generated but has no painted floor — regenerating.");
+                    instance.InvalidateGeneratedState();
+                }
+
                 DungeonGenerationPipeline.GenerateFirstVisit(instance, run.RunSeed);
+            }
             else
                 DungeonGenerationLog.Info($"Floor '{floorId}' already generated — reusing parked state.");
 
@@ -359,6 +368,8 @@ namespace JRogue.World.Generation
 
             if (def != null && def.FloorId == Phases.TownTorchSetupPhase.TownFloorId)
                 TownLightingSync.ApplyForCurrentPhase();
+            else if (def != null && Phases.TownPortalSetupPhase.IsTownInterior(def.FloorId))
+                lighting.ApplyFullInteriorDaylight();
             else
                 lighting.OnPartyVisionActivity();
         }

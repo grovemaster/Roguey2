@@ -397,6 +397,16 @@ namespace JRogue.World.Lighting
                 RecomputeAll();
         }
 
+        /// <summary>Small town interior rooms — full ambient so fog/light gates do not hide floor tiles.</summary>
+        public void ApplyFullInteriorDaylight()
+        {
+            EnsureDefaultAmbientRegion();
+            AmbientRegion region = GetOrCreateAmbientRegion(defaultFloorAmbientRegionId);
+            region.CurrentAmbientLight = LightLevel.FullDaylightAmbient;
+            EnsureRegistryFinalized();
+            OnPartyVisionActivity();
+        }
+
         void EnsureRegistryFinalized()
         {
             if (!_registryFinalized)

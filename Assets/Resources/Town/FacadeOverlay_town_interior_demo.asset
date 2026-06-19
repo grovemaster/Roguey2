@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.TownBuildingFacadeOverlay
   floorId: town_interior_demo
   cells:
-  - cell: {x: 2, y: 3, z: 0}
+  - cell: {x: 4, y: 0, z: 0}
     tile: {fileID: 11400000, guid: e747c9ad116ae7662989b2d3ff433e43, type: 2}
     layer: 1

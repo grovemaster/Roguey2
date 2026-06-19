@@ -8,7 +8,9 @@ using UnityEngine;
 namespace JRogue.World.Generation
 {
     /// <summary>
-    /// Activates dungeon portals when any party member enters the portal cell (step-on).
+    /// Activates floor portals when a party member steps onto the portal cell.
+    /// With formation off, any member can trigger; with formation on, only the active
+    /// member triggers so followers rushing onto a door tile do not hijack the move.
     /// Transports the whole party via <see cref="DungeonFloorInstanceManager"/>.
     /// </summary>
     public sealed class PortalEntryService : MonoBehaviour
@@ -75,13 +77,24 @@ namespace JRogue.World.Generation
             }
         }
 
+        public static bool CanMemberTriggerStepOnPortal(BaseActor partyMember, PartyManager party)
+        {
+            if (partyMember == null || party?.partyMembers == null || !party.partyMembers.Contains(partyMember))
+                return false;
+
+            if (party.IsFormationActive)
+                return party.GetActiveMember() == partyMember;
+
+            return true;
+        }
+
         public static bool TryActivatePortalAt(BaseActor partyMember, Vector3Int cell)
         {
             if (partyMember == null)
                 return false;
 
             PartyManager party = PartyManager.Instance;
-            if (party == null || party.partyMembers == null || !party.partyMembers.Contains(partyMember))
+            if (!CanMemberTriggerStepOnPortal(partyMember, party))
                 return false;
 
             AdjacentMapInteractableService mapInteract = AdjacentMapInteractableService.Instance;
