@@ -103,6 +103,12 @@ MonoBehaviour:
     portalCell: {x: 22, y: 16, z: 0}
     listLabel: Market General Store
     adjacentConfirmOnly: 0
+  - portalLinkId: building_market_item_shop_enter
+    targetFloorId: town_interior_market_item_shop
+    portalMarkerId: 
+    portalCell: {x: 13, y: 16, z: 0}
+    listLabel: Market Item Shop
+    adjacentConfirmOnly: 0
   edgePortals: []
   arrivalBindings:
   - portalLinkId: district_square_to_market
@@ -111,6 +117,8 @@ MonoBehaviour:
     arrivalAnchor: {x: 17, y: 16, z: 0}
   - portalLinkId: building_market_general_store_exit_east
     arrivalAnchor: {x: 22, y: 16, z: 0}
+  - portalLinkId: building_market_item_shop_exit
+    arrivalAnchor: {x: 13, y: 16, z: 0}
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
   portalPlacementRules: []

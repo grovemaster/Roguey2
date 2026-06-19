@@ -52,18 +52,88 @@ namespace JRogue.Editor.World
 
             PaintMarketLayout(marketInstance);
             EnsureMarketMarkers(marketInstance);
-            MarketGeneralStorePackCreator.PaintMarketExteriorFacade(
-                marketInstance.Tilemaps.FloorMap,
-                marketInstance.Tilemaps.WallMap);
+            PaintAllMarketBuildingFacades(marketInstance.Tilemaps.FloorMap, marketInstance.Tilemaps.WallMap);
+        }
+
+        public static void EnsureMarketFacadeOverlay()
+        {
+            TownFacadePaintCell[] cells = CollectAllMarketFacadeCells();
+            if (cells == null || cells.Length == 0)
+                return;
+
+            TownBuildingFacadeOverlay overlay =
+                AssetDatabase.LoadAssetAtPath<TownBuildingFacadeOverlay>(TownDistrictTestPaths.MarketFacadeOverlay);
+            if (overlay == null)
+            {
+                overlay = ScriptableObject.CreateInstance<TownBuildingFacadeOverlay>();
+                AssetDatabase.CreateAsset(overlay, TownDistrictTestPaths.MarketFacadeOverlay);
+            }
+
+            overlay.Configure(MarketTownFloorIds.FloorId, cells);
+            EditorUtility.SetDirty(overlay);
+        }
+
+        public static void PaintAllMarketBuildingFacades(Tilemap floorMap, Tilemap wallMap)
+        {
+            if (floorMap == null || wallMap == null)
+                return;
+
+            TownFacadePaintCell[] cells = CollectAllMarketFacadeCells();
+            if (cells == null || cells.Length == 0)
+                return;
+
+            for (int i = 0; i < cells.Length; i++)
+            {
+                TownFacadePaintCell entry = cells[i];
+                if (entry.tile == null)
+                    continue;
+
+                if (entry.layer == TownFacadePaintLayer.Floor)
+                {
+                    floorMap.SetTile(entry.cell, entry.tile);
+                    wallMap.SetTile(entry.cell, null);
+                }
+                else
+                {
+                    wallMap.SetTile(entry.cell, entry.tile);
+                    floorMap.SetTile(entry.cell, null);
+                }
+            }
+
+            GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(floorMap);
+            GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(wallMap);
+        }
+
+        static TownFacadePaintCell[] CollectAllMarketFacadeCells()
+        {
+            var combined = new List<TownFacadePaintCell>();
+            AppendFacadeCells(combined, MarketGeneralStorePackCreator.BuildExteriorFacadeCells());
+            AppendFacadeCells(combined, MarketItemShopPackCreator.BuildExteriorFacadeCells());
+            return combined.Count > 0 ? combined.ToArray() : null;
+        }
+
+        static void AppendFacadeCells(List<TownFacadePaintCell> target, TownFacadePaintCell[] cells)
+        {
+            if (cells == null)
+                return;
+
+            for (int i = 0; i < cells.Length; i++)
+                target.Add(cells[i]);
         }
 
         public static void UpdateDistrictCatalog(
             DungeonFloorDefinition squareDef,
             DungeonFloorDefinition marketDef,
             DungeonFloorDefinition guildInteriorDef,
-            DungeonFloorDefinition storeInteriorDef)
+            DungeonFloorDefinition storeInteriorDef,
+            DungeonFloorDefinition itemShopInteriorDef)
         {
-            DistrictTestCatalogUpdater.UpdateCatalog(squareDef, marketDef, guildInteriorDef, storeInteriorDef);
+            DistrictTestCatalogUpdater.UpdateCatalog(
+                squareDef,
+                marketDef,
+                guildInteriorDef,
+                storeInteriorDef,
+                itemShopInteriorDef);
         }
 
         static void EnsureMarketPalettes()

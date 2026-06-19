@@ -155,6 +155,8 @@ namespace JRogue.World.Generation
                 ShopCounterService.EnsureAdventureGuildExchangeCounters();
             else if (floorId == MarketGeneralStoreLayout.InteriorFloorId)
                 ShopCounterService.EnsureMarketGeneralStoreCounters();
+            else if (floorId == MarketItemShopLayout.InteriorFloorId)
+                ShopCounterService.EnsureMarketItemShopCounters();
 
             PartyManager.Instance?.RefreshCameraFollow();
 

@@ -27,6 +27,15 @@ namespace JRogue.World.Generation.Phases
                 DungeonGenerationLog.Phase(
                     nameof(TownShopCounterSetupPhase),
                     "registered market general store counter cells");
+                return;
+            }
+
+            if (def.FloorId == MarketItemShopLayout.InteriorFloorId)
+            {
+                ShopCounterService.EnsureMarketItemShopCounters();
+                DungeonGenerationLog.Phase(
+                    nameof(TownShopCounterSetupPhase),
+                    "registered market item shop counter cells");
             }
         }
     }

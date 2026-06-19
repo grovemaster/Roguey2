@@ -41,6 +41,9 @@ namespace JRogue.World.Generation.Phases
             if (def.FloorId == MarketGeneralStoreLayout.InteriorFloorId)
                 ShopCounterService.Clear();
 
+            if (def.FloorId == MarketItemShopLayout.InteriorFloorId)
+                ShopCounterService.Clear();
+
             int painted = 0;
             TownFacadePaintCell[] cells = overlay.Cells;
             for (int i = 0; i < cells.Length; i++)
@@ -77,6 +80,7 @@ namespace JRogue.World.Generation.Phases
                 $"Town/DistrictTest/TownArea/Market/FacadeOverlay_{floorId}",
                 $"Town/DistrictTest/Building/AdventureGuildExchange/FacadeOverlay_{floorId}",
                 $"Town/DistrictTest/Building/MarketGeneralStore/FacadeOverlay_{floorId}",
+                $"Town/DistrictTest/Building/MarketItemShop/FacadeOverlay_{floorId}",
             };
 
             for (int i = 0; i < resourcePaths.Length; i++)

@@ -26,5 +26,11 @@ namespace JRogue.World.Generation
             foreach (Vector3Int cell in MarketGeneralStoreLayout.EnumerateCounterCells())
                 RegisterCounter(cell);
         }
+
+        public static void EnsureMarketItemShopCounters()
+        {
+            foreach (Vector3Int cell in MarketItemShopLayout.EnumerateCounterCells())
+                RegisterCounter(cell);
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace JRogue.World.Town
         {
             if (floorId == AdventureGuildExchangeLayout.InteriorFloorId
                 || floorId == MarketGeneralStoreLayout.InteriorFloorId
+                || floorId == MarketItemShopLayout.InteriorFloorId
                 || floorId == DimensionSquareFloorIds.FloorId
                 || floorId == MarketTownFloorIds.FloorId)
             {
