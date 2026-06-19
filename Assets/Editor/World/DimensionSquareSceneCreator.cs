@@ -9,7 +9,6 @@ using JRogue.Manager.Visibility;
 using JRogue.View;
 using JRogue.World.Generation;
 using JRogue.World.Lighting;
-using JRogue.World.MapInteract;
 using JRogue.World.Town;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -30,22 +29,6 @@ namespace JRogue.Editor.World
         const string CatalogPath = DataRoot + "/DimensionSquareCatalog.asset";
         const string WallTilePath = "Assets/TileMaps/Town/Town_WallBuilding.asset";
         const string DcssTileFolder = "Assets/TileMaps/Town/Dcss";
-        const string DcssSpriteFolder =
-            "Assets/Art/NPC/StyleComparison/_temp/crawl-tiles Oct-5-2010/dc-dngn/floor";
-
-        const int MapSize = 40;
-        const int Center = 20;
-        const int CorridorWidth = 10;
-        const int ArmMin = Center - CorridorWidth / 2;
-        const int ArmMax = Center + CorridorWidth / 2 - 1;
-
-        static readonly string[] DcssFloorSprites =
-        {
-            "rect_gray0.png",
-            "rect_gray1.png",
-            "rect_gray2.png",
-            "rect_gray3.png",
-        };
 
         static readonly string[] DcssFloorTileAssets =
         {
@@ -245,23 +228,7 @@ namespace JRogue.Editor.World
 
             Undo.RecordObject(floorMap, "Paint dimension square floor");
             Undo.RecordObject(wallMap, "Paint dimension square walls");
-            floorMap.ClearAllTiles();
-            wallMap.ClearAllTiles();
-
-            for (int y = 0; y < MapSize; y++)
-            {
-                for (int x = 0; x < MapSize; x++)
-                {
-                    var cell = new Vector3Int(x, y, 0);
-                    bool border = x == 0 || y == 0 || x == MapSize - 1 || y == MapSize - 1;
-                    bool plus = x >= ArmMin && x <= ArmMax || y >= ArmMin && y <= ArmMax;
-
-                    if (border || !plus)
-                        wallMap.SetTile(cell, wallTile);
-                    else
-                        floorMap.SetTile(cell, PickFloorTile(x, y, floorTiles));
-                }
-            }
+            DimensionSquareLayout.Paint(floorMap, wallMap, floorTiles, wallTile);
 
             GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(floorMap);
             GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(wallMap);
@@ -270,12 +237,6 @@ namespace JRogue.Editor.World
             wallMap.CompressBounds();
             EditorUtility.SetDirty(floorMap);
             EditorUtility.SetDirty(wallMap);
-        }
-
-        static TileBase PickFloorTile(int x, int y, TileBase[] tiles)
-        {
-            int hash = unchecked((x * 73856093) ^ (y * 19349663));
-            return tiles[Mathf.Abs(hash) % tiles.Length];
         }
 
         static TileBase[] LoadDcssFloorTiles()
@@ -307,12 +268,12 @@ namespace JRogue.Editor.World
             Grid gridComponent = grid.GetComponent<Grid>();
             Tilemap floorMap = instance.Tilemaps.FloorMap;
 
-            CreateMarker(markersRoot, gridComponent, floorMap, "PlayerStart", StaticHubMarkerKind.PlayerStart, new Vector3Int(Center, 18, 0));
-            CreateMarker(markersRoot, gridComponent, floorMap, "DungeonPortal", StaticHubMarkerKind.DungeonPortal, new Vector3Int(Center, Center, 0));
-            CreateMarker(markersRoot, gridComponent, floorMap, "NpcSlot_North", StaticHubMarkerKind.NpcSlot, new Vector3Int(Center, 30, 0), "npc_slot_north");
-            CreateMarker(markersRoot, gridComponent, floorMap, "NpcSlot_South", StaticHubMarkerKind.NpcSlot, new Vector3Int(Center, 10, 0), "npc_slot_south");
-            CreateMarker(markersRoot, gridComponent, floorMap, "NpcSlot_East", StaticHubMarkerKind.NpcSlot, new Vector3Int(30, Center, 0), "npc_slot_east");
-            CreateMarker(markersRoot, gridComponent, floorMap, "NpcSlot_West", StaticHubMarkerKind.NpcSlot, new Vector3Int(10, Center, 0), "npc_slot_west");
+            CreateMarker(markersRoot, gridComponent, floorMap, "PlayerStart", StaticHubMarkerKind.PlayerStart, DimensionSquareLayout.PlayerStartCell);
+            CreateMarker(markersRoot, gridComponent, floorMap, "DungeonPortal", StaticHubMarkerKind.DungeonPortal, DimensionSquareLayout.DungeonPortalCell);
+            CreateMarker(markersRoot, gridComponent, floorMap, "NpcSlot_North", StaticHubMarkerKind.NpcSlot, DimensionSquareLayout.NpcSlotNorthCell, "npc_slot_north");
+            CreateMarker(markersRoot, gridComponent, floorMap, "NpcSlot_South", StaticHubMarkerKind.NpcSlot, DimensionSquareLayout.NpcSlotSouthCell, "npc_slot_south");
+            CreateMarker(markersRoot, gridComponent, floorMap, "NpcSlot_East", StaticHubMarkerKind.NpcSlot, DimensionSquareLayout.NpcSlotEastCell, "npc_slot_east");
+            CreateMarker(markersRoot, gridComponent, floorMap, "NpcSlot_West", StaticHubMarkerKind.NpcSlot, DimensionSquareLayout.NpcSlotWestCell, "npc_slot_west");
         }
 
         static void CreateMarker(

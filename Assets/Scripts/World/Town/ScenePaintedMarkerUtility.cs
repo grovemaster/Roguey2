@@ -28,12 +28,27 @@ namespace JRogue.World.Town
             return false;
         }
 
-        public static IReadOnlyList<StaticHubMarker> GetMarkers(Transform floorRoot)
+        public static bool TryGetCellByMarkerId(
+            Transform floorRoot,
+            string markerId,
+            out Vector3Int cell)
         {
-            if (floorRoot == null)
-                return System.Array.Empty<StaticHubMarker>();
+            cell = default;
+            if (floorRoot == null || string.IsNullOrEmpty(markerId))
+                return false;
 
-            return floorRoot.GetComponentsInChildren<StaticHubMarker>(true);
+            StaticHubMarker[] markers = floorRoot.GetComponentsInChildren<StaticHubMarker>(true);
+            for (int i = 0; i < markers.Length; i++)
+            {
+                StaticHubMarker marker = markers[i];
+                if (marker == null || marker.MarkerId != markerId)
+                    continue;
+
+                cell = marker.Cell;
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -12,9 +12,22 @@ namespace JRogue.View
         [SerializeField] Vector3 offset = new Vector3(0, 0, z: -10);
         [SerializeField] bool preferPartyActiveMember = true;
 
-        public void SetTarget(Transform newTarget)
+        public void SetTarget(Transform newTarget, bool snapImmediate = true)
         {
             _manualTarget = newTarget;
+            if (snapImmediate)
+                SnapToTarget();
+        }
+
+        public void SnapToTarget()
+        {
+            Transform follow = ResolveFollowTarget();
+            if (follow == null)
+                return;
+
+            Vector3 desiredPosition = follow.position + offset;
+            desiredPosition.y += PlayfieldLayout.GetCameraVerticalOffsetWorld(GetComponent<Camera>());
+            transform.position = desiredPosition;
         }
 
         void LateUpdate()

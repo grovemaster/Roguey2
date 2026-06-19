@@ -33,6 +33,7 @@ namespace JRogue.Editor.World
             ("TownNpc_FairyMerchant", "NPC_Fairy_Spriggan.png"),
             ("TownNpc_FleshmetalForgemaster", "NPC_Tiefling_Smith.png"),
             ("TownNpc_DragonianElderVolscale", "NPC_DragonianElderVolscale.png"),
+            ("TownNpc_AdventureGuildClerk", "NPC_Fenn.png"),
         };
 
         [MenuItem("JRogue/Town/Assign DCSS Town NPC Sprites")]

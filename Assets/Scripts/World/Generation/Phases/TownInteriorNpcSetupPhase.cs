@@ -1,7 +1,9 @@
 using JRogue.Actors.Components;
 using JRogue.Controller.Npc;
+using JRogue.Dialog;
 using JRogue.Manager.Grid;
 using JRogue.Shop;
+using JRogue.World.Town;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -9,7 +11,7 @@ using UnityEditor;
 
 namespace JRogue.World.Generation.Phases
 {
-    /// <summary>Spawns NPC prefabs on town interior floors at stamp markers.</summary>
+    /// <summary>Spawns town interior NPC prefabs at stamp or scene-painted markers.</summary>
     public sealed class TownInteriorNpcSetupPhase : IDungeonGenerationPhase
     {
         static readonly (string floorId, string markerId, string resourcesPath, string editorPath)[] SpawnEntries =
@@ -19,6 +21,11 @@ namespace JRogue.World.Generation.Phases
                 StampMarkerIds.BuildingDemoNpc,
                 "Town/Npc/TownNpc_DemoHost",
                 "Assets/Resources/Town/Npc/TownNpc_DemoHost.prefab"),
+            (
+                AdventureGuildExchangeLayout.InteriorFloorId,
+                AdventureGuildExchangeLayout.NpcMarkerId,
+                "Town/Npc/TownNpc_AdventureGuildClerk",
+                "Assets/Resources/Town/Npc/TownNpc_AdventureGuildClerk.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)
@@ -60,6 +67,14 @@ namespace JRogue.World.Generation.Phases
                     continue;
                 }
 
+                NpcCounterTalkBinding counterBinding = instance.GetComponent<NpcCounterTalkBinding>();
+                if (counterBinding != null && floorId == AdventureGuildExchangeLayout.InteriorFloorId)
+                {
+                    counterBinding.Configure(
+                        AdventureGuildExchangeLayout.CustomerRowY,
+                        AdventureGuildExchangeLayout.CounterRowY);
+                }
+
                 if (instance.GetComponent<ShopNpcController>() != null)
                     TownShopStateService.EnsureRunService();
 
@@ -68,6 +83,10 @@ namespace JRogue.World.Generation.Phases
                     mover.InitializeAtGridAnchor(cell);
                 else
                     instance.transform.position = GridCellWorld.GetCellCenter(context.Instance.Tilemaps.FloorMap, cell);
+
+                SpriteRenderer spriteRenderer = instance.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                    spriteRenderer.sortingOrder = 20;
 
                 spawned++;
             }
@@ -93,6 +112,13 @@ namespace JRogue.World.Generation.Phases
         static bool TryResolveMarkerCell(DungeonGenerationContext context, string markerId, out Vector3Int cell)
         {
             cell = default;
+            if (context.Instance != null
+                && context.Definition?.LayoutMode == FloorLayoutMode.ScenePainted
+                && ScenePaintedMarkerUtility.TryGetCellByMarkerId(context.Instance.transform, markerId, out cell))
+            {
+                return true;
+            }
+
             DungeonLayoutStamp stamp = context.Definition?.LayoutStamp;
             return stamp != null && stamp.TryGetMarker(markerId, out cell);
         }

@@ -146,6 +146,9 @@ public class VisibilityManager : MonoBehaviour
             out HashSet<Vector3Int> losUnlit);
 
         MapManager activeMap = MapManager.Instance;
+        if (activeMap != null && TownPortalSetupPhase.IsTownInterior(activeMap.ActiveFloorId))
+            RevealAllTownInteriorCells(activeMap, currentVisible, currentLitVisible);
+
         if (activeMap != null && TownPortalSetupPhase.IsHubFloor(activeMap.ActiveFloorId))
         {
             TownBuildingFacadeSight.AddWithinPartySightRange(
@@ -294,7 +297,7 @@ public class VisibilityManager : MonoBehaviour
         out HashSet<Vector3Int> losUnlit)
     {
         ShadowCaster.IsOpaque isOpaque =
-            pos => MapManager.Instance != null && !MapManager.Instance.IsWalkable(pos);
+            pos => MapManager.Instance != null && MapManager.Instance.BlocksLineOfSight(pos);
 
         var visible = new HashSet<Vector3Int>();
         litVisible = new HashSet<Vector3Int>();
@@ -377,6 +380,26 @@ public class VisibilityManager : MonoBehaviour
         int received = lighting.GetReceivedLight(cell);
         int threshold = GetEffectiveLightThreshold(member, cell);
         return IlluminationVisibilityLogic.IsCellFullyBright(emit, received, occupied, threshold);
+    }
+
+    static void RevealAllTownInteriorCells(
+        MapManager map,
+        HashSet<Vector3Int> visible,
+        HashSet<Vector3Int> litVisible)
+    {
+        Tilemap floor = map.FloorMap;
+        if (floor == null)
+            return;
+
+        foreach (Vector3Int pos in floor.cellBounds.allPositionsWithin)
+        {
+            if (!floor.HasTile(pos))
+                continue;
+
+            Vector3Int cell = new Vector3Int(pos.x, pos.y, 0);
+            visible.Add(cell);
+            litVisible.Add(cell);
+        }
     }
 
     public int GetEffectiveSightRange(BaseActor member, Vector3Int originCell)

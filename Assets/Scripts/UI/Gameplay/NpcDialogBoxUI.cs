@@ -109,6 +109,8 @@ namespace JRogue.UI.Gameplay
 
             if (kb.enterKey.wasPressedThisFrame || kb.spaceKey.wasPressedThisFrame)
                 Advance();
+            else if (kb.escapeKey.wasPressedThisFrame)
+                Close();
         }
 
         public void ShowLine(DialogLineStep step, Action onAdvance)

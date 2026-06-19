@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1859
     height: 1417
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Project
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -1042,9 +1042,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 23.689007, y: 19.501223, z: -9.08429}
+    m_Target: {x: 32.78313, y: 16.582567, z: -9.293069}
     speed: 2
-    m_Value: {x: 23.689007, y: 19.501223, z: -9.08429}
+    m_Value: {x: 32.78313, y: 16.582567, z: -9.293069}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1095,9 +1095,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 15.963253
+    m_Target: 36.84095
     speed: 2
-    m_Value: 15.963253
+    m_Value: 36.84095
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1176,11 +1176,8 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -179524
-      - m_Data: -178618
-      - m_Data: -162528
-      - m_Data: -144934
-      - m_Data: -128776
+      - m_Data: -1972
+      - m_Data: -1344
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1359,7 +1356,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes/Town
+    - Assets/Scenes
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1369,7 +1366,7 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 73
   m_LastFolders:
-  - Assets/Scenes/Town
+  - Assets/Scenes
   m_LastFoldersGridSize: 73
   m_LastProjectPath: /home/jonathan/UnityProjects/Roguey2
   m_LockTracker:
@@ -1378,11 +1375,28 @@ MonoBehaviour:
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs:
-    - m_Data: 111770
+    - m_Data: 56938
     m_LastClickedID:
-      m_Data: 111770
+      m_Data: 56938
     m_ExpandedIDs:
     - m_Data: 0
+    - m_Data: 56848
+    - m_Data: 56850
+    - m_Data: 56852
+    - m_Data: 56854
+    - m_Data: 56856
+    - m_Data: 56858
+    - m_Data: 56860
+    - m_Data: 56862
+    - m_Data: 56864
+    - m_Data: 56866
+    - m_Data: 56868
+    - m_Data: 56870
+    - m_Data: 56872
+    - m_Data: 56874
+    - m_Data: 56876
+    - m_Data: 56878
+    - m_Data: 56880
     - m_Data: 56882
     - m_Data: 56884
     - m_Data: 56886
@@ -1398,19 +1412,6 @@ MonoBehaviour:
     - m_Data: 56906
     - m_Data: 56908
     - m_Data: 56910
-    - m_Data: 56912
-    - m_Data: 56914
-    - m_Data: 56916
-    - m_Data: 56918
-    - m_Data: 56920
-    - m_Data: 56922
-    - m_Data: 56924
-    - m_Data: 56926
-    - m_Data: 56928
-    - m_Data: 56930
-    - m_Data: 56932
-    - m_Data: 56934
-    - m_Data: 56936
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1445,6 +1446,23 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
+    - m_Data: 56848
+    - m_Data: 56850
+    - m_Data: 56852
+    - m_Data: 56854
+    - m_Data: 56856
+    - m_Data: 56858
+    - m_Data: 56860
+    - m_Data: 56862
+    - m_Data: 56864
+    - m_Data: 56866
+    - m_Data: 56868
+    - m_Data: 56870
+    - m_Data: 56872
+    - m_Data: 56874
+    - m_Data: 56876
+    - m_Data: 56878
+    - m_Data: 56880
     - m_Data: 56882
     - m_Data: 56884
     - m_Data: 56886
@@ -1460,19 +1478,6 @@ MonoBehaviour:
     - m_Data: 56906
     - m_Data: 56908
     - m_Data: 56910
-    - m_Data: 56912
-    - m_Data: 56914
-    - m_Data: 56916
-    - m_Data: 56918
-    - m_Data: 56920
-    - m_Data: 56922
-    - m_Data: 56924
-    - m_Data: 56926
-    - m_Data: 56928
-    - m_Data: 56930
-    - m_Data: 56932
-    - m_Data: 56934
-    - m_Data: 56936
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1501,9 +1506,9 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: 87758
+    - m_Data: 57140
     m_LastClickedEntityId:
-      m_Data: 87758
+      m_Data: 57140
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 52882

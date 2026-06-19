@@ -5,5 +5,6 @@ namespace JRogue.World.Town
         PlayerStart,
         DungeonPortal,
         NpcSlot,
+        BuildingExit,
     }
 }

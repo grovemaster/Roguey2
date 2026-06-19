@@ -72,6 +72,9 @@ namespace JRogue.Manager.Map
             if (TownBuildingMassService.IsBlocked(gridPos))
                 return false;
 
+            if (ShopCounterService.IsCounterCell(gridPos))
+                return false;
+
             if (DoorService.Instance != null && DoorService.Instance.BlocksMovement(gridPos))
                 return false;
 
@@ -80,6 +83,9 @@ namespace JRogue.Manager.Map
 
         public bool IsWall(Vector3Int gridPos) =>
             wallMap != null && wallMap.HasTile(gridPos);
+
+        /// <summary>Walls block LOS; shop counters and other impassable floor do not.</summary>
+        public bool BlocksLineOfSight(Vector3Int gridPos) => IsWall(gridPos);
 
         public void ConfigurePaintTiles(TileBase floorTile, TileBase wallTile)
         {

@@ -3,10 +3,12 @@ using JRogue.Hazards;
 using JRogue.Manager.Floor;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
+using JRogue.Manager.Party;
 using JRogue.Traps;
 using JRogue.World.Lighting;
 using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Zones;
+using JRogue.World.Town;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -148,6 +150,12 @@ namespace JRogue.World.Generation
 
             instance.ReregisterNpcOccupancy(grid);
 
+            TownHubCameraUtility.ApplyForFloor(floorId);
+            if (floorId == AdventureGuildExchangeLayout.InteriorFloorId)
+                ShopCounterService.EnsureAdventureGuildExchangeCounters();
+
+            PartyManager.Instance?.RefreshCameraFollow();
+
             run.SetActiveFloor(floorId);
             EnsureDungeonTimeService().OnFloorActivated(def, firstVisit);
             BindVisibilityToActiveFloor(map);
@@ -214,6 +222,7 @@ namespace JRogue.World.Generation
             _instances.Clear();
             TownBuildingMassService.Clear();
             TownBuildingFacadeSight.Clear();
+            ShopCounterService.Clear();
             DungeonFloorServiceBinder.ClearSingletonServices();
         }
 

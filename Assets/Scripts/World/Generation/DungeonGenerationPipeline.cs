@@ -26,6 +26,7 @@ namespace JRogue.World.Generation
             new TownDwarfClanAltarSetupPhase(),
             new TownNpcSetupPhase(),
             new TownInteriorNpcSetupPhase(),
+            new TownShopCounterSetupPhase(),
             new TownTorchSetupPhase(),
             new LightingInitPhase(),
             new DoorPlacementPhase(),
@@ -74,10 +75,11 @@ namespace JRogue.World.Generation
 
         static IDungeonGenerationPhase[] BuildScenePaintedPhases()
         {
-            var phases = new IDungeonGenerationPhase[1 + SharedTailPhases.Length];
+            var phases = new IDungeonGenerationPhase[2 + SharedTailPhases.Length];
             phases[0] = new ScenePaintedLayoutPhase();
+            phases[1] = new TownBuildingFacadeVisualPhase();
             for (int i = 0; i < SharedTailPhases.Length; i++)
-                phases[i + 1] = SharedTailPhases[i];
+                phases[i + 2] = SharedTailPhases[i];
             return phases;
         }
 

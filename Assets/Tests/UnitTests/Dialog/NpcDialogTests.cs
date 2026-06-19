@@ -4,6 +4,7 @@ using JRogue.Controller.Player;
 using JRogue.Core.Actor;
 using JRogue.Dialog;
 using JRogue.Manager.Grid;
+using JRogue.World.Town;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -148,6 +149,136 @@ namespace JRogue.Tests.UnitTests.Dialog
             Assert.IsFalse(NpcTalkFacingUtility.IsFacingToward(actor, new Vector3Int(0, 1, 0)));
 
             Object.DestroyImmediate(go);
+        }
+
+        [Test]
+        public void IsFacingAcrossShopCounter_AllowsAnyCustomerTileAlongCounterRow()
+        {
+            foreach (Vector3Int cell in AdventureGuildExchangeLayout.EnumerateCounterCells())
+                JRogue.World.Generation.ShopCounterService.RegisterCounter(cell);
+
+            var go = new GameObject("Customer");
+            var actor = go.AddComponent<PlayerController>();
+            var mover = go.AddComponent<JRogue.Actors.Components.GridMover>();
+
+            Vector3Int npcCell = AdventureGuildExchangeLayout.ClerkNpcCell;
+            mover.InitializeAtGridAnchor(new Vector3Int(2, AdventureGuildExchangeLayout.CustomerRowY, 0));
+            actor.currentFacing = FacingDirection.North;
+            Assert.IsTrue(NpcTalkFacingUtility.IsFacingAcrossShopCounter(
+                actor,
+                npcCell,
+                AdventureGuildExchangeLayout.CustomerRowY,
+                AdventureGuildExchangeLayout.CounterRowY));
+
+            mover.InitializeAtGridAnchor(AdventureGuildExchangeLayout.CustomerTalkCell);
+            Assert.IsTrue(NpcTalkFacingUtility.IsFacingAcrossShopCounter(
+                actor,
+                npcCell,
+                AdventureGuildExchangeLayout.CustomerRowY,
+                AdventureGuildExchangeLayout.CounterRowY));
+
+            actor.currentFacing = FacingDirection.South;
+            Assert.IsFalse(NpcTalkFacingUtility.IsFacingAcrossShopCounter(
+                actor,
+                npcCell,
+                AdventureGuildExchangeLayout.CustomerRowY,
+                AdventureGuildExchangeLayout.CounterRowY));
+
+            JRogue.World.Generation.ShopCounterService.Clear();
+            Object.DestroyImmediate(go);
+        }
+
+        [Test]
+        public void IsFacingAcrossCounter_RequiresCustomerCellCounterBetweenAndFacingNpc()
+        {
+            var go = new GameObject("Customer");
+            var actor = go.AddComponent<PlayerController>();
+            var mover = go.AddComponent<JRogue.Actors.Components.GridMover>();
+
+            Vector3Int npcCell = new Vector3Int(3, 4, 0);
+            Vector3Int counterCell = new Vector3Int(3, 3, 0);
+            Vector3Int customerCell = new Vector3Int(3, 2, 0);
+
+            mover.InitializeAtGridAnchor(customerCell);
+            actor.currentFacing = FacingDirection.North;
+            Assert.IsTrue(NpcTalkFacingUtility.IsFacingAcrossCounter(actor, npcCell, counterCell, customerCell));
+
+            actor.currentFacing = FacingDirection.South;
+            Assert.IsFalse(NpcTalkFacingUtility.IsFacingAcrossCounter(actor, npcCell, counterCell, customerCell));
+
+            mover.InitializeAtGridAnchor(new Vector3Int(2, 2, 0));
+            actor.currentFacing = FacingDirection.North;
+            Assert.IsFalse(NpcTalkFacingUtility.IsFacingAcrossCounter(actor, npcCell, counterCell, customerCell));
+
+            Object.DestroyImmediate(go);
+        }
+
+        [Test]
+        public void TryTalkFacing_CounterClerk_AutoFacesWhenDirectlyAcross()
+        {
+            var gridGo = new GameObject("GridManager");
+            gridGo.AddComponent<GridManager>();
+
+            foreach (Vector3Int cell in AdventureGuildExchangeLayout.EnumerateCounterCells())
+                JRogue.World.Generation.ShopCounterService.RegisterCounter(cell);
+
+            var playerGo = new GameObject("Player");
+            var player = playerGo.AddComponent<PlayerController>();
+            player.currentFacing = FacingDirection.South;
+
+            var clerkGo = new GameObject("GuildClerk");
+            clerkGo.AddComponent<NpcController>();
+            var counterBinding = clerkGo.AddComponent<NpcCounterTalkBinding>();
+            counterBinding.Configure(
+                AdventureGuildExchangeLayout.CustomerRowY,
+                AdventureGuildExchangeLayout.CounterRowY);
+
+            var playerMover = playerGo.AddComponent<JRogue.Actors.Components.GridMover>();
+            var clerkMover = clerkGo.AddComponent<JRogue.Actors.Components.GridMover>();
+            playerMover.InitializeAtGridAnchor(AdventureGuildExchangeLayout.CustomerTalkCell);
+            clerkMover.InitializeAtGridAnchor(AdventureGuildExchangeLayout.ClerkNpcCell);
+
+            Assert.IsTrue(NpcTalkInteraction.TryTalkFacing(player));
+            Assert.AreEqual(FacingDirection.North, player.currentFacing);
+
+            JRogue.World.Generation.ShopCounterService.Clear();
+            Object.DestroyImmediate(playerGo);
+            Object.DestroyImmediate(clerkGo);
+            Object.DestroyImmediate(gridGo);
+        }
+
+        [Test]
+        public void TryTalkFacing_CounterClerk_WorksFromCustomerCell()
+        {
+            var gridGo = new GameObject("GridManager");
+            gridGo.AddComponent<GridManager>();
+
+            foreach (Vector3Int cell in AdventureGuildExchangeLayout.EnumerateCounterCells())
+                JRogue.World.Generation.ShopCounterService.RegisterCounter(cell);
+
+            var playerGo = new GameObject("Player");
+            var player = playerGo.AddComponent<PlayerController>();
+            player.currentFacing = FacingDirection.North;
+
+            var clerkGo = new GameObject("GuildClerk");
+            clerkGo.AddComponent<NpcController>();
+            var counterBinding = clerkGo.AddComponent<NpcCounterTalkBinding>();
+            counterBinding.Configure(
+                AdventureGuildExchangeLayout.CustomerRowY,
+                AdventureGuildExchangeLayout.CounterRowY);
+
+            var playerMover = playerGo.AddComponent<JRogue.Actors.Components.GridMover>();
+            var clerkMover = clerkGo.AddComponent<JRogue.Actors.Components.GridMover>();
+            playerMover.InitializeAtGridAnchor(AdventureGuildExchangeLayout.CustomerTalkCell);
+            clerkMover.InitializeAtGridAnchor(AdventureGuildExchangeLayout.ClerkNpcCell);
+
+            Assert.IsTrue(NpcTalkInteraction.TryTalkFacing(player));
+            Assert.AreEqual(FacingDirection.North, player.currentFacing);
+
+            JRogue.World.Generation.ShopCounterService.Clear();
+            Object.DestroyImmediate(playerGo);
+            Object.DestroyImmediate(clerkGo);
+            Object.DestroyImmediate(gridGo);
         }
 
         [Test]

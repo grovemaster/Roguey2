@@ -1,4 +1,5 @@
 using JRogue.Manager.Map;
+using JRogue.World.Town;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
@@ -15,8 +16,7 @@ namespace JRogue.World.Generation.Phases
             if (def == null || string.IsNullOrEmpty(def.FloorId))
                 return;
 
-            TownBuildingFacadeOverlay overlay =
-                Resources.Load<TownBuildingFacadeOverlay>($"{OverlayResourceFolder}{def.FloorId}");
+            TownBuildingFacadeOverlay overlay = LoadFacadeOverlay(def.FloorId);
             if (overlay == null || overlay.Cells == null || overlay.Cells.Length == 0)
                 return;
 
@@ -27,11 +27,15 @@ namespace JRogue.World.Generation.Phases
                 return;
             }
 
-            if (def.FloorId == TownPortalSetupPhase.TownFloorId)
+            if (def.FloorId == TownPortalSetupPhase.TownFloorId
+                || def.FloorId == DimensionSquareFloorIds.FloorId)
             {
                 TownBuildingMassService.Clear();
                 TownBuildingFacadeSight.Clear();
             }
+
+            if (def.FloorId == AdventureGuildExchangeLayout.InteriorFloorId)
+                ShopCounterService.Clear();
 
             int painted = 0;
             TownFacadePaintCell[] cells = overlay.Cells;
@@ -58,6 +62,26 @@ namespace JRogue.World.Generation.Phases
             }
 
             DungeonGenerationLog.Phase(nameof(TownBuildingFacadeVisualPhase), $"painted={painted} floorId={def.FloorId}");
+        }
+
+        static TownBuildingFacadeOverlay LoadFacadeOverlay(string floorId)
+        {
+            string[] resourcePaths =
+            {
+                $"{OverlayResourceFolder}{floorId}",
+                $"Town/DistrictTest/TownArea/DimensionSquare/FacadeOverlay_{floorId}",
+                $"Town/DistrictTest/Building/AdventureGuildExchange/FacadeOverlay_{floorId}",
+            };
+
+            for (int i = 0; i < resourcePaths.Length; i++)
+            {
+                TownBuildingFacadeOverlay overlay =
+                    Resources.Load<TownBuildingFacadeOverlay>(resourcePaths[i]);
+                if (overlay != null)
+                    return overlay;
+            }
+
+            return null;
         }
     }
 }

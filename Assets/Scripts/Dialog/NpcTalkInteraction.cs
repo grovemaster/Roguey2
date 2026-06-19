@@ -24,6 +24,91 @@ namespace JRogue.Dialog
             return actor.currentFacing == DirectionToward(delta);
         }
 
+        /// <summary>
+        /// Customer on <paramref name="customerRowY"/> faces the clerk across a counter tile directly north.
+        /// </summary>
+        public static bool IsFacingAcrossShopCounter(
+            BaseActor actor,
+            Vector3Int npcCell,
+            int customerRowY,
+            int counterRowY)
+        {
+            if (actor == null)
+                return false;
+
+            Vector3Int actorCell = actor.GridPosition;
+            if (actorCell.y != customerRowY)
+                return false;
+
+            Vector3Int counterCell = new Vector3Int(actorCell.x, counterRowY, 0);
+            if (!JRogue.World.Generation.ShopCounterService.IsCounterCell(counterCell))
+                return false;
+
+            if (npcCell.y <= counterRowY)
+                return false;
+
+            Vector3Int delta = npcCell - actorCell;
+            if (delta == Vector3Int.zero)
+                return false;
+
+            return actor.currentFacing == DirectionToward(delta);
+        }
+
+        /// <summary>Customer row + counter tile north + clerk behind counter (facing not required).</summary>
+        public static bool IsEligibleForCounterTalk(
+            BaseActor actor,
+            Vector3Int npcCell,
+            int customerRowY,
+            int counterRowY)
+        {
+            if (actor == null)
+                return false;
+
+            Vector3Int actorCell = actor.GridPosition;
+            if (actorCell.y != customerRowY)
+                return false;
+
+            Vector3Int counterCell = new Vector3Int(actorCell.x, counterRowY, 0);
+            if (!JRogue.World.Generation.ShopCounterService.IsCounterCell(counterCell))
+                return false;
+
+            return npcCell.y > counterRowY;
+        }
+
+        /// <summary>
+        /// Customer on <paramref name="customerCell"/> faces the NPC two steps away with the counter in between.
+        /// </summary>
+        public static bool IsFacingAcrossCounter(
+            BaseActor actor,
+            Vector3Int npcCell,
+            Vector3Int counterCell,
+            Vector3Int customerCell)
+        {
+            if (actor == null)
+                return false;
+
+            Vector3Int actorCell = actor.GridPosition;
+            if (actorCell != customerCell)
+                return false;
+
+            Vector3Int delta = npcCell - actorCell;
+            if (delta.x != 0 && delta.y != 0)
+                return false;
+
+            int manhattan = Mathf.Abs(delta.x) + Mathf.Abs(delta.y);
+            if (manhattan != 2)
+                return false;
+
+            Vector3Int step = new Vector3Int(
+                delta.x != 0 ? delta.x / Mathf.Abs(delta.x) : 0,
+                delta.y != 0 ? delta.y / Mathf.Abs(delta.y) : 0,
+                0);
+            if (actorCell + step != counterCell)
+                return false;
+
+            return actor.currentFacing == DirectionToward(delta);
+        }
+
         public static void FaceToward(BaseActor actor, Vector3Int targetCell)
         {
             if (actor == null)
@@ -64,9 +149,10 @@ namespace JRogue.Dialog
                 return false;
 
             CollectAdjacentTalkTargets(actor, CandidateBuffer);
+            CollectCounterTalkTargets(actor, CandidateBuffer);
             if (CandidateBuffer.Count == 0)
             {
-                Debug.Log($"{LogPrefix} No NPC on an adjacent cell.");
+                Debug.Log($"{LogPrefix} No NPC in talk range.");
                 return false;
             }
 
@@ -106,7 +192,7 @@ namespace JRogue.Dialog
             for (int i = 0; i < candidates.Count; i++)
             {
                 INpcTalkTarget candidate = candidates[i];
-                if (!NpcTalkFacingUtility.IsFacingToward(actor, candidate.Cell))
+                if (!IsFacingTalkTarget(actor, candidate))
                     continue;
 
                 if (matched != null)
@@ -116,6 +202,28 @@ namespace JRogue.Dialog
             }
 
             return matched;
+        }
+
+        static bool IsFacingTalkTarget(BaseActor actor, INpcTalkTarget candidate)
+        {
+            if (NpcTalkFacingUtility.IsFacingToward(actor, candidate.Cell))
+                return true;
+
+            NpcCounterTalkBinding binding = candidate.Actor?.GetComponent<NpcCounterTalkBinding>();
+            return binding != null && binding.TryGetCounterTalk(actor, out _);
+        }
+
+        static void CollectCounterTalkTargets(BaseActor actor, List<INpcTalkTarget> results)
+        {
+            NpcCounterTalkBinding[] bindings = Object.FindObjectsByType<NpcCounterTalkBinding>();
+            for (int i = 0; i < bindings.Length; i++)
+            {
+                NpcCounterTalkBinding binding = bindings[i];
+                if (binding == null || !binding.IsEligibleForCounterTalk(actor))
+                    continue;
+
+                TryAddTalkTarget(results, binding.Npc.gameObject);
+            }
         }
 
         static void CollectAdjacentTalkTargets(BaseActor actor, List<INpcTalkTarget> results)
