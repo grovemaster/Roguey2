@@ -33,7 +33,7 @@ namespace JRogue.World.Generation
             int bootstrapCount = ApplyToBootstraps(prefabs);
             if (bootstrapCount == 0 && !Application.isPlaying)
             {
-                reason = "No DungeonRunBootstrap found in loaded scenes. Open TownTest or DungeonFloorTest first.";
+                reason = "No DungeonRunBootstrap found in loaded scenes. Open TownTest, DungeonFloorTest, or DimensionSquareTest first.";
                 return false;
             }
 

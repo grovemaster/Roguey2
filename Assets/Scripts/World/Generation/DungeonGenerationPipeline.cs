@@ -3,6 +3,7 @@ using JRogue.Manager.Map;
 using JRogue.World.Generation.MonsterSpawn;
 using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Zones;
+using JRogue.World.Town;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -40,11 +41,15 @@ namespace JRogue.World.Generation
             if (def != null && def.LayoutMode == FloorLayoutMode.ZoneComposite)
                 return ZoneCompositePhases;
 
+            if (def != null && def.LayoutMode == FloorLayoutMode.ScenePainted)
+                return ScenePaintedPhases;
+
             return PreBakedPhases;
         }
 
         static readonly IDungeonGenerationPhase[] PreBakedPhases = BuildPreBakedPhases();
         static readonly IDungeonGenerationPhase[] ZoneCompositePhases = BuildZoneCompositePhases();
+        static readonly IDungeonGenerationPhase[] ScenePaintedPhases = BuildScenePaintedPhases();
 
         static IDungeonGenerationPhase[] BuildPreBakedPhases()
         {
@@ -67,6 +72,15 @@ namespace JRogue.World.Generation
             return phases;
         }
 
+        static IDungeonGenerationPhase[] BuildScenePaintedPhases()
+        {
+            var phases = new IDungeonGenerationPhase[1 + SharedTailPhases.Length];
+            phases[0] = new ScenePaintedLayoutPhase();
+            for (int i = 0; i < SharedTailPhases.Length; i++)
+                phases[i + 1] = SharedTailPhases[i];
+            return phases;
+        }
+
         public static void GenerateFirstVisit(DungeonFloorInstance instance, int runSeed)
         {
             if (instance == null || instance.IsGenerated)
@@ -84,7 +98,26 @@ namespace JRogue.World.Generation
             int floorSalt = def.FloorId != null ? def.FloorId.GetHashCode() : 0;
             var context = new DungeonGenerationContext(def, instance, runSeed, floorSalt);
 
-            if (def.LayoutMode != FloorLayoutMode.ZoneComposite)
+            if (def.LayoutMode == FloorLayoutMode.ZoneComposite)
+            {
+                context.PlayerStart = def.LayoutStamp != null
+                    ? def.LayoutStamp.PlayerStart
+                    : Vector3Int.zero;
+                context.BuildSafeZoneForFloor(def);
+            }
+            else if (def.LayoutMode == FloorLayoutMode.ScenePainted)
+            {
+                if (ScenePaintedMarkerUtility.TryGetCell(
+                        instance.transform,
+                        StaticHubMarkerKind.PlayerStart,
+                        out Vector3Int playerStart))
+                {
+                    context.PlayerStart = playerStart;
+                }
+
+                context.BuildSafeZoneForFloor(def);
+            }
+            else
             {
                 context.PlayerStart = def.LayoutStamp != null
                     ? def.LayoutStamp.PlayerStart

@@ -8,6 +8,8 @@ namespace JRogue.World.Generation
     {
         Wall = 0,
         Floor = 1,
+        /// <summary>Opaque floor-tile fill inside the facade footprint; blocks movement.</summary>
+        InteriorMass = 2,
     }
 
     [Serializable]

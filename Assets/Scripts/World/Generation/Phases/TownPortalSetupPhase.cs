@@ -1,3 +1,4 @@
+using JRogue.World.Town;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
@@ -12,7 +13,7 @@ namespace JRogue.World.Generation.Phases
         public void Execute(DungeonGenerationContext context)
         {
             DungeonFloorDefinition def = context.Definition;
-            if (def == null || def.FloorId != TownFloorId)
+            if (def == null || !IsHubFloor(def.FloorId))
                 return;
 
             Vector3Int portalCell = ResolvePortalCell(context);
@@ -24,11 +25,24 @@ namespace JRogue.World.Generation.Phases
             DungeonGenerationLog.Phase(nameof(TownPortalSetupPhase), $"town portal at {portalCell}");
         }
 
+        public static bool IsHubFloor(string floorId) =>
+            floorId == TownFloorId || floorId == DimensionSquareFloorIds.FloorId;
+
         static Vector3Int ResolvePortalCell(DungeonGenerationContext context)
         {
-            DungeonLayoutStamp stamp = context.Definition.LayoutStamp;
-            if (stamp != null && stamp.TryGetMarker(StampMarkerIds.TownDungeonPortal, out Vector3Int markerCell))
+            if (context.Definition?.LayoutMode == FloorLayoutMode.ScenePainted
+                && context.Instance != null
+                && ScenePaintedMarkerUtility.TryGetCell(
+                    context.Instance.transform,
+                    StaticHubMarkerKind.DungeonPortal,
+                    out Vector3Int markerCell))
+            {
                 return markerCell;
+            }
+
+            DungeonLayoutStamp stamp = context.Definition.LayoutStamp;
+            if (stamp != null && stamp.TryGetMarker(StampMarkerIds.TownDungeonPortal, out Vector3Int stampCell))
+                return stampCell;
 
             return new Vector3Int(stamp != null ? stamp.Width / 2 : 10, stamp != null ? stamp.Height / 2 : 10, 0);
         }

@@ -49,6 +49,7 @@ namespace JRogue.Editor.World
         const string BuildingRoofRightTilePath = TileFolder + "/Town_Building_RoofRight.asset";
         const string BuildingDoorTilePath = TileFolder + "/Town_Building_Door.asset";
         const string FacadeOverlayPath = DataRoot + "/FacadeOverlay_town_main.asset";
+        const string InteriorFacadeOverlayPath = DataRoot + "/FacadeOverlay_town_interior_demo.asset";
         const string PartyFormationPath = "Assets/Resources/Dungeon/PartyFormation_Default.asset";
         const string GameControlsPath = "Assets/Controls/GameControls.inputactions";
         const string ExperienceCurvePath = "Assets/Resources/Progression/DefaultExperienceCurve.asset";
@@ -163,12 +164,12 @@ namespace JRogue.Editor.World
                 playerStart: new Vector3Int(10, 8, 0),
                 dungeonPortalCell: new Vector3Int(10, 10, 0));
 
-            const int demoBuildingOriginX = 12;
-            const int demoBuildingOriginY = 8;
-            const int demoBuildingWidth = 5;
-            const int demoBuildingDepth = 3;
-            const int demoDoorLocalX = 2;
-            Vector3Int demoDoorCell = new Vector3Int(demoBuildingOriginX + demoDoorLocalX, demoBuildingOriginY, 0);
+            const int demoBuildingOriginX = TownDemoBuildingLayout.ExteriorOriginX;
+            const int demoBuildingOriginY = TownDemoBuildingLayout.ExteriorOriginY;
+            const int demoBuildingWidth = TownDemoBuildingLayout.ExteriorWidth;
+            const int demoBuildingDepth = TownDemoBuildingLayout.ExteriorDepth;
+            const int demoDoorLocalX = TownDemoBuildingLayout.ExteriorDoorLocalX;
+            Vector3Int demoDoorCell = TownDemoBuildingLayout.ExteriorDoorCell;
             DungeonLayoutStamp interiorStamp = CreateDemoInteriorStamp(
                 $"{DataRoot}/Stamp_TownInteriorDemo_5x5.asset");
 
@@ -196,7 +197,7 @@ namespace JRogue.Editor.World
                     new PortalArrivalBinding
                     {
                         portalLinkId = TownBuildingIds.DemoEnterLink,
-                        arrivalAnchor = new Vector3Int(2, 1, 0),
+                        arrivalAnchor = TownDemoBuildingLayout.InteriorArrivalCell,
                     },
                 });
 
@@ -232,6 +233,7 @@ namespace JRogue.Editor.World
                 demoBuildingWidth,
                 demoBuildingDepth,
                 demoDoorLocalX);
+            EnsureDemoInteriorFacadeOverlay();
 
             var catalog = LoadOrCreate<DungeonFloorDefinitionCatalog>($"{DataRoot}/TownCatalog.asset");
             SerializedObject catalogSo = new SerializedObject(catalog);
@@ -386,7 +388,14 @@ namespace JRogue.Editor.World
             var stamp = LoadOrCreate<DungeonLayoutStamp>(path);
             stamp.InitializeGrid(width, height, borderWalls: true);
             TownPlazaMarkerLayout.ApplyAll(stamp);
-            PaintDemoBuildingFacade(stamp, originX: 12, originY: 8, width: 5, depth: 3, doorLocalX: 2, doorLocalY: 0);
+            PaintDemoBuildingFacade(
+                stamp,
+                TownDemoBuildingLayout.ExteriorOriginX,
+                TownDemoBuildingLayout.ExteriorOriginY,
+                TownDemoBuildingLayout.ExteriorWidth,
+                TownDemoBuildingLayout.ExteriorDepth,
+                TownDemoBuildingLayout.ExteriorDoorLocalX,
+                TownDemoBuildingLayout.ExteriorDoorLocalY);
             EditorUtility.SetDirty(stamp);
             return stamp;
         }
@@ -395,9 +404,9 @@ namespace JRogue.Editor.World
         {
             var stamp = LoadOrCreate<DungeonLayoutStamp>(path);
             stamp.InitializeGrid(5, 5, borderWalls: true);
-            stamp.SetMarker(StampMarkerIds.BuildingDemoArrival, new Vector3Int(2, 1, 0));
-            stamp.SetMarker(StampMarkerIds.BuildingDemoExit, new Vector3Int(2, 3, 0));
-            stamp.SetMarker(StampMarkerIds.BuildingDemoNpc, new Vector3Int(2, 2, 0));
+            stamp.SetMarker(StampMarkerIds.BuildingDemoArrival, TownDemoBuildingLayout.InteriorArrivalCell);
+            stamp.SetMarker(StampMarkerIds.BuildingDemoExit, TownDemoBuildingLayout.InteriorExitCell);
+            stamp.SetMarker(StampMarkerIds.BuildingDemoNpc, TownDemoBuildingLayout.InteriorNpcCell);
             EditorUtility.SetDirty(stamp);
             return stamp;
         }
@@ -418,10 +427,15 @@ namespace JRogue.Editor.World
                     int x = originX + dx;
                     int y = originY + dy;
                     bool isDoor = dx == doorLocalX && dy == doorLocalY;
+                    bool isPerimeter = dx == 0 || dx == width - 1 || dy == 0;
+                    bool isRoofRow = dy == depth - 1;
+
                     if (isDoor)
                         stamp.SetCell(x, y, floor: true, wall: false);
-                    else
+                    else if (isPerimeter || isRoofRow)
                         stamp.SetCell(x, y, floor: false, wall: true);
+                    else
+                        stamp.SetCell(x, y, floor: true, wall: false);
                 }
             }
 
@@ -444,8 +458,10 @@ namespace JRogue.Editor.World
             TileBase roof = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingRoofTilePath);
             TileBase roofRight = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingRoofRightTilePath);
             TileBase door = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingDoorTilePath);
+            TileBase interiorFill = AssetDatabase.LoadAssetAtPath<TileBase>(FloorTilePath);
             if (stoneCorner == null || stoneWall == null || stoneWindow == null
-                || roofLeft == null || roof == null || roofRight == null || door == null)
+                || roofLeft == null || roof == null || roofRight == null || door == null
+                || interiorFill == null)
             {
                 Debug.LogWarning("[Town] Building facade tiles missing — re-run sprite import.");
                 return;
@@ -460,6 +476,9 @@ namespace JRogue.Editor.World
                     int y = originY + dy;
                     var cell = new Vector3Int(x, y, 0);
                     bool isDoor = dx == doorLocalX && dy == 0;
+                    bool isPerimeter = dx == 0 || dx == width - 1 || dy == 0;
+                    bool isRoofRow = dy == depth - 1;
+
                     if (isDoor)
                     {
                         cells.Add(new TownFacadePaintCell
@@ -471,28 +490,86 @@ namespace JRogue.Editor.World
                         continue;
                     }
 
-                    TileBase wallTile = ResolveFacadeWallTile(
-                        dx,
-                        dy,
-                        width,
-                        depth,
-                        stoneCorner,
-                        stoneWall,
-                        stoneWindow,
-                        roofLeft,
-                        roof,
-                        roofRight);
+                    if (isRoofRow)
+                    {
+                        TileBase roofTile = ResolveFacadeWallTile(
+                            dx,
+                            dy,
+                            width,
+                            depth,
+                            stoneCorner,
+                            stoneWall,
+                            stoneWindow,
+                            roofLeft,
+                            roof,
+                            roofRight);
+                        cells.Add(new TownFacadePaintCell
+                        {
+                            cell = cell,
+                            tile = roofTile,
+                            layer = TownFacadePaintLayer.Wall,
+                        });
+                        continue;
+                    }
+
+                    if (isPerimeter)
+                    {
+                        TileBase wallTile = ResolveFacadeWallTile(
+                            dx,
+                            dy,
+                            width,
+                            depth,
+                            stoneCorner,
+                            stoneWall,
+                            stoneWindow,
+                            roofLeft,
+                            roof,
+                            roofRight);
+                        cells.Add(new TownFacadePaintCell
+                        {
+                            cell = cell,
+                            tile = wallTile,
+                            layer = TownFacadePaintLayer.Wall,
+                        });
+                        continue;
+                    }
+
                     cells.Add(new TownFacadePaintCell
                     {
                         cell = cell,
-                        tile = wallTile,
-                        layer = TownFacadePaintLayer.Wall,
+                        tile = interiorFill,
+                        layer = TownFacadePaintLayer.InteriorMass,
                     });
                 }
             }
 
             TownBuildingFacadeOverlay overlay = LoadOrCreate<TownBuildingFacadeOverlay>(FacadeOverlayPath);
             overlay.Configure("town_main", cells.ToArray());
+            EditorUtility.SetDirty(overlay);
+        }
+
+        static void EnsureDemoInteriorFacadeOverlay()
+        {
+            TileBase door = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingDoorTilePath);
+            if (door == null)
+            {
+                Debug.LogWarning("[Town] Building door tile missing — re-run sprite import.");
+                return;
+            }
+
+            Vector3Int exitCell = TownDemoBuildingLayout.InteriorExitCell;
+            var cells = new[]
+            {
+                new TownFacadePaintCell
+                {
+                    cell = exitCell,
+                    tile = door,
+                    layer = TownFacadePaintLayer.Floor,
+                },
+            };
+
+            TownBuildingFacadeOverlay overlay = LoadOrCreate<TownBuildingFacadeOverlay>(InteriorFacadeOverlayPath);
+            overlay.Configure(TownBuildingIds.DemoInteriorFloorId, cells);
             EditorUtility.SetDirty(overlay);
         }
 

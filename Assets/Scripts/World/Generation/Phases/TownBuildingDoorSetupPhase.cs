@@ -2,7 +2,10 @@ using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
 {
-    /// <summary>Registers Confirm-adjacent building doors from floor portal specs.</summary>
+    /// <summary>
+    /// Registers Confirm-adjacent building doors from floor portal specs with
+    /// <c>adjacentConfirmOnly</c>. Ordinary entrances use step-on <see cref="PortalInteractable"/> instead.
+    /// </summary>
     public sealed class TownBuildingDoorSetupPhase : IDungeonGenerationPhase
     {
         public void Execute(DungeonGenerationContext context)

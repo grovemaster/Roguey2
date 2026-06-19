@@ -5,6 +5,7 @@ using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Traps;
 using JRogue.World.Lighting;
+using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Zones;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -143,7 +144,7 @@ namespace JRogue.World.Generation
             BindVisibilityToActiveFloor(map);
             RefreshLighting();
             RefreshVisibility();
-            if (floorId == Phases.TownPortalSetupPhase.TownFloorId)
+            if (TownPortalSetupPhase.IsHubFloor(floorId))
                 TownTimeService.Instance?.OnTownFloorActivated(_activeFloor);
 
             DungeonGenerationLog.Info($"ActivateFloor complete floorId={floorId}");
@@ -202,6 +203,8 @@ namespace JRogue.World.Generation
             }
 
             _instances.Clear();
+            TownBuildingMassService.Clear();
+            TownBuildingFacadeSight.Clear();
             DungeonFloorServiceBinder.ClearSingletonServices();
         }
 

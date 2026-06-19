@@ -13,6 +13,7 @@ using JRogue.Interactables;
 using JRogue.Manager.Door;
 using JRogue.Traps;
 using JRogue.World.Generation;
+using JRogue.World.Generation.Phases;
 using JRogue.World.Lighting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -143,6 +144,22 @@ public class VisibilityManager : MonoBehaviour
         HashSet<Vector3Int> currentVisible = ComputeCurrentVisibleSet(
             out HashSet<Vector3Int> currentLitVisible,
             out HashSet<Vector3Int> losUnlit);
+
+        MapManager activeMap = MapManager.Instance;
+        if (activeMap != null && TownPortalSetupPhase.IsHubFloor(activeMap.ActiveFloorId))
+        {
+            TownBuildingFacadeSight.AddWithinPartySightRange(
+                currentVisible,
+                currentLitVisible,
+                PartyManager.Instance,
+                LightingService.Instance,
+                activeMap,
+                viewRange,
+                GetEffectiveSightRange,
+                IsCellLiveVisibleForMember,
+                IsCellFullyVisibleForMember);
+        }
+
         if (currentVisible.Count == 0 && losUnlit.Count == 0)
         {
             ApplyUnseenToAllKnownCells();

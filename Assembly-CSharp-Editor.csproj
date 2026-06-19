@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Assets/Editor/World/ShamanBarbarianPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DungeonTilePalettePackCreator.cs" />
+    <Compile Include="Assets/Editor/World/DcssRectGrayFloorVarietyEditor.cs" />
     <Compile Include="Assets/Editor/World/DragonianElderPackCreator.cs" />
     <Compile Include="Assets/Editor/Party/MainCharacterSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/World/NpcDialogPackCreator.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Assets/Editor/World/KnightDrillMasterPackCreator.cs" />
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />
+    <Compile Include="Assets/Editor/World/DimensionSquareSceneCreator.cs" />
     <Compile Include="Assets/Editor/Interactables/EnemySpawnAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/MageSpellPackCreator.cs" />
     <Compile Include="Assets/Editor/World/TownTorchPackCreator.cs" />

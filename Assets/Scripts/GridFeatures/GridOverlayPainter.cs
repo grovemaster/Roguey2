@@ -108,5 +108,30 @@ namespace JRogue.GridFeatures
         /// </summary>
         public static Matrix4x4 CreateCellFillMatrix(Tilemap overlayMap, Sprite sprite, float fillScale = 1f) =>
             GetPaintMatrix(overlayMap, sprite, fillScale);
+
+        /// <summary>
+        /// Reapplies the center-pivot translate on every painted cell. Use after editor
+        /// <see cref="Tilemap.SetTile"/> calls that skip <see cref="MapManager"/> paint helpers.
+        /// </summary>
+        public static void ApplyCenterPivotAlignmentToPaintedCells(Tilemap tilemap)
+        {
+            if (tilemap == null)
+                return;
+
+            Matrix4x4 matrix = GetPaintMatrix(tilemap, null, fillScale: 1f);
+            BoundsInt bounds = tilemap.cellBounds;
+            for (int z = bounds.zMin; z < bounds.zMax; z++)
+            {
+                for (int y = bounds.yMin; y < bounds.yMax; y++)
+                {
+                    for (int x = bounds.xMin; x < bounds.xMax; x++)
+                    {
+                        Vector3Int cell = new Vector3Int(x, y, z);
+                        if (tilemap.HasTile(cell))
+                            tilemap.SetTransformMatrix(cell, matrix);
+                    }
+                }
+            }
+        }
     }
 }

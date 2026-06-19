@@ -23,8 +23,8 @@ namespace JRogue.World.Generation
             (StampMarkerIds.TownNpc2, new Vector3Int(6, 8, 0)),
             (StampMarkerIds.TownNpc3, new Vector3Int(8, 8, 0)),
             (StampMarkerIds.TownNpc4, new Vector3Int(2, 8, 0)),
-            (StampMarkerIds.TownNpc5, new Vector3Int(12, 8, 0)),
-            (StampMarkerIds.BuildingDemoDoor, new Vector3Int(14, 8, 0)),
+            (StampMarkerIds.TownNpc5, new Vector3Int(9, 8, 0)),
+            (StampMarkerIds.BuildingDemoDoor, TownDemoBuildingLayout.ExteriorDoorCell),
 
             (StampMarkerIds.MageTutor, new Vector3Int(4, 7, 0)),
             (StampMarkerIds.KnightDrillMaster, new Vector3Int(6, 7, 0)),

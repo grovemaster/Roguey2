@@ -69,6 +69,9 @@ namespace JRogue.Manager.Map
             if (floorMap == null || !floorMap.HasTile(gridPos))
                 return false;
 
+            if (TownBuildingMassService.IsBlocked(gridPos))
+                return false;
+
             if (DoorService.Instance != null && DoorService.Instance.BlocksMovement(gridPos))
                 return false;
 

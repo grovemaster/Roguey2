@@ -27,6 +27,12 @@ namespace JRogue.World.Generation.Phases
                 return;
             }
 
+            if (def.FloorId == TownPortalSetupPhase.TownFloorId)
+            {
+                TownBuildingMassService.Clear();
+                TownBuildingFacadeSight.Clear();
+            }
+
             int painted = 0;
             TownFacadePaintCell[] cells = overlay.Cells;
             for (int i = 0; i < cells.Length; i++)
@@ -35,8 +41,16 @@ namespace JRogue.World.Generation.Phases
                 if (entry.tile == null)
                     continue;
 
+                if (TownPortalSetupPhase.IsHubFloor(def.FloorId))
+                    TownBuildingFacadeSight.RegisterCell(entry.cell);
+
                 if (entry.layer == TownFacadePaintLayer.Floor)
                     map.SetCellFloor(entry.cell, entry.tile);
+                else if (entry.layer == TownFacadePaintLayer.InteriorMass)
+                {
+                    map.SetCellFloor(entry.cell, entry.tile);
+                    TownBuildingMassService.RegisterBlocked(entry.cell);
+                }
                 else
                     map.SetCellWall(entry.cell, entry.tile);
 
