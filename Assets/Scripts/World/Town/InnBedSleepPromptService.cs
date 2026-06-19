@@ -4,11 +4,17 @@ using JRogue.UI.Gameplay;
 
 namespace JRogue.World.Town
 {
-    /// <summary>Yes/no sleep prompt when bumping an inn bed (yes action deferred).</summary>
+    /// <summary>Yes/no sleep prompt when bumping an inn bed.</summary>
     public static class InnBedSleepPromptService
     {
         public static void ShowSleepPrompt()
         {
+            if (!InnLodgingService.HasBedAccess())
+            {
+                ShowPaymentRequiredDialog();
+                return;
+            }
+
             var step = new DialogChoiceStep
             {
                 SpeakerName = string.Empty,
@@ -29,6 +35,20 @@ namespace JRogue.World.Town
                     if (option != null && option.label == "Yes")
                         InnRestService.SleepAtInn();
                 });
+        }
+
+        static void ShowPaymentRequiredDialog()
+        {
+            var step = new DialogLineStep
+            {
+                SpeakerName = string.Empty,
+                ResolvedText = "The beds cannot be used without paying the innkeeper first.",
+                Portrait = null,
+            };
+
+            NpcDialogBoxUI.EnsureInstance().ShowLine(
+                step,
+                () => NpcDialogBoxUI.EnsureInstance().Close());
         }
     }
 }

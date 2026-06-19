@@ -86,7 +86,8 @@ namespace JRogue.World.Generation.Phases
                 if (counterBinding != null)
                     ConfigureCounterTalkBinding(counterBinding, floorId);
 
-                if (instance.GetComponent<ShopNpcController>() != null)
+                if (instance.GetComponent<ShopNpcController>() != null
+                    || instance.GetComponent<InnkeeperNpcController>() != null)
                     TownShopStateService.EnsureRunService();
 
                 GridMover mover = instance.GetComponent<GridMover>();

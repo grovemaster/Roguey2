@@ -56,5 +56,14 @@ namespace JRogue.Tests.UnitTests.World
             Assert.AreEqual(1, start.Month);
             Assert.AreEqual(1, start.Day);
         }
+
+        [Test]
+        public void GetNextPortalAbsoluteDayExclusive_FindsFollowingPortalDay()
+        {
+            Assert.AreEqual(3, GameCalendarLogic.GetNextPortalAbsoluteDayExclusive(0, 3, 1));
+            Assert.AreEqual(3, GameCalendarLogic.GetNextPortalAbsoluteDayExclusive(1, 3, 1));
+            Assert.AreEqual(3, GameCalendarLogic.GetNextPortalAbsoluteDayExclusive(2, 3, 1));
+            Assert.AreEqual(6, GameCalendarLogic.GetNextPortalAbsoluteDayExclusive(3, 3, 1));
+        }
     }
 }

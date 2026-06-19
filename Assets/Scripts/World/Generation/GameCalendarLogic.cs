@@ -52,6 +52,24 @@ namespace JRogue.World.Generation
         public static string FormatDisplayDate(GameCalendarDate date) =>
             $"Year {date.Year} · Month {date.Month} · Day {date.Day}";
 
+        /// <summary>Absolute day index of the next portal day strictly after <paramref name="fromAbsoluteDay"/>.</summary>
+        public static int GetNextPortalAbsoluteDayExclusive(
+            int fromAbsoluteDay,
+            int portalIntervalDays,
+            int portalStartDay = DefaultPortalStartDay)
+        {
+            if (portalIntervalDays < 1 || portalStartDay < 1)
+                return fromAbsoluteDay + 1;
+
+            for (int candidate = fromAbsoluteDay + 1; candidate <= fromAbsoluteDay + 3660; candidate++)
+            {
+                if ((candidate - (portalStartDay - 1)) % portalIntervalDays == 0)
+                    return candidate;
+            }
+
+            return fromAbsoluteDay + portalIntervalDays;
+        }
+
         public static string BuildPortalClosedMessage(
             GameCalendarDate date,
             int portalIntervalDays,

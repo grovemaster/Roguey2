@@ -6,6 +6,7 @@ using JRogue.Dialog;
 using JRogue.GridFeatures;
 using JRogue.Interactables;
 using JRogue.Manager.Grid;
+using JRogue.Shop;
 using JRogue.World.Generation;
 using JRogue.World.Town;
 using UnityEditor;
@@ -34,7 +35,7 @@ namespace JRogue.Editor.World
         const string ShopFormationPath = TownDistrictTestPaths.ResidentialInnFolder + "/PartyFormation_InnInterior.asset";
         const string HumanNpcPrefabPath = "Assets/Prefabs/Actor/Npc/HumanNpc.prefab";
         const string KeeperPrefabPath = "Assets/Resources/Town/Npc/TownNpc_ResidentialInnKeeper.prefab";
-        const string KeeperDialogPath = "Assets/Resources/Dialog/Profiles/NpcDialog_ResidentialInnKeeper.asset";
+        const string KeeperShopPath = "Assets/Resources/Shop/ShopNpc_ResidentialInnKeeper.asset";
         const string KeeperSpritePath = "Assets/Art/NPC/Sprites/NPC_Luc.png";
 
         [MenuItem("JRogue/Town/Setup Residential Inn")]
@@ -43,7 +44,7 @@ namespace JRogue.Editor.World
             EnsureFolders();
             DcssRectGrayFloorVarietyEditor.ConfigureRectGrayFloorTiles();
             EnsureInnBedAssets();
-            EnsureKeeperDialog();
+            EnsureKeeperShopDefinition();
             EnsureKeeperPrefab();
             PartyFormationSpawnProfile formation = EnsureInnInteriorFormationProfile();
             EnsureInteriorFloorDefinition(formation);
@@ -161,29 +162,16 @@ namespace JRogue.Editor.World
             importer.SaveAndReimport();
         }
 
-        static void EnsureKeeperDialog()
+        static void EnsureKeeperShopDefinition()
         {
-            var profile = AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(KeeperDialogPath);
-            if (profile == null)
-            {
-                profile = ScriptableObject.CreateInstance<NpcDialogProfile>();
-                AssetDatabase.CreateAsset(profile, KeeperDialogPath);
-            }
-
-            var so = new SerializedObject(profile);
-            so.FindProperty("npcId").stringValue = ResidentialInnLayout.NpcId;
-            so.FindProperty("rootNodeIndex").intValue = 0;
-            so.FindProperty("incrementTalkCountOnStart").boolValue = true;
-
-            SerializedProperty nodes = so.FindProperty("nodes");
-            nodes.arraySize = 1;
-            SerializedProperty node = nodes.GetArrayElementAtIndex(0);
-            node.FindPropertyRelative("kind").enumValueIndex = (int)DialogNodeKind.Line;
-            node.FindPropertyRelative("line").FindPropertyRelative("textTemplate").stringValue =
-                "Welcome to the inn, {partyName}. Need a room or just passing through?";
-            node.FindPropertyRelative("nextNodeIndex").intValue = DialogGraph.NoNode;
-            so.ApplyModifiedPropertiesWithoutUndo();
-            EditorUtility.SetDirty(profile);
+            var shop = LoadOrCreate<ShopNpcDefinition>(KeeperShopPath);
+            shop.shopNpcId = ResidentialInnLayout.NpcId;
+            shop.displayName = "Innkeeper";
+            shop.allowPlayerBuy = false;
+            shop.allowPlayerSell = false;
+            shop.initialGold = 0;
+            shop.initialStock = System.Array.Empty<ShopStockEntry>();
+            EditorUtility.SetDirty(shop);
         }
 
         static void EnsureKeeperPrefab()
@@ -206,16 +194,34 @@ namespace JRogue.Editor.World
             {
                 instance.name = "TownNpc_ResidentialInnKeeper";
 
-                NpcController npc = instance.GetComponent<NpcController>();
-                if (npc != null)
+                RemovePlainNpcControllers(instance);
+
+                InnkeeperNpcController keeper = instance.GetComponent<InnkeeperNpcController>();
+                if (keeper == null)
                 {
-                    var npcSo = new SerializedObject(npc);
-                    npcSo.FindProperty("npcId").stringValue = ResidentialInnLayout.NpcId;
-                    npcSo.FindProperty("displayName").stringValue = "Innkeeper";
-                    npcSo.FindProperty("dialogProfile").objectReferenceValue =
-                        AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(KeeperDialogPath);
-                    npcSo.ApplyModifiedPropertiesWithoutUndo();
+                    NpcCounterTalkBinding existingBinding = instance.GetComponent<NpcCounterTalkBinding>();
+                    if (existingBinding != null)
+                        Object.DestroyImmediate(existingBinding);
+
+                    NpcController existingNpc = instance.GetComponent<NpcController>();
+                    if (existingNpc != null)
+                        Object.DestroyImmediate(existingNpc);
+
+                    keeper = instance.AddComponent<InnkeeperNpcController>();
                 }
+
+                ShopNpcDefinition shopDefinition =
+                    AssetDatabase.LoadAssetAtPath<ShopNpcDefinition>(KeeperShopPath);
+
+                var keeperSo = new SerializedObject(keeper);
+                keeperSo.FindProperty("npcId").stringValue = ResidentialInnLayout.NpcId;
+                keeperSo.FindProperty("displayName").stringValue = "Innkeeper";
+                keeperSo.FindProperty("dialogProfile").objectReferenceValue = null;
+                keeperSo.FindProperty("shopDefinition").objectReferenceValue = shopDefinition;
+                keeperSo.FindProperty("lodgingCostGold").intValue = InnLodgingService.DefaultLodgingCostGold;
+                keeperSo.ApplyModifiedPropertiesWithoutUndo();
+
+                RemovePlainNpcControllers(instance);
 
                 if (keeperSprite != null)
                 {
@@ -241,6 +247,17 @@ namespace JRogue.Editor.World
                     Object.DestroyImmediate(instance);
                 else
                     PrefabUtility.UnloadPrefabContents(instance);
+            }
+        }
+
+        static void RemovePlainNpcControllers(GameObject instance)
+        {
+            NpcController[] controllers = instance.GetComponents<NpcController>();
+            for (int i = 0; i < controllers.Length; i++)
+            {
+                NpcController controller = controllers[i];
+                if (controller != null && controller.GetType() == typeof(NpcController))
+                    Object.DestroyImmediate(controller);
             }
         }
 

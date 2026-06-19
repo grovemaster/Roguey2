@@ -72,13 +72,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: TownNpc_ResidentialInnKeeper
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7521865026308907977}
+    - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3231487266816210276}
   m_SourcePrefab: {fileID: 100100000, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
 --- !u!1 &522178203227297553 stripped
 GameObject:
@@ -99,3 +103,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.Dialog.NpcCounterTalkBinding
   customerRowY: 4
   counterRowY: 5
+--- !u!114 &3231487266816210276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522178203227297553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ab0a3d8aa1b71d4a9e4059b9176478b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Controller.Npc.InnkeeperNpcController
+  stats: {fileID: 0}
+  currentFacing: 0
+  displayName: Innkeeper
+  portraitOverride: {fileID: 0}
+  essenceType: 1
+  npcId: residential_inn_keeper
+  dialogProfile: {fileID: 0}
+  portrait: {fileID: 0}
+  shopDefinition: {fileID: 11400000, guid: 92adbd69dee2a91179dfd5b12bb8875c, type: 2}
+  lodgingCostGold: 5

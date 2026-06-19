@@ -81,6 +81,7 @@
     <Compile Include="Assets/Scripts/Dialog/HumanPriestShrineDialogSession.cs" />
     <Compile Include="Assets/Scripts/World/Generation/GameCalendarDate.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestShrineQuestLogic.cs" />
+    <Compile Include="Assets/Scripts/World/Town/InnLodgingService.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridCellWorld.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupCoordinator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyDisplay.cs" />
@@ -204,6 +205,7 @@
     <Compile Include="Assets/Scripts/Shop/ShopGoldUtility.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceHost.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcDialogProfile.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/InnkeeperNpcController.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/DragonianElderNpcController.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceEffect.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />

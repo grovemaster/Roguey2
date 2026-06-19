@@ -3,6 +3,7 @@ using JRogue.Actors;
 using JRogue.Actors.Components;
 using JRogue.Manager.Party;
 using JRogue.Shop;
+using JRogue.World.Town;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -53,6 +54,7 @@ namespace JRogue.World.Generation
                 DungeonRunState.Instance.gameObject.AddComponent<DungeonTimeService>();
 
             TownShopStateService.EnsureRunService();
+            InnLodgingService.EnsureRunService();
             TownTimeService.EnsureRunService();
             JRogue.Quest.QuestService.EnsureRunService();
 
