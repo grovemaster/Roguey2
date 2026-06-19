@@ -1,56 +1,23 @@
-using JRogue.Shop;
 using JRogue.World.Generation;
-using UnityEngine;
 
 namespace JRogue.World.Town
 {
-    /// <summary>Resets calendar-linked shop baselines on post-portal hub days.</summary>
+    /// <summary>Backward-compatible entry point — delegates to <see cref="DistrictCalendarShopResetService"/>.</summary>
     public static class MarketItemShopResetService
     {
-        public const string LogPrefix = "[MarketItemShopReset]";
-        public const string ShopDefinitionResourcePath = "Shop/ShopNpc_MarketItemShopClerk";
+        public const string LogPrefix = DistrictCalendarShopResetService.LogPrefix;
+        public const string ShopDefinitionResourcePath = MarketItemShopLayout.ShopDefinitionResourcePath;
 
-        static ShopNpcDefinition _cachedDefinition;
-
-        public static void TryResetForCurrentPostPortalDay()
-        {
-            GameCalendarService calendar = GameCalendarService.Instance;
-            if (calendar == null || !calendar.IsEnabled)
-                return;
-
-            TryResetForPostPortalDay(
-                calendar.CurrentDate,
-                calendar.DungeonPortalIntervalDays,
-                calendar.DungeonPortalStartDay);
-        }
+        public static void TryResetForCurrentPostPortalDay() =>
+            DistrictCalendarShopResetService.TryResetForCurrentPostPortalDay();
 
         public static void TryResetForPostPortalDay(
             GameCalendarDate date,
             int portalIntervalDays,
-            int portalStartDay)
-        {
-            if (!GameCalendarLogic.IsPostPortalDay(date, portalIntervalDays, portalStartDay))
-                return;
-
-            ShopNpcDefinition definition = LoadShopDefinition();
-            if (definition == null)
-            {
-                Debug.LogWarning($"{LogPrefix} Missing shop definition at Resources/{ShopDefinitionResourcePath}.");
-                return;
-            }
-
-            TownShopStateService shopState = TownShopStateService.EnsureInstance();
-            shopState.ResetSnapshotFromDefinition(definition);
-            Debug.Log($"{LogPrefix} Restocked item shop on {GameCalendarLogic.FormatDisplayDate(date)}.");
-        }
-
-        static ShopNpcDefinition LoadShopDefinition()
-        {
-            if (_cachedDefinition != null)
-                return _cachedDefinition;
-
-            _cachedDefinition = Resources.Load<ShopNpcDefinition>(ShopDefinitionResourcePath);
-            return _cachedDefinition;
-        }
+            int portalStartDay) =>
+            DistrictCalendarShopResetService.TryResetForPostPortalDay(
+                date,
+                portalIntervalDays,
+                portalStartDay);
     }
 }

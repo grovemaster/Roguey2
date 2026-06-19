@@ -39,6 +39,15 @@ namespace JRogue.World.Generation.Phases
                 return;
             }
 
+            if (def.FloorId == MarketBlacksmithLayout.InteriorFloorId)
+            {
+                ShopCounterService.EnsureMarketBlacksmithCounters();
+                DungeonGenerationLog.Phase(
+                    nameof(TownShopCounterSetupPhase),
+                    "registered market blacksmith counter cells");
+                return;
+            }
+
             if (def.FloorId == ResidentialInnLayout.InteriorFloorId)
             {
                 ShopCounterService.EnsureResidentialInnCounters();

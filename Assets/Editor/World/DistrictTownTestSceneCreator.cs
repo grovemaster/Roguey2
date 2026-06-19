@@ -64,6 +64,7 @@ namespace JRogue.Editor.World
             ResidentialInnPackCreator.SetupResidentialInn();
             MarketGeneralStorePackCreator.SetupMarketGeneralStore();
             MarketItemShopPackCreator.SetupMarketItemShop();
+            BlacksmithShopPackCreator.SetupBlacksmithShop();
             DungeonFloorDefinition guildInteriorDef =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.AdventureGuildInteriorFloorDef);
             DungeonFloorDefinition marketDef =
@@ -74,10 +75,12 @@ namespace JRogue.Editor.World
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.MarketGeneralStoreInteriorFloorDef);
             DungeonFloorDefinition itemShopInteriorDef =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.MarketItemShopInteriorFloorDef);
+            DungeonFloorDefinition blacksmithInteriorDef =
+                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.MarketBlacksmithInteriorFloorDef);
             DungeonFloorDefinition innInteriorDef =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.ResidentialInnInteriorFloorDef);
             MarketTownPackCreator.UpdateDistrictCatalog(
-                squareDef, marketDef, residentialDef, guildInteriorDef, storeInteriorDef, itemShopInteriorDef, innInteriorDef);
+                squareDef, marketDef, residentialDef, guildInteriorDef, storeInteriorDef, itemShopInteriorDef, blacksmithInteriorDef, innInteriorDef);
 
             if (!File.Exists(TownDistrictTestPaths.DistrictTownTestScene))
             {
@@ -87,7 +90,7 @@ namespace JRogue.Editor.World
 
             Scene scene = EditorSceneManager.OpenScene(TownDistrictTestPaths.DistrictTownTestScene, OpenSceneMode.Single);
             ConfigureSceneHierarchy(
-                scene, squareDef, marketDef, residentialDef, guildInteriorDef, storeInteriorDef, itemShopInteriorDef, innInteriorDef);
+                scene, squareDef, marketDef, residentialDef, guildInteriorDef, storeInteriorDef, itemShopInteriorDef, blacksmithInteriorDef, innInteriorDef);
             if (repaintTiles)
             {
                 PaintDimensionSquareLayout();
@@ -113,6 +116,7 @@ namespace JRogue.Editor.World
             EnsureFolder(TownDistrictTestPaths.ResidentialFolder);
             EnsureFolder(TownDistrictTestPaths.MarketGeneralStoreFolder);
             EnsureFolder(TownDistrictTestPaths.MarketItemShopFolder);
+            EnsureFolder(TownDistrictTestPaths.MarketBlacksmithFolder);
             EnsureFolder(TownDistrictTestPaths.ResidentialInnFolder);
             EnsureFolder(TownDistrictTestPaths.DistrictTestRoot + "/Building");
         }
@@ -182,6 +186,7 @@ namespace JRogue.Editor.World
             DungeonFloorDefinition guildInteriorDef,
             DungeonFloorDefinition storeInteriorDef,
             DungeonFloorDefinition itemShopInteriorDef,
+            DungeonFloorDefinition blacksmithInteriorDef,
             DungeonFloorDefinition innInteriorDef)
         {
             GameObject systems = GameObject.Find(DungeonFloorTestSceneValidator.SystemsObjectName);
@@ -210,14 +215,15 @@ namespace JRogue.Editor.World
 
             var managerSo = new SerializedObject(floorManager);
             managerSo.FindProperty("useDontDestroyOnLoad").boolValue = false;
-            managerSo.FindProperty("floorDefinitions").arraySize = 7;
+            managerSo.FindProperty("floorDefinitions").arraySize = 8;
             managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(0).objectReferenceValue = squareDef;
             managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(1).objectReferenceValue = marketDef;
             managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(2).objectReferenceValue = residentialDef;
             managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(3).objectReferenceValue = guildInteriorDef;
             managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(4).objectReferenceValue = storeInteriorDef;
             managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(5).objectReferenceValue = itemShopInteriorDef;
-            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(6).objectReferenceValue = innInteriorDef;
+            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(6).objectReferenceValue = blacksmithInteriorDef;
+            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(7).objectReferenceValue = innInteriorDef;
             Transform floorsRoot = EnsureFloorsRoot(systems, floorManager);
             managerSo.ApplyModifiedPropertiesWithoutUndo();
 
@@ -229,6 +235,7 @@ namespace JRogue.Editor.World
                 AdventureGuildExchangeLayout.InteriorFloorId,
                 MarketGeneralStoreLayout.InteriorFloorId,
                 MarketItemShopLayout.InteriorFloorId,
+                MarketBlacksmithLayout.InteriorFloorId,
                 ResidentialInnLayout.InteriorFloorId);
 
             DungeonFloorInstance squareInstance = EnsureScenePaintedFloor(floorsRoot, squareDef);
@@ -277,6 +284,13 @@ namespace JRogue.Editor.World
                 DungeonFloorInstance itemShopInteriorInstance = EnsureScenePaintedFloor(floorsRoot, itemShopInteriorDef);
                 itemShopInteriorInstance.gameObject.SetActive(false);
                 MarketItemShopPackCreator.IntegrateDistrictTownScene(itemShopInteriorInstance);
+            }
+
+            if (blacksmithInteriorDef != null)
+            {
+                DungeonFloorInstance blacksmithInteriorInstance = EnsureScenePaintedFloor(floorsRoot, blacksmithInteriorDef);
+                blacksmithInteriorInstance.gameObject.SetActive(false);
+                BlacksmithShopPackCreator.IntegrateDistrictTownScene(blacksmithInteriorInstance);
             }
 
             if (innInteriorDef != null)

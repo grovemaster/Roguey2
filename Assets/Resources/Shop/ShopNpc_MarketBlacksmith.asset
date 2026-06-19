@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4e8f2a19b3d4056a7c9e1f0b2d3e5f7, type: 3}
+  m_Name: ShopNpc_MarketBlacksmith
+  m_EditorClassIdentifier: JRogue::JRogue.Shop.ShopNpcDefinition
+  shopNpcId: market_blacksmith
+  displayName: Blacksmith
+  portrait: {fileID: 11400000, guid: bf86b5d0d8432d7998462c224c3e82e2, type: 2}
+  allowPlayerBuy: 1
+  allowPlayerSell: 1
+  allowPlayerSellManaStones: 0
+  initialGold: 800
+  initialStock:
+  - item: {fileID: 11400000, guid: a863ad60dbff48b7bd2b27cf4ba7cd3a, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: 1bcee951f45b402182955fab8fabe7b0, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 2939f966d03040cf9d00e50bcbea11ca, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: f0fae79e346c46628ea2530e31a1223c, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: fc6f2726e810420290aa8bbe712e42e3, type: 2}
+    quantity: 3
+  - item: {fileID: 11400000, guid: 29ac1d1f36924d25bb9a3a02dfe0ffe0, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: 2f0faae2c75a4ef98009bc71a2b41ea4, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: 03cef3454c4642cc8691c2563a8b7843, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 29e95ab10b916716ca35b34994f1d920, type: 2}
+    quantity: 1

@@ -157,6 +157,8 @@ namespace JRogue.World.Generation
                 ShopCounterService.EnsureMarketGeneralStoreCounters();
             else if (floorId == MarketItemShopLayout.InteriorFloorId)
                 ShopCounterService.EnsureMarketItemShopCounters();
+            else if (floorId == MarketBlacksmithLayout.InteriorFloorId)
+                ShopCounterService.EnsureMarketBlacksmithCounters();
             else if (floorId == ResidentialInnLayout.InteriorFloorId)
                 ShopCounterService.EnsureResidentialInnCounters();
 

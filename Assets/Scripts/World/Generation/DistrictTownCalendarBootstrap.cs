@@ -17,7 +17,7 @@ namespace JRogue.World.Generation
             GameCalendarService calendar = GameCalendarService.EnsureInstance();
             calendar.ConfigureAndEnable(dungeonPortalIntervalDays, dungeonPortalStartDay);
             GameCalendarHudUI.EnsureInstance();
-            MarketItemShopResetService.TryResetForCurrentPostPortalDay();
+            DistrictCalendarShopResetService.TryResetForCurrentPostPortalDay();
         }
     }
 }

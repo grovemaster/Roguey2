@@ -33,6 +33,12 @@ namespace JRogue.World.Generation
                 RegisterCounter(cell);
         }
 
+        public static void EnsureMarketBlacksmithCounters()
+        {
+            foreach (Vector3Int cell in MarketBlacksmithLayout.EnumerateCounterCells())
+                RegisterCounter(cell);
+        }
+
         public static void EnsureResidentialInnCounters()
         {
             foreach (Vector3Int cell in ResidentialInnLayout.EnumerateCounterCells())

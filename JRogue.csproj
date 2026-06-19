@@ -73,6 +73,7 @@
     <Compile Include="Assets/Scripts/World/Generation/PartyCompositionSwapService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorRuntime.cs" />
+    <Compile Include="Assets/Scripts/World/Town/DistrictCalendarShopResetService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/DoorPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationEntryRules.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyFormationSpawnProfile.cs" />
@@ -668,6 +669,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryValueDisplay.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestShrineQuestService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/FloorLayoutMode.cs" />
+    <Compile Include="Assets/Scripts/World/Town/MarketBlacksmithLayout.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Scripts/JRogue.asmdef" />

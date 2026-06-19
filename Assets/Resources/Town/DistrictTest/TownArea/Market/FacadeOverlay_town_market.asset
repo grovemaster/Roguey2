@@ -266,3 +266,93 @@ MonoBehaviour:
   - cell: {x: 15, y: 19, z: 0}
     tile: {fileID: 11400000, guid: b42144c764080ab14824bd9021be31e0, type: 2}
     layer: 0
+  - cell: {x: 24, y: 16, z: 0}
+    tile: {fileID: 11400000, guid: 2124e9e309f0307fe9bd0725d11cb682, type: 2}
+    layer: 0
+  - cell: {x: 25, y: 16, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 26, y: 16, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 27, y: 16, z: 0}
+    tile: {fileID: 11400000, guid: e747c9ad116ae7662989b2d3ff433e43, type: 2}
+    layer: 1
+  - cell: {x: 28, y: 16, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 29, y: 16, z: 0}
+    tile: {fileID: 11400000, guid: 2124e9e309f0307fe9bd0725d11cb682, type: 2}
+    layer: 0
+  - cell: {x: 24, y: 17, z: 0}
+    tile: {fileID: 11400000, guid: 2124e9e309f0307fe9bd0725d11cb682, type: 2}
+    layer: 0
+  - cell: {x: 25, y: 17, z: 0}
+    tile: {fileID: 11400000, guid: 7322988569d21ce3b80c96ee2ef85dc3, type: 2}
+    layer: 0
+  - cell: {x: 26, y: 17, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 27, y: 17, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 28, y: 17, z: 0}
+    tile: {fileID: 11400000, guid: 7322988569d21ce3b80c96ee2ef85dc3, type: 2}
+    layer: 0
+  - cell: {x: 29, y: 17, z: 0}
+    tile: {fileID: 11400000, guid: 2124e9e309f0307fe9bd0725d11cb682, type: 2}
+    layer: 0
+  - cell: {x: 24, y: 18, z: 0}
+    tile: {fileID: 11400000, guid: 2124e9e309f0307fe9bd0725d11cb682, type: 2}
+    layer: 0
+  - cell: {x: 25, y: 18, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 26, y: 18, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 27, y: 18, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 28, y: 18, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 29, y: 18, z: 0}
+    tile: {fileID: 11400000, guid: 2124e9e309f0307fe9bd0725d11cb682, type: 2}
+    layer: 0
+  - cell: {x: 24, y: 19, z: 0}
+    tile: {fileID: 11400000, guid: 2124e9e309f0307fe9bd0725d11cb682, type: 2}
+    layer: 0
+  - cell: {x: 25, y: 19, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 26, y: 19, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 27, y: 19, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 28, y: 19, z: 0}
+    tile: {fileID: 11400000, guid: 3754a42d0186b6f8ba141a2a19ff3909, type: 2}
+    layer: 0
+  - cell: {x: 29, y: 19, z: 0}
+    tile: {fileID: 11400000, guid: 2124e9e309f0307fe9bd0725d11cb682, type: 2}
+    layer: 0
+  - cell: {x: 24, y: 20, z: 0}
+    tile: {fileID: 11400000, guid: 7ed4a7bf3f89dfcdca10de8e46060af1, type: 2}
+    layer: 0
+  - cell: {x: 25, y: 20, z: 0}
+    tile: {fileID: 11400000, guid: effe5994630f8e3abaef74ea253e21b3, type: 2}
+    layer: 0
+  - cell: {x: 26, y: 20, z: 0}
+    tile: {fileID: 11400000, guid: effe5994630f8e3abaef74ea253e21b3, type: 2}
+    layer: 0
+  - cell: {x: 27, y: 20, z: 0}
+    tile: {fileID: 11400000, guid: effe5994630f8e3abaef74ea253e21b3, type: 2}
+    layer: 0
+  - cell: {x: 28, y: 20, z: 0}
+    tile: {fileID: 11400000, guid: effe5994630f8e3abaef74ea253e21b3, type: 2}
+    layer: 0
+  - cell: {x: 29, y: 20, z: 0}
+    tile: {fileID: 11400000, guid: b42144c764080ab14824bd9021be31e0, type: 2}
+    layer: 0

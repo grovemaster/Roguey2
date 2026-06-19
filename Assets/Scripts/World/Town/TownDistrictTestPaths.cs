@@ -49,6 +49,12 @@ namespace JRogue.World.Town
         public const string MarketItemShopInteriorFacadeOverlay =
             MarketItemShopFolder + "/FacadeOverlay_town_interior_market_item_shop.asset";
 
+        public const string MarketBlacksmithFolder = DistrictTestRoot + "/Building/MarketBlacksmith";
+        public const string MarketBlacksmithInteriorFloorDef =
+            MarketBlacksmithFolder + "/Floor_town_interior_market_blacksmith.asset";
+        public const string MarketBlacksmithInteriorFacadeOverlay =
+            MarketBlacksmithFolder + "/FacadeOverlay_town_interior_market_blacksmith.asset";
+
         public const string ResourcesCatalog = "Town/DistrictTest/DistrictTestCatalog";
     }
 }

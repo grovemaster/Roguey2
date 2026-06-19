@@ -289,6 +289,12 @@ MonoBehaviour:
     portalCell: {x: 13, y: 16, z: 0}
     listLabel: Market Item Shop
     adjacentConfirmOnly: 0
+  - portalLinkId: building_market_blacksmith_enter
+    targetFloorId: town_interior_market_blacksmith
+    portalMarkerId: 
+    portalCell: {x: 27, y: 16, z: 0}
+    listLabel: Market Blacksmith
+    adjacentConfirmOnly: 0
   edgePortals: []
   arrivalBindings:
   - portalLinkId: district_square_to_market
@@ -299,6 +305,8 @@ MonoBehaviour:
     arrivalAnchor: {x: 22, y: 16, z: 0}
   - portalLinkId: building_market_item_shop_exit
     arrivalAnchor: {x: 13, y: 16, z: 0}
+  - portalLinkId: building_market_blacksmith_exit
+    arrivalAnchor: {x: 27, y: 16, z: 0}
   - portalLinkId: district_residential_to_market
     arrivalAnchor: {x: 1, y: 15, z: 0}
   orthogonalEdgePortalCount: 0

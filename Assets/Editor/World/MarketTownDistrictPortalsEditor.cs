@@ -17,7 +17,7 @@ namespace JRogue.Editor.World
 
             int southStripWidth = DistrictSquareMarketTransition.StripMaxX - DistrictSquareMarketTransition.StripMinX + 1;
             int westStripHeight = MarketResidentialTransition.StripMaxY - MarketResidentialTransition.StripMinY + 1;
-            int buildingPortalCount = 3;
+            int buildingPortalCount = 4;
             int portalCount = southStripWidth + westStripHeight + buildingPortalCount;
 
             var so = new SerializedObject(def);
@@ -60,8 +60,14 @@ namespace JRogue.Editor.World
             itemShopEnter.FindPropertyRelative("portalCell").vector3IntValue = MarketItemShopLayout.ExteriorDoorCell;
             itemShopEnter.FindPropertyRelative("listLabel").stringValue = "Market Item Shop";
 
+            SerializedProperty blacksmithEnter = portals.GetArrayElementAtIndex(buildingIndex + 3);
+            blacksmithEnter.FindPropertyRelative("portalLinkId").stringValue = MarketBlacksmithLayout.EnterLinkId;
+            blacksmithEnter.FindPropertyRelative("targetFloorId").stringValue = MarketBlacksmithLayout.InteriorFloorId;
+            blacksmithEnter.FindPropertyRelative("portalCell").vector3IntValue = MarketBlacksmithLayout.ExteriorDoorCell;
+            blacksmithEnter.FindPropertyRelative("listLabel").stringValue = "Market Blacksmith";
+
             SerializedProperty arrivals = so.FindProperty("arrivalBindings");
-            arrivals.arraySize = 5;
+            arrivals.arraySize = 6;
 
             SerializedProperty squareArrival = arrivals.GetArrayElementAtIndex(0);
             squareArrival.FindPropertyRelative("portalLinkId").stringValue =
@@ -86,7 +92,12 @@ namespace JRogue.Editor.World
             itemShopExit.FindPropertyRelative("arrivalAnchor").vector3IntValue =
                 MarketItemShopLayout.ExteriorDoorCell;
 
-            SerializedProperty residentialArrival = arrivals.GetArrayElementAtIndex(4);
+            SerializedProperty blacksmithExit = arrivals.GetArrayElementAtIndex(4);
+            blacksmithExit.FindPropertyRelative("portalLinkId").stringValue = MarketBlacksmithLayout.ExitLinkId;
+            blacksmithExit.FindPropertyRelative("arrivalAnchor").vector3IntValue =
+                MarketBlacksmithLayout.ExteriorDoorCell;
+
+            SerializedProperty residentialArrival = arrivals.GetArrayElementAtIndex(5);
             residentialArrival.FindPropertyRelative("portalLinkId").stringValue =
                 MarketResidentialTransition.ResidentialToMarketLinkId;
             residentialArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue =

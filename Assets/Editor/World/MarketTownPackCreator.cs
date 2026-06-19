@@ -110,6 +110,7 @@ namespace JRogue.Editor.World
             var combined = new List<TownFacadePaintCell>();
             AppendFacadeCells(combined, MarketGeneralStorePackCreator.BuildExteriorFacadeCells());
             AppendFacadeCells(combined, MarketItemShopPackCreator.BuildExteriorFacadeCells());
+            AppendFacadeCells(combined, BlacksmithShopPackCreator.BuildExteriorFacadeCells());
             return combined.Count > 0 ? combined.ToArray() : null;
         }
 
@@ -129,6 +130,7 @@ namespace JRogue.Editor.World
             DungeonFloorDefinition guildInteriorDef,
             DungeonFloorDefinition storeInteriorDef,
             DungeonFloorDefinition itemShopInteriorDef,
+            DungeonFloorDefinition blacksmithInteriorDef,
             DungeonFloorDefinition innInteriorDef)
         {
             DistrictTestCatalogUpdater.UpdateCatalog(
@@ -138,6 +140,7 @@ namespace JRogue.Editor.World
                 guildInteriorDef,
                 storeInteriorDef,
                 itemShopInteriorDef,
+                blacksmithInteriorDef,
                 innInteriorDef);
         }
 

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &7328140830484844801
+--- !u!1001 &8328140830484844802
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -51,14 +51,14 @@ PrefabInstance:
     - target: {fileID: 5067676183637769181, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: bfd81242f6914217945f253747eaf17b, type: 3}
+      objectReference: {fileID: -2605615248106431149, guid: de46faba611acda7181c53b12117fb88, type: 3}
     - target: {fileID: 5067676183637769181, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_SortingOrder
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       propertyPath: m_Name
-      value: TownNpc_MarketItemShopClerk
+      value: TownNpc_MarketBlacksmith
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2783574182687550175, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
@@ -67,23 +67,23 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1260857498348216420}
+      addedObject: {fileID: 2260857498348216421}
     - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8859339980570974153}
+      addedObject: {fileID: 8297355296598800793}
   m_SourcePrefab: {fileID: 100100000, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
---- !u!1 &1214709130063783233 stripped
+--- !u!1 &502772791960675650 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
-  m_PrefabInstance: {fileID: 7328140830484844801}
+  m_PrefabInstance: {fileID: 8328140830484844802}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1260857498348216420
+--- !u!114 &2260857498348216421
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1214709130063783233}
+  m_GameObject: {fileID: 502772791960675650}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce2a220e93cdd928cab275c9d225d2fc, type: 3}
@@ -91,20 +91,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.Controller.Npc.ShopNpcController
   stats: {fileID: 0}
   currentFacing: 0
-  displayName: Item Shop Clerk
+  displayName: Blacksmith
   portraitOverride: {fileID: 0}
   essenceType: 1
-  npcId: market_item_shop_clerk
+  npcId: market_blacksmith
   dialogProfile: {fileID: 0}
-  portrait: {fileID: 11400000, guid: 01663789f8f9458398527143b6ac18bf, type: 2}
-  shopDefinition: {fileID: 11400000, guid: 7f3a9c2e1b4d5a6890c1d2e3f4a5b6c7, type: 2}
---- !u!114 &8859339980570974153
+  portrait: {fileID: 11400000, guid: bf86b5d0d8432d7998462c224c3e82e2, type: 2}
+  shopDefinition: {fileID: 11400000, guid: cf29e20a66d142ac9a2207336c5e30bc, type: 2}
+--- !u!114 &8297355296598800793
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1214709130063783233}
+  m_GameObject: {fileID: 502772791960675650}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6223afdc3a313b8beb73125d4cb5b431, type: 3}

@@ -45,6 +45,9 @@ namespace JRogue.World.Generation.Phases
             if (def.FloorId == MarketItemShopLayout.InteriorFloorId)
                 ShopCounterService.Clear();
 
+            if (def.FloorId == MarketBlacksmithLayout.InteriorFloorId)
+                ShopCounterService.Clear();
+
             if (def.FloorId == ResidentialInnLayout.InteriorFloorId)
                 ShopCounterService.Clear();
 
@@ -86,6 +89,7 @@ namespace JRogue.World.Generation.Phases
                 $"Town/DistrictTest/Building/AdventureGuildExchange/FacadeOverlay_{floorId}",
                 $"Town/DistrictTest/Building/MarketGeneralStore/FacadeOverlay_{floorId}",
                 $"Town/DistrictTest/Building/MarketItemShop/FacadeOverlay_{floorId}",
+                $"Town/DistrictTest/Building/MarketBlacksmith/FacadeOverlay_{floorId}",
                 $"Town/DistrictTest/Building/ResidentialInn/FacadeOverlay_{floorId}",
             };
 

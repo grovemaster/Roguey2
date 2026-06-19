@@ -13,6 +13,7 @@ namespace JRogue.Shop
         public const string BeastBloodMerchant = "beast_blood_merchant";
         public const string ResidentialInnKeeper = "residential_inn_keeper";
         public const string MarketItemShopClerk = "market_item_shop_clerk";
+        public const string MarketBlacksmith = "market_blacksmith";
     }
 
     [Serializable]
