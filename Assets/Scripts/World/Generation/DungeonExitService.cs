@@ -70,17 +70,18 @@ namespace JRogue.World.Generation
 
             try
             {
-                if (!Application.CanStreamedLevelBeLoaded(TownSceneName))
+                string townSceneName = RunPartyPersistence.ReturnTownSceneName;
+                if (!Application.CanStreamedLevelBeLoaded(townSceneName))
                 {
                     Debug.LogError(
-                        $"{LogPrefix} Scene '{TownSceneName}' is not in Build Settings. " +
-                        "Add Assets/Scenes/Town/TownTest.unity via File → Build Profiles.");
+                        $"{LogPrefix} Scene '{townSceneName}' is not in Build Settings. " +
+                        "Add the town hub scene via File → Build Profiles.");
                     return;
                 }
 
-                Debug.Log($"{LogPrefix} Loading town scene '{TownSceneName}'.");
+                Debug.Log($"{LogPrefix} Loading town scene '{townSceneName}'.");
                 GameLogService.ClearSession();
-                SceneManager.LoadScene(TownSceneName, LoadSceneMode.Single);
+                SceneManager.LoadScene(townSceneName, LoadSceneMode.Single);
             }
             finally
             {

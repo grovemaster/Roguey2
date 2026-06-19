@@ -42,6 +42,7 @@ namespace JRogue.World.Generation
 
             PauseTownForExit();
             RunPartyPersistence.EnsurePartySurvivesSceneLoad();
+            RunPartyPersistence.SetReturnTownSceneName(SceneManager.GetActiveScene().name);
             RunPartyPersistence.MarkEnteringDungeonFromTown();
 
             DungeonTimeService time = DungeonTimeService.Instance;

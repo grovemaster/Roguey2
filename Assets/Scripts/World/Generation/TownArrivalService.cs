@@ -30,7 +30,15 @@ namespace JRogue.World.Generation
             }
 
             TownTimeService.EnsureRunService();
-            TownTimeService.Instance?.ApplyDungeonReturnPhase();
+
+            GameCalendarService calendar = GameCalendarService.Instance;
+            if (calendar != null && calendar.IsEnabled)
+            {
+                calendar.AdvanceDay(GameCalendarDayAdvanceSource.DungeonReturn);
+                TownTimeService.Instance?.ApplyDungeonReturnPhase();
+            }
+            else
+                TownTimeService.Instance?.ApplyDungeonReturnPhase();
 
             TurnManager turn = TurnManager.Instance;
             if (turn != null)

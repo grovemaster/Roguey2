@@ -61,6 +61,7 @@
     <Compile Include="Assets/Scripts/World/Generation/PortalPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/AcousticsService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePrecondition.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/GameCalendarDayAdvanceSource.cs" />
     <Compile Include="Assets/Scripts/Quest/QuestDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/ItemCategoryRegistry.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInterfaces.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Assets/Scripts/Manager/Progression/PartyRestState.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryConsumePolicy.cs" />
     <Compile Include="Assets/Scripts/Dialog/HumanPriestShrineDialogSession.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/GameCalendarDate.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestShrineQuestLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridCellWorld.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupCoordinator.cs" />
@@ -279,6 +281,7 @@
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
     <Compile Include="Assets/Scripts/Racial/PartyRacialDevSwapService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/GameCalendarService.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCompassRectResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlayerInteraction.cs" />
@@ -374,6 +377,7 @@
     <Compile Include="Assets/Scripts/Status/PartyStatusQueries.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardBootstrap.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcDialogSession.cs" />
+    <Compile Include="Assets/Scripts/World/Town/DungeonPortalReminderService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileService.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanKnightSkillExecutionService.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/ElementalSpiritContractsView.cs" />
@@ -418,6 +422,7 @@
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarInstance.cs" />
     <Compile Include="Assets/Scripts/Interactables/TownTimeLeverContent.cs" />
+    <Compile Include="Assets/Scripts/World/Town/InnRestService.cs" />
     <Compile Include="Assets/Scripts/UI/Quest/QuestJournalUI.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEvaluator.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyMainCharacterMarker.cs" />
@@ -437,6 +442,7 @@
     <Compile Include="Assets/Scripts/UI/Racial/BeastmanSoulBeastBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleProfile.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassCommitment.cs" />
+    <Compile Include="Assets/Scripts/UI/Gameplay/GameCalendarHudUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlaceholderSprites.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/RadarBlip.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardExitEvaluator.cs" />
@@ -476,6 +482,7 @@
     <Compile Include="Assets/Scripts/Manager/Party/PartyManaStoneLedger.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownTimeService.cs" />
     <Compile Include="Assets/Scripts/Spawn/EnemySpawnDefinition.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DistrictTownCalendarBootstrap.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/FlagPrecondition.cs" />
     <Compile Include="Assets/Scripts/Abilities/SuddenStrength/SuddenStrengthAbility.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/HealingPotionRules.cs" />
@@ -536,6 +543,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRunner.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneRectProcGenerator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/ShopCounterService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/GameCalendarLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/RestSessionService.cs" />
     <Compile Include="Assets/Scripts/Racial/DwarfClanIds.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
@@ -612,6 +620,7 @@
     <Compile Include="Assets/Scripts/Manager/Map/MapManager.cs" />
     <Compile Include="Assets/Scripts/UI/Character/CharacterEquipmentViewModel.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapPlacementSet.cs" />
+    <Compile Include="Assets/Scripts/World/Town/PartyTownRestService.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/SpiritImprintShamanNpcController.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/OpenDoorEffect.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcCounterTalkBinding.cs" />

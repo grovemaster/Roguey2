@@ -72,7 +72,9 @@ namespace JRogue.Manager.Inventory
             }
         }
 
+        public static void ClearAll() => RemainingCooldownTurns.Clear();
+
         /// <summary>Clears service state (tests).</summary>
-        public static void ResetForTests() => RemainingCooldownTurns.Clear();
+        public static void ResetForTests() => ClearAll();
     }
 }

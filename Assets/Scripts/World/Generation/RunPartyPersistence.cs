@@ -11,8 +11,14 @@ namespace JRogue.World.Generation
         public const string PartyObjectName = "Party";
         public const string InputObjectName = "InputSystem";
 
+        public const string DefaultReturnTownSceneName = "TownTest";
+
         public static bool AwaitingTownArrival { get; private set; }
         public static bool EnteringDungeonFromTown { get; private set; }
+
+        static string _returnTownSceneName = DefaultReturnTownSceneName;
+
+        public static string ReturnTownSceneName => _returnTownSceneName;
 
         public static bool HasLivingParty =>
             PartyManager.Instance != null
@@ -22,6 +28,13 @@ namespace JRogue.World.Generation
         public static void MarkAwaitingTownArrival() => AwaitingTownArrival = true;
 
         public static void MarkEnteringDungeonFromTown() => EnteringDungeonFromTown = true;
+
+        public static void SetReturnTownSceneName(string sceneName)
+        {
+            _returnTownSceneName = string.IsNullOrEmpty(sceneName)
+                ? DefaultReturnTownSceneName
+                : sceneName;
+        }
 
         public static bool ConsumeEnteringDungeonFromTown()
         {

@@ -199,6 +199,8 @@ namespace JRogue.Editor.World
                 systems.AddComponent<VisibilityManager>();
             if (systems.GetComponent<PortalEntryService>() == null)
                 systems.AddComponent<PortalEntryService>();
+            if (systems.GetComponent<DistrictTownCalendarBootstrap>() == null)
+                systems.AddComponent<DistrictTownCalendarBootstrap>();
 
             DungeonFloorDefinitionCatalog catalog =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>(TownDistrictTestPaths.DistrictTestCatalog);

@@ -23,7 +23,12 @@ namespace JRogue.World.Town
 
             NpcDialogBoxUI.EnsureInstance().ShowChoice(
                 step,
-                _ => NpcDialogBoxUI.EnsureInstance().Close());
+                option =>
+                {
+                    NpcDialogBoxUI.EnsureInstance().Close();
+                    if (option != null && option.label == "Yes")
+                        InnRestService.SleepAtInn();
+                });
         }
     }
 }

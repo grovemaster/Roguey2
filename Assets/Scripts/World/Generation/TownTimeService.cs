@@ -75,11 +75,23 @@ namespace JRogue.World.Generation
             Debug.Log($"{LogPrefix} New run — day {calendarDayIndex}, {currentPhase}.");
         }
 
-        public bool IsDungeonPortalOpen() =>
-            TownTimeLogic.IsDungeonPortalOpen(calendarDayIndex, currentPhase);
+        public bool IsDungeonPortalOpen()
+        {
+            GameCalendarService calendar = GameCalendarService.Instance;
+            if (calendar != null && calendar.IsEnabled)
+                return calendar.IsDungeonPortalOpen();
 
-        public string GetPortalClosedMessage() =>
-            TownTimeLogic.BuildPortalClosedMessage(calendarDayIndex, currentPhase);
+            return TownTimeLogic.IsDungeonPortalOpen(calendarDayIndex, currentPhase);
+        }
+
+        public string GetPortalClosedMessage()
+        {
+            GameCalendarService calendar = GameCalendarService.Instance;
+            if (calendar != null && calendar.IsEnabled)
+                return calendar.GetPortalClosedMessage();
+
+            return TownTimeLogic.BuildPortalClosedMessage(calendarDayIndex, currentPhase);
+        }
 
         public bool TryAdvancePhase(TownPhaseAdvanceSource source)
         {
@@ -155,7 +167,11 @@ namespace JRogue.World.Generation
             EnsureRunInitialized();
             SyncTimeLeverVisuals();
             RefreshTownPortalVisual(instance);
-            if (instance?.Definition?.FloorId == Phases.TownTorchSetupPhase.TownFloorId)
+
+            string floorId = instance?.Definition?.FloorId;
+            GameCalendarService.Instance?.OnTownHubFloorActivated(floorId);
+
+            if (floorId == Phases.TownTorchSetupPhase.TownFloorId)
                 JRogue.World.Lighting.TownLightingSync.ApplyForCurrentPhase();
         }
 
