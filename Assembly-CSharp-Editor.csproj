@@ -76,6 +76,7 @@
     <Compile Include="Assets/Editor/World/DungeonZonePackCreator.cs" />
     <Compile Include="Assets/Editor/World/DistrictTownTestSceneCreator.cs" />
     <Compile Include="Assets/Editor/World/DungeonVaultPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/MarketTownPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/ThrowingKnifeSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/World/DungeonZoneLayoutEditorWindow.cs" />
     <Compile Include="Assets/Editor/World/StoneWardensClanPackCreator.cs" />
@@ -97,7 +98,9 @@
     <Compile Include="Assets/Editor/World/DungeonV0aPackCreator.cs" />
     <Compile Include="Assets/Editor/Targeting/SplashZoneAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/BeastmanSoulBeastPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/MarketGeneralStorePackCreator.cs" />
     <Compile Include="Assets/Editor/World/ForgeBrothersClanPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/DistrictTestCatalogUpdater.cs" />
     <Compile Include="Assets/Editor/World/TownPackCreator.cs" />
     <Compile Include="Assets/Editor/Altar/AltarAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/FairyMerchantPackCreator.cs" />

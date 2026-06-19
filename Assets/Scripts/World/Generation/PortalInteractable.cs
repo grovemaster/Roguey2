@@ -35,7 +35,7 @@ namespace JRogue.World.Generation
             if (triggeringMember == null)
                 return false;
 
-            if (IsBuildingPortal(PortalLinkId))
+            if (IsBuildingPortal(PortalLinkId) || IsDistrictPortal(PortalLinkId))
             {
                 return TownTransitionService.TryTransitionBuilding(
                     PortalLinkId,
@@ -60,5 +60,8 @@ namespace JRogue.World.Generation
 
         static bool IsBuildingPortal(string portalLinkId) =>
             !string.IsNullOrEmpty(portalLinkId) && portalLinkId.StartsWith("building_");
+
+        static bool IsDistrictPortal(string portalLinkId) =>
+            !string.IsNullOrEmpty(portalLinkId) && portalLinkId.StartsWith("district_");
     }
 }

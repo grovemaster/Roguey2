@@ -21,7 +21,9 @@ namespace JRogue.World.Town
         public static bool TryGetOrthoSize(string floorId, out float size)
         {
             if (floorId == AdventureGuildExchangeLayout.InteriorFloorId
-                || floorId == DimensionSquareFloorIds.FloorId)
+                || floorId == MarketGeneralStoreLayout.InteriorFloorId
+                || floorId == DimensionSquareFloorIds.FloorId
+                || floorId == MarketTownFloorIds.FloorId)
             {
                 size = AdventureGuildExchangeLayout.DistrictHubCameraOrthoSize;
                 return true;

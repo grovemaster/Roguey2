@@ -153,6 +153,8 @@ namespace JRogue.World.Generation
             TownHubCameraUtility.ApplyForFloor(floorId);
             if (floorId == AdventureGuildExchangeLayout.InteriorFloorId)
                 ShopCounterService.EnsureAdventureGuildExchangeCounters();
+            else if (floorId == MarketGeneralStoreLayout.InteriorFloorId)
+                ShopCounterService.EnsureMarketGeneralStoreCounters();
 
             PartyManager.Instance?.RefreshCameraFollow();
 

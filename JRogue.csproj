@@ -147,6 +147,7 @@
     <Compile Include="Assets/Scripts/Interactables/InteractableTileKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownPortalSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Pathfinding/GridAStarPathfinder.cs" />
+    <Compile Include="Assets/Scripts/World/Town/MarketTownLayout.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestCovenantService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingDoorInteractable.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/DwarfClanBodyView.cs" />
@@ -340,6 +341,7 @@
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionEvaluator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingIds.cs" />
     <Compile Include="Assets/Scripts/Dialog/DwarfClanJoinDialogSession.cs" />
+    <Compile Include="Assets/Scripts/World/Town/MarketGeneralStoreLayout.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryHotkeyRuntimeOverrides.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryTargetedUseLog.cs" />
@@ -415,6 +417,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/HazardPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassAbilityResources.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownArrivalService.cs" />
+    <Compile Include="Assets/Scripts/World/Town/MarketTownFloorIds.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalEdgePlacement.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacer.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
@@ -616,6 +619,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonPortalVisuals.cs" />
     <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyListBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DwarfClanTownEntries.cs" />
+    <Compile Include="Assets/Scripts/World/Town/DistrictSquareMarketTransition.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/ZoneFillPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorFeatureSnapshot.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarAssignabilityService.cs" />

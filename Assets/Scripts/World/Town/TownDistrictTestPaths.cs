@@ -19,6 +19,18 @@ namespace JRogue.World.Town
         public const string DimensionSquareFacadeOverlay =
             DimensionSquareFolder + "/FacadeOverlay_dimension_square.asset";
 
+        public const string MarketFolder = DistrictTestRoot + "/TownArea/Market";
+        public const string MarketFloorDef = MarketFolder + "/Floor_town_market.asset";
+        public const string MarketFloorPalette = MarketFolder + "/Palette_town_market_floor.asset";
+        public const string MarketWallPalette = MarketFolder + "/Palette_town_market_wall.asset";
+        public const string MarketFacadeOverlay = MarketFolder + "/FacadeOverlay_town_market.asset";
+
+        public const string MarketGeneralStoreFolder = DistrictTestRoot + "/Building/MarketGeneralStore";
+        public const string MarketGeneralStoreInteriorFloorDef =
+            MarketGeneralStoreFolder + "/Floor_town_interior_market_general_store.asset";
+        public const string MarketGeneralStoreInteriorFacadeOverlay =
+            MarketGeneralStoreFolder + "/FacadeOverlay_town_interior_market_general_store.asset";
+
         public const string ResourcesCatalog = "Town/DistrictTest/DistrictTestCatalog";
     }
 }

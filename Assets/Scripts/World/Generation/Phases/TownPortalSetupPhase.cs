@@ -26,7 +26,9 @@ namespace JRogue.World.Generation.Phases
         }
 
         public static bool IsHubFloor(string floorId) =>
-            floorId == TownFloorId || floorId == DimensionSquareFloorIds.FloorId;
+            floorId == TownFloorId
+            || floorId == DimensionSquareFloorIds.FloorId
+            || floorId == MarketTownFloorIds.FloorId;
 
         public static bool IsTownInterior(string floorId) =>
             !string.IsNullOrEmpty(floorId) && floorId.StartsWith("town_interior");

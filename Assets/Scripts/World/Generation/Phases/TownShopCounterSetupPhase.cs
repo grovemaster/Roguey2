@@ -12,13 +12,22 @@ namespace JRogue.World.Generation.Phases
             if (def == null)
                 return;
 
-            if (def.FloorId != AdventureGuildExchangeLayout.InteriorFloorId)
+            if (def.FloorId == AdventureGuildExchangeLayout.InteriorFloorId)
+            {
+                ShopCounterService.EnsureAdventureGuildExchangeCounters();
+                DungeonGenerationLog.Phase(
+                    nameof(TownShopCounterSetupPhase),
+                    "registered adventure guild counter cells");
                 return;
+            }
 
-            ShopCounterService.EnsureAdventureGuildExchangeCounters();
-            DungeonGenerationLog.Phase(
-                nameof(TownShopCounterSetupPhase),
-                "registered adventure guild counter cells");
+            if (def.FloorId == MarketGeneralStoreLayout.InteriorFloorId)
+            {
+                ShopCounterService.EnsureMarketGeneralStoreCounters();
+                DungeonGenerationLog.Phase(
+                    nameof(TownShopCounterSetupPhase),
+                    "registered market general store counter cells");
+            }
         }
     }
 }

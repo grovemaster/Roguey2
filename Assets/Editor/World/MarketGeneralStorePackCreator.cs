@@ -13,10 +13,8 @@ using UnityEngine.Tilemaps;
 
 namespace JRogue.Editor.World
 {
-    /// <summary>
-    /// Adventure Guild Exchange on dimension_square (5×5 exterior) + scene-painted shop interior.
-    /// </summary>
-    public static class AdventureGuildExchangePackCreator
+    /// <summary>Market General Store on town_market (8×8 twin-door exterior) + scene-painted shop interior.</summary>
+    public static class MarketGeneralStorePackCreator
     {
         const string TileFolder = "Assets/TileMaps/Town";
         const string BuildingStoneWallTilePath = TileFolder + "/Town_Building_StoneWall.asset";
@@ -29,30 +27,27 @@ namespace JRogue.Editor.World
         const string DcssTileFolder = "Assets/TileMaps/Town/Dcss";
         const string CounterFloorTilePath = "Assets/TileMaps/Town/Town_FloorPavement.asset";
         const string ShopFormationPath =
-            TownDistrictTestPaths.AdventureGuildExchangeFolder + "/PartyFormation_ShopInterior.asset";
+            TownDistrictTestPaths.MarketGeneralStoreFolder + "/PartyFormation_ShopInterior.asset";
         const string HumanNpcPrefabPath = "Assets/Prefabs/Actor/Npc/HumanNpc.prefab";
-        const string GuildClerkPrefabPath = "Assets/Resources/Town/Npc/TownNpc_AdventureGuildClerk.prefab";
-        const string GuildDialogPath = "Assets/Resources/Dialog/Profiles/NpcDialog_AdventureGuildClerk.asset";
-        const string GuildClerkSpritePath = "Assets/Art/NPC/Sprites/NPC_Fenn.png";
+        const string KeeperPrefabPath = "Assets/Resources/Town/Npc/TownNpc_MarketGeneralStoreKeeper.prefab";
+        const string KeeperDialogPath = "Assets/Resources/Dialog/Profiles/NpcDialog_MarketGeneralStoreKeeper.asset";
+        const string KeeperSpritePath = "Assets/Art/NPC/Sprites/NPC_Mira.png";
 
-        [MenuItem("JRogue/Town/Setup Adventure Guild Exchange")]
-        public static void SetupAdventureGuildExchange()
+        [MenuItem("JRogue/Town/Setup Market General Store")]
+        public static void SetupMarketGeneralStore()
         {
             EnsureFolders();
             DcssRectGrayFloorVarietyEditor.ConfigureRectGrayFloorTiles();
-            EnsureGuildClerkDialog();
-            EnsureGuildClerkPrefab();
+            EnsureKeeperDialog();
+            EnsureKeeperPrefab();
             PartyFormationSpawnProfile shopFormation = EnsureShopInteriorFormationProfile();
-            DungeonFloorDefinition interiorDef = EnsureInteriorFloorDefinition(shopFormation);
-            EnsureDimensionSquareBuildingPortals();
-            EnsureExteriorFacadeOverlay();
+            EnsureInteriorFloorDefinition(shopFormation);
+            EnsureMarketPortals();
+            EnsureMarketFacadeOverlay();
             EnsureInteriorFacadeOverlay();
-            UpdateDistrictCatalog(
-                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.DimensionSquareFloorDef),
-                interiorDef);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[AdventureGuild] Data ready. Run JRogue → Town → Fix District Town Test Scene.");
+            Debug.Log("[MarketGeneralStore] Data ready. Run JRogue → Town → Fix District Town Test Scene.");
         }
 
         public static void IntegrateDistrictTownScene(DungeonFloorInstance interiorInstance)
@@ -64,24 +59,55 @@ namespace JRogue.Editor.World
             EnsureInteriorMarkers(interiorInstance);
         }
 
+        public static void PaintMarketExteriorFacade(Tilemap floorMap, Tilemap wallMap)
+        {
+            if (floorMap == null || wallMap == null)
+                return;
+
+            TownFacadePaintCell[] cells = BuildExteriorFacadeCells();
+            if (cells == null || cells.Length == 0)
+                return;
+
+            for (int i = 0; i < cells.Length; i++)
+            {
+                TownFacadePaintCell entry = cells[i];
+                if (entry.tile == null)
+                    continue;
+
+                if (entry.layer == TownFacadePaintLayer.Floor)
+                {
+                    floorMap.SetTile(entry.cell, entry.tile);
+                    wallMap.SetTile(entry.cell, null);
+                }
+                else
+                {
+                    wallMap.SetTile(entry.cell, entry.tile);
+                    floorMap.SetTile(entry.cell, null);
+                }
+            }
+
+            GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(floorMap);
+            GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(wallMap);
+        }
+
         static void EnsureFolders()
         {
-            EnsureFolder(TownDistrictTestPaths.AdventureGuildExchangeFolder);
+            EnsureFolder(TownDistrictTestPaths.MarketGeneralStoreFolder);
             EnsureFolder("Assets/Resources/Town/Npc");
             EnsureFolder("Assets/Resources/Dialog/Profiles");
         }
 
-        static void EnsureGuildClerkDialog()
+        static void EnsureKeeperDialog()
         {
-            var profile = AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(GuildDialogPath);
+            var profile = AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(KeeperDialogPath);
             if (profile == null)
             {
                 profile = ScriptableObject.CreateInstance<NpcDialogProfile>();
-                AssetDatabase.CreateAsset(profile, GuildDialogPath);
+                AssetDatabase.CreateAsset(profile, KeeperDialogPath);
             }
 
             var so = new SerializedObject(profile);
-            so.FindProperty("npcId").stringValue = AdventureGuildExchangeLayout.NpcId;
+            so.FindProperty("npcId").stringValue = MarketGeneralStoreLayout.NpcId;
             so.FindProperty("rootNodeIndex").intValue = 0;
             so.FindProperty("incrementTalkCountOnStart").boolValue = true;
 
@@ -90,23 +116,23 @@ namespace JRogue.Editor.World
             SerializedProperty node = nodes.GetArrayElementAtIndex(0);
             node.FindPropertyRelative("kind").enumValueIndex = (int)DialogNodeKind.Line;
             node.FindPropertyRelative("line").FindPropertyRelative("textTemplate").stringValue =
-                "Welcome to the Adventure Guild Exchange, {partyName}. Posting quests is my trade.";
+                "Fresh goods from every dimension, {partyName}. Take a look at today's stock.";
             node.FindPropertyRelative("nextNodeIndex").intValue = DialogGraph.NoNode;
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(profile);
         }
 
-        static void EnsureGuildClerkPrefab()
+        static void EnsureKeeperPrefab()
         {
             GameObject humanNpc = AssetDatabase.LoadAssetAtPath<GameObject>(HumanNpcPrefabPath);
             if (humanNpc == null)
             {
-                Debug.LogWarning("[AdventureGuild] Missing HumanNpc prefab — run Create NPC Dialog Pack first.");
+                Debug.LogWarning("[MarketGeneralStore] Missing HumanNpc prefab — run Create NPC Dialog Pack first.");
                 return;
             }
 
-            Sprite clerkSprite = AssetDatabase.LoadAssetAtPath<Sprite>(GuildClerkSpritePath);
-            string prefabPath = GuildClerkPrefabPath;
+            Sprite keeperSprite = AssetDatabase.LoadAssetAtPath<Sprite>(KeeperSpritePath);
+            string prefabPath = KeeperPrefabPath;
             bool createdNew = !File.Exists(prefabPath);
             GameObject instance = createdNew
                 ? (GameObject)PrefabUtility.InstantiatePrefab(humanNpc)
@@ -114,25 +140,25 @@ namespace JRogue.Editor.World
 
             try
             {
-                instance.name = "TownNpc_AdventureGuildClerk";
+                instance.name = "TownNpc_MarketGeneralStoreKeeper";
 
                 NpcController npc = instance.GetComponent<NpcController>();
                 if (npc != null)
                 {
                     var npcSo = new SerializedObject(npc);
-                    npcSo.FindProperty("npcId").stringValue = AdventureGuildExchangeLayout.NpcId;
-                    npcSo.FindProperty("displayName").stringValue = "Guild Clerk";
+                    npcSo.FindProperty("npcId").stringValue = MarketGeneralStoreLayout.NpcId;
+                    npcSo.FindProperty("displayName").stringValue = "Market Keeper";
                     npcSo.FindProperty("dialogProfile").objectReferenceValue =
-                        AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(GuildDialogPath);
+                        AssetDatabase.LoadAssetAtPath<NpcDialogProfile>(KeeperDialogPath);
                     npcSo.ApplyModifiedPropertiesWithoutUndo();
                 }
 
-                if (clerkSprite != null)
+                if (keeperSprite != null)
                 {
                     SpriteRenderer renderer = instance.GetComponent<SpriteRenderer>();
                     if (renderer != null)
                     {
-                        renderer.sprite = clerkSprite;
+                        renderer.sprite = keeperSprite;
                         renderer.sortingOrder = 20;
                     }
                 }
@@ -140,8 +166,8 @@ namespace JRogue.Editor.World
                 NpcCounterTalkBinding counterBinding = instance.GetComponent<NpcCounterTalkBinding>()
                     ?? instance.AddComponent<NpcCounterTalkBinding>();
                 counterBinding.Configure(
-                    AdventureGuildExchangeLayout.CustomerRowY,
-                    AdventureGuildExchangeLayout.CounterRowY);
+                    MarketGeneralStoreLayout.CustomerRowY,
+                    MarketGeneralStoreLayout.CounterRowY);
 
                 PrefabUtility.SaveAsPrefabAsset(instance, prefabPath);
             }
@@ -206,15 +232,16 @@ namespace JRogue.Editor.World
             formation ??= AssetDatabase.LoadAssetAtPath<PartyFormationSpawnProfile>(
                 "Assets/Resources/Dungeon/PartyFormation_Default.asset");
 
-            var def = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.AdventureGuildInteriorFloorDef);
+            var def = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(
+                TownDistrictTestPaths.MarketGeneralStoreInteriorFloorDef);
             if (def == null)
             {
                 def = ScriptableObject.CreateInstance<DungeonFloorDefinition>();
-                AssetDatabase.CreateAsset(def, TownDistrictTestPaths.AdventureGuildInteriorFloorDef);
+                AssetDatabase.CreateAsset(def, TownDistrictTestPaths.MarketGeneralStoreInteriorFloorDef);
             }
 
             var so = new SerializedObject(def);
-            so.FindProperty("floorId").stringValue = AdventureGuildExchangeLayout.InteriorFloorId;
+            so.FindProperty("floorId").stringValue = MarketGeneralStoreLayout.InteriorFloorId;
             so.FindProperty("layoutMode").enumValueIndex = (int)FloorLayoutMode.ScenePainted;
             so.FindProperty("floorTile").objectReferenceValue = floorTile;
             so.FindProperty("wallTile").objectReferenceValue = wallTile;
@@ -223,90 +250,123 @@ namespace JRogue.Editor.World
             so.FindProperty("combatPolicy").enumValueIndex = (int)FloorCombatPolicy.SafeZone;
 
             SerializedProperty portals = so.FindProperty("portals");
-            portals.arraySize = 1;
-            SerializedProperty exitPortal = portals.GetArrayElementAtIndex(0);
-            exitPortal.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.ExitLinkId;
-            exitPortal.FindPropertyRelative("targetFloorId").stringValue = DimensionSquareFloorIds.FloorId;
-            exitPortal.FindPropertyRelative("portalCell").vector3IntValue = AdventureGuildExchangeLayout.InteriorExitCell;
-            exitPortal.FindPropertyRelative("listLabel").stringValue = "Exit";
+            portals.arraySize = 2;
+
+            SerializedProperty westExit = portals.GetArrayElementAtIndex(0);
+            westExit.FindPropertyRelative("portalLinkId").stringValue = MarketGeneralStoreLayout.ExitWestLinkId;
+            westExit.FindPropertyRelative("targetFloorId").stringValue = MarketTownFloorIds.FloorId;
+            westExit.FindPropertyRelative("portalCell").vector3IntValue = MarketGeneralStoreLayout.InteriorWestExitCell;
+            westExit.FindPropertyRelative("listLabel").stringValue = "Exit";
+
+            SerializedProperty eastExit = portals.GetArrayElementAtIndex(1);
+            eastExit.FindPropertyRelative("portalLinkId").stringValue = MarketGeneralStoreLayout.ExitEastLinkId;
+            eastExit.FindPropertyRelative("targetFloorId").stringValue = MarketTownFloorIds.FloorId;
+            eastExit.FindPropertyRelative("portalCell").vector3IntValue = MarketGeneralStoreLayout.InteriorEastExitCell;
+            eastExit.FindPropertyRelative("listLabel").stringValue = "Exit";
 
             SerializedProperty arrivals = so.FindProperty("arrivalBindings");
-            arrivals.arraySize = 1;
-            SerializedProperty arrival = arrivals.GetArrayElementAtIndex(0);
-            arrival.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.EnterLinkId;
-            arrival.FindPropertyRelative("arrivalAnchor").vector3IntValue = AdventureGuildExchangeLayout.InteriorArrivalCell;
+            arrivals.arraySize = 2;
+
+            SerializedProperty westArrival = arrivals.GetArrayElementAtIndex(0);
+            westArrival.FindPropertyRelative("portalLinkId").stringValue = MarketGeneralStoreLayout.EnterWestLinkId;
+            westArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue =
+                MarketGeneralStoreLayout.InteriorWestArrivalCell;
+
+            SerializedProperty eastArrival = arrivals.GetArrayElementAtIndex(1);
+            eastArrival.FindPropertyRelative("portalLinkId").stringValue = MarketGeneralStoreLayout.EnterEastLinkId;
+            eastArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue =
+                MarketGeneralStoreLayout.InteriorEastArrivalCell;
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(def);
             return def;
         }
 
-        static void EnsureDimensionSquareBuildingPortals()
+        static void EnsureMarketPortals()
         {
-            var def = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.DimensionSquareFloorDef);
+            var def = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.MarketFloorDef);
             if (def == null)
                 return;
 
+            int stripWidth = DistrictSquareMarketTransition.StripMaxX - DistrictSquareMarketTransition.StripMinX + 1;
+
             var so = new SerializedObject(def);
             SerializedProperty portals = so.FindProperty("portals");
-            portals.arraySize = 1;
-            SerializedProperty enter = portals.GetArrayElementAtIndex(0);
-            enter.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.EnterLinkId;
-            enter.FindPropertyRelative("targetFloorId").stringValue = AdventureGuildExchangeLayout.InteriorFloorId;
-            enter.FindPropertyRelative("portalCell").vector3IntValue = AdventureGuildExchangeLayout.ExteriorDoorCell;
-            enter.FindPropertyRelative("listLabel").stringValue = "Adventure Guild Exchange";
+            portals.arraySize = stripWidth + 2;
+
+            WriteSouthStripPortals(
+                portals,
+                0,
+                DistrictSquareMarketTransition.MarketToSquareLinkId,
+                DimensionSquareFloorIds.FloorId,
+                DistrictSquareMarketTransition.MarketSouthEdgeY,
+                "Dimension Square");
+
+            SerializedProperty westEnter = portals.GetArrayElementAtIndex(stripWidth);
+            westEnter.FindPropertyRelative("portalLinkId").stringValue = MarketGeneralStoreLayout.EnterWestLinkId;
+            westEnter.FindPropertyRelative("targetFloorId").stringValue = MarketGeneralStoreLayout.InteriorFloorId;
+            westEnter.FindPropertyRelative("portalCell").vector3IntValue = MarketGeneralStoreLayout.ExteriorWestDoorCell;
+            westEnter.FindPropertyRelative("listLabel").stringValue = "Market General Store";
+
+            SerializedProperty eastEnter = portals.GetArrayElementAtIndex(stripWidth + 1);
+            eastEnter.FindPropertyRelative("portalLinkId").stringValue = MarketGeneralStoreLayout.EnterEastLinkId;
+            eastEnter.FindPropertyRelative("targetFloorId").stringValue = MarketGeneralStoreLayout.InteriorFloorId;
+            eastEnter.FindPropertyRelative("portalCell").vector3IntValue = MarketGeneralStoreLayout.ExteriorEastDoorCell;
+            eastEnter.FindPropertyRelative("listLabel").stringValue = "Market General Store";
 
             SerializedProperty arrivals = so.FindProperty("arrivalBindings");
-            arrivals.arraySize = 1;
-            SerializedProperty arrival = arrivals.GetArrayElementAtIndex(0);
-            arrival.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.ExitLinkId;
-            arrival.FindPropertyRelative("arrivalAnchor").vector3IntValue = AdventureGuildExchangeLayout.ExteriorDoorCell;
+            arrivals.arraySize = 3;
+
+            SerializedProperty squareArrival = arrivals.GetArrayElementAtIndex(0);
+            squareArrival.FindPropertyRelative("portalLinkId").stringValue =
+                DistrictSquareMarketTransition.SquareToMarketLinkId;
+            squareArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue =
+                DistrictSquareMarketTransition.MarketArrivalCell;
+
+            SerializedProperty westExitArrival = arrivals.GetArrayElementAtIndex(1);
+            westExitArrival.FindPropertyRelative("portalLinkId").stringValue = MarketGeneralStoreLayout.ExitWestLinkId;
+            westExitArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue =
+                MarketGeneralStoreLayout.ExteriorWestDoorCell;
+
+            SerializedProperty eastExitArrival = arrivals.GetArrayElementAtIndex(2);
+            eastExitArrival.FindPropertyRelative("portalLinkId").stringValue = MarketGeneralStoreLayout.ExitEastLinkId;
+            eastExitArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue =
+                MarketGeneralStoreLayout.ExteriorEastDoorCell;
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(def);
         }
 
-        static void EnsureExteriorFacadeOverlay()
+        static void WriteSouthStripPortals(
+            SerializedProperty portals,
+            int startIndex,
+            string linkId,
+            string targetFloorId,
+            int y,
+            string label)
         {
-            TownFacadePaintCell[] cells = BuildExteriorFacadeCells();
-            if (cells == null || cells.Length == 0)
-                return;
-
-            TownBuildingFacadeOverlay overlay = LoadOrCreate<TownBuildingFacadeOverlay>(TownDistrictTestPaths.DimensionSquareFacadeOverlay);
-            overlay.Configure(DimensionSquareFloorIds.FloorId, cells);
-            EditorUtility.SetDirty(overlay);
+            int stripWidth = DistrictSquareMarketTransition.StripMaxX - DistrictSquareMarketTransition.StripMinX + 1;
+            for (int i = 0; i < stripWidth; i++)
+            {
+                int x = DistrictSquareMarketTransition.StripMinX + i;
+                SerializedProperty portal = portals.GetArrayElementAtIndex(startIndex + i);
+                portal.FindPropertyRelative("portalLinkId").stringValue = linkId;
+                portal.FindPropertyRelative("targetFloorId").stringValue = targetFloorId;
+                portal.FindPropertyRelative("portalCell").vector3IntValue = new Vector3Int(x, y, 0);
+                portal.FindPropertyRelative("listLabel").stringValue = label;
+            }
         }
 
-        /// <summary>Bakes the guild exterior onto scene-painted dimension_square tilemaps.</summary>
-        public static void PaintAdventureGuildExteriorFacade(Tilemap floorMap, Tilemap wallMap)
+        static void EnsureMarketFacadeOverlay()
         {
-            if (floorMap == null || wallMap == null)
-                return;
-
             TownFacadePaintCell[] cells = BuildExteriorFacadeCells();
             if (cells == null || cells.Length == 0)
                 return;
 
-            for (int i = 0; i < cells.Length; i++)
-            {
-                TownFacadePaintCell entry = cells[i];
-                if (entry.tile == null)
-                    continue;
-
-                if (entry.layer == TownFacadePaintLayer.Floor)
-                {
-                    floorMap.SetTile(entry.cell, entry.tile);
-                    wallMap.SetTile(entry.cell, null);
-                }
-                else
-                {
-                    wallMap.SetTile(entry.cell, entry.tile);
-                    floorMap.SetTile(entry.cell, null);
-                }
-            }
-
-            GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(floorMap);
-            GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(wallMap);
+            TownBuildingFacadeOverlay overlay =
+                LoadOrCreate<TownBuildingFacadeOverlay>(TownDistrictTestPaths.MarketFacadeOverlay);
+            overlay.Configure(MarketTownFloorIds.FloorId, cells);
+            EditorUtility.SetDirty(overlay);
         }
 
         static TownFacadePaintCell[] BuildExteriorFacadeCells()
@@ -320,15 +380,16 @@ namespace JRogue.Editor.World
             TileBase door = AssetDatabase.LoadAssetAtPath<TileBase>(BuildingDoorTilePath);
             if (stoneCorner == null || stoneWall == null || door == null)
             {
-                Debug.LogWarning("[AdventureGuild] Building tiles missing — run Fix TownTest Scene.");
+                Debug.LogWarning("[MarketGeneralStore] Building tiles missing — run Fix TownTest Scene.");
                 return null;
             }
 
-            int originX = AdventureGuildExchangeLayout.ExteriorOriginX;
-            int originY = AdventureGuildExchangeLayout.ExteriorOriginY;
-            int width = AdventureGuildExchangeLayout.ExteriorWidth;
-            int depth = AdventureGuildExchangeLayout.ExteriorDepth;
-            int doorLocalX = AdventureGuildExchangeLayout.ExteriorDoorCell.x - originX;
+            int originX = MarketGeneralStoreLayout.ExteriorOriginX;
+            int originY = MarketGeneralStoreLayout.ExteriorOriginY;
+            int width = MarketGeneralStoreLayout.ExteriorWidth;
+            int depth = MarketGeneralStoreLayout.ExteriorDepth;
+            int westDoorLocalX = MarketGeneralStoreLayout.ExteriorWestDoorCell.x - originX;
+            int eastDoorLocalX = MarketGeneralStoreLayout.ExteriorEastDoorCell.x - originX;
 
             var cells = new List<TownFacadePaintCell>(width * depth);
             for (int dy = 0; dy < depth; dy++)
@@ -338,7 +399,7 @@ namespace JRogue.Editor.World
                     int x = originX + dx;
                     int y = originY + dy;
                     var cell = new Vector3Int(x, y, 0);
-                    bool isDoor = dx == doorLocalX && dy == 0;
+                    bool isDoor = dy == 0 && (dx == westDoorLocalX || dx == eastDoorLocalX);
 
                     if (isDoor)
                     {
@@ -373,15 +434,21 @@ namespace JRogue.Editor.World
             {
                 new TownFacadePaintCell
                 {
-                    cell = AdventureGuildExchangeLayout.InteriorExitCell,
+                    cell = MarketGeneralStoreLayout.InteriorWestExitCell,
+                    tile = door,
+                    layer = TownFacadePaintLayer.Floor,
+                },
+                new TownFacadePaintCell
+                {
+                    cell = MarketGeneralStoreLayout.InteriorEastExitCell,
                     tile = door,
                     layer = TownFacadePaintLayer.Floor,
                 },
             };
 
-            TownBuildingFacadeOverlay overlay =
-                LoadOrCreate<TownBuildingFacadeOverlay>(TownDistrictTestPaths.AdventureGuildInteriorFacadeOverlay);
-            overlay.Configure(AdventureGuildExchangeLayout.InteriorFloorId, cells);
+            TownBuildingFacadeOverlay overlay = LoadOrCreate<TownBuildingFacadeOverlay>(
+                TownDistrictTestPaths.MarketGeneralStoreInteriorFacadeOverlay);
+            overlay.Configure(MarketGeneralStoreLayout.InteriorFloorId, cells);
             EditorUtility.SetDirty(overlay);
         }
 
@@ -398,11 +465,11 @@ namespace JRogue.Editor.World
             if (floorTiles == null || floorTiles.Length == 0 || wallTile == null || counterTile == null)
                 return;
 
-            int width = AdventureGuildExchangeLayout.InteriorWidth;
-            int height = AdventureGuildExchangeLayout.InteriorHeight;
+            int width = MarketGeneralStoreLayout.InteriorWidth;
+            int height = MarketGeneralStoreLayout.InteriorHeight;
 
-            Undo.RecordObject(floorMap, "Paint guild interior floor");
-            Undo.RecordObject(wallMap, "Paint guild interior walls");
+            Undo.RecordObject(floorMap, "Paint market store interior floor");
+            Undo.RecordObject(wallMap, "Paint market store interior walls");
             floorMap.ClearAllTiles();
             wallMap.ClearAllTiles();
 
@@ -412,8 +479,8 @@ namespace JRogue.Editor.World
                 {
                     var cell = new Vector3Int(x, y, 0);
                     bool isPerimeter = x == 0 || y == 0 || x == width - 1 || y == height - 1;
-                    bool isExit = cell == AdventureGuildExchangeLayout.InteriorExitCell;
-                    bool isCounter = AdventureGuildExchangeLayout.IsCounterCell(cell);
+                    bool isExit = MarketGeneralStoreLayout.IsInteriorExitCell(cell);
+                    bool isCounter = MarketGeneralStoreLayout.IsCounterCell(cell);
 
                     if (isCounter)
                     {
@@ -464,10 +531,12 @@ namespace JRogue.Editor.World
             Grid gridComponent = grid.GetComponent<Grid>();
             Tilemap floorMap = instance.Tilemaps.FloorMap;
 
-            CreateMarker(markersRoot, gridComponent, floorMap, "GuildClerk", StaticHubMarkerKind.NpcSlot,
-                AdventureGuildExchangeLayout.ClerkNpcCell, AdventureGuildExchangeLayout.NpcMarkerId);
-            CreateMarker(markersRoot, gridComponent, floorMap, "InteriorExit", StaticHubMarkerKind.BuildingExit,
-                AdventureGuildExchangeLayout.InteriorExitCell);
+            CreateMarker(markersRoot, gridComponent, floorMap, "MarketKeeper", StaticHubMarkerKind.NpcSlot,
+                MarketGeneralStoreLayout.ClerkNpcCell, MarketGeneralStoreLayout.NpcMarkerId);
+            CreateMarker(markersRoot, gridComponent, floorMap, "InteriorWestExit", StaticHubMarkerKind.BuildingExit,
+                MarketGeneralStoreLayout.InteriorWestExitCell);
+            CreateMarker(markersRoot, gridComponent, floorMap, "InteriorEastExit", StaticHubMarkerKind.BuildingExit,
+                MarketGeneralStoreLayout.InteriorEastExitCell);
         }
 
         static void CreateMarker(
@@ -536,11 +605,6 @@ namespace JRogue.Editor.World
                 return stoneCorner;
 
             return dy == 1 && (dx == 1 || dx == width - 2) ? stoneWindow : stoneWall;
-        }
-
-        public static void UpdateDistrictCatalog(DungeonFloorDefinition squareDef, DungeonFloorDefinition interiorDef)
-        {
-            DistrictTestCatalogUpdater.UpdateCatalog(squareDef, interiorDef);
         }
 
         static T LoadOrCreate<T>(string path) where T : ScriptableObject

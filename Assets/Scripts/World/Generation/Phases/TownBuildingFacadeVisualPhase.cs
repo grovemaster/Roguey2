@@ -28,13 +28,17 @@ namespace JRogue.World.Generation.Phases
             }
 
             if (def.FloorId == TownPortalSetupPhase.TownFloorId
-                || def.FloorId == DimensionSquareFloorIds.FloorId)
+                || def.FloorId == DimensionSquareFloorIds.FloorId
+                || def.FloorId == MarketTownFloorIds.FloorId)
             {
                 TownBuildingMassService.Clear();
                 TownBuildingFacadeSight.Clear();
             }
 
             if (def.FloorId == AdventureGuildExchangeLayout.InteriorFloorId)
+                ShopCounterService.Clear();
+
+            if (def.FloorId == MarketGeneralStoreLayout.InteriorFloorId)
                 ShopCounterService.Clear();
 
             int painted = 0;
@@ -70,7 +74,9 @@ namespace JRogue.World.Generation.Phases
             {
                 $"{OverlayResourceFolder}{floorId}",
                 $"Town/DistrictTest/TownArea/DimensionSquare/FacadeOverlay_{floorId}",
+                $"Town/DistrictTest/TownArea/Market/FacadeOverlay_{floorId}",
                 $"Town/DistrictTest/Building/AdventureGuildExchange/FacadeOverlay_{floorId}",
+                $"Town/DistrictTest/Building/MarketGeneralStore/FacadeOverlay_{floorId}",
             };
 
             for (int i = 0; i < resourcePaths.Length; i++)

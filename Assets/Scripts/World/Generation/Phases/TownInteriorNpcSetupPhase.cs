@@ -26,6 +26,11 @@ namespace JRogue.World.Generation.Phases
                 AdventureGuildExchangeLayout.NpcMarkerId,
                 "Town/Npc/TownNpc_AdventureGuildClerk",
                 "Assets/Resources/Town/Npc/TownNpc_AdventureGuildClerk.prefab"),
+            (
+                MarketGeneralStoreLayout.InteriorFloorId,
+                MarketGeneralStoreLayout.NpcMarkerId,
+                "Town/Npc/TownNpc_MarketGeneralStoreKeeper",
+                "Assets/Resources/Town/Npc/TownNpc_MarketGeneralStoreKeeper.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)
@@ -68,12 +73,8 @@ namespace JRogue.World.Generation.Phases
                 }
 
                 NpcCounterTalkBinding counterBinding = instance.GetComponent<NpcCounterTalkBinding>();
-                if (counterBinding != null && floorId == AdventureGuildExchangeLayout.InteriorFloorId)
-                {
-                    counterBinding.Configure(
-                        AdventureGuildExchangeLayout.CustomerRowY,
-                        AdventureGuildExchangeLayout.CounterRowY);
-                }
+                if (counterBinding != null)
+                    ConfigureCounterTalkBinding(counterBinding, floorId);
 
                 if (instance.GetComponent<ShopNpcController>() != null)
                     TownShopStateService.EnsureRunService();
@@ -96,6 +97,24 @@ namespace JRogue.World.Generation.Phases
                 DungeonGenerationLog.Phase(
                     nameof(TownInteriorNpcSetupPhase),
                     $"spawned {spawned} interior NPC(s).");
+            }
+        }
+
+        static void ConfigureCounterTalkBinding(NpcCounterTalkBinding counterBinding, string floorId)
+        {
+            if (floorId == AdventureGuildExchangeLayout.InteriorFloorId)
+            {
+                counterBinding.Configure(
+                    AdventureGuildExchangeLayout.CustomerRowY,
+                    AdventureGuildExchangeLayout.CounterRowY);
+                return;
+            }
+
+            if (floorId == MarketGeneralStoreLayout.InteriorFloorId)
+            {
+                counterBinding.Configure(
+                    MarketGeneralStoreLayout.CustomerRowY,
+                    MarketGeneralStoreLayout.CounterRowY);
             }
         }
 

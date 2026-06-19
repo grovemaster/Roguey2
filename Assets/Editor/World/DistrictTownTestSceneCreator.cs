@@ -59,9 +59,15 @@ namespace JRogue.Editor.World
             EnsureDimensionSquarePalettes();
             DungeonFloorDefinition squareDef = EnsureDimensionSquareFloorDefinition();
             AdventureGuildExchangePackCreator.SetupAdventureGuildExchange();
-            DungeonFloorDefinition interiorDef =
+            MarketTownPackCreator.SetupMarketTown();
+            MarketGeneralStorePackCreator.SetupMarketGeneralStore();
+            DungeonFloorDefinition guildInteriorDef =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.AdventureGuildInteriorFloorDef);
-            AdventureGuildExchangePackCreator.UpdateDistrictCatalog(squareDef, interiorDef);
+            DungeonFloorDefinition marketDef =
+                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.MarketFloorDef);
+            DungeonFloorDefinition storeInteriorDef =
+                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.MarketGeneralStoreInteriorFloorDef);
+            MarketTownPackCreator.UpdateDistrictCatalog(squareDef, marketDef, guildInteriorDef, storeInteriorDef);
 
             if (!File.Exists(TownDistrictTestPaths.DistrictTownTestScene))
             {
@@ -70,9 +76,12 @@ namespace JRogue.Editor.World
             }
 
             Scene scene = EditorSceneManager.OpenScene(TownDistrictTestPaths.DistrictTownTestScene, OpenSceneMode.Single);
-            ConfigureSceneHierarchy(scene, squareDef, interiorDef);
+            ConfigureSceneHierarchy(scene, squareDef, marketDef, guildInteriorDef, storeInteriorDef);
             if (repaintTiles)
+            {
                 PaintDimensionSquareLayout();
+                PaintMarketTownLayout();
+            }
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -88,6 +97,8 @@ namespace JRogue.Editor.World
             EnsureFolder(TownDistrictTestPaths.DistrictTestRoot);
             EnsureFolder(TownDistrictTestPaths.DistrictTestRoot + "/TownArea");
             EnsureFolder(TownDistrictTestPaths.DimensionSquareFolder);
+            EnsureFolder(TownDistrictTestPaths.MarketFolder);
+            EnsureFolder(TownDistrictTestPaths.MarketGeneralStoreFolder);
             EnsureFolder(TownDistrictTestPaths.DistrictTestRoot + "/Building");
         }
 
@@ -146,12 +157,14 @@ namespace JRogue.Editor.World
             return def;
         }
 
-        // Catalog updated via AdventureGuildExchangePackCreator.UpdateDistrictCatalog
+        // Catalog updated via MarketTownPackCreator.UpdateDistrictCatalog (4 hub floors).
 
         static void ConfigureSceneHierarchy(
             Scene scene,
             DungeonFloorDefinition squareDef,
-            DungeonFloorDefinition interiorDef)
+            DungeonFloorDefinition marketDef,
+            DungeonFloorDefinition guildInteriorDef,
+            DungeonFloorDefinition storeInteriorDef)
         {
             GameObject systems = GameObject.Find(DungeonFloorTestSceneValidator.SystemsObjectName);
             if (systems == null)
@@ -177,25 +190,48 @@ namespace JRogue.Editor.World
 
             var managerSo = new SerializedObject(floorManager);
             managerSo.FindProperty("useDontDestroyOnLoad").boolValue = false;
-            managerSo.FindProperty("floorDefinitions").arraySize = 2;
+            managerSo.FindProperty("floorDefinitions").arraySize = 4;
             managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(0).objectReferenceValue = squareDef;
-            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(1).objectReferenceValue = interiorDef;
+            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(1).objectReferenceValue = marketDef;
+            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(2).objectReferenceValue = guildInteriorDef;
+            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(3).objectReferenceValue = storeInteriorDef;
             Transform floorsRoot = EnsureFloorsRoot(systems, floorManager);
             managerSo.ApplyModifiedPropertiesWithoutUndo();
 
             RemoveChildFloorsExcept(
                 floorsRoot,
                 DimensionSquareFloorIds.FloorId,
-                AdventureGuildExchangeLayout.InteriorFloorId);
+                MarketTownFloorIds.FloorId,
+                AdventureGuildExchangeLayout.InteriorFloorId,
+                MarketGeneralStoreLayout.InteriorFloorId);
 
             DungeonFloorInstance squareInstance = EnsureScenePaintedFloor(floorsRoot, squareDef);
             squareInstance.gameObject.SetActive(true);
 
-            if (interiorDef != null)
+            if (marketDef != null)
             {
-                DungeonFloorInstance interiorInstance = EnsureScenePaintedFloor(floorsRoot, interiorDef);
-                interiorInstance.gameObject.SetActive(false);
-                AdventureGuildExchangePackCreator.IntegrateDistrictTownScene(interiorInstance);
+                DungeonFloorInstance marketInstance = EnsureScenePaintedFloor(floorsRoot, marketDef);
+                marketInstance.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.LogError(
+                    $"[DistrictTownTest] Missing market floor definition at {TownDistrictTestPaths.MarketFloorDef}. " +
+                    "Run JRogue → Town → Setup Market Town Area.");
+            }
+
+            if (guildInteriorDef != null)
+            {
+                DungeonFloorInstance guildInteriorInstance = EnsureScenePaintedFloor(floorsRoot, guildInteriorDef);
+                guildInteriorInstance.gameObject.SetActive(false);
+                AdventureGuildExchangePackCreator.IntegrateDistrictTownScene(guildInteriorInstance);
+            }
+
+            if (storeInteriorDef != null)
+            {
+                DungeonFloorInstance storeInteriorInstance = EnsureScenePaintedFloor(floorsRoot, storeInteriorDef);
+                storeInteriorInstance.gameObject.SetActive(false);
+                MarketGeneralStorePackCreator.IntegrateDistrictTownScene(storeInteriorInstance);
             }
 
             DungeonFloorTestController test = systems.GetComponent<DungeonFloorTestController>()
@@ -284,18 +320,46 @@ namespace JRogue.Editor.World
             EditorUtility.SetDirty(wallMap);
         }
 
-        static DungeonFloorInstance FindDimensionSquareInstance()
+        static void PaintMarketTownLayout()
         {
-            DungeonFloorInstance[] instances = Object.FindObjectsByType<DungeonFloorInstance>();
+            DungeonFloorInstance instance = FindFloorInstance(MarketTownFloorIds.FloorId);
+            if (instance == null)
+            {
+                Debug.LogError("[DistrictTownTest] No town_market DungeonFloorInstance to paint.");
+                return;
+            }
+
+            MarketTownPackCreator.IntegrateDistrictTownScene(instance);
+        }
+
+        static DungeonFloorInstance FindFloorInstance(string floorId)
+        {
+            GameObject systems = GameObject.Find(DungeonFloorTestSceneValidator.SystemsObjectName);
+            if (systems != null)
+            {
+                Transform floorsRoot = systems.transform.Find("Floors");
+                if (floorsRoot != null)
+                {
+                    Transform child = floorsRoot.Find(floorId);
+                    if (child != null && child.TryGetComponent(out DungeonFloorInstance hierarchyInstance))
+                        return hierarchyInstance;
+                }
+            }
+
+            DungeonFloorInstance[] instances =
+                Object.FindObjectsByType<DungeonFloorInstance>(FindObjectsInactive.Include);
             for (int i = 0; i < instances.Length; i++)
             {
                 DungeonFloorInstance instance = instances[i];
-                if (instance != null && instance.FloorId == DimensionSquareFloorIds.FloorId)
+                if (instance != null && instance.FloorId == floorId)
                     return instance;
             }
 
             return null;
         }
+
+        static DungeonFloorInstance FindDimensionSquareInstance() =>
+            FindFloorInstance(DimensionSquareFloorIds.FloorId);
 
         static TileBase[] LoadFloorTilesFromPalette()
         {
@@ -376,7 +440,7 @@ namespace JRogue.Editor.World
             go.transform.position = world;
         }
 
-        static void CreateOrUpdatePalette(
+        internal static void CreateOrUpdatePalette(
             string path,
             string paletteId,
             DungeonTilePaletteLayer layer,
