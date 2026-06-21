@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,18 +10,21 @@ namespace JRogue.World.Generation.Zones
             ZoneInterface interfaceDef,
             ZoneBoundaryKind kind,
             int corridorCount,
-            int corridorWidth)
+            int corridorWidth,
+            int[] openingWidths)
         {
             Interface = interfaceDef;
             Kind = kind;
             CorridorCount = corridorCount;
             CorridorWidth = corridorWidth;
+            OpeningWidths = openingWidths ?? Array.Empty<int>();
         }
 
         public ZoneInterface Interface { get; }
         public ZoneBoundaryKind Kind { get; }
         public int CorridorCount { get; }
         public int CorridorWidth { get; }
+        public int[] OpeningWidths { get; }
     }
 
     public static class ZoneBoundaryResolver
@@ -28,7 +32,8 @@ namespace JRogue.World.Generation.Zones
         public static List<ResolvedZoneBoundary> ResolveAll(
             DungeonFloorZoneLayout layout,
             IReadOnlyList<ResolvedZonePiece> pieces,
-            IReadOnlyList<ZoneInterface> interfaces)
+            IReadOnlyList<ZoneInterface> interfaces,
+            System.Random boundaryRng)
         {
             var resolved = new List<ResolvedZoneBoundary>();
             if (layout == null || pieces == null || interfaces == null)
@@ -48,9 +53,16 @@ namespace JRogue.World.Generation.Zones
                 layout.TryGetLayoutPiece(iface.PieceAId, out ZoneLayoutPiece layoutPiece);
 
                 ZoneBoundaryKind kind = ResolveKind(layout, layoutPiece, iface, pieceA, pieceB);
-                ResolveCorridorParams(layoutPiece, iface, kind, out int corridorCount, out int corridorWidth);
+                ResolveCorridorParams(
+                    layoutPiece,
+                    iface,
+                    kind,
+                    boundaryRng,
+                    out int corridorCount,
+                    out int corridorWidth,
+                    out int[] openingWidths);
 
-                resolved.Add(new ResolvedZoneBoundary(iface, kind, corridorCount, corridorWidth));
+                resolved.Add(new ResolvedZoneBoundary(iface, kind, corridorCount, corridorWidth, openingWidths));
             }
 
             return resolved;
@@ -101,20 +113,35 @@ namespace JRogue.World.Generation.Zones
             ZoneLayoutPiece layoutPiece,
             ZoneInterface iface,
             ZoneBoundaryKind kind,
+            System.Random boundaryRng,
             out int corridorCount,
-            out int corridorWidth)
+            out int corridorWidth,
+            out int[] openingWidths)
         {
             corridorCount = 1;
             corridorWidth = 1;
+            openingWidths = new[] { 1 };
 
             if (kind != ZoneBoundaryKind.Corridor && kind != ZoneBoundaryKind.Mixed)
                 return;
 
+            int minWidth = 1;
+            int maxWidth = 1;
             if (TryGetEdgeBoundary(layoutPiece, iface.PieceBId, out ZoneEdgeBoundary edge))
             {
                 corridorCount = Mathf.Max(1, edge.corridorCount);
-                corridorWidth = Mathf.Max(1, edge.corridorWidth);
+                minWidth = edge.corridorWidthMin > 0 ? edge.corridorWidthMin : edge.corridorWidth;
+                maxWidth = edge.corridorWidthMax > 0 ? edge.corridorWidthMax : edge.corridorWidth;
+                minWidth = Mathf.Max(1, minWidth);
+                maxWidth = Mathf.Max(minWidth, maxWidth);
             }
+
+            openingWidths = ZoneBoundaryOpeningPlanner.RollOpeningWidths(
+                corridorCount,
+                minWidth,
+                maxWidth,
+                boundaryRng ?? new System.Random(0));
+            corridorWidth = openingWidths.Length > 0 ? openingWidths[0] : 1;
         }
 
         static bool IsHabitatZone(string zoneId) =>

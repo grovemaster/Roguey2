@@ -30,28 +30,34 @@ namespace JRogue.World.Generation.Phases
                 return;
             }
 
-            List<ZoneInterface> interfaces = ZoneInterfaceResolver.ResolveInterfaces(
-                context.ResolvedZonePieces,
-                layout.FloorWidth,
-                layout.FloorHeight);
+            if (context.ResolvedZoneBoundaries == null || context.ResolvedZoneBoundaries.Count == 0)
+            {
+                List<ZoneInterface> interfaces = ZoneInterfaceResolver.ResolveInterfaces(
+                    context.ResolvedZonePieces,
+                    layout.FloorWidth,
+                    layout.FloorHeight);
+                System.Random boundaryRng = ZoneGenerationRng.CreateZoneSelectionRng(
+                    context.RunSeed,
+                    def.FloorId + "_boundaries");
+                context.ResolvedZoneBoundaries = ZoneBoundaryResolver.ResolveAll(
+                    layout,
+                    context.ResolvedZonePieces,
+                    interfaces,
+                    boundaryRng);
+            }
 
-            List<ResolvedZoneBoundary> boundaries = ZoneBoundaryResolver.ResolveAll(
-                layout,
-                context.ResolvedZonePieces,
-                interfaces);
-
-            ZoneGenerationDiagnostics.LogBoundaries(boundaries);
+            ZoneGenerationDiagnostics.LogBoundaries(context.ResolvedZoneBoundaries);
 
             ZoneBoundaryStats stats = ZoneBoundaryApplicator.ApplyAll(
                 map,
                 def,
                 layout,
                 context.ResolvedZonePieces,
-                boundaries,
+                context.ResolvedZoneBoundaries,
                 ZoneTilePaintContext.From(context));
 
             var log = new StringBuilder();
-            log.Append($"interfaces={interfaces.Count} boundaries={boundaries.Count} ");
+            log.Append($"interfaces={context.ResolvedZoneBoundaries?.Count ?? 0} boundaries={context.ResolvedZoneBoundaries?.Count ?? 0} ");
             log.Append($"openCells={stats.OpenCells} wallCells={stats.WallCells} ");
             log.Append($"corridorOpenings={stats.CorridorOpenings}");
             DungeonGenerationLog.Phase(nameof(ZoneBoundaryPhase), log.ToString());

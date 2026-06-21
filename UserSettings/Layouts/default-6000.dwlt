@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1859
     height: 1417
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Inspector
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -1176,31 +1176,14 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -290266
-      - m_Data: -277908
-      - m_Data: -241402
-      - m_Data: -219524
-      - m_Data: -197158
-      - m_Data: -181670
-      - m_Data: -161164
-      - m_Data: -150492
-      - m_Data: -133814
-      - m_Data: -116784
-      - m_Data: -99654
-      - m_Data: -98004
-      - m_Data: -80998
-      - m_Data: -71890
-      - m_Data: -63204
-      - m_Data: -54744
-      - m_Data: -44564
-      - m_Data: -28424
-      - m_Data: -11970
-      - m_Data: -11626
-      - m_Data: -3664
-      - m_Data: -3308
-      - m_Data: -2810
-      - m_Data: -2178
-      - m_Data: -1344
+      - m_Data: -157514
+      - m_Data: -157118
+      - m_Data: -155224
+      - m_Data: -125574
+      - m_Data: -116438
+      - m_Data: -98180
+      - m_Data: -90512
+      - m_Data: -88720
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1351,8 +1334,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Project\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1659
-    y: 1023
+    x: 1656
+    y: 1020
     width: 1338
     height: 476
   m_SerializedDataModeController:
@@ -1369,7 +1352,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
     m_DynamicPanelBehavior: 0
   m_SearchFilter:
-    m_NameFilter: 
+    m_NameFilter: dimens
     m_ClassNames: []
     m_AssetLabels: []
     m_AssetBundleNames: []
@@ -1379,62 +1362,62 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Editor/World
+    - Assets/Tests/UnitTests/World
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
-    m_OriginalText: 
+    m_OriginalText: dimens
     m_ImportLogFlags: 0
     m_FilterByTypeIntersection: 0
   m_ViewMode: 1
   m_StartGridSize: 73
   m_LastFolders:
-  - Assets/Editor/World
+  - Assets/Tests/UnitTests/World
   m_LastFoldersGridSize: 73
   m_LastProjectPath: /home/jonathan/UnityProjects/Roguey2
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 383}
+    scrollPos: {x: 0, y: 1608}
     m_SelectedIDs:
-    - m_Data: 60272
+    - m_Data: 103220
     m_LastClickedID:
-      m_Data: 60272
+      m_Data: 103220
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 95672
-    - m_Data: 95674
-    - m_Data: 95676
-    - m_Data: 95678
-    - m_Data: 95680
-    - m_Data: 95682
-    - m_Data: 95684
-    - m_Data: 95686
-    - m_Data: 95688
-    - m_Data: 95690
-    - m_Data: 95692
-    - m_Data: 95694
-    - m_Data: 95696
-    - m_Data: 95698
-    - m_Data: 95700
-    - m_Data: 95702
-    - m_Data: 95704
-    - m_Data: 95706
-    - m_Data: 95708
-    - m_Data: 95710
-    - m_Data: 95712
-    - m_Data: 95714
-    - m_Data: 95716
-    - m_Data: 95718
-    - m_Data: 95720
-    - m_Data: 95722
-    - m_Data: 95724
-    - m_Data: 95726
-    - m_Data: 95728
-    - m_Data: 95730
-    - m_Data: 95732
-    - m_Data: 95734
+    - m_Data: 57264
+    - m_Data: 57266
+    - m_Data: 57268
+    - m_Data: 57270
+    - m_Data: 57272
+    - m_Data: 57274
+    - m_Data: 57276
+    - m_Data: 57278
+    - m_Data: 57280
+    - m_Data: 57282
+    - m_Data: 57284
+    - m_Data: 57286
+    - m_Data: 57288
+    - m_Data: 57290
+    - m_Data: 57292
+    - m_Data: 57294
+    - m_Data: 57296
+    - m_Data: 57298
+    - m_Data: 57300
+    - m_Data: 57302
+    - m_Data: 57304
+    - m_Data: 57306
+    - m_Data: 57308
+    - m_Data: 57310
+    - m_Data: 57312
+    - m_Data: 57314
+    - m_Data: 57316
+    - m_Data: 57318
+    - m_Data: 57320
+    - m_Data: 57322
+    - m_Data: 57324
+    - m_Data: 57326
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1469,38 +1452,38 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 95672
-    - m_Data: 95674
-    - m_Data: 95676
-    - m_Data: 95678
-    - m_Data: 95680
-    - m_Data: 95682
-    - m_Data: 95684
-    - m_Data: 95686
-    - m_Data: 95688
-    - m_Data: 95690
-    - m_Data: 95692
-    - m_Data: 95694
-    - m_Data: 95696
-    - m_Data: 95698
-    - m_Data: 95700
-    - m_Data: 95702
-    - m_Data: 95704
-    - m_Data: 95706
-    - m_Data: 95708
-    - m_Data: 95710
-    - m_Data: 95712
-    - m_Data: 95714
-    - m_Data: 95716
-    - m_Data: 95718
-    - m_Data: 95720
-    - m_Data: 95722
-    - m_Data: 95724
-    - m_Data: 95726
-    - m_Data: 95728
-    - m_Data: 95730
-    - m_Data: 95732
-    - m_Data: 95734
+    - m_Data: 57264
+    - m_Data: 57266
+    - m_Data: 57268
+    - m_Data: 57270
+    - m_Data: 57272
+    - m_Data: 57274
+    - m_Data: 57276
+    - m_Data: 57278
+    - m_Data: 57280
+    - m_Data: 57282
+    - m_Data: 57284
+    - m_Data: 57286
+    - m_Data: 57288
+    - m_Data: 57290
+    - m_Data: 57292
+    - m_Data: 57294
+    - m_Data: 57296
+    - m_Data: 57298
+    - m_Data: 57300
+    - m_Data: 57302
+    - m_Data: 57304
+    - m_Data: 57306
+    - m_Data: 57308
+    - m_Data: 57310
+    - m_Data: 57312
+    - m_Data: 57314
+    - m_Data: 57316
+    - m_Data: 57318
+    - m_Data: 57320
+    - m_Data: 57322
+    - m_Data: 57324
+    - m_Data: 57326
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1528,9 +1511,10 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: []
+    m_SelectedInstanceIDs:
+    - m_Data: 96910
     m_LastClickedEntityId:
-      m_Data: 0
+      m_Data: 96910
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 52882
@@ -1565,7 +1549,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 51}
+    m_ScrollPosition: {x: 0, y: 0}
     m_GridSize: 73
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 207

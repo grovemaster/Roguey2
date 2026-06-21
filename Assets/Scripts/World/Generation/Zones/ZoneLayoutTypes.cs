@@ -95,6 +95,12 @@ namespace JRogue.World.Generation.Zones
         public ZoneSubStampEntry[] subStampTable;
         [Range(0, 100)] public int innerWallDensity;
         public bool ensureConnectivity;
+        [Min(1)] public int minCorridorWidth;
+        [Min(1)] public int maxCorridorWidth;
+        [Range(1, 12)] public int caSmoothingIterations;
+        [Min(1)] public int minRoomSize;
+        [Min(1)] public int maxRoomSize;
+        [Min(1)] public int maxRoomCount;
     }
 
     [Serializable]
@@ -104,6 +110,8 @@ namespace JRogue.World.Generation.Zones
         public ZoneBoundaryKind boundaryKind;
         [Min(1)] public int corridorCount;
         [Min(1)] public int corridorWidth;
+        [Min(1)] public int corridorWidthMin;
+        [Min(1)] public int corridorWidthMax;
     }
 
     [Serializable]

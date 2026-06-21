@@ -46,7 +46,8 @@ namespace JRogue.World.Generation.Phases
                 def.FloorId,
                 layout.LayoutKind == ZoneLayoutKind.Hybrid
                     ? layout.SkeletonStamp ?? def.LayoutStamp
-                    : null);
+                    : null,
+                context.ResolvedZoneBoundaries);
 
             Dictionary<string, int> mapCounts = ZoneCellMapStats.CountByZone(context.ZoneCellMap);
             DungeonGenerationLog.Phase(nameof(ZoneFillPhase),

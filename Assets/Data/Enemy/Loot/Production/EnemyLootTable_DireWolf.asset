@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2348f1c7ffa94081805b22c0bfd9d6ac, type: 3}
+  m_Name: EnemyLootTable_DireWolf
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Data.Enemy.EnemyLootTable
+  displayName: Dire Wolf
+  entries:
+  - dropChance: 1
+    payload: 0
+    manaStoneTier: 9
+    itemData: {fileID: 0}
+    essenceData: {fileID: 0}
+    quantity: 1
+  - dropChance: 0.05
+    payload: 2
+    manaStoneTier: 9
+    itemData: {fileID: 0}
+    essenceData: {fileID: 11400000, guid: 2be2f4a9a4fced02b90c40f1fb4c672c, type: 2}
+    quantity: 1

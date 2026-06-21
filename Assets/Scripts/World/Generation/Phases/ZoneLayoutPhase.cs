@@ -69,6 +69,19 @@ namespace JRogue.World.Generation.Phases
             context.MapWidth = layout.FloorWidth;
             context.MapHeight = layout.FloorHeight;
 
+            List<ZoneInterface> interfaces = ZoneInterfaceResolver.ResolveInterfaces(
+                context.ResolvedZonePieces,
+                layout.FloorWidth,
+                layout.FloorHeight);
+            System.Random boundaryRng = ZoneGenerationRng.CreateZoneSelectionRng(
+                context.RunSeed,
+                def.FloorId + "_boundaries");
+            context.ResolvedZoneBoundaries = ZoneBoundaryResolver.ResolveAll(
+                layout,
+                context.ResolvedZonePieces,
+                interfaces,
+                boundaryRng);
+
             Dictionary<string, int> zoneTileCounts = ZoneCellMapStats.CountByZone(context.ZoneCellMap);
 
             ResolvePlayerStart(context, selection.Pieces, def);

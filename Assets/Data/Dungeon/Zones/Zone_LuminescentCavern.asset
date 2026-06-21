@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 277a8472a8aa7632db30a6b2ea40ea2a, type: 3}
+  m_Name: Zone_LuminescentCavern
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonZoneDefinition
+  zoneId: luminescent_cavern
+  displayName: Luminescent Cavern
+  floorTile: {fileID: 11400000, guid: b9b4b5a96949b22ce97ab72cfe59669d, type: 2}
+  wallTile: {fileID: 11400000, guid: 57f4ddf71aa112bdf88813b5ab72977e, type: 2}
+  floorTilePalette: {fileID: 11400000, guid: 132f3f0c4d5dc9ac9bb5e8451a1a8c0d, type: 2}
+  wallTilePalette: {fileID: 11400000, guid: 6b829c4da5922c4bc8b3fc7dc364547f, type: 2}
+  ambientRegionId: 0
+  defaultAmbientLight: 0
+  minWidth: 50
+  minHeight: 60
+  maxWidth: 50
+  maxHeight: 60
+  fillProfile:
+    mode: 4
+    subStampTable: []
+    innerWallDensity: 38
+    ensureConnectivity: 1
+    minCorridorWidth: 1
+    maxCorridorWidth: 3
+    caSmoothingIterations: 4
+    minRoomSize: 6
+    maxRoomSize: 16
+    maxRoomCount: 8
+  populationProfile: {fileID: 11400000, guid: 4ce4b79b00a40d5f1b17da7ad3f1aad9, type: 2}
+  monsterPopulationMode: 1
+  monsterSpawnSchedule: {fileID: 11400000, guid: 4ca831ab80a78ea3ca5425fa15d94f4f, type: 2}
+  tags: []

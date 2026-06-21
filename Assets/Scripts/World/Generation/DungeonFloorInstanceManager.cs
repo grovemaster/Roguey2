@@ -381,6 +381,13 @@ namespace JRogue.World.Generation
 
             lighting.FinalizeRegistry();
             lighting.SyncFloorReceiversFromMap();
+
+            if (def != null && def.LayoutMode == FloorLayoutMode.ZoneComposite)
+            {
+                int runSeed = DungeonRunState.Instance != null ? DungeonRunState.Instance.RunSeed : 0;
+                ZoneCompositeLightingSync.Apply(lighting, MapManager.Instance, def, _activeFloor, runSeed);
+            }
+
             PartyLightEmitterBridge.RefreshParty();
 
             if (def != null && def.FloorId == Phases.TownTorchSetupPhase.TownFloorId)

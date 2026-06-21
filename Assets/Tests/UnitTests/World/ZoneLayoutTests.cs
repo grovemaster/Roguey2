@@ -587,7 +587,8 @@ namespace JRogue.Tests.UnitTests.World
                         0),
                     ZoneBoundaryKind.Wall,
                     1,
-                    1),
+                    1,
+                    new[] { 1 }),
             };
 
             Assert.DoesNotThrow(() =>

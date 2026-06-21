@@ -291,6 +291,7 @@
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlayerInteraction.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestDevotionLoadoutService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneBoundaryResolver.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneBoundaryOpeningPlanner.cs" />
     <Compile Include="Assets/Scripts/Racial/SoulBeastRitualLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryAutomationProfile.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyKindMapping.cs" />
@@ -542,6 +543,7 @@
     <Compile Include="Assets/Scripts/Racial/HumanPriestShrineIds.cs" />
     <Compile Include="Assets/Scripts/World/Town/TownDistrictTestPaths.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardDefinition.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCompositeLightingSync.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownPlazaMarkerLayout.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRunner.cs" />
@@ -657,6 +659,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapInstance.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssencePickupEligibility.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameLogSession.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneTileEmitterApplicator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownTimeLeverSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorInstanceManager.cs" />
     <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyCategories.cs" />

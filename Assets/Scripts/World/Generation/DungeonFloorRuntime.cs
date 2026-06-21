@@ -91,9 +91,12 @@ namespace JRogue.World.Generation
             if (floorCatalog != null)
                 return;
 
-            floorCatalog = Resources.Load<DungeonFloorDefinitionCatalog>("Dungeon/DungeonV0aCatalog");
+            floorCatalog = Resources.Load<DungeonFloorDefinitionCatalog>("Dungeon/DungeonProdFloor1Catalog");
             if (floorCatalog == null)
-                DungeonGenerationLog.Warn("Resources/Dungeon/DungeonV0aCatalog not found — run JRogue → Dungeon → Create v0a Test Data.");
+                floorCatalog = Resources.Load<DungeonFloorDefinitionCatalog>("Dungeon/DungeonV0aCatalog");
+            if (floorCatalog == null)
+                DungeonGenerationLog.Warn(
+                    "Dungeon floor catalog not found — run JRogue → Dungeon → Phase 2 — Create Production Floor Layout.");
         }
 
         DungeonFloorInstanceManager ResolveManager()

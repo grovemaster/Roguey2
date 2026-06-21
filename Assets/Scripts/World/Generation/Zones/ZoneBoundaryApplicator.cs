@@ -80,12 +80,11 @@ namespace JRogue.World.Generation.Zones
             string zoneAId = ResolveZoneId(zoneByPieceId, pieceA, layout.FallbackZoneId);
             string zoneBId = ResolveZoneId(zoneByPieceId, pieceB, layout.FallbackZoneId);
 
-            bool[] openings = BuildOpeningMask(
+            bool[] openings = ZoneBoundaryOpeningPlanner.BuildOpeningMask(
                 spanMin,
                 spanMax,
                 boundary.Kind,
-                boundary.CorridorCount,
-                boundary.CorridorWidth);
+                boundary.OpeningWidths);
 
             if (openings != null)
                 stats.CorridorOpenings += boundary.CorridorCount;
@@ -139,53 +138,6 @@ namespace JRogue.World.Generation.Zones
             return zoneByPieceId.TryGetValue(piece.PieceId, out string zoneId) && !string.IsNullOrEmpty(zoneId)
                 ? zoneId
                 : fallback;
-        }
-
-        static bool[] BuildOpeningMask(
-            int spanMin,
-            int spanMax,
-            ZoneBoundaryKind kind,
-            int corridorCount,
-            int corridorWidth)
-        {
-            if (kind != ZoneBoundaryKind.Corridor && kind != ZoneBoundaryKind.Mixed)
-                return null;
-
-            int spanLength = spanMax - spanMin;
-            if (spanLength <= 0)
-                return null;
-
-            var mask = new bool[spanLength];
-            corridorCount = Mathf.Max(1, corridorCount);
-            corridorWidth = Mathf.Clamp(corridorWidth, 1, spanLength);
-
-            if (corridorCount == 1)
-            {
-                int start = spanMin + (spanLength - corridorWidth) / 2;
-                MarkOpening(mask, spanMin, start, corridorWidth);
-                return mask;
-            }
-
-            int spacing = spanLength / (corridorCount + 1);
-            spacing = Mathf.Max(spacing, corridorWidth);
-            for (int i = 0; i < corridorCount; i++)
-            {
-                int center = spanMin + spacing * (i + 1);
-                int start = Mathf.Clamp(center - corridorWidth / 2, spanMin, spanMax - corridorWidth);
-                MarkOpening(mask, spanMin, start, corridorWidth);
-            }
-
-            return mask;
-        }
-
-        static void MarkOpening(bool[] mask, int spanMin, int start, int width)
-        {
-            for (int i = 0; i < width; i++)
-            {
-                int index = start - spanMin + i;
-                if (index >= 0 && index < mask.Length)
-                    mask[index] = true;
-            }
         }
 
         static Vector3Int EdgeCell(ZoneInterfaceEdge edge, int fixedCoord, int span) =>

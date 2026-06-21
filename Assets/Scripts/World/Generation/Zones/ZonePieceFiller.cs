@@ -14,7 +14,8 @@ namespace JRogue.World.Generation.Zones
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             int runSeed,
             string floorId,
-            DungeonLayoutStamp hybridSkeleton = null)
+            DungeonLayoutStamp hybridSkeleton,
+            IReadOnlyList<ResolvedZoneBoundary> boundaries)
         {
             var stats = new ZonePaintStats
             {
@@ -40,6 +41,7 @@ namespace JRogue.World.Generation.Zones
                 return stats;
 
             bool maskByZoneMap = layout.LayoutKind == ZoneLayoutKind.Hybrid;
+            var pieceById = BuildPieceLookup(pieces);
             for (int i = 0; i < pieces.Count; i++)
             {
                 ResolvedZonePiece piece = pieces[i];
@@ -52,6 +54,7 @@ namespace JRogue.World.Generation.Zones
                     : new ZoneFillProfile { mode = ZoneFillMode.SolidRect };
 
                 System.Random fillRng = ZoneGenerationRng.CreateZoneFillRng(runSeed, floorId, piece.PieceId);
+                var openingCells = CollectLocalOpeningCells(piece, pieceById, boundaries);
                 FillPiece(
                     map,
                     floorDef,
@@ -62,6 +65,7 @@ namespace JRogue.World.Generation.Zones
                     zoneCellMap,
                     maskByZoneMap,
                     paintContext,
+                    openingCells,
                     stats);
             }
 
@@ -150,6 +154,51 @@ namespace JRogue.World.Generation.Zones
             return zoneCellMap.TryGetValue(cell, out string zoneId) && zoneId == piece.ZoneId;
         }
 
+        static Dictionary<string, ResolvedZonePiece> BuildPieceLookup(IReadOnlyList<ResolvedZonePiece> pieces)
+        {
+            var lookup = new Dictionary<string, ResolvedZonePiece>();
+            if (pieces == null)
+                return lookup;
+
+            for (int i = 0; i < pieces.Count; i++)
+                lookup[pieces[i].PieceId] = pieces[i];
+
+            return lookup;
+        }
+
+        static List<Vector2Int> CollectLocalOpeningCells(
+            ResolvedZonePiece piece,
+            IReadOnlyDictionary<string, ResolvedZonePiece> pieceById,
+            IReadOnlyList<ResolvedZoneBoundary> boundaries)
+        {
+            var localCells = new List<Vector2Int>();
+            if (boundaries == null)
+                return localCells;
+
+            RectInt bounds = piece.Bounds;
+            for (int i = 0; i < boundaries.Count; i++)
+            {
+                ResolvedZoneBoundary boundary = boundaries[i];
+                if (boundary.Interface.PieceAId != piece.PieceId && boundary.Interface.PieceBId != piece.PieceId)
+                    continue;
+
+                pieceById.TryGetValue(boundary.Interface.PieceAId, out ResolvedZonePiece pieceA);
+                pieceById.TryGetValue(boundary.Interface.PieceBId, out ResolvedZonePiece pieceB);
+                List<Vector3Int> worldCells = ZoneBoundaryOpeningPlanner.CollectOpeningEdgeCells(
+                    boundary,
+                    piece,
+                    boundary.Interface.PieceAId == piece.PieceId ? pieceB : pieceA);
+
+                for (int c = 0; c < worldCells.Count; c++)
+                {
+                    Vector3Int world = worldCells[c];
+                    localCells.Add(new Vector2Int(world.x - bounds.xMin, world.y - bounds.yMin));
+                }
+            }
+
+            return localCells;
+        }
+
         static void FillPiece(
             JRogue.Manager.Map.MapManager map,
             DungeonFloorDefinition floorDef,
@@ -160,6 +209,7 @@ namespace JRogue.World.Generation.Zones
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             bool maskByZoneMap,
             ZoneTilePaintContext paintContext,
+            IReadOnlyList<Vector2Int> localOpeningCells,
             ZonePaintStats stats)
         {
             switch (profile.mode)
@@ -196,10 +246,14 @@ namespace JRogue.World.Generation.Zones
                         floorDef,
                         layout,
                         piece,
-                        ZoneRectProcGenerator.GenerateRoomCorridor(
+                        ApplyOpeningConnections(
+                            ZoneRectProcGenerator.GenerateRoomCorridor(
+                                piece.Bounds,
+                                fillRng,
+                                profile,
+                                profile.ensureConnectivity),
                             piece.Bounds,
-                            fillRng,
-                            profile.ensureConnectivity),
+                            localOpeningCells),
                         zoneCellMap,
                         maskByZoneMap,
                         paintContext,
@@ -211,11 +265,15 @@ namespace JRogue.World.Generation.Zones
                         floorDef,
                         layout,
                         piece,
-                        ZoneRectProcGenerator.GenerateCave(
+                        ApplyOpeningConnections(
+                            ZoneRectProcGenerator.GenerateCave(
+                                piece.Bounds,
+                                fillRng,
+                                profile.innerWallDensity,
+                                profile,
+                                profile.ensureConnectivity),
                             piece.Bounds,
-                            fillRng,
-                            profile.innerWallDensity,
-                            profile.ensureConnectivity),
+                            localOpeningCells),
                         zoneCellMap,
                         maskByZoneMap,
                         paintContext,
@@ -225,6 +283,44 @@ namespace JRogue.World.Generation.Zones
                     FillSolidRect(map, floorDef, layout, piece, zoneCellMap, maskByZoneMap, paintContext, stats);
                     break;
             }
+        }
+
+        static bool[,] ApplyOpeningConnections(
+            bool[,] floorMask,
+            RectInt bounds,
+            IReadOnlyList<Vector2Int> localOpeningCells)
+        {
+            if (floorMask == null)
+                return null;
+
+            ZoneRectProcGenerator.ConnectOpeningCells(floorMask, bounds, localOpeningCells);
+            return floorMask;
+        }
+
+        static void FillPiece(
+            JRogue.Manager.Map.MapManager map,
+            DungeonFloorDefinition floorDef,
+            DungeonFloorZoneLayout layout,
+            ResolvedZonePiece piece,
+            ZoneFillProfile profile,
+            System.Random fillRng,
+            IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
+            bool maskByZoneMap,
+            ZoneTilePaintContext paintContext,
+            ZonePaintStats stats)
+        {
+            FillPiece(
+                map,
+                floorDef,
+                layout,
+                piece,
+                profile,
+                fillRng,
+                zoneCellMap,
+                maskByZoneMap,
+                paintContext,
+                null,
+                stats);
         }
 
         static void FillFromProcMask(

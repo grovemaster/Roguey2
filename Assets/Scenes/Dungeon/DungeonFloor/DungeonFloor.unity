@@ -396,7 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorRuntime
   runBootstrap: {fileID: 1243138351}
   floorInstanceManager: {fileID: 434795520}
-  floorCatalog: {fileID: 11400000, guid: 97da8432803f9fd9c4c742b7d155347b, type: 2}
+  floorCatalog: {fileID: 11400000, guid: d65a3743e8e16d637b8906475df58fcb, type: 2}
   startFloorId: dungeon_floor_01
   runSeed: 424242
   beginRunOnStart: 0
@@ -415,7 +415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorInstanceManager
   floorsRoot: {fileID: 857100529}
   floorDefinitions:
-  - {fileID: 11400000, guid: 89ccdcba205af17beb8d430639114eb9, type: 2}
+  - {fileID: 11400000, guid: bb22fa8d36cb3f1bdbfb08c388d46f9a, type: 2}
   - {fileID: 11400000, guid: 172ac1a1766071f9afc2d8273678f48f, type: 2}
   useDontDestroyOnLoad: 0
 --- !u!114 &434795521
@@ -540,15 +540,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::VisibilityManager
   tilemaps: []
   visibleColor: {r: 1, g: 1, b: 1, a: 1}
-  darkTileColor: {r: 0.2, g: 0.22, b: 0.28, a: 1}
+  darkTileColor: {r: 0.4, g: 0.43, b: 0.5, a: 1}
   unseenColor: {r: 0.15, g: 0.15, b: 0.2, a: 1}
   memColor: {r: 0.48, g: 0.48, b: 0.58, a: 1}
   viewRange: 8
-  baseVisibilityThreshold: 3
+  baseVisibilityThreshold: 1
   verboseSightLogs: 0
   verboseDarkTileLogs: 0
   verboseFogLogs: 0
   verboseGateLogs: 0
+  verboseLightingDiagnostics: 1
 --- !u!114 &434795529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2280,7 +2281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df05b20ba2db44d2b481954e0664cdd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorInstance
-  definition: {fileID: 11400000, guid: 89ccdcba205af17beb8d430639114eb9, type: 2}
+  definition: {fileID: 11400000, guid: bb22fa8d36cb3f1bdbfb08c388d46f9a, type: 2}
   enemyContainer: {fileID: 1158660360}
   dynamicViewsRoot: {fileID: 837214697}
   floorMap: {fileID: 1057596095}

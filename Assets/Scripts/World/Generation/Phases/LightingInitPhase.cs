@@ -27,12 +27,25 @@ namespace JRogue.World.Generation.Phases
             MapManager map = MapManager.Instance;
             if (context.UsesZoneComposite && map != null)
             {
+                ZoneCompositeLightingSync.ApplyZoneAmbientRegionDefaults(
+                    lighting,
+                    context.Definition?.ZoneLayout);
+
                 int zoneAmbientCells = ZoneAmbientApplicator.Apply(context, map, lighting);
-                if (zoneAmbientCells > 0)
+                int emitterCells = ZoneTileEmitterApplicator.Apply(context, map, lighting);
+                if (zoneAmbientCells > 0 || emitterCells > 0)
                 {
                     DungeonGenerationLog.Phase(
                         nameof(LightingInitPhase),
-                        $"zoneAmbientCells={zoneAmbientCells}");
+                        $"zoneAmbientCells={zoneAmbientCells} tileEmitters={emitterCells} " +
+                        ZoneCompositeLightingSync.DescribeZoneAmbientRegionsForLog(
+                            lighting,
+                            context.Definition?.ZoneLayout));
+                    ZoneCompositeLightingSync.LogLightingDiagnosticsIfEnabled(
+                        lighting,
+                        map,
+                        context,
+                        emitterCells);
                 }
             }
 
@@ -46,10 +59,27 @@ namespace JRogue.World.Generation.Phases
             VisibilityManager visibility = Object.FindAnyObjectByType<VisibilityManager>();
             visibility?.RefreshPartyVision();
 
-            int ambient = context.Definition != null && context.Definition.FloorId == TownTorchSetupPhase.TownFloorId
-                ? TownLightingSync.AmbientLightForPhase(TownTimeService.Instance?.CurrentPhase ?? TownTimePhase.Day)
-                : LightLevel.FullDaylightAmbient;
-            DungeonGenerationLog.Phase(nameof(LightingInitPhase), $"floor receivers synced ambient={ambient}");
+            if (context.Definition != null && context.Definition.FloorId == TownTorchSetupPhase.TownFloorId)
+            {
+                int ambient = TownLightingSync.AmbientLightForPhase(
+                    TownTimeService.Instance?.CurrentPhase ?? TownTimePhase.Day);
+                DungeonGenerationLog.Phase(nameof(LightingInitPhase), $"town ambient={ambient}");
+            }
+            else if (context.UsesZoneComposite && context.Definition?.ZoneLayout != null)
+            {
+                DungeonGenerationLog.Phase(
+                    nameof(LightingInitPhase),
+                    $"zone composite lighting synced " +
+                    ZoneCompositeLightingSync.DescribeZoneAmbientRegionsForLog(
+                        lighting,
+                        context.Definition.ZoneLayout));
+            }
+            else
+            {
+                DungeonGenerationLog.Phase(
+                    nameof(LightingInitPhase),
+                    $"floor receivers synced ambient={LightLevel.FullDaylightAmbient}");
+            }
         }
     }
 }

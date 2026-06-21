@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bfd351d5c510fdaba799efafb91b365, type: 3}
+  m_Name: GhoulEssence_Dash
+  m_EditorClassIdentifier: JRogue::JRogue.Ability.Essence.EssenceDesignAbility
+  abilityName: Dash
+  description: For the next 3 turns, the user may advance 2 tiles per turn (user
+    only; party followers unchanged).
+  hotbarIcon: {fileID: 0}
+  soulPowerCost: 0
+  magicPowerCost: 0
+  divinePowerCost: 0
+  cooldownTurns: 0
+  proficiencyTags: 
+  proficiencyXpOverride: 0
+  knightSkillId: 
+  requiresTarget: 0
+  range: 0
+  splashZone: {fileID: 0}
+  splashRadius: 0
+  isMovementAbility: 0
+  noiseVolume: 0
+  noiseOriginAtTargetTile: 0
+  skipFriendlyFireConfirmation: 0
+  consumesPlayerTurn: 0
+  effectDurationTurns: 3
+  procChance: 0
+  strengthDelta: 0
+  defenseDelta: 0
+  movementTilesPerTurn: 2

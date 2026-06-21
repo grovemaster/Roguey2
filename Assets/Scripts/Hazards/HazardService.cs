@@ -430,8 +430,8 @@ namespace JRogue.Hazards
         static void LogPassageBlocked(EnvironmentalHazardDefinition def, BaseActor actor)
         {
             int str = actor.stats != null ? actor.stats.Strength.GetValue() : 0;
-            Debug.Log(
-                $"[Hazard] {actor.DisplayName} cannot enter {def.displayName} (STR {str} < {def.requiredStrength}).");
+            // Debug.Log(
+            //     $"[Hazard] {actor.DisplayName} cannot enter {def.displayName} (STR {str} < {def.requiredStrength}).");
         }
     }
 }

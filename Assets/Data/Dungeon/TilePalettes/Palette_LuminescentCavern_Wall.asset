@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef860a9827b1561d8ec41f65f51e711, type: 3}
+  m_Name: Palette_LuminescentCavern_Wall
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonTilePalette
+  paletteId: luminescent_cavern_wall
+  layer: 1
+  defaultVariationMode: 0
+  entries:
+  - tile: {fileID: 11400000, guid: 3d8902fcf323a55b783aec39cfd3b68b, type: 2}
+    registryKey: DcssCavern:stone2_gray_2_new_lightblue
+    weight: 4
+    isLightEmitter: 1
+    emitLight: {fileID: 11400000, guid: f7c4e9012d3f4567890abcdef1234567, type: 2}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 6edb06ec8ec8708628cb9f60be29cb95, type: 2}
+    registryKey: DcssCavern:stone2_gray_3_new_lightblue
+    weight: 4
+    isLightEmitter: 1
+    emitLight: {fileID: 11400000, guid: f7c4e9012d3f4567890abcdef1234567, type: 2}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 8314cf7de27ac7f8682aeb50929cf3da, type: 2}
+    registryKey: DcssCavern:stone2_dark_2_new_lightblue
+    weight: 4
+    isLightEmitter: 1
+    emitLight: {fileID: 11400000, guid: f7c4e9012d3f4567890abcdef1234567, type: 2}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 2ffd80ab5a02e92c5abf9bd0c633a12f, type: 2}
+    registryKey: DcssCavern:stone2_dark_3_new_lightblue
+    weight: 4
+    isLightEmitter: 1
+    emitLight: {fileID: 11400000, guid: f7c4e9012d3f4567890abcdef1234567, type: 2}
+    emissionOverride: 0

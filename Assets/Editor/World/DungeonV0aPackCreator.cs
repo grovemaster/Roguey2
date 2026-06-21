@@ -94,12 +94,45 @@ namespace JRogue.Editor.World
             SerializedObject so = new SerializedObject(runtime);
             so.FindProperty("runBootstrap").objectReferenceValue = bootstrap;
             so.FindProperty("floorInstanceManager").objectReferenceValue = floorManager;
-            so.FindProperty("floorCatalog").objectReferenceValue =
-                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>($"{DataRoot}/DungeonV0aCatalog.asset");
+
+            var prodCatalog = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>(
+                DungeonFloor1ProductionPhase2PackCreator.CatalogProdPath);
+            var testCatalog = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>($"{DataRoot}/DungeonV0aCatalog.asset");
+            so.FindProperty("floorCatalog").objectReferenceValue = prodCatalog != null ? prodCatalog : testCatalog;
+
             so.FindProperty("startFloorId").stringValue = DungeonEntryService.StartFloorId;
             so.FindProperty("beginRunOnStart").boolValue = false;
             so.FindProperty("useRandomSeedOnTownEntry").boolValue = true;
             so.ApplyModifiedPropertiesWithoutUndo();
+
+            WireProductionFloorDefinitions(floorManager);
+        }
+
+        static void WireProductionFloorDefinitions(DungeonFloorInstanceManager floorManager)
+        {
+            if (floorManager == null)
+                return;
+
+            var prodFloor = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(
+                DungeonFloor1ProductionPhase2PackCreator.FloorProdPath);
+            var floor02 = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_02.asset");
+            if (prodFloor == null)
+                return;
+
+            SerializedObject managerSo = new SerializedObject(floorManager);
+            managerSo.FindProperty("floorDefinitions").arraySize = floor02 != null ? 2 : 1;
+            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(0).objectReferenceValue = prodFloor;
+            if (floor02 != null)
+                managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(1).objectReferenceValue = floor02;
+            managerSo.ApplyModifiedPropertiesWithoutUndo();
+
+            Transform floorsRoot = floorManager.transform.Find("Floors");
+            if (floorsRoot == null)
+                return;
+
+            EnsureFloorScaffold(floorsRoot, "dungeon_floor_01", prodFloor);
+            if (floor02 != null)
+                EnsureFloorScaffold(floorsRoot, "dungeon_floor_02", floor02);
         }
 
         [MenuItem("JRogue/Dungeon/Fix DungeonFloorTest Scene")]

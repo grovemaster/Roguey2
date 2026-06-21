@@ -63,6 +63,17 @@ public class VisibilityManager : MonoBehaviour
     [SerializeField] bool verboseDarkTileLogs;
     [SerializeField] bool verboseFogLogs;
     [SerializeField] bool verboseGateLogs;
+    [Tooltip("Master switch for cavern/dungeon lighting diagnostics ([Lighting:Diag] logs).")]
+    [SerializeField] bool verboseLightingDiagnostics;
+
+    /// <summary>When true, emits [Lighting:Diag] logs from vision refresh and zone lighting sync.</summary>
+    public bool VerboseLightingDiagnostics => verboseLightingDiagnostics;
+
+    public static bool IsVerboseLightingDiagnosticsEnabled()
+    {
+        VisibilityManager manager = FindAnyObjectByType<VisibilityManager>();
+        return manager != null && manager.verboseLightingDiagnostics;
+    }
 
     readonly Dictionary<Vector3Int, CellKnowledge> _knowledge =
         new Dictionary<Vector3Int, CellKnowledge>();
@@ -262,7 +273,91 @@ public class VisibilityManager : MonoBehaviour
         foreach (Vector3Int cell in currentLitVisible)
             _currentlyLitVisible.Add(cell);
 
+        if (verboseLightingDiagnostics)
+            LogVisionDiagnostics(currentVisible, currentLitVisible, losUnlit);
+
         ApplyEntityVisibility();
+    }
+
+    void LogVisionDiagnostics(
+        HashSet<Vector3Int> visible,
+        HashSet<Vector3Int> litVisible,
+        HashSet<Vector3Int> losUnlit)
+    {
+        LightingService lighting = LightingService.Instance;
+        int threshold = baseVisibilityThreshold;
+        PartyManager party = PartyManager.Instance;
+        BaseActor lead = party?.partyMembers != null && party.partyMembers.Count > 0
+            ? party.partyMembers[0]
+            : null;
+
+        Debug.Log(
+            $"[Lighting:Diag] Vision summary threshold={threshold} " +
+            $"visible={visible.Count} litVisible={litVisible.Count} " +
+            $"dimVisible={visible.Count - litVisible.Count} losUnlit={losUnlit.Count}");
+
+        if (lighting == null || lead == null)
+            return;
+
+        Vector3Int origin = new Vector3Int(lead.GridPosition.x, lead.GridPosition.y, 0);
+        LogCellLighting("party", origin, lighting, threshold, litVisible.Contains(origin));
+
+        Vector3Int[] offsets =
+        {
+            new(0, 1, 0),
+            new(1, 0, 0),
+            new(0, -1, 0),
+            new(-1, 0, 0),
+            new(1, 1, 0),
+            new(1, -1, 0),
+            new(-1, -1, 0),
+            new(-1, 1, 0),
+        };
+        string[] labels = { "N", "E", "S", "W", "NE", "SE", "SW", "NW" };
+        for (int i = 0; i < offsets.Length; i++)
+        {
+            Vector3Int cell = origin + offsets[i];
+            LogCellLighting(labels[i], cell, lighting, threshold, litVisible.Contains(cell));
+        }
+
+        int[] recvHistogram = new int[LightLevel.Max + 1];
+        int emitterCount = 0;
+        foreach (Vector3Int cell in visible)
+        {
+            int recv = lighting.GetReceivedLight(cell);
+            int emit = lighting.GetEmitLight(cell);
+            recvHistogram[Mathf.Clamp(recv, 0, LightLevel.Max)]++;
+            if (emit > 0)
+                emitterCount++;
+        }
+
+        Debug.Log(
+            $"[Lighting:Diag] Visible recv histogram " +
+            $"r0={recvHistogram[0]} r1={recvHistogram[1]} r2={recvHistogram[2]} " +
+            $"r3={recvHistogram[3]} r4={recvHistogram[4]} r5={recvHistogram[5]} " +
+            $"r6+={recvHistogram[6] + recvHistogram[7] + recvHistogram[8] + recvHistogram[9] + recvHistogram[10]} " +
+            $"emitterCellsInVisible={emitterCount}");
+    }
+
+    static void LogCellLighting(
+        string label,
+        Vector3Int cell,
+        LightingService lighting,
+        int threshold,
+        bool isLitVisible)
+    {
+        int emit = lighting.GetEmitLight(cell);
+        int recv = lighting.GetReceivedLight(cell);
+        string band = emit > 0
+            ? "emitter"
+            : recv >= threshold
+                ? "lit"
+                : recv > 0
+                    ? "dim"
+                    : "dark";
+        Debug.Log(
+            $"[Lighting:Diag] {label} {cell} emit={emit} recv={recv} " +
+            $"threshold={threshold} band={band} litVisible={isLitVisible}");
     }
 
     void ApplyUnseenToAllKnownCells()

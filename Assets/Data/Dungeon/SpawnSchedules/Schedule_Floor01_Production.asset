@@ -1,0 +1,639 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b3c4d5e6f6478890a1b2c3d4e5f602, type: 3}
+  m_Name: Schedule_Floor01_Production
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.MonsterSpawn.MonsterSpawnScheduleProfile
+  groups:
+  - groupId: cavern_goblin_0
+    displayName: cavern_goblin_0
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 10, y: 12, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_goblin_1
+    displayName: cavern_goblin_1
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 25, y: 12, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_goblin_2
+    displayName: cavern_goblin_2
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 40, y: 12, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_goblin_3
+    displayName: cavern_goblin_3
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 15, y: 45, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 2
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_goblin_4
+    displayName: cavern_goblin_4
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 35, y: 45, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_ghoul_0
+    displayName: cavern_ghoul_0
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 10, y: 30, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_ghoul_1
+    displayName: cavern_ghoul_1
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 25, y: 30, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_ghoul_2
+    displayName: cavern_ghoul_2
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 40, y: 30, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: ghoul
+        spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_dire_wolf_0
+    displayName: cavern_dire_wolf_0
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 15, y: 22, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_dire_wolf_1
+    displayName: cavern_dire_wolf_1
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 35, y: 22, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: cavern_dire_wolf_2
+    displayName: cavern_dire_wolf_2
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: luminescent_cavern
+      markerIds: []
+    anchors:
+    - {x: 25, y: 38, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: dire_wolf
+        spawnDefinition: {fileID: 11400000, guid: 57587393d00ae09d9bb8c94c81dc0f11, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: dark_goblin_0
+    displayName: dark_goblin_0
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: northern_dark
+      markerIds: []
+    anchors:
+    - {x: 10, y: 68, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: dark_goblin_1
+    displayName: dark_goblin_1
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: northern_dark
+      markerIds: []
+    anchors:
+    - {x: 20, y: 68, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: dark_goblin_2
+    displayName: dark_goblin_2
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: northern_dark
+      markerIds: []
+    anchors:
+    - {x: 30, y: 68, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: dark_goblin_3
+    displayName: dark_goblin_3
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: northern_dark
+      markerIds: []
+    anchors:
+    - {x: 40, y: 68, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+  - groupId: dark_goblin_4
+    displayName: dark_goblin_4
+    areaBinding:
+      kind: 1
+      zoneInstanceId: 
+      zoneId: northern_dark
+      markerIds: []
+    anchors:
+    - {x: 25, y: 72, z: 0}
+    anchorPolicy: 2
+    daySchedules:
+    - dungeonDay: 1
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 2
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 3
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 
+    - dungeonDay: 4
+      composition:
+      - rowId: goblin
+        spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+        targetCount: 1
+        fillPolicy: 0
+        speciesFilter: 

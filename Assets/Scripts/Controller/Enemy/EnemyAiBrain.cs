@@ -3,9 +3,9 @@ using JRogue.Actors;
 using JRogue.Controller.Player;
 using JRogue.Core.Actor;
 using JRogue.Hazards;
-using JRogue.Manager.Party;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
+using JRogue.Manager.Party;
 using JRogue.Manager.Visibility.Algorithm;
 using JRogue.Pathfinding;
 using Roguey2.Sensing;
@@ -35,7 +35,7 @@ namespace JRogue.Controller.Enemy
         [SerializeField] private List<Vector3Int> patrolWaypoints = new List<Vector3Int>();
 
         [Header("Debug")]
-        [SerializeField] private bool verboseLogging = true;
+        [SerializeField] private bool verboseLogging = false;
 
         private EnemyController _owner;
         private EnemyAiState _state = EnemyAiState.Idle;

@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf1bbb5d33abaf1d3b032891137c47f2, type: 3}
+  m_Name: Layout_Floor01_Production
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonFloorZoneLayout
+  floorWidth: 50
+  floorHeight: 80
+  layoutKind: 0
+  selectionRules: []
+  pieces:
+  - pieceId: center
+    anchorKind: 0
+    compassDirection: 0
+    normalizedRect:
+      xMin: 0
+      yMin: 0
+      xMax: 1
+      yMax: 0.75
+    candidates:
+    - zoneId: luminescent_cavern
+      weight: 100
+    mandatory: 1
+    connectsTo: []
+    defaultBoundary: 2
+    edgeBoundaries:
+    - neighborPieceId: north
+      boundaryKind: 3
+      corridorCount: 3
+      corridorWidth: 1
+      corridorWidthMin: 1
+      corridorWidthMax: 3
+    isPlayerStartPiece: 1
+  - pieceId: north
+    anchorKind: 0
+    compassDirection: 0
+    normalizedRect:
+      xMin: 0
+      yMin: 0.75
+      xMax: 1
+      yMax: 1
+    candidates:
+    - zoneId: northern_dark
+      weight: 100
+    mandatory: 1
+    connectsTo: []
+    defaultBoundary: 2
+    edgeBoundaries: []
+    isPlayerStartPiece: 0
+  defaultOuterBoundary: 2
+  fallbackZoneId: rock
+  skeletonStamp: {fileID: 0}
+  zoneDefinitions:
+  - {fileID: 11400000, guid: f1acd7c1d18a70311ba5c064f6ee4faf, type: 2}
+  - {fileID: 11400000, guid: ea2a53e094411c60c8a1e36c77145912, type: 2}

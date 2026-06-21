@@ -5,23 +5,42 @@ namespace JRogue.World.Generation.Zones
 {
     public static class ZoneRectProcGenerator
     {
-        public static bool[,] GenerateRoomCorridor(RectInt bounds, System.Random rng, bool ensureConnectivity)
+        public static bool[,] GenerateRoomCorridor(RectInt bounds, System.Random rng, bool ensureConnectivity) =>
+            GenerateRoomCorridor(bounds, rng, default, ensureConnectivity);
+
+        public static bool[,] GenerateRoomCorridor(
+            RectInt bounds,
+            System.Random rng,
+            ZoneFillProfile profile,
+            bool ensureConnectivity)
         {
             int width = bounds.width;
             int height = bounds.height;
             if (width <= 2 || height <= 2 || rng == null)
                 return null;
 
+            int minRoom = profile.minRoomSize > 0 ? profile.minRoomSize : 3;
+            int maxRoom = profile.maxRoomSize > 0 ? profile.maxRoomSize : 8;
+            maxRoom = Mathf.Min(maxRoom, Mathf.Min(width - 2, height - 2));
+            minRoom = Mathf.Min(minRoom, maxRoom);
+
+            int minCorridor = profile.minCorridorWidth > 0 ? profile.minCorridorWidth : 1;
+            int maxCorridor = profile.maxCorridorWidth > 0 ? profile.maxCorridorWidth : 1;
+            maxCorridor = Mathf.Max(minCorridor, maxCorridor);
+
             var floor = new bool[width, height];
             var rooms = new List<RectInt>();
-            int roomCount = Mathf.Clamp((width * height) / 80, 2, 8);
+            int roomDivisor = profile.maxRoomCount > 0 ? Mathf.Max(40, 800 / profile.maxRoomCount) : 80;
+            int roomCount = profile.maxRoomCount > 0
+                ? Mathf.Clamp(profile.maxRoomCount, 2, 12)
+                : Mathf.Clamp((width * height) / roomDivisor, 2, 8);
 
             for (int attempt = 0; attempt < roomCount * 12 && rooms.Count < roomCount; attempt++)
             {
-                int roomWidth = rng.Next(3, Mathf.Min(9, width - 1));
-                int roomHeight = rng.Next(3, Mathf.Min(9, height - 1));
-                int x = rng.Next(1, width - roomWidth - 1);
-                int y = rng.Next(1, height - roomHeight - 1);
+                int roomWidth = rng.Next(minRoom, maxRoom + 1);
+                int roomHeight = rng.Next(minRoom, maxRoom + 1);
+                int x = rng.Next(1, Mathf.Max(2, width - roomWidth - 1));
+                int y = rng.Next(1, Mathf.Max(2, height - roomHeight - 1));
                 var room = new RectInt(x, y, roomWidth, roomHeight);
 
                 if (OverlapsAny(room, rooms, padding: 1))
@@ -42,7 +61,10 @@ namespace JRogue.World.Generation.Zones
             {
                 Vector2Int from = RoomCenter(rooms[i - 1]);
                 Vector2Int to = RoomCenter(rooms[i]);
-                CarveCorridor(floor, from, to);
+                int corridorWidth = minCorridor == maxCorridor
+                    ? minCorridor
+                    : rng.Next(minCorridor, maxCorridor + 1);
+                CarveCorridor(floor, from, to, corridorWidth);
             }
 
             if (ensureConnectivity)
@@ -51,7 +73,15 @@ namespace JRogue.World.Generation.Zones
             return floor;
         }
 
-        public static bool[,] GenerateCave(RectInt bounds, System.Random rng, int wallDensity, bool ensureConnectivity)
+        public static bool[,] GenerateCave(RectInt bounds, System.Random rng, int wallDensity, bool ensureConnectivity) =>
+            GenerateCave(bounds, rng, wallDensity, default, ensureConnectivity);
+
+        public static bool[,] GenerateCave(
+            RectInt bounds,
+            System.Random rng,
+            int wallDensity,
+            ZoneFillProfile profile,
+            bool ensureConnectivity)
         {
             int width = bounds.width;
             int height = bounds.height;
@@ -60,6 +90,7 @@ namespace JRogue.World.Generation.Zones
 
             var floor = new bool[width, height];
             int fillProbability = Mathf.Clamp(100 - wallDensity, 25, 75);
+            int iterations = profile.caSmoothingIterations > 0 ? profile.caSmoothingIterations : 5;
 
             for (int y = 0; y < height; y++)
             {
@@ -72,7 +103,7 @@ namespace JRogue.World.Generation.Zones
                 }
             }
 
-            for (int iteration = 0; iteration < 5; iteration++)
+            for (int iteration = 0; iteration < iterations; iteration++)
                 floor = SmoothCave(floor);
 
             ForceBorderWalls(floor);
@@ -81,6 +112,55 @@ namespace JRogue.World.Generation.Zones
                 KeepLargestFloorComponent(floor);
 
             return floor;
+        }
+
+        public static void ConnectOpeningCells(bool[,] floor, RectInt bounds, IReadOnlyList<Vector2Int> localOpeningCells)
+        {
+            if (floor == null || localOpeningCells == null || localOpeningCells.Count == 0)
+                return;
+
+            int width = floor.GetLength(0);
+            int height = floor.GetLength(1);
+
+            for (int i = 0; i < localOpeningCells.Count; i++)
+            {
+                Vector2Int opening = localOpeningCells[i];
+                if (opening.x < 0 || opening.y < 0 || opening.x >= width || opening.y >= height)
+                    continue;
+
+                floor[opening.x, opening.y] = true;
+                Vector2Int? nearest = FindNearestFloorCell(floor, opening);
+                if (!nearest.HasValue)
+                    continue;
+
+                CarveCorridor(floor, opening, nearest.Value, 1);
+            }
+        }
+
+        static Vector2Int? FindNearestFloorCell(bool[,] floor, Vector2Int from)
+        {
+            int width = floor.GetLength(0);
+            int height = floor.GetLength(1);
+            int bestDist = int.MaxValue;
+            Vector2Int? best = null;
+
+            for (int y = 1; y < height - 1; y++)
+            {
+                for (int x = 1; x < width - 1; x++)
+                {
+                    if (!floor[x, y])
+                        continue;
+
+                    int dist = Mathf.Abs(x - from.x) + Mathf.Abs(y - from.y);
+                    if (dist >= bestDist)
+                        continue;
+
+                    bestDist = dist;
+                    best = new Vector2Int(x, y);
+                }
+            }
+
+            return best;
         }
 
         static bool[,] SmoothCave(bool[,] floor)
@@ -211,23 +291,47 @@ namespace JRogue.World.Generation.Zones
             }
         }
 
-        static void CarveCorridor(bool[,] floor, Vector2Int from, Vector2Int to)
+        static void CarveCorridor(bool[,] floor, Vector2Int from, Vector2Int to, int width)
         {
+            width = Mathf.Max(1, width);
             int x = from.x;
             int y = from.y;
             while (x != to.x)
             {
-                floor[x, y] = true;
+                CarveCellAndWidth(floor, x, y, width, horizontal: true);
                 x += x < to.x ? 1 : -1;
             }
 
             while (y != to.y)
             {
-                floor[x, y] = true;
+                CarveCellAndWidth(floor, x, y, width, horizontal: false);
                 y += y < to.y ? 1 : -1;
             }
 
+            CarveCellAndWidth(floor, x, y, width, horizontal: true);
+        }
+
+        static void CarveCellAndWidth(bool[,] floor, int x, int y, int width, bool horizontal)
+        {
+            int maxX = floor.GetLength(0);
+            int maxY = floor.GetLength(1);
             floor[x, y] = true;
+
+            for (int offset = 1; offset < width; offset++)
+            {
+                if (horizontal)
+                {
+                    int ny = y + offset;
+                    if (ny > 0 && ny < maxY - 1)
+                        floor[x, ny] = true;
+                }
+                else
+                {
+                    int nx = x + offset;
+                    if (nx > 0 && nx < maxX - 1)
+                        floor[nx, y] = true;
+                }
+            }
         }
 
         static void CarveRect(bool[,] floor, RectInt rect)

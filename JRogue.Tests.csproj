@@ -137,6 +137,7 @@
     <Compile Include="Assets/Tests/UnitTests/Manager/Party/PartyManagerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantHotbarTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/ElementalSpiritContractsRuntimeTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/Floor01ProductionLayoutTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Progression/PartyExperienceServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Spawn/EnemySpawnPlacementResolverTests.cs" />
     <Compile Include="Assets/Tests/Mocks/MockBattleTarget.cs" />
