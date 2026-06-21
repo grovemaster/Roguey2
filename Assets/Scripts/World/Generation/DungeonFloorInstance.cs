@@ -29,6 +29,7 @@ namespace JRogue.World.Generation
         readonly Dictionary<string, PortalArrivalBinding> _arrivalBindings =
             new Dictionary<string, PortalArrivalBinding>();
         readonly List<ZoneCellMapEntry> _zoneCellMapSnapshot = new List<ZoneCellMapEntry>();
+        readonly Dictionary<Vector3Int, string> _zoneIdByCell = new Dictionary<Vector3Int, string>();
         readonly List<ResolvedZonePiece> _resolvedZonePieces = new List<ResolvedZonePiece>();
         readonly List<PortalInteractable> _portals = new List<PortalInteractable>();
         readonly List<JRogue.World.MapInteract.IAdjacentMapInteractable> _extraMapInteractables =
@@ -104,18 +105,8 @@ namespace JRogue.World.Generation
 
         public bool TryGetZoneId(Vector3Int cell, out string zoneId)
         {
-            zoneId = null;
-            for (int i = 0; i < _zoneCellMapSnapshot.Count; i++)
-            {
-                ZoneCellMapEntry entry = _zoneCellMapSnapshot[i];
-                if (entry.x != cell.x || entry.y != cell.y)
-                    continue;
-
-                zoneId = entry.zoneId;
-                return true;
-            }
-
-            return false;
+            cell.z = 0;
+            return _zoneIdByCell.TryGetValue(cell, out zoneId);
         }
 
         public DungeonFloorTilemaps Tilemaps => new DungeonFloorTilemaps(
@@ -273,16 +264,19 @@ namespace JRogue.World.Generation
             }
 
             _zoneCellMapSnapshot.Clear();
+            _zoneIdByCell.Clear();
             if (zoneCellMap != null)
             {
                 foreach (KeyValuePair<Vector3Int, string> pair in zoneCellMap)
                 {
+                    Vector3Int cell = new Vector3Int(pair.Key.x, pair.Key.y, 0);
                     _zoneCellMapSnapshot.Add(new ZoneCellMapEntry
                     {
-                        x = pair.Key.x,
-                        y = pair.Key.y,
+                        x = cell.x,
+                        y = cell.y,
                         zoneId = pair.Value,
                     });
+                    _zoneIdByCell[cell] = pair.Value;
                 }
             }
 

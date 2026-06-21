@@ -83,6 +83,7 @@ public class VisibilityManager : MonoBehaviour
     readonly HashSet<Vector3Int> _knownCells = new HashSet<Vector3Int>();
     readonly HashSet<Vector3Int> _currentlyVisible = new HashSet<Vector3Int>();
     readonly HashSet<Vector3Int> _currentlyLitVisible = new HashSet<Vector3Int>();
+    bool _lastPartyHasPersonalLight;
 
     Transform playerTransform;
 
@@ -131,6 +132,7 @@ public class VisibilityManager : MonoBehaviour
         _knownCells.Clear();
         _currentlyVisible.Clear();
         _currentlyLitVisible.Clear();
+        _lastPartyHasPersonalLight = false;
 
         foreach (Tilemap tm in tilemaps)
         {
@@ -197,10 +199,14 @@ public class VisibilityManager : MonoBehaviour
             if (ShouldSuppressFogMemory(prev, zoneLayout, partyHasPersonalLight))
             {
                 SetCellState(prev, TileKnowledgeState.Unseen);
+                TintCellUnseen(prev);
                 continue;
             }
 
             SetCellState(prev, TileKnowledgeState.Explored);
+            if (_knowledge.TryGetValue(prev, out CellKnowledge exploredKnowledge))
+                TintCell(prev, GetExploredSnapshotColor(exploredKnowledge));
+
             if (verboseFogLogs && _knowledge.TryGetValue(prev, out CellKnowledge frozen))
             {
                 LightingSnapshot ls = frozen.lightingSnapshot;
@@ -254,33 +260,16 @@ public class VisibilityManager : MonoBehaviour
             }
         }
 
-        // Apply explored tint for known non-visible cells.
-        foreach (Vector3Int cell in _knownCells)
+        foreach (Vector3Int cell in losUnlit)
         {
-            if (currentVisible.Contains(cell))
-                continue;
-
-            if (losUnlit.Contains(cell))
-            {
+            if (!currentVisible.Contains(cell))
                 TintCell(cell, unseenColor);
-                continue;
-            }
+        }
 
-            if (ShouldSuppressFogMemory(cell, zoneLayout, partyHasPersonalLight))
-            {
-                TintCellUnseen(cell);
-                continue;
-            }
-
-            if (_knowledge.TryGetValue(cell, out CellKnowledge knowledge)
-                && knowledge.state == TileKnowledgeState.Explored)
-            {
-                TintCell(cell, GetExploredSnapshotColor(knowledge));
-            }
-            else
-            {
-                TintCellUnseen(cell);
-            }
+        if (partyHasPersonalLight != _lastPartyHasPersonalLight)
+        {
+            RetintLightlessZoneFog(zoneLayout, partyHasPersonalLight, currentVisible);
+            _lastPartyHasPersonalLight = partyHasPersonalLight;
         }
 
         _currentlyVisible.Clear();
@@ -629,7 +618,39 @@ public class VisibilityManager : MonoBehaviour
             Tilemap tm = tilemaps[i];
             if (tm == null || !tm.HasTile(pos))
                 continue;
+
+            if (tm.GetColor(pos) == color)
+                continue;
+
             tm.SetColor(pos, color);
+        }
+    }
+
+    void RetintLightlessZoneFog(
+        DungeonFloorZoneLayout zoneLayout,
+        bool partyHasPersonalLight,
+        HashSet<Vector3Int> currentVisible)
+    {
+        foreach (Vector3Int cell in _knownCells)
+        {
+            if (currentVisible.Contains(cell))
+                continue;
+
+            string zoneId = TryGetZoneId(cell);
+            if (!ZoneVisionPolicy.ZoneRequiresPersonalLightForVision(zoneId, zoneLayout))
+                continue;
+
+            if (ShouldSuppressFogMemory(cell, zoneLayout, partyHasPersonalLight))
+            {
+                TintCellUnseen(cell);
+                continue;
+            }
+
+            if (_knowledge.TryGetValue(cell, out CellKnowledge knowledge)
+                && knowledge.state == TileKnowledgeState.Explored)
+            {
+                TintCell(cell, GetExploredSnapshotColor(knowledge));
+            }
         }
     }
 

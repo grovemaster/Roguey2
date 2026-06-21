@@ -34,11 +34,19 @@ namespace JRogue.Manager.Turn
         public bool HasActedThisTurn(GameObject actor) =>
             actor != null && charactersWhoActed.Contains(actor);
 
+        VisibilityManager _cachedVisibility;
+
         void Awake()
         {
             // Simple Singleton pattern
             if (Instance == null) Instance = this;
             else Destroy(gameObject);
+        }
+
+        void CacheVisibilityManager()
+        {
+            if (_cachedVisibility == null)
+                _cachedVisibility = FindAnyObjectByType<VisibilityManager>();
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -84,7 +92,8 @@ namespace JRogue.Manager.Turn
         public void RefreshPartyPresentation()
         {
             PartyLightEmitterBridge.RefreshParty();
-            FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
+            CacheVisibilityManager();
+            _cachedVisibility?.RefreshPartyVision();
         }
 
         public void ForceEndPlayerTurn()
