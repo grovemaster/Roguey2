@@ -128,6 +128,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/NpcDialogBoxUI.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapWallTopology.cs" />
     <Compile Include="Assets/Scripts/UI/Character/EssenceSlotPanelView.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Essence/EssenceDesignAbility.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownPhaseAdvanceSource.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRule.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapService.cs" />
@@ -171,8 +172,8 @@
     <Compile Include="Assets/Scripts/Racial/HumanMageHotbarSync.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanKnightHotbarSync.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntry.cs" />
-    <Compile Include="Assets/Scripts/Racial/TieflingImplantForgemasterService.cs" />
     <Compile Include="Assets/Scripts/World/Town/InnBedSleepPromptService.cs" />
+    <Compile Include="Assets/Scripts/Racial/TieflingImplantForgemasterService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneJigsawSolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
     <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillProficiencyDispatcher.cs" />
@@ -205,8 +206,8 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorInstance.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopGoldUtility.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceHost.cs" />
-    <Compile Include="Assets/Scripts/Dialog/NpcDialogProfile.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/InnkeeperNpcController.cs" />
+    <Compile Include="Assets/Scripts/Dialog/NpcDialogProfile.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/DragonianElderNpcController.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceEffect.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />
@@ -353,8 +354,8 @@
     <Compile Include="Assets/Scripts/Manager/Turn/TurnManager.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardDetectionEvaluator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingIds.cs" />
-    <Compile Include="Assets/Scripts/Dialog/DwarfClanJoinDialogSession.cs" />
     <Compile Include="Assets/Scripts/World/Town/MarketGeneralStoreLayout.cs" />
+    <Compile Include="Assets/Scripts/Dialog/DwarfClanJoinDialogSession.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryHotkeyRuntimeOverrides.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardService.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryTargetedUseLog.cs" />
@@ -431,8 +432,8 @@
     <Compile Include="Assets/Scripts/Manager/Party/PartyMainCharacterMarker.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/HazardPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassAbilityResources.cs" />
-    <Compile Include="Assets/Scripts/World/Generation/TownArrivalService.cs" />
     <Compile Include="Assets/Scripts/World/Town/MarketTownFloorIds.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/TownArrivalService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalEdgePlacement.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacer.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
@@ -502,8 +503,8 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePaletteResolver.cs" />
     <Compile Include="Assets/Scripts/Racial/SoulBeastRitualService.cs" />
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
-    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnGroupMembership.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/InnBedSleepPromptEffect.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnGroupMembership.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/PartyLightEmitterBridge.cs" />
     <Compile Include="Assets/Scripts/Racial/DragonianSpellLoadoutService.cs" />
@@ -544,9 +545,9 @@
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownPlazaMarkerLayout.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRunner.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/GameCalendarLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneRectProcGenerator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/ShopCounterService.cs" />
-    <Compile Include="Assets/Scripts/World/Generation/GameCalendarLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/RestSessionService.cs" />
     <Compile Include="Assets/Scripts/Racial/DwarfClanIds.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />

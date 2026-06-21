@@ -1,6 +1,9 @@
+using System;
+using JRogue.Manager.Party;
 using JRogue.Manager.Progression;
 using JRogue.Manager.Turn;
 using JRogue.UI.Gameplay;
+using JRogue.View;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,7 +11,9 @@ namespace JRogue.World.Generation
 {
     public static class DungeonEntryService
     {
-        public const string DungeonSceneName = "DungeonFloorTest";
+        public const string TestDungeonSceneName = "DungeonFloorTest";
+        public const string ProductionDungeonSceneName = "DungeonFloor";
+        public const string TownTestSceneName = "TownTest";
         public const string StartFloorId = "dungeon_floor_01";
 
         const string LogPrefix = "[DungeonEntry]";
@@ -16,6 +21,18 @@ namespace JRogue.World.Generation
         static bool _entryScheduled;
 
         public static bool EntryScheduled => _entryScheduled;
+
+        /// <summary>
+        /// Resolves which dungeon scene to load from the active hub/town scene.
+        /// <see cref="TownTestSceneName"/> keeps the legacy test pair; all other hubs use production.
+        /// </summary>
+        public static string ResolveDungeonSceneName(string townSceneName)
+        {
+            if (string.Equals(townSceneName, TownTestSceneName, StringComparison.Ordinal))
+                return TestDungeonSceneName;
+
+            return ProductionDungeonSceneName;
+        }
 
         public static void RequestEnterDungeonFromTown()
         {
@@ -57,19 +74,22 @@ namespace JRogue.World.Generation
             if (!_entryScheduled)
                 return;
 
+            string dungeonSceneName = ResolveDungeonSceneName(RunPartyPersistence.ReturnTownSceneName);
+
             try
             {
-                if (!Application.CanStreamedLevelBeLoaded(DungeonSceneName))
+                if (!Application.CanStreamedLevelBeLoaded(dungeonSceneName))
                 {
                     Debug.LogError(
-                        $"{LogPrefix} Scene '{DungeonSceneName}' is not in Build Settings. " +
-                        "Add Assets/Scenes/Dungeon/DungeonFloorTest.unity.");
+                        $"{LogPrefix} Scene '{dungeonSceneName}' is not in Build Settings. " +
+                        $"Town '{RunPartyPersistence.ReturnTownSceneName}' → run JRogue/Dungeon/Phase 1 — Setup Production Dungeon.");
                     return;
                 }
 
-                Debug.Log($"{LogPrefix} Loading dungeon scene '{DungeonSceneName}' (fresh run).");
+                Debug.Log(
+                    $"{LogPrefix} Loading dungeon scene '{dungeonSceneName}' from town '{RunPartyPersistence.ReturnTownSceneName}' (fresh run).");
                 GameLogService.ClearSession();
-                SceneManager.LoadScene(DungeonSceneName, LoadSceneMode.Single);
+                SceneManager.LoadScene(dungeonSceneName, LoadSceneMode.Single);
             }
             finally
             {

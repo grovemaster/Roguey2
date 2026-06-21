@@ -54,6 +54,7 @@
     <Compile Include="Assets/Editor/World/ResidentialDistrictPortalsEditor.cs" />
     <Compile Include="Assets/Editor/World/DcssRectGrayFloorVarietyEditor.cs" />
     <Compile Include="Assets/Editor/World/DragonianElderPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/DungeonFloor1ProductionContentPackCreator.cs" />
     <Compile Include="Assets/Editor/Party/MainCharacterSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/World/NpcDialogPackCreator.cs" />
     <Compile Include="Assets/Editor/World/MapPresencePackEditor.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Assets/Editor/World/AdventureGuildExchangePackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/HealingPotionSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/World/KnightDrillMasterPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/DungeonFloorProductionSceneCreator.cs" />
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/ResidentialTownPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />

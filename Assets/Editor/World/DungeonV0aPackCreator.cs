@@ -28,8 +28,10 @@ namespace JRogue.Editor.World
     {
         const string DataRoot = "Assets/Resources/Dungeon";
         const string SceneFolder = "Assets/Scenes/Dungeon";
-        const string ScenePath = SceneFolder + "/DungeonFloorTest.unity";
-        const string ProductionScenePath = SceneFolder + "/DungeonFloor.unity";
+        public const string TestScenePath = SceneFolder + "/DungeonFloorTest.unity";
+        const string ScenePath = TestScenePath;
+        public const string ProductionScenePath = DungeonFloorProductionSceneCreator.ProductionScenePath;
+        const string LegacyProductionScenePath = SceneFolder + "/DungeonFloor.unity";
         // Sprites use 32 PPU on UrbanTheme; paint with identity matrix (no per-cell scale).
         const string FloorTilePath = "Assets/TileMaps/Scavengers_SpriteSheet_32.asset";
         const string WallTilePath = "Assets/TileMaps/Scavengers_SpriteSheet_50.asset";
@@ -64,9 +66,40 @@ namespace JRogue.Editor.World
         [MenuItem("JRogue/Dungeon/Create DungeonFloor Production Scene")]
         public static void CreateDungeonFloorProductionScene()
         {
-            CreateV0aTestDataInternal();
-            ConfigureV0bFloorDefinitions();
-            CreateOrUpdateProductionScene();
+            DungeonFloorProductionSceneCreator.SetupProductionDungeonPhase1();
+        }
+
+        /// <summary>
+        /// Ensures production scene hierarchy: shared dungeon systems, <see cref="DungeonFloorRuntime"/>, no test controller.
+        /// </summary>
+        public static void FixProductionSceneHierarchyInPlace()
+        {
+            FixSceneHierarchyInPlace();
+
+            GameObject systems = GameObject.Find(DungeonFloorTestSceneValidator.SystemsObjectName);
+            if (systems == null)
+                return;
+
+            DungeonFloorTestController test = systems.GetComponent<DungeonFloorTestController>();
+            if (test != null)
+                Object.DestroyImmediate(test);
+
+            DungeonFloorRuntime runtime = systems.GetComponent<DungeonFloorRuntime>();
+            if (runtime == null)
+                runtime = systems.AddComponent<DungeonFloorRuntime>();
+
+            DungeonRunBootstrap bootstrap = Object.FindAnyObjectByType<DungeonRunBootstrap>();
+            DungeonFloorInstanceManager floorManager = systems.GetComponent<DungeonFloorInstanceManager>();
+
+            SerializedObject so = new SerializedObject(runtime);
+            so.FindProperty("runBootstrap").objectReferenceValue = bootstrap;
+            so.FindProperty("floorInstanceManager").objectReferenceValue = floorManager;
+            so.FindProperty("floorCatalog").objectReferenceValue =
+                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>($"{DataRoot}/DungeonV0aCatalog.asset");
+            so.FindProperty("startFloorId").stringValue = DungeonEntryService.StartFloorId;
+            so.FindProperty("beginRunOnStart").boolValue = false;
+            so.FindProperty("useRandomSeedOnTownEntry").boolValue = true;
+            so.ApplyModifiedPropertiesWithoutUndo();
         }
 
         [MenuItem("JRogue/Dungeon/Fix DungeonFloorTest Scene")]
@@ -643,28 +676,7 @@ namespace JRogue.Editor.World
 
         static void CreateOrUpdateProductionScene()
         {
-            EnsureFolder(SceneFolder);
-            if (File.Exists(ProductionScenePath))
-            {
-                var scene = EditorSceneManager.OpenScene(ProductionScenePath, OpenSceneMode.Single);
-                FixSceneHierarchyInPlace();
-                ReplaceTestControllerWithRuntime(scene);
-                EditorSceneManager.SaveScene(scene);
-                AssetDatabase.SaveAssets();
-                Debug.Log($"[Dungeon] Updated {ProductionScenePath}.");
-                return;
-            }
-
-            CreateOrUpdateTestScene();
-            if (!File.Exists(ScenePath))
-                return;
-
-            AssetDatabase.CopyAsset(ScenePath, ProductionScenePath);
-            AssetDatabase.Refresh();
-            var prod = EditorSceneManager.OpenScene(ProductionScenePath, OpenSceneMode.Single);
-            ReplaceTestControllerWithRuntime(prod);
-            EditorSceneManager.SaveScene(prod);
-            Debug.Log($"[Dungeon] Created {ProductionScenePath} from test scene template.");
+            DungeonFloorProductionSceneCreator.SetupProductionDungeonPhase1();
         }
 
         static void ReplaceTestControllerWithRuntime(UnityEngine.SceneManagement.Scene scene)
