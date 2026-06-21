@@ -35,10 +35,9 @@ namespace JRogue.Tests.UnitTests.World
         }
 
         [Test]
-        public void IsCellLiveVisible_WallInGeometricLos_LiveVisibleEvenWhenUnlit()
+        public void IsCellLiveVisible_UnlitWall_NotLiveVisibleWithoutLight()
         {
-            Assert.IsTrue(IlluminationVisibilityLogic.IsCellLiveVisible(
-                0, 0, partyOccupied: false, isWallInGeometricLos: true));
+            Assert.IsFalse(IlluminationVisibilityLogic.IsCellLiveVisible(0, 0, partyOccupied: false));
         }
 
         [Test]

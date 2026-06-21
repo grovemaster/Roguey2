@@ -27,14 +27,18 @@ MonoBehaviour:
   fillProfile:
     mode: 4
     subStampTable: []
-    innerWallDensity: 38
+    innerWallDensity: 55
     ensureConnectivity: 1
     minCorridorWidth: 1
     maxCorridorWidth: 3
-    caSmoothingIterations: 4
+    caSmoothingIterations: 5
     minRoomSize: 6
     maxRoomSize: 16
     maxRoomCount: 8
+    glowFloorGapFill: 1
+    glowFloorPalette: {fileID: 11400000, guid: a8e3c1d42f905847b6d2e1a9c4f70831, type: 2}
+    glowFloorMinReceivedLight: 1
+    glowFloorMinSpacing: 6
   populationProfile: {fileID: 11400000, guid: 4ce4b79b00a40d5f1b17da7ad3f1aad9, type: 2}
   monsterPopulationMode: 1
   monsterSpawnSchedule: {fileID: 11400000, guid: 4ca831ab80a78ea3ca5425fa15d94f4f, type: 2}

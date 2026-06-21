@@ -101,6 +101,11 @@ namespace JRogue.World.Generation.Zones
         [Min(1)] public int minRoomSize;
         [Min(1)] public int maxRoomSize;
         [Min(1)] public int maxRoomCount;
+        [Tooltip("When true, floor paint skips glow tiles; they are placed only in under-lit walkable cells after wall emitters.")]
+        public bool glowFloorGapFill;
+        public DungeonTilePalette glowFloorPalette;
+        [Min(0)] public int glowFloorMinReceivedLight;
+        [Min(1)] public int glowFloorMinSpacing;
     }
 
     [Serializable]

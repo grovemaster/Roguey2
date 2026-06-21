@@ -5,11 +5,12 @@ namespace JRogue.World.Generation.Zones
         public static System.Random CreateZoneSelectionRng(int runSeed, string floorId) =>
             new System.Random(unchecked(runSeed * 397 ^ (floorId != null ? floorId.GetHashCode() : 0) ^ 0x5A0E));
 
-        public static System.Random CreateZoneFillRng(int runSeed, string floorId, string pieceId) =>
+        public static System.Random CreateZoneFillRng(int runSeed, string floorId, string pieceId, int fillAttempt = 0) =>
             new System.Random(unchecked(
                 runSeed * 397
                 ^ (floorId != null ? floorId.GetHashCode() : 0)
                 ^ (pieceId != null ? pieceId.GetHashCode() : 0)
+                ^ (fillAttempt * 7919)
                 ^ 0xF117));
 
         public static System.Random CreatePopulationRng(int runSeed, string floorId) =>

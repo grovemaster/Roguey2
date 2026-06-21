@@ -88,21 +88,3 @@ MonoBehaviour:
     isLightEmitter: 0
     emitLight: {fileID: 0}
     emissionOverride: 0
-  - tile: {fileID: 11400000, guid: 34efe1f587ec526c2993043269de4d3f, type: 2}
-    registryKey: DcssCavern:_cyan_floor_nerves_2_new
-    weight: 12
-    isLightEmitter: 1
-    emitLight: {fileID: 11400000, guid: f7c4e9012d3f4567890abcdef1234567, type: 2}
-    emissionOverride: 0
-  - tile: {fileID: 11400000, guid: 0784f570e54266c8ab7e74e9c557066c, type: 2}
-    registryKey: DcssCavern:_cyan_floor_nerves_4_new
-    weight: 12
-    isLightEmitter: 1
-    emitLight: {fileID: 11400000, guid: f7c4e9012d3f4567890abcdef1234567, type: 2}
-    emissionOverride: 0
-  - tile: {fileID: 11400000, guid: b0194ab575c1bc88ca0ed3b82573445e, type: 2}
-    registryKey: DcssCavern:_cyan_floor_nerves_6
-    weight: 6
-    isLightEmitter: 1
-    emitLight: {fileID: 11400000, guid: f7c4e9012d3f4567890abcdef1234567, type: 2}
-    emissionOverride: 0

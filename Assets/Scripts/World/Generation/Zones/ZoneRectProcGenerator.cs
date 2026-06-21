@@ -121,6 +121,7 @@ namespace JRogue.World.Generation.Zones
 
             int width = floor.GetLength(0);
             int height = floor.GetLength(1);
+            Vector2Int fallbackTarget = new Vector2Int(Mathf.Max(1, width / 2), Mathf.Max(1, height / 2));
 
             for (int i = 0; i < localOpeningCells.Count; i++)
             {
@@ -130,11 +131,59 @@ namespace JRogue.World.Generation.Zones
 
                 floor[opening.x, opening.y] = true;
                 Vector2Int? nearest = FindNearestFloorCell(floor, opening);
-                if (!nearest.HasValue)
+                Vector2Int target = nearest ?? fallbackTarget;
+                CarveCorridor(floor, opening, target, 1);
+            }
+
+            for (int i = 0; i < localOpeningCells.Count; i++)
+            {
+                Vector2Int opening = localOpeningCells[i];
+                if (opening.x < 0 || opening.y < 0 || opening.x >= width || opening.y >= height)
                     continue;
 
-                CarveCorridor(floor, opening, nearest.Value, 1);
+                if (IsOpeningConnectedToInterior(floor, opening))
+                    continue;
+
+                CarveCorridor(floor, opening, fallbackTarget, 1);
             }
+        }
+
+        internal static bool IsOpeningConnectedToInterior(bool[,] floor, Vector2Int opening)
+        {
+            int width = floor.GetLength(0);
+            int height = floor.GetLength(1);
+            if (opening.x < 0 || opening.y < 0 || opening.x >= width || opening.y >= height || !floor[opening.x, opening.y])
+                return false;
+
+            var visited = new HashSet<Vector2Int> { opening };
+            var queue = new Queue<Vector2Int>();
+            queue.Enqueue(opening);
+            int maxDistance = 0;
+
+            while (queue.Count > 0)
+            {
+                Vector2Int cell = queue.Dequeue();
+                int distance = Mathf.Abs(cell.x - opening.x) + Mathf.Abs(cell.y - opening.y);
+                maxDistance = Mathf.Max(maxDistance, distance);
+
+                TryEnqueueFloorNeighbor(floor, cell + Vector2Int.up, visited, queue);
+                TryEnqueueFloorNeighbor(floor, cell + Vector2Int.down, visited, queue);
+                TryEnqueueFloorNeighbor(floor, cell + Vector2Int.left, visited, queue);
+                TryEnqueueFloorNeighbor(floor, cell + Vector2Int.right, visited, queue);
+            }
+
+            return visited.Count >= 4 && maxDistance >= 2;
+        }
+
+        static void TryEnqueueFloorNeighbor(bool[,] floor, Vector2Int cell, HashSet<Vector2Int> visited, Queue<Vector2Int> queue)
+        {
+            int width = floor.GetLength(0);
+            int height = floor.GetLength(1);
+            if (cell.x < 0 || cell.y < 0 || cell.x >= width || cell.y >= height || !floor[cell.x, cell.y])
+                return;
+
+            if (visited.Add(cell))
+                queue.Enqueue(cell);
         }
 
         static Vector2Int? FindNearestFloorCell(bool[,] floor, Vector2Int from)

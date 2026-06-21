@@ -44,6 +44,7 @@ namespace JRogue.World.Generation.Phases
                 context.ZoneCellMap,
                 context.RunSeed,
                 def.FloorId,
+                context.ZoneFillAttempt,
                 layout.LayoutKind == ZoneLayoutKind.Hybrid
                     ? layout.SkeletonStamp ?? def.LayoutStamp
                     : null,

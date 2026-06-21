@@ -39,6 +39,7 @@ namespace JRogue.Editor.World
         public const string ZoneNorthernDark = "northern_dark";
 
         public const string PaletteLuminescentFloorPath = PaletteRoot + "/Palette_LuminescentCavern_Floor.asset";
+        public const string PaletteLuminescentGlowFloorPath = PaletteRoot + "/Palette_LuminescentCavern_GlowFloor.asset";
         public const string PaletteLuminescentWallPath = PaletteRoot + "/Palette_LuminescentCavern_Wall.asset";
         public const string PaletteDarkFloorPath = PaletteRoot + "/Palette_NorthernDark_Floor.asset";
         public const string PaletteDarkWallPath = PaletteRoot + "/Palette_NorthernDark_Wall.asset";
@@ -71,9 +72,8 @@ namespace JRogue.Editor.World
 
         static readonly (string relativePath, int weight)[] EmitterFloorSpecs =
         {
-            ("_cyan_floor_nerves_2_new.png", 12),
-            ("_cyan_floor_nerves_4_new.png", 12),
-            ("_cyan_floor_nerves_6.png", 6),
+            ("_cyan_floor_nerves_2_new.png", 1),
+            ("_cyan_floor_nerves_4_new.png", 1),
         };
 
         readonly struct PaletteTileSpec
@@ -123,8 +123,9 @@ namespace JRogue.Editor.World
         public static void RefreshLuminescentCavernEmitters()
         {
             CreatePalettes();
+            CreateZoneDefinitions();
             AssetDatabase.SaveAssets();
-            Debug.Log("[Floor1 Phase2] Refreshed luminescent cavern palette emitters to CavernGlow.");
+            Debug.Log("[Floor1 Phase2] Refreshed luminescent cavern palettes, glow gap-fill, and cave tuning.");
         }
 
         static void CreateCavernTiles()
@@ -167,11 +168,18 @@ namespace JRogue.Editor.World
                 luminescentFloors.Add(new PaletteTileSpec($"{TileRoot}/{name}.asset", weight: 3, registryKey: $"DcssCavern:{name}"));
             }
 
+            CreateOrUpdatePalette(
+                PaletteLuminescentFloorPath,
+                "luminescent_cavern_floor",
+                DungeonTilePaletteLayer.Floor,
+                luminescentFloors);
+
+            var glowFloors = new List<PaletteTileSpec>();
             for (int i = 0; i < EmitterFloorSpecs.Length; i++)
             {
                 (string fileName, int weight) = EmitterFloorSpecs[i];
                 string name = TileNameFromRelative(fileName);
-                luminescentFloors.Add(new PaletteTileSpec(
+                glowFloors.Add(new PaletteTileSpec(
                     $"{TileRoot}/{name}.asset",
                     weight,
                     isLightEmitter: true,
@@ -179,10 +187,10 @@ namespace JRogue.Editor.World
             }
 
             CreateOrUpdatePalette(
-                PaletteLuminescentFloorPath,
-                "luminescent_cavern_floor",
+                PaletteLuminescentGlowFloorPath,
+                "luminescent_cavern_glow_floor",
                 DungeonTilePaletteLayer.Floor,
-                luminescentFloors,
+                glowFloors,
                 cavernGlow);
             CreateOrUpdatePalette(PaletteDarkFloorPath, "northern_dark_floor", DungeonTilePaletteLayer.Floor, normalFloors);
 
@@ -231,6 +239,7 @@ namespace JRogue.Editor.World
             TileBase fallbackWall = LoadFirstTile(normalFloors: false);
 
             DungeonTilePalette lumFloor = AssetDatabase.LoadAssetAtPath<DungeonTilePalette>(PaletteLuminescentFloorPath);
+            DungeonTilePalette lumGlowFloor = AssetDatabase.LoadAssetAtPath<DungeonTilePalette>(PaletteLuminescentGlowFloorPath);
             DungeonTilePalette lumWall = AssetDatabase.LoadAssetAtPath<DungeonTilePalette>(PaletteLuminescentWallPath);
             DungeonTilePalette darkFloor = AssetDatabase.LoadAssetAtPath<DungeonTilePalette>(PaletteDarkFloorPath);
             DungeonTilePalette darkWall = AssetDatabase.LoadAssetAtPath<DungeonTilePalette>(PaletteDarkWallPath);
@@ -255,15 +264,19 @@ namespace JRogue.Editor.World
                 maxWidth: 50,
                 maxHeight: 60,
                 fillMode: ZoneFillMode.Cave,
-                innerWallDensity: 38,
-                caSmoothingIterations: 4,
+                innerWallDensity: 55,
+                caSmoothingIterations: 5,
                 minCorridorWidth: 1,
                 maxCorridorWidth: 3,
                 minRoomSize: 6,
                 maxRoomSize: 16,
                 maxRoomCount: 8,
                 popCavern,
-                schedule);
+                schedule,
+                glowFloorGapFill: true,
+                glowFloorPalette: lumGlowFloor,
+                glowFloorMinReceivedLight: 1,
+                glowFloorMinSpacing: 6);
 
             CreateOrUpdateZone(
                 ZoneDarkPath,
@@ -312,7 +325,11 @@ namespace JRogue.Editor.World
             int maxRoomSize,
             int maxRoomCount,
             DungeonZonePopulationProfile populationProfile,
-            MonsterSpawnScheduleProfile schedule)
+            MonsterSpawnScheduleProfile schedule,
+            bool glowFloorGapFill = false,
+            DungeonTilePalette glowFloorPalette = null,
+            int glowFloorMinReceivedLight = 1,
+            int glowFloorMinSpacing = 6)
         {
             var zone = LoadOrCreate<DungeonZoneDefinition>(path);
             SerializedObject so = new SerializedObject(zone);
@@ -339,6 +356,10 @@ namespace JRogue.Editor.World
             fill.FindPropertyRelative("minRoomSize").intValue = minRoomSize;
             fill.FindPropertyRelative("maxRoomSize").intValue = maxRoomSize;
             fill.FindPropertyRelative("maxRoomCount").intValue = maxRoomCount;
+            fill.FindPropertyRelative("glowFloorGapFill").boolValue = glowFloorGapFill;
+            fill.FindPropertyRelative("glowFloorPalette").objectReferenceValue = glowFloorPalette;
+            fill.FindPropertyRelative("glowFloorMinReceivedLight").intValue = glowFloorMinReceivedLight;
+            fill.FindPropertyRelative("glowFloorMinSpacing").intValue = glowFloorMinSpacing;
 
             so.FindProperty("populationProfile").objectReferenceValue = populationProfile;
             so.FindProperty("monsterPopulationMode").enumValueIndex =

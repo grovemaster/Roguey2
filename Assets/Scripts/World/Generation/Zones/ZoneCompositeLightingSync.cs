@@ -28,7 +28,12 @@ namespace JRogue.World.Generation.Zones
 
             Dictionary<Vector3Int, string> zoneMap = BuildZoneMap(instance);
             if (zoneMap == null || zoneMap.Count == 0)
+            {
+                Debug.LogWarning(
+                    "[Lighting:EntryDiag] ZoneCompositeLightingSync skipped — zone cell map snapshot is empty. " +
+                    "Floor receivers keep default ambient until zone map is rebuilt.");
                 return false;
+            }
 
             string floorId = definition.FloorId;
             int floorSalt = floorId != null ? floorId.GetHashCode() : 0;
@@ -43,12 +48,13 @@ namespace JRogue.World.Generation.Zones
 
             int zoneAmbientCells = ZoneAmbientApplicator.Apply(context, map, lighting);
             int emitterCells = ZoneTileEmitterApplicator.Apply(context, map, lighting);
-            if (zoneAmbientCells > 0 || emitterCells > 0)
+            int glowFloorCells = ZoneGlowFloorGapFillApplicator.Apply(context, map, lighting);
+            if (zoneAmbientCells > 0 || emitterCells > 0 || glowFloorCells > 0)
             {
                 lighting.OnPartyVisionActivity();
                 DungeonGenerationLog.Phase(
                     nameof(ZoneCompositeLightingSync),
-                    $"zoneAmbientCells={zoneAmbientCells} tileEmitters={emitterCells} " +
+                    $"zoneAmbientCells={zoneAmbientCells} tileEmitters={emitterCells} glowFloorGapFill={glowFloorCells} " +
                     DescribeZoneAmbientRegions(lighting, definition.ZoneLayout));
                 LogLightingDiagnosticsIfEnabled(lighting, map, context, emitterCells);
                 return true;
@@ -116,9 +122,12 @@ namespace JRogue.World.Generation.Zones
             int emit = lighting.GetEmitLight(cell);
             int recv = lighting.GetReceivedLight(cell);
             bool isEmitterRegistry = lighting.TryGetCellData(cell, out LightCellData data) && data.IsEmitter;
+            bool isReceiverRegistry = lighting.TryGetCellData(cell, out data) && data.IsReceiver;
+            string registryZone = isReceiverRegistry ? data.ZoneId ?? "(empty)" : "n/a";
             Debug.Log(
                 $"[Lighting:Diag] Sync {label} {cell} zone={zoneId ?? "?"} " +
-                $"emit={emit} recv={recv} registryEmitter={isEmitterRegistry}");
+                $"emit={emit} recv={recv} registryEmitter={isEmitterRegistry} " +
+                $"registryReceiver={isReceiverRegistry} registryZone={registryZone}");
         }
 
         public static void ApplyZoneAmbientRegionDefaults(LightingService lighting, DungeonFloorZoneLayout layout)

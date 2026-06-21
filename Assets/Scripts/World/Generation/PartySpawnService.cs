@@ -91,7 +91,7 @@ namespace JRogue.World.Generation
                 return true;
 
             Vector3Int anchor = targets[0];
-            for (int radius = 1; radius <= 2; radius++)
+            for (int radius = 1; radius <= 12; radius++)
             {
                 for (int dy = -radius; dy <= radius; dy++)
                 {
@@ -111,7 +111,7 @@ namespace JRogue.World.Generation
                 }
             }
 
-            return AllValid(resolved, map, grid, partyMembers);
+            return false;
         }
 
         static bool AllValid(

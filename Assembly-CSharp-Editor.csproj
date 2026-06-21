@@ -91,6 +91,7 @@
     <Compile Include="Assets/Editor/Lighting/LightingQaSampleSceneEditor.cs" />
     <Compile Include="Assets/Editor/World/MarketTownDistrictPortalsEditor.cs" />
     <Compile Include="Assets/Editor/Traps/TrapAssetPackCreator.cs" />
+    <Compile Include="Assets/Editor/EditorSelectionSanitizer.cs" />
     <Compile Include="Assets/Editor/World/DcssTownNpcSpritePackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioSampleSceneBootstrap.cs" />
     <Compile Include="Assets/Editor/Inventory/BowSampleSceneSetup.cs" />

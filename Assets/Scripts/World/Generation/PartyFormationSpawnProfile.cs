@@ -28,6 +28,18 @@ namespace JRogue.World.Generation
             return offsets != null;
         }
 
+        public int GetMaxMemberCount()
+        {
+            if (layouts == null || layouts.Length == 0)
+                return 1;
+
+            int max = 1;
+            for (int i = 0; i < layouts.Length; i++)
+                max = Mathf.Max(max, layouts[i].memberCount);
+
+            return Mathf.Clamp(max, 1, 6);
+        }
+
         static Vector3Int[] CreateVerticalLineOffsets(int memberCount)
         {
             if (memberCount <= 0)

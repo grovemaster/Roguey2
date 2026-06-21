@@ -28,17 +28,12 @@ namespace JRogue.World.Lighting
         public static bool IsCellLiveVisible(
             int emitLight,
             int receivedLight,
-            bool partyOccupied,
-            bool isWallInGeometricLos = false)
+            bool partyOccupied)
         {
             if (partyOccupied)
                 return true;
 
             if (emitLight > 0)
-                return true;
-
-            // Walls in LOS stay visible as silhouettes; they are not floor light receivers.
-            if (isWallInGeometricLos)
                 return true;
 
             return receivedLight > 0;

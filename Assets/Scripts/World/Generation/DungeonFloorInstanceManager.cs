@@ -167,8 +167,9 @@ namespace JRogue.World.Generation
             run.SetActiveFloor(floorId);
             EnsureDungeonTimeService().OnFloorActivated(def, firstVisit);
             BindVisibilityToActiveFloor(map);
-            RefreshLighting();
+            bool zoneCompositeSyncApplied = RefreshLighting();
             RefreshVisibility();
+            DungeonEntryLightingDiagnostics.LogAfterFloorActivate(instance, def, zoneCompositeSyncApplied);
             if (TownPortalSetupPhase.IsHubFloor(floorId))
                 TownTimeService.Instance?.OnTownFloorActivated(_activeFloor);
 
@@ -362,7 +363,7 @@ namespace JRogue.World.Generation
             return DungeonFloorInstance.CreateUnder(floorsRoot, def);
         }
 
-        void RefreshLighting()
+        bool RefreshLighting()
         {
             LightingService lighting = LightingService.Instance != null
                 ? LightingService.Instance
@@ -370,7 +371,7 @@ namespace JRogue.World.Generation
             if (lighting == null)
             {
                 DungeonGenerationLog.Warn("LightingService not in scene — tiles may stay dark.");
-                return;
+                return false;
             }
 
             lighting.ResetForActiveFloor();
@@ -379,13 +380,22 @@ namespace JRogue.World.Generation
             if (def != null && def.FloorId == Phases.TownTorchSetupPhase.TownFloorId)
                 Phases.TownTorchSetupPhase.ApplyTownTorches(def);
 
+            if (def != null && def.LayoutMode == FloorLayoutMode.ZoneComposite && def.ZoneLayout != null)
+                ZoneCompositeLightingSync.ApplyZoneAmbientRegionDefaults(lighting, def.ZoneLayout);
+
             lighting.FinalizeRegistry();
             lighting.SyncFloorReceiversFromMap();
 
+            bool zoneCompositeSyncApplied = false;
             if (def != null && def.LayoutMode == FloorLayoutMode.ZoneComposite)
             {
                 int runSeed = DungeonRunState.Instance != null ? DungeonRunState.Instance.RunSeed : 0;
-                ZoneCompositeLightingSync.Apply(lighting, MapManager.Instance, def, _activeFloor, runSeed);
+                zoneCompositeSyncApplied = ZoneCompositeLightingSync.Apply(
+                    lighting,
+                    MapManager.Instance,
+                    def,
+                    _activeFloor,
+                    runSeed);
             }
 
             PartyLightEmitterBridge.RefreshParty();
@@ -396,6 +406,8 @@ namespace JRogue.World.Generation
                 lighting.ApplyFullInteriorDaylight();
             else
                 lighting.OnPartyVisionActivity();
+
+            return zoneCompositeSyncApplied;
         }
     }
 }

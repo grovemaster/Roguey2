@@ -30,9 +30,79 @@ MonoBehaviour:
   useFloorPopulationAsFallback: 1
   monsterPopulationMode: 0
   monsterSpawnSchedule: {fileID: 0}
-  portals: []
+  portals:
+  - portalLinkId: building_adventure_guild_enter
+    targetFloorId: town_interior_adventure_guild_exchange
+    portalMarkerId: 
+    portalCell: {x: 31, y: 19, z: 0}
+    listLabel: Adventure Guild Exchange
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 15, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 16, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 17, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 18, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 19, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 20, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 21, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 22, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 23, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
+  - portalLinkId: district_square_to_market
+    targetFloorId: town_market
+    portalMarkerId: 
+    portalCell: {x: 24, y: 39, z: 0}
+    listLabel: Market
+    adjacentConfirmOnly: 0
   edgePortals: []
-  arrivalBindings: []
+  arrivalBindings:
+  - portalLinkId: building_adventure_guild_exit
+    arrivalAnchor: {x: 31, y: 19, z: 0}
+  - portalLinkId: district_market_to_square
+    arrivalAnchor: {x: 20, y: 38, z: 0}
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
   portalPlacementRules: []

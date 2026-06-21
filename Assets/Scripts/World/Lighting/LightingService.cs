@@ -86,6 +86,8 @@ namespace JRogue.World.Lighting
 
         public int DefaultFloorAmbientRegionId => defaultFloorAmbientRegionId;
 
+        public int DefaultFloorAmbientLight => defaultFloorAmbientLight;
+
         public int GetReceivedLight(Vector3Int cell)
         {
             EnsureRegistryFinalized();
@@ -93,7 +95,7 @@ namespace JRogue.World.Lighting
             if (_cells.TryGetValue(cell, out LightCellData data) && data.IsReceiver)
                 return data.ReceivedLight;
 
-            return GetAmbientAtRegion(defaultFloorAmbientRegionId);
+            return LightLevel.PitchDark;
         }
 
         public int GetEmitLight(Vector3Int cell)
@@ -196,7 +198,8 @@ namespace JRogue.World.Lighting
             Vector3Int cell,
             LightEmitterDefinition definition,
             int initialEmission = -1,
-            string reason = null)
+            string reason = null,
+            string zoneId = null)
         {
             if (definition == null)
                 return;
@@ -216,12 +219,14 @@ namespace JRogue.World.Lighting
                 data.EmitterDefinition = definition;
                 data.EmitLight = emission;
                 data.BlocksLos = definition.BlocksLos;
+                if (!string.IsNullOrEmpty(zoneId))
+                    data.ZoneId = zoneId;
                 if (!data.IsReceiver)
                     data.IsReceiver = true;
             }
             else
             {
-                data = LightCellData.Emitter(definition, emission);
+                data = LightCellData.Emitter(definition, emission, zoneId: zoneId);
             }
 
             _cells[cell] = data;
@@ -633,6 +638,7 @@ namespace JRogue.World.Lighting
 
         int SumEmitterContribution(Vector3Int cell)
         {
+            _cells.TryGetValue(cell, out LightCellData receiver);
             int fromEmitters = 0;
             for (int i = 0; i < _emitterCells.Count; i++)
             {
@@ -655,11 +661,25 @@ namespace JRogue.World.Lighting
                 if (distance > radius)
                     continue;
 
+                if (!EmitterContributesToReceiver(source, receiver))
+                    continue;
+
                 int contrib = Mathf.Max(0, source.EmitLight - falloffPerTile * distance);
                 fromEmitters += contrib;
             }
 
             return fromEmitters;
+        }
+
+        static bool EmitterContributesToReceiver(LightCellData source, LightCellData receiver)
+        {
+            if (string.IsNullOrEmpty(source.ZoneId))
+                return true;
+
+            if (string.IsNullOrEmpty(receiver.ZoneId))
+                return false;
+
+            return source.ZoneId == receiver.ZoneId;
         }
 
         void RebuildEmitterCellIndex()

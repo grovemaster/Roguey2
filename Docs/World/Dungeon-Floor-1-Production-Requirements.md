@@ -270,35 +270,49 @@ Set min = max to the locked band sizes so the solver cannot shrink bands on this
 |----------|--------|
 | **`defaultAmbientLight`** | **0** (total darkness baseline — visibility from emitters only) |
 | **`ambientRegionId`** | Default / shared dungeon region — **TBD** at implementation |
-| **Floor palette** | DCSS cavern floor (6–10 variants, weighted) **plus** **3 emitter floor tiles** (§6.4.5) |
-| **Wall palette** | DCSS cavern wall tiles **recolored light blue** = emitter walls (**most / all wall palette entries** emit — v1: **all wall entries in this zone’s wall palette are emitter variants**) |
-| **Floor emitter count** | **1–2** distinct floor tiles registered as light emitters (rest are normal cavern floor) |
+| **Floor palette** | DCSS cavern floor (6–10 variants, weighted) — **non-emitter only** during paint |
+| **Glow floor palette** | Separate **`Palette_LuminescentCavern_GlowFloor`** — **1–2** cyan nerve tiles; placed only by **gap-fill pass** (§6.4.3b) |
+| **Wall palette** | DCSS cavern wall tiles **recolored light blue** = emitter walls (**all wall palette entries** emit in v1) |
+| **Floor emitter role** | **Stopgap only** — fills walkable cells still under-lit after wall emitters register |
 | **Player experience** | Explorable **without** torch while inside emitter-lit cavern cells |
 
 #### 6.4.3 — Fill profiles (locked)
 
 | Zone | `ZoneFillMode` | Intent |
 |------|----------------|--------|
-| **`luminescent_cavern`** | **`Cave`** | **Somewhat open** — target parity with **DCSS cavern** levels (not a maze); sufficient **glow floor** + **glow wall** coverage for exploration without torch |
+| **`luminescent_cavern`** | **`Cave`** | **DCSS-like cavern** — organic chambers with **substantial wall mass**; **emitter walls** are the primary light source |
 | **`northern_dark`** | **`RoomCorridor`** | **More claustrophobic** — narrower corridors, **smaller** open rooms vs cavern |
 
 **`SubStamp` clarification (locked):** **`SubStamp` embeds a hand-authored `DungeonLayoutStamp`** inside a zone slot (fixed room graph). Use for **special handcrafted pockets** (e.g. boss antechamber vault layout), **not** for the main cavern/corridor proc fill of these two zones.
 
-**DCSS cave parity (Phase 2 AC):** Current `GenerateCave` is cellular-automata based; tune `innerWallDensity` / CA iterations toward **open DCSS cavern** feel — playtest acceptance: “reads as DCSS cavern,” adequately lit by emitter tiles.
+**DCSS cave parity (Phase 2 AC):** Cellular-automata `GenerateCave` with tuned `innerWallDensity` / CA iterations — playtest acceptance: “reads as DCSS cavern” with **enough walls** to carry emitter lighting; glow floors only in residual dark pockets.
 
-#### 6.4.3a — Procedural density & corridor width (locked 2026-06-21)
+#### 6.4.3a — Procedural density & corridor width (locked 2026-06-21, retuned)
 
 | Zone | Parameter | Locked target |
 |------|-----------|---------------|
-| **`luminescent_cavern`** | Cave openness | **Lower wall density** than default — organic, navigable caverns; **not** claustrophobic |
-| **`luminescent_cavern`** | Emitter coverage | Enough **glow floor** + **glow wall** palette weight that most explored cells have emitter light nearby |
+| **`luminescent_cavern`** | Cave wall mass | **`innerWallDensity: 55`**, **`caSmoothingIterations: 5`** — more rock than v0 open fill; still navigable, not a maze |
+| **`luminescent_cavern`** | Primary lighting | **All wall palette entries** emit (`CavernGlow` profile) |
+| **`luminescent_cavern`** | Glow floor fallback | **`glowFloorGapFill`** — place glow tiles only where `receivedLight < 1` after walls; **`glowFloorMinSpacing: 6`** |
 | **`northern_dark`** | Room size | **Smaller** rooms than cavern open areas; higher room/corridor ratio |
 | **`northern_dark`** | Corridor width | **1–3 tiles** depending on local area (wider near junctions / room mouths; narrow elsewhere) |
 | **Zone boundary** | Entrance width | Each of the **3** entrances: **1–3 tiles** wide (independent rolls per opening) |
 
 **Implementation note (Phase 2 gap):** Today [`GenerateRoomCorridor`](../../Assets/Scripts/World/Generation/Zones/ZoneRectProcGenerator.cs) carves **1-tile** corridors and [`ZoneBoundaryApplicator`](../../Assets/Scripts/World/Generation/Zones/ZoneBoundaryApplicator.cs) applies a **single** `corridorWidth` to all openings. Extend generator + boundary applicator for **variable 1–3** corridor/entrance widths (seed-driven, data-tunable caps).
 
-**Numeric tuning (locked intent 2026-06-21):** Specific values (`innerWallDensity`, CA iterations, room counts, corridor width roll weights, emitter palette weights) are **not locked** — tune experimentally in Phase 2 until playtest reads as intended. Authoring fields must remain **data-configurable** without code changes.
+**Numeric tuning:** `innerWallDensity`, CA iterations, glow spacing, and corridor width roll weights remain **data-configurable** — tune experimentally in playtest without code changes.
+
+#### 6.4.3b — Glow floor gap-fill (implemented)
+
+| ID | Rule |
+|----|------|
+| **GF1** | During `ZoneFillPhase`, cavern floor paint uses **non-emitter** entries only when `glowFloorGapFill` is enabled |
+| **GF2** | After wall tile emitters register in `LightingInitPhase`, **`ZoneGlowFloorGapFillApplicator`** scans walkable cavern cells |
+| **GF3** | Place a glow floor tile + emitter only when `receivedLight < glowFloorMinReceivedLight` (default **1**) |
+| **GF4** | Respect **`glowFloorMinSpacing`** Chebyshev distance between glow placements (default **6**) |
+| **GF5** | Glow palette: **`Palette_LuminescentCavern_GlowFloor`** — 2 cyan nerve variants, equal weight |
+
+**Visual darkness note (2026-06):** If cavern still *looks* dark while logically lit, suspect **dark grey DCSS floor art** + binary fog tint — not broken emitter math. Vaults on test floors confirm backend works.
 
 **Connectivity invariant (locked):** Generation must **always** produce a walkable path from the **`luminescent_cavern`** interior through the **3** zone entrances into **`northern_dark`** and to the **Floor 2 portal** (§8.2). If proc params would isolate the portal, **retry or relax** generation — never ship an unreachable portal.
 

@@ -14,6 +14,7 @@ using JRogue.Manager.Door;
 using JRogue.Traps;
 using JRogue.World.Generation;
 using JRogue.World.Generation.Phases;
+using JRogue.World.Generation.Zones;
 using JRogue.World.Lighting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -68,6 +69,8 @@ public class VisibilityManager : MonoBehaviour
 
     /// <summary>When true, emits [Lighting:Diag] logs from vision refresh and zone lighting sync.</summary>
     public bool VerboseLightingDiagnostics => verboseLightingDiagnostics;
+
+    public int BaseVisibilityThreshold => baseVisibilityThreshold;
 
     public static bool IsVerboseLightingDiagnosticsEnabled()
     {
@@ -183,11 +186,19 @@ public class VisibilityManager : MonoBehaviour
             return;
         }
 
-        // Visible -> explored.
+        // Visible -> explored (except lightless zones without a torch — no memory there).
+        bool partyHasPersonalLight = PartyLightEmitterBridge.AnyMemberHasActiveCarriedEmitter();
+        DungeonFloorZoneLayout zoneLayout = GetActiveZoneLayout();
         foreach (Vector3Int prev in _currentlyVisible)
         {
             if (currentVisible.Contains(prev))
                 continue;
+
+            if (ShouldSuppressFogMemory(prev, zoneLayout, partyHasPersonalLight))
+            {
+                SetCellState(prev, TileKnowledgeState.Unseen);
+                continue;
+            }
 
             SetCellState(prev, TileKnowledgeState.Explored);
             if (verboseFogLogs && _knowledge.TryGetValue(prev, out CellKnowledge frozen))
@@ -252,6 +263,12 @@ public class VisibilityManager : MonoBehaviour
             if (losUnlit.Contains(cell))
             {
                 TintCell(cell, unseenColor);
+                continue;
+            }
+
+            if (ShouldSuppressFogMemory(cell, zoneLayout, partyHasPersonalLight))
+            {
+                TintCellUnseen(cell);
                 continue;
             }
 
@@ -348,6 +365,8 @@ public class VisibilityManager : MonoBehaviour
     {
         int emit = lighting.GetEmitLight(cell);
         int recv = lighting.GetReceivedLight(cell);
+        bool inRegistry = lighting.TryGetCellData(cell, out LightCellData cellData);
+        string registryZone = inRegistry && cellData.IsReceiver ? cellData.ZoneId ?? "(empty)" : "n/a";
         string band = emit > 0
             ? "emitter"
             : recv >= threshold
@@ -357,7 +376,7 @@ public class VisibilityManager : MonoBehaviour
                     : "dark";
         Debug.Log(
             $"[Lighting:Diag] {label} {cell} emit={emit} recv={recv} " +
-            $"threshold={threshold} band={band} litVisible={isLitVisible}");
+            $"threshold={threshold} band={band} litVisible={isLitVisible} registryZone={registryZone}");
     }
 
     void ApplyUnseenToAllKnownCells()
@@ -400,6 +419,7 @@ public class VisibilityManager : MonoBehaviour
         PartyManager party = PartyManager.Instance;
         LightingService lighting = LightingService.Instance;
         MapManager map = MapManager.Instance;
+        DungeonFloorZoneLayout zoneLayout = GetActiveZoneLayout();
 
         if (party != null && party.partyMembers != null && party.partyMembers.Count > 0)
         {
@@ -415,23 +435,42 @@ public class VisibilityManager : MonoBehaviour
                     Debug.Log($"[Lighting:Sight] {member.DisplayName} at {origin} -> {effectiveSight}");
 
                 List<Vector3Int> memberVisible = ShadowCaster.GetVisibleTiles(origin, effectiveSight, isOpaque);
-                for (int j = 0; j < memberVisible.Count; j++)
+                bool hasPersonalVisionLight = PartyLightEmitterBridge.MemberHasActiveCarriedEmitter(member);
+                string originZoneId = TryGetZoneId(origin);
+                bool zoneRequiresPersonalLight = ZoneVisionPolicy.ZoneRequiresPersonalLightForVision(
+                    originZoneId,
+                    zoneLayout);
+                bool blindInPitchDark = DarknessVisibilityLogic.MemberNavigatesBlind(
+                    zoneRequiresPersonalLight,
+                    hasPersonalVisionLight);
+
+                if (verboseGateLogs && blindInPitchDark)
                 {
-                    Vector3Int cell = memberVisible[j];
-                    if (!IsCellLiveVisibleForMember(cell, lighting, map))
-                    {
-                        if (map == null || !map.IsWall(cell))
-                            losUnlit.Add(cell);
-
-                        if (verboseGateLogs)
-                            Debug.Log($"[Lighting:Gate] {cell} in LOS but receivedLight=0 — excluded.");
-                        continue;
-                    }
-
-                    visible.Add(cell);
-                    if (IsCellFullyVisibleForMember(member, cell, lighting))
-                        litVisible.Add(cell);
+                    Debug.Log(
+                        $"[Lighting:Gate] {member.DisplayName} blind in {originZoneId ?? "?"} at {origin} — " +
+                        "only occupied tile visible.");
                 }
+
+                DarknessVisibilityLogic.ApplyMemberVisibility(
+                    memberVisible,
+                    origin,
+                    blindInPitchDark,
+                    cell => IsCellLiveVisibleForMember(cell, lighting, map),
+                    cell => IsCellFullyVisibleForMember(member, cell, lighting),
+                    cell =>
+                    {
+                        string zoneId = TryGetZoneId(cell);
+                        int emit = lighting != null ? lighting.GetEmitLight(cell) : 0;
+                        int recv = lighting != null ? lighting.GetReceivedLight(cell) : 0;
+                        return ZoneVisionPolicy.IsPitchDarkForVision(
+                            zoneId,
+                            emit,
+                            recv,
+                            zoneLayout,
+                            hasPersonalVisionLight);
+                    },
+                    visible,
+                    litVisible);
             }
         }
         else if (playerTransform != null)
@@ -455,10 +494,9 @@ public class VisibilityManager : MonoBehaviour
         if (lighting == null)
             return true;
 
-        bool isWallInLos = map != null && map.IsWall(cell);
         int emit = lighting.GetEmitLight(cell);
         int received = lighting.GetReceivedLight(cell);
-        return IlluminationVisibilityLogic.IsCellLiveVisible(emit, received, occupied, isWallInLos);
+        return IlluminationVisibilityLogic.IsCellLiveVisible(emit, received, occupied);
     }
 
     bool IsCellFullyVisibleForMember(BaseActor member, Vector3Int cell, LightingService lighting)
@@ -683,5 +721,26 @@ public class VisibilityManager : MonoBehaviour
         }
 
         return IsLitVisible(enemy.GridPosition);
+    }
+
+    static DungeonFloorZoneLayout GetActiveZoneLayout() =>
+        DungeonFloorInstanceManager.Instance?.GetActiveFloorInstance()?.Definition?.ZoneLayout;
+
+    static string TryGetZoneId(Vector3Int cell)
+    {
+        DungeonFloorInstance instance = DungeonFloorInstanceManager.Instance?.GetActiveFloorInstance();
+        if (instance != null && instance.TryGetZoneId(cell, out string zoneId))
+            return zoneId;
+
+        return null;
+    }
+
+    static bool ShouldSuppressFogMemory(
+        Vector3Int cell,
+        DungeonFloorZoneLayout zoneLayout,
+        bool partyHasPersonalLight)
+    {
+        string zoneId = TryGetZoneId(cell);
+        return ZoneVisionPolicy.ShouldSuppressFogMemory(zoneId, zoneLayout, partyHasPersonalLight);
     }
 }

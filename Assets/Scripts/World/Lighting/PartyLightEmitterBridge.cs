@@ -66,6 +66,28 @@ namespace JRogue.World.Lighting
 
         static string BuildEmitterId(ItemInstance instance) => $"carried:{instance.Id}";
 
+        public static bool MemberHasActiveCarriedEmitter(BaseActor actor)
+        {
+            if (actor == null || actor.stats == null || actor.stats.currentHP <= 0)
+                return false;
+
+            EquipmentManager equipment = actor.GetComponent<EquipmentManager>();
+            if (equipment == null)
+                return false;
+
+            foreach (KeyValuePair<EquipmentSlot, ItemInstance> pair in equipment.EquippedSnapshot)
+            {
+                ItemInstance instance = pair.Value;
+                if (instance?.Definition is LightSourceItemData
+                    && LightSourceItemRules.ShouldEmitCarriedLight(instance, pair.Key, isEquipped: true))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static bool AnyMemberHasActiveCarriedEmitter()
         {
             PartyManager party = PartyManager.Instance;

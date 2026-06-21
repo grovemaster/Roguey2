@@ -33,11 +33,12 @@ namespace JRogue.World.Generation.Phases
 
                 int zoneAmbientCells = ZoneAmbientApplicator.Apply(context, map, lighting);
                 int emitterCells = ZoneTileEmitterApplicator.Apply(context, map, lighting);
-                if (zoneAmbientCells > 0 || emitterCells > 0)
+                int glowFloorCells = ZoneGlowFloorGapFillApplicator.Apply(context, map, lighting);
+                if (zoneAmbientCells > 0 || emitterCells > 0 || glowFloorCells > 0)
                 {
                     DungeonGenerationLog.Phase(
                         nameof(LightingInitPhase),
-                        $"zoneAmbientCells={zoneAmbientCells} tileEmitters={emitterCells} " +
+                        $"zoneAmbientCells={zoneAmbientCells} tileEmitters={emitterCells} glowFloorGapFill={glowFloorCells} " +
                         ZoneCompositeLightingSync.DescribeZoneAmbientRegionsForLog(
                             lighting,
                             context.Definition?.ZoneLayout));

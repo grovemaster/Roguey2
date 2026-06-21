@@ -15,13 +15,20 @@ namespace JRogue.World.Lighting
         /// <summary>Last computed received light (emitters + ambient). Receivers only.</summary>
         public int ReceivedLight;
 
-        public static LightCellData Receiver(int ambientRegionId, int defaultAmbient)
+        /// <summary>
+        /// Zone composite id when registered from zone lighting passes.
+        /// Tile emitters only contribute to receivers in the same zone.
+        /// </summary>
+        public string ZoneId;
+
+        public static LightCellData Receiver(int ambientRegionId, int defaultAmbient, string zoneId = null)
         {
             return new LightCellData
             {
                 IsReceiver = true,
                 AmbientRegionId = ambientRegionId,
-                ReceivedLight = defaultAmbient
+                ReceivedLight = defaultAmbient,
+                ZoneId = zoneId
             };
         }
 
@@ -29,7 +36,8 @@ namespace JRogue.World.Lighting
             LightEmitterDefinition definition,
             int initialEmission,
             int ambientRegionId = 0,
-            bool alsoReceiver = true)
+            bool alsoReceiver = true,
+            string zoneId = null)
         {
             int emission = definition != null
                 ? LightLevel.ClampEmission(initialEmission, definition)
@@ -42,7 +50,8 @@ namespace JRogue.World.Lighting
                 EmitterDefinition = definition,
                 EmitLight = emission,
                 AmbientRegionId = ambientRegionId,
-                BlocksLos = definition != null && definition.BlocksLos
+                BlocksLos = definition != null && definition.BlocksLos,
+                ZoneId = zoneId
             };
         }
     }

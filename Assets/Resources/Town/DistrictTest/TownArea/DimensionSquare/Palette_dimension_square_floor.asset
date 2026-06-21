@@ -19,12 +19,24 @@ MonoBehaviour:
   - tile: {fileID: 11400000, guid: 0034a01c676d39e6599ffbc90ceff704, type: 2}
     registryKey: 
     weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
   - tile: {fileID: 11400000, guid: c07d6d30c5c25a8198b69bf4c9370ecc, type: 2}
     registryKey: 
     weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
   - tile: {fileID: 11400000, guid: ad90c94dbeb51802aa1ab7843411aef6, type: 2}
     registryKey: 
     weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
   - tile: {fileID: 11400000, guid: b826868d7faaed20a87645ce914ac947, type: 2}
     registryKey: 
     weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0

@@ -15,13 +15,15 @@ namespace JRogue.World.Generation.Zones
             string zoneId,
             ZoneTilePaintContext paintContext)
         {
+            bool excludeLightEmitters = UsesGlowFloorGapFill(layout, zoneId);
             return PickFromSources(
                 cell,
                 zoneId,
                 paintContext,
                 FloorLayerSalt,
                 ResolveFloorPalette(layout, floorDef, zoneId),
-                ResolveLegacyFloorTile(layout, floorDef, zoneId));
+                ResolveLegacyFloorTile(layout, floorDef, zoneId),
+                excludeLightEmitters);
         }
 
         public static TileBase ResolveWallTile(
@@ -46,12 +48,34 @@ namespace JRogue.World.Generation.Zones
             ZoneTilePaintContext paintContext,
             int layerSalt,
             DungeonTilePalette palette,
-            TileBase legacyTile)
+            TileBase legacyTile,
+            bool excludeLightEmitterEntries = false)
         {
             if (palette != null && palette.HasValidEntries)
-                return palette.PickTile(cell, zoneId, paintContext, layerSalt);
+            {
+                if (excludeLightEmitterEntries
+                    && palette.TryPickNonEmitterEntry(cell, zoneId, paintContext, layerSalt, out DungeonTilePaletteEntry entry))
+                {
+                    return entry.tile;
+                }
+
+                if (!excludeLightEmitterEntries)
+                    return palette.PickTile(cell, zoneId, paintContext, layerSalt);
+            }
 
             return legacyTile;
+        }
+
+        public static bool UsesGlowFloorGapFill(DungeonFloorZoneLayout layout, string zoneId)
+        {
+            if (layout == null || string.IsNullOrEmpty(zoneId))
+                return false;
+
+            if (!layout.TryGetZoneDefinition(zoneId, out DungeonZoneDefinition zoneDef))
+                return false;
+
+            ZoneFillProfile profile = zoneDef.FillProfile;
+            return profile.glowFloorGapFill && profile.glowFloorPalette != null;
         }
 
         public static DungeonTilePalette ResolveFloorPalette(

@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System.IO;
+using JRogue.Editor;
 using JRogue.GridFeatures;
 using JRogue.Manager.Door;
 using JRogue.Manager.Grid;
@@ -41,30 +42,56 @@ namespace JRogue.Editor.World
         [MenuItem("JRogue/Town/Create Dimension Square Test Scene")]
         public static void CreateDimensionSquareTestScene()
         {
+            CreateOrFixDimensionSquareTestScene(repaintTiles: true, isNewScene: true);
+        }
+
+        [MenuItem("JRogue/Town/Fix Dimension Square Test Scene")]
+        public static void FixDimensionSquareTestScene()
+        {
+            CreateOrFixDimensionSquareTestScene(repaintTiles: true, isNewScene: false);
+        }
+
+        static void CreateOrFixDimensionSquareTestScene(bool repaintTiles, bool isNewScene)
+        {
             if (!File.Exists(TemplateScenePath))
             {
                 Debug.LogError($"[DimensionSquare] Missing template {TemplateScenePath}. Run JRogue → Dungeon → Create DungeonFloorTest Scene.");
                 return;
             }
 
+            AdventureGuildExchangePackCreator.SetupAdventureGuildExchange();
+            MarketTownPackCreator.SetupMarketTown();
+
             EnsureFolder("Assets/Scenes/Town");
             EnsureFloorDefinition();
             EnsureCatalog();
             EnsureDcssFloorTiles();
 
-            if (!File.Exists(ScenePath))
+            if (isNewScene && !File.Exists(ScenePath))
             {
                 AssetDatabase.CopyAsset(TemplateScenePath, ScenePath);
                 AssetDatabase.Refresh();
             }
 
+            if (!File.Exists(ScenePath))
+            {
+                Debug.LogError($"[DimensionSquare] Missing scene {ScenePath}. Run Create Dimension Square Test Scene first.");
+                return;
+            }
+
             Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            EditorSelectionSanitizer.ClearSelectionPublic();
             ConfigureSceneHierarchy(scene);
-            PaintDimensionSquareLayout();
+
+            if (repaintTiles)
+                PaintDimensionSquareLayout();
+
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[DimensionSquare] Saved {ScenePath}. Open Scene view — 40×40 plus layout is painted. Press Play to walk the hub.");
+            Debug.Log(
+                $"[DimensionSquare] Saved {ScenePath}. Square-only hub restored; north transition strip repainted (y=39, x=15–24). " +
+                "For square + market playtest use JRogue → Town → Fix District Town Test Scene.");
         }
 
         static void EnsureFloorDefinition()
@@ -189,8 +216,9 @@ namespace JRogue.Editor.World
 
         static DungeonFloorInstance EnsureScenePaintedFloor(Transform floorsRoot, DungeonFloorDefinition floorDef)
         {
-            Transform existing = floorsRoot.Find(DimensionSquareFloorIds.FloorId);
-            GameObject floorGo = existing != null ? existing.gameObject : new GameObject(DimensionSquareFloorIds.FloorId);
+            string floorId = floorDef.FloorId;
+            Transform existing = floorsRoot.Find(floorId);
+            GameObject floorGo = existing != null ? existing.gameObject : new GameObject(floorId);
             if (existing == null)
                 floorGo.transform.SetParent(floorsRoot, false);
 
@@ -203,10 +231,10 @@ namespace JRogue.Editor.World
 
         static void PaintDimensionSquareLayout()
         {
-            DungeonFloorInstance instance = Object.FindAnyObjectByType<DungeonFloorInstance>();
+            DungeonFloorInstance instance = FindFloorInstance(DimensionSquareFloorIds.FloorId);
             if (instance == null)
             {
-                Debug.LogError("[DimensionSquare] No DungeonFloorInstance to paint.");
+                Debug.LogError("[DimensionSquare] No dimension_square DungeonFloorInstance to paint.");
                 return;
             }
 
@@ -237,6 +265,32 @@ namespace JRogue.Editor.World
             wallMap.CompressBounds();
             EditorUtility.SetDirty(floorMap);
             EditorUtility.SetDirty(wallMap);
+        }
+
+        static DungeonFloorInstance FindFloorInstance(string floorId)
+        {
+            GameObject systems = GameObject.Find(DungeonFloorTestSceneValidator.SystemsObjectName);
+            if (systems != null)
+            {
+                Transform floorsRoot = systems.transform.Find("Floors");
+                if (floorsRoot != null)
+                {
+                    Transform child = floorsRoot.Find(floorId);
+                    if (child != null && child.TryGetComponent(out DungeonFloorInstance hierarchyInstance))
+                        return hierarchyInstance;
+                }
+            }
+
+            DungeonFloorInstance[] instances =
+                Object.FindObjectsByType<DungeonFloorInstance>(FindObjectsInactive.Include);
+            for (int i = 0; i < instances.Length; i++)
+            {
+                DungeonFloorInstance instance = instances[i];
+                if (instance != null && instance.FloorId == floorId)
+                    return instance;
+            }
+
+            return null;
         }
 
         static TileBase[] LoadDcssFloorTiles()

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef860a9827b1561d8ec41f65f51e711, type: 3}
+  m_Name: Palette_LuminescentCavern_GlowFloor
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonTilePalette
+  paletteId: luminescent_cavern_glow_floor
+  layer: 0
+  defaultVariationMode: 0
+  entries:
+  - tile: {fileID: 11400000, guid: 34efe1f587ec526c2993043269de4d3f, type: 2}
+    registryKey: DcssCavern:_cyan_floor_nerves_2_new
+    weight: 1
+    isLightEmitter: 1
+    emitLight: {fileID: 11400000, guid: f7c4e9012d3f4567890abcdef1234567, type: 2}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 0784f570e54266c8ab7e74e9c557066c, type: 2}
+    registryKey: DcssCavern:_cyan_floor_nerves_4_new
+    weight: 1
+    isLightEmitter: 1
+    emitLight: {fileID: 11400000, guid: f7c4e9012d3f4567890abcdef1234567, type: 2}
+    emissionOverride: 0

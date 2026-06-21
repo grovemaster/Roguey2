@@ -44,6 +44,23 @@ namespace JRogue.World.Generation.Zones
             string zoneId,
             ZoneTilePaintContext paintContext,
             int layerSalt,
+            out DungeonTilePaletteEntry entry) =>
+            TryPickEntry(cell, zoneId, paintContext, layerSalt, null, out entry);
+
+        public bool TryPickNonEmitterEntry(
+            Vector3Int cell,
+            string zoneId,
+            ZoneTilePaintContext paintContext,
+            int layerSalt,
+            out DungeonTilePaletteEntry entry) =>
+            TryPickEntry(cell, zoneId, paintContext, layerSalt, e => !e.isLightEmitter, out entry);
+
+        public bool TryPickEntry(
+            Vector3Int cell,
+            string zoneId,
+            ZoneTilePaintContext paintContext,
+            int layerSalt,
+            System.Func<DungeonTilePaletteEntry, bool> filter,
             out DungeonTilePaletteEntry entry)
         {
             entry = default;
@@ -51,25 +68,25 @@ namespace JRogue.World.Generation.Zones
                 return false;
 
             DungeonTileVariationMode mode = defaultVariationMode;
-            if (mode == DungeonTileVariationMode.Single || CountValidEntries() == 1)
+            if (mode == DungeonTileVariationMode.Single || CountValidEntries(filter) == 1)
             {
-                entry = FirstValidEntry();
+                entry = FirstValidEntry(filter);
                 return entry.tile != null;
             }
 
             int hash = DungeonTilePaletteResolver.ComputeCellHash(paintContext, zoneId, cell, layerSalt);
             entry = mode == DungeonTileVariationMode.DeterministicHash
-                ? PickUniformEntry(hash)
-                : PickWeightedEntry(hash);
+                ? PickUniformEntry(hash, filter)
+                : PickWeightedEntry(hash, filter);
             return entry.tile != null;
         }
 
-        int CountValidEntries()
+        int CountValidEntries(System.Func<DungeonTilePaletteEntry, bool> filter = null)
         {
             int count = 0;
             for (int i = 0; i < entries.Length; i++)
             {
-                if (entries[i].tile != null)
+                if (entries[i].tile != null && PassesFilter(entries[i], filter))
                     count++;
             }
 
@@ -78,27 +95,27 @@ namespace JRogue.World.Generation.Zones
 
         TileBase FirstValidTile() => FirstValidEntry().tile;
 
-        DungeonTilePaletteEntry FirstValidEntry()
+        DungeonTilePaletteEntry FirstValidEntry(System.Func<DungeonTilePaletteEntry, bool> filter = null)
         {
             for (int i = 0; i < entries.Length; i++)
             {
-                if (entries[i].tile != null)
+                if (entries[i].tile != null && PassesFilter(entries[i], filter))
                     return entries[i];
             }
 
             return default;
         }
 
-        DungeonTilePaletteEntry PickUniformEntry(int hash)
+        DungeonTilePaletteEntry PickUniformEntry(int hash, System.Func<DungeonTilePaletteEntry, bool> filter = null)
         {
-            int validCount = CountValidEntries();
+            int validCount = CountValidEntries(filter);
             if (validCount <= 0)
                 return default;
 
             int pick = Math.Abs(hash) % validCount;
             for (int i = 0; i < entries.Length; i++)
             {
-                if (entries[i].tile == null)
+                if (entries[i].tile == null || !PassesFilter(entries[i], filter))
                     continue;
 
                 if (pick == 0)
@@ -107,15 +124,15 @@ namespace JRogue.World.Generation.Zones
                 pick--;
             }
 
-            return FirstValidEntry();
+            return FirstValidEntry(filter);
         }
 
-        DungeonTilePaletteEntry PickWeightedEntry(int hash)
+        DungeonTilePaletteEntry PickWeightedEntry(int hash, System.Func<DungeonTilePaletteEntry, bool> filter = null)
         {
             int totalWeight = 0;
             for (int i = 0; i < entries.Length; i++)
             {
-                if (entries[i].tile != null)
+                if (entries[i].tile != null && PassesFilter(entries[i], filter))
                     totalWeight += entries[i].EffectiveWeight;
             }
 
@@ -125,7 +142,7 @@ namespace JRogue.World.Generation.Zones
             int roll = Math.Abs(hash) % totalWeight;
             for (int i = 0; i < entries.Length; i++)
             {
-                if (entries[i].tile == null)
+                if (entries[i].tile == null || !PassesFilter(entries[i], filter))
                     continue;
 
                 roll -= entries[i].EffectiveWeight;
@@ -133,8 +150,11 @@ namespace JRogue.World.Generation.Zones
                     return entries[i];
             }
 
-            return FirstValidEntry();
+            return FirstValidEntry(filter);
         }
+
+        static bool PassesFilter(DungeonTilePaletteEntry entry, System.Func<DungeonTilePaletteEntry, bool> filter) =>
+            filter == null || filter(entry);
 
         TileBase PickUniform(int hash) => PickUniformEntry(hash).tile;
 

@@ -31,7 +31,7 @@ namespace JRogue.World.Generation.Zones
                 for (int x = 0; x < width; x++)
                 {
                     Vector3Int cell = new Vector3Int(x, y, 0);
-                    if (!map.IsWalkable(cell))
+                    if (!HasTerrainTile(map, cell))
                         continue;
 
                     if (!context.TryGetZoneId(cell, out string zoneId) || string.IsNullOrEmpty(zoneId))
@@ -45,7 +45,7 @@ namespace JRogue.World.Generation.Zones
 
                     lighting.RegisterPending(
                         cell,
-                        LightCellData.Receiver(zoneDef.AmbientRegionId, zoneDef.DefaultAmbientLight),
+                        LightCellData.Receiver(zoneDef.AmbientRegionId, zoneDef.DefaultAmbientLight, zoneId),
                         overwrite: true);
                     applied++;
                 }
@@ -56,5 +56,8 @@ namespace JRogue.World.Generation.Zones
 
             return applied;
         }
+
+        static bool HasTerrainTile(MapManager map, Vector3Int cell) =>
+            map != null && (map.IsWalkable(cell) || map.IsWall(cell));
     }
 }

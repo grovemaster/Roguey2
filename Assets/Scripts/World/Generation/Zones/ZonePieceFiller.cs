@@ -14,6 +14,7 @@ namespace JRogue.World.Generation.Zones
             IReadOnlyDictionary<Vector3Int, string> zoneCellMap,
             int runSeed,
             string floorId,
+            int fillAttempt,
             DungeonLayoutStamp hybridSkeleton,
             IReadOnlyList<ResolvedZoneBoundary> boundaries)
         {
@@ -53,7 +54,7 @@ namespace JRogue.World.Generation.Zones
                     ? zoneDef.FillProfile
                     : new ZoneFillProfile { mode = ZoneFillMode.SolidRect };
 
-                System.Random fillRng = ZoneGenerationRng.CreateZoneFillRng(runSeed, floorId, piece.PieceId);
+                System.Random fillRng = ZoneGenerationRng.CreateZoneFillRng(runSeed, floorId, piece.PieceId, fillAttempt);
                 var openingCells = CollectLocalOpeningCells(piece, pieceById, boundaries);
                 FillPiece(
                     map,

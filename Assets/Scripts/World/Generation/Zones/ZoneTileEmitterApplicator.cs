@@ -38,10 +38,29 @@ namespace JRogue.World.Generation.Zones
 
                     if (map.IsWalkable(cell))
                     {
-                        if (TryRegisterFloorEmitter(map, layout, context.Definition, zoneId, cell, paintContext, defaultEmitter, lighting))
+                        if (!DungeonTilePaletteResolver.UsesGlowFloorGapFill(context.Definition?.ZoneLayout, zoneId)
+                            && TryRegisterFloorEmitter(
+                                map,
+                                layout,
+                                context.Definition,
+                                zoneId,
+                                cell,
+                                paintContext,
+                                defaultEmitter,
+                                lighting))
+                        {
                             applied++;
+                        }
                     }
-                    else if (TryRegisterWallEmitter(map, layout, context.Definition, zoneId, cell, paintContext, defaultEmitter, lighting))
+                    else if (TryRegisterWallEmitter(
+                        map,
+                        layout,
+                        context.Definition,
+                        zoneId,
+                        cell,
+                        paintContext,
+                        defaultEmitter,
+                        lighting))
                     {
                         applied++;
                     }
@@ -78,7 +97,7 @@ namespace JRogue.World.Generation.Zones
             if (!entry.isLightEmitter)
                 return false;
 
-            return RegisterEmitter(cell, entry, defaultEmitter, lighting);
+            return RegisterEmitter(cell, entry, defaultEmitter, lighting, zoneId);
         }
 
         static bool TryRegisterWallEmitter(
@@ -105,14 +124,15 @@ namespace JRogue.World.Generation.Zones
             if (!entry.isLightEmitter)
                 return false;
 
-            return RegisterEmitter(cell, entry, defaultEmitter, lighting);
+            return RegisterEmitter(cell, entry, defaultEmitter, lighting, zoneId);
         }
 
         static bool RegisterEmitter(
             Vector3Int cell,
             DungeonTilePaletteEntry entry,
             LightEmitterDefinition defaultEmitter,
-            LightingService lighting)
+            LightingService lighting,
+            string zoneId)
         {
             LightEmitterDefinition definition = entry.emitLight != null ? entry.emitLight : defaultEmitter;
             if (definition == null)
@@ -124,7 +144,7 @@ namespace JRogue.World.Generation.Zones
 
             lighting.RegisterPending(
                 cell,
-                LightCellData.Emitter(definition, emission),
+                LightCellData.Emitter(definition, emission, zoneId: zoneId),
                 overwrite: true);
             return true;
         }

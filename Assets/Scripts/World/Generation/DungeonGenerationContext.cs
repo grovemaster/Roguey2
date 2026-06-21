@@ -35,6 +35,7 @@ namespace JRogue.World.Generation
         public Dictionary<string, RectInt> ZoneBoundsByZoneId { get; set; }
         public ResolvedZonePiece[] ResolvedZonePieces { get; set; }
         public List<ResolvedZoneBoundary> ResolvedZoneBoundaries { get; set; }
+        public int ZoneFillAttempt { get; set; }
         public Dictionary<string, ZonePopulationScatterCounts> ZoneScatterCountsByInstance { get; } =
             new Dictionary<string, ZonePopulationScatterCounts>();
 
