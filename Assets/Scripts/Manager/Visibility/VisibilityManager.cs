@@ -597,13 +597,31 @@ public class VisibilityManager : MonoBehaviour
 
     void TintCellUnseen(Vector3Int pos) => TintCell(pos, HiddenUnseenTileColor);
 
+    static EnemyController[] GetActiveEnemies()
+    {
+        DungeonFloorInstance floor = DungeonFloorInstanceManager.Instance?.GetActiveFloorInstance();
+        if (floor != null && floor.EnemyContainer != null)
+            return floor.EnemyContainer.GetComponentsInChildren<EnemyController>(false);
+
+        return Object.FindObjectsByType<EnemyController>();
+    }
+
+    static NpcController[] GetActiveNpcs()
+    {
+        DungeonFloorInstance floor = DungeonFloorInstanceManager.Instance?.GetActiveFloorInstance();
+        if (floor != null && floor.DynamicViewsRoot != null)
+            return floor.DynamicViewsRoot.GetComponentsInChildren<NpcController>(false);
+
+        return Object.FindObjectsByType<NpcController>();
+    }
+
     void ApplyEntityVisibility()
     {
-        EnemyController[] enemies = FindObjectsByType<EnemyController>();
+        EnemyController[] enemies = GetActiveEnemies();
         for (int i = 0; i < enemies.Length; i++)
             ApplyEnemyVisibility(enemies[i]);
 
-        NpcController[] npcs = FindObjectsByType<NpcController>();
+        NpcController[] npcs = GetActiveNpcs();
         for (int i = 0; i < npcs.Length; i++)
             ApplyNpcVisibility(npcs[i]);
 

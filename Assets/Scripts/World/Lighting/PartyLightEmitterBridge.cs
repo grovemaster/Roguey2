@@ -25,7 +25,6 @@ namespace JRogue.World.Lighting
             }
 
             lighting.SyncCarriedEmitters(desired);
-            Object.FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
         }
 
         public static void RefreshMember(BaseActor actor)

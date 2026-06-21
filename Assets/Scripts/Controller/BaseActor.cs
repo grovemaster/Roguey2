@@ -291,12 +291,6 @@ namespace JRogue.Actors
             {
                 HazardService.Instance?.NotifyActorMovedOntoCell(this);
                 Traps.TrapService.Instance?.NotifyActorEntered(this);
-                if (PartyManager.Instance != null
-                    && PartyManager.Instance.partyMembers.Contains(this))
-                {
-                    PartyLightEmitterBridge.RefreshParty();
-                    LightingService.Instance?.OnPartyVisionActivity();
-                }
             }
         }
 

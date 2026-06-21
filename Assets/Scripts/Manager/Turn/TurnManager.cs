@@ -48,7 +48,7 @@ namespace JRogue.Manager.Turn
             currentState = GameState.PLAYER_TURN;
         }
 
-        public void OnPlayerActionComplete(GameObject actor)
+        public void OnPlayerActionComplete(GameObject actor, bool refreshPresentation = true)
         {
             if (currentState != GameState.PLAYER_TURN)
             {
@@ -69,9 +69,9 @@ namespace JRogue.Manager.Turn
             charactersWhoActed.Add(actor);
             PlayerActedStateChanged?.Invoke();
 
-            FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
-            PartyLightEmitterBridge.RefreshParty();
-            LightingService.Instance?.OnPartyVisionActivity();
+            if (refreshPresentation)
+                RefreshPartyPresentation();
+
             CombatThreatCoordinator.Instance?.EvaluateThreat();
 
             // Check if the WHOLE party is done
@@ -79,6 +79,12 @@ namespace JRogue.Manager.Turn
                 TryCompletePlayerPhase();
             // Switch to Enemy Turn
             //StartCoroutine(EnemyTurnSequence());
+        }
+
+        public void RefreshPartyPresentation()
+        {
+            PartyLightEmitterBridge.RefreshParty();
+            FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
         }
 
         public void ForceEndPlayerTurn()
@@ -97,7 +103,7 @@ namespace JRogue.Manager.Turn
 
             EvocableRechargeService.TickPartyAfterPlayerPhase();
             LightSourceItemRules.TickPartyAfterPlayerPhase();
-            PartyLightEmitterBridge.RefreshParty();
+            RefreshPartyPresentation();
             StartCoroutine(EnemyTurnSequence());
         }
 
@@ -137,10 +143,7 @@ namespace JRogue.Manager.Turn
 
             EvocableRechargeService.TickPartyAfterPlayerPhase();
             LightSourceItemRules.TickPartyAfterPlayerPhase();
-            PartyLightEmitterBridge.RefreshParty();
-
-            FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
-            LightingService.Instance?.OnPartyVisionActivity();
+            RefreshPartyPresentation();
         }
 
         public IEnumerator RunEnemyWaveDuringRest()
@@ -170,7 +173,7 @@ namespace JRogue.Manager.Turn
             charactersWhoActed.Clear();
             PlayerActedStateChanged?.Invoke();
 
-            EnemyController[] enemies = FindObjectsByType<EnemyController>();
+            EnemyController[] enemies = GetActiveEnemies();
 
             foreach (EnemyController enemy in enemies)
             {
@@ -233,9 +236,16 @@ namespace JRogue.Manager.Turn
             HazardService.Instance?.TickOccupancyOnPlayerPhaseStart();
             FloorLifetimeTicker.TickAllOnPlayerPhaseStart();
 
-            FindAnyObjectByType<VisibilityManager>()?.RefreshPartyVision();
-            PartyLightEmitterBridge.RefreshParty();
-            LightingService.Instance?.OnPartyVisionActivity();
+            RefreshPartyPresentation();
+        }
+
+        static EnemyController[] GetActiveEnemies()
+        {
+            DungeonFloorInstance floor = DungeonFloorInstanceManager.Instance?.GetActiveFloorInstance();
+            if (floor != null && floor.EnemyContainer != null)
+                return floor.EnemyContainer.GetComponentsInChildren<EnemyController>(false);
+
+            return FindObjectsByType<EnemyController>();
         }
 
         private bool IsPartyDone()

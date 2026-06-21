@@ -549,7 +549,7 @@ MonoBehaviour:
   verboseDarkTileLogs: 0
   verboseFogLogs: 0
   verboseGateLogs: 0
-  verboseLightingDiagnostics: 1
+  verboseLightingDiagnostics: 0
 --- !u!114 &434795529
 MonoBehaviour:
   m_ObjectHideFlags: 0

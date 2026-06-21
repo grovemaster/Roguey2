@@ -108,14 +108,15 @@ namespace JRogue.Service.Formation
 
                 LandFollowerAt(grid, map, actor, dest, plannedMoves);
 
-                turn.OnPlayerActionComplete(actor.gameObject);
+                turn.OnPlayerActionComplete(actor.gameObject, refreshPresentation: false);
             }
 
-            turn.OnPlayerActionComplete(leader.gameObject);
+            turn.OnPlayerActionComplete(leader.gameObject, refreshPresentation: false);
 
             ReconcilePartyOnGrid(grid, map, members);
 
             Debug.Log("[RUSH-COMPLETE] Grid synchronized. Ending player turn.");
+            turn.RefreshPartyPresentation();
             turn.ForceEndPlayerTurn();
         }
 

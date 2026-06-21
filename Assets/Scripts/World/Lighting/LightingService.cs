@@ -28,6 +28,7 @@ namespace JRogue.World.Lighting
         readonly Dictionary<Vector3Int, LightCellData> _cells = new Dictionary<Vector3Int, LightCellData>();
         readonly Dictionary<int, AmbientRegion> _ambientRegions = new Dictionary<int, AmbientRegion>();
         readonly List<PendingRegistration> _pending = new List<PendingRegistration>();
+        readonly List<Vector3Int> _emitterCells = new List<Vector3Int>();
         readonly Dictionary<string, CarriedEmitterEntry> _carriedEmitters = new Dictionary<string, CarriedEmitterEntry>();
 
         bool _registryFinalized;
@@ -224,6 +225,8 @@ namespace JRogue.World.Lighting
             }
 
             _cells[cell] = data;
+            if (data.IsEmitter && !_emitterCells.Contains(cell))
+                _emitterCells.Add(cell);
             LogEmit(cell, data.EmitLight, reason ?? "enable");
             RecomputeAroundEmitter(cell);
         }
@@ -257,16 +260,12 @@ namespace JRogue.World.Lighting
             RecomputeReceivers(new List<Vector3Int>(_cells.Keys));
         }
 
-        /// <summary>Called when party moves or a turn boundary refreshes vision (Phase B/C consumers).</summary>
+        /// <summary>
+        /// Legacy hook for party/vision activity. Tile emitters are static; carried emitters
+        /// recompute locally via <see cref="SyncCarriedEmitters"/>.
+        /// </summary>
         public void OnPartyVisionActivity()
         {
-            if (!_registryFinalized)
-                return;
-
-            if (verboseReceiveLogs)
-                Debug.Log("[Lighting:Receive] Party vision activity — full recompute.");
-
-            RecomputeAll();
         }
 
         /// <summary>Registers or moves a party-carried virtual emitter (does not overwrite map cells).</summary>
@@ -292,7 +291,7 @@ namespace JRogue.World.Lighting
                 $"[Lighting:Carried] Set {emitterId} at {cell} emission={emission}"
                 + (string.IsNullOrEmpty(reason) ? "." : $" ({reason})."));
 
-            RecomputeAll();
+            RecomputeReceiversNear(new[] { cell }, definition.FalloffRadius);
         }
 
         public void RemoveCarriedEmitter(string emitterId, string reason = null)
@@ -300,15 +299,17 @@ namespace JRogue.World.Lighting
             if (string.IsNullOrEmpty(emitterId))
                 return;
 
-            if (!_carriedEmitters.Remove(emitterId))
+            if (!_carriedEmitters.TryGetValue(emitterId, out CarriedEmitterEntry removed))
                 return;
+
+            _carriedEmitters.Remove(emitterId);
 
             Debug.Log(
                 $"[Lighting:Carried] Removed {emitterId}"
                 + (string.IsNullOrEmpty(reason) ? "." : $" ({reason})."));
 
-            if (_registryFinalized)
-                RecomputeAll();
+            if (_registryFinalized && removed.Definition != null)
+                RecomputeReceiversNear(new[] { removed.Cell }, removed.Definition.FalloffRadius);
         }
 
         public void ClearCarriedEmitters()
@@ -329,6 +330,9 @@ namespace JRogue.World.Lighting
             EnsureRegistryFinalized();
             desired ??= new System.Collections.Generic.Dictionary<string, CarriedEmitterEntry>();
 
+            var recomputeCenters = new System.Collections.Generic.List<Vector3Int>();
+            int maxRadius = 0;
+
             var stale = new System.Collections.Generic.List<string>();
             foreach (string existingId in _carriedEmitters.Keys)
             {
@@ -337,13 +341,24 @@ namespace JRogue.World.Lighting
             }
 
             for (int i = 0; i < stale.Count; i++)
-                RemoveCarriedEmitter(stale[i], "unequipped");
+            {
+                if (!_carriedEmitters.TryGetValue(stale[i], out CarriedEmitterEntry removed))
+                    continue;
+
+                recomputeCenters.Add(removed.Cell);
+                if (removed.Definition != null)
+                    maxRadius = Mathf.Max(maxRadius, removed.Definition.FalloffRadius);
+
+                _carriedEmitters.Remove(stale[i]);
+            }
 
             foreach (System.Collections.Generic.KeyValuePair<string, CarriedEmitterEntry> pair in desired)
             {
                 CarriedEmitterEntry entry = pair.Value;
                 if (entry.Definition == null)
                     continue;
+
+                maxRadius = Mathf.Max(maxRadius, entry.Definition.FalloffRadius);
 
                 if (_carriedEmitters.TryGetValue(pair.Key, out CarriedEmitterEntry existing)
                     && existing.Cell == entry.Cell
@@ -353,8 +368,15 @@ namespace JRogue.World.Lighting
                     continue;
                 }
 
-                SetCarriedEmitter(pair.Key, entry.Cell, entry.Definition, entry.EmitLight, "sync");
+                if (_carriedEmitters.TryGetValue(pair.Key, out existing))
+                    recomputeCenters.Add(existing.Cell);
+
+                recomputeCenters.Add(entry.Cell);
+                _carriedEmitters[pair.Key] = entry;
             }
+
+            if (recomputeCenters.Count > 0 && maxRadius > 0)
+                RecomputeReceiversNear(recomputeCenters, maxRadius);
         }
 
         public void FinalizeRegistry()
@@ -371,7 +393,10 @@ namespace JRogue.World.Lighting
                 ApplyPendingRegistrations();
 
             if (firstTime || hadPending)
+            {
+                RebuildEmitterCellIndex();
                 RecomputeAll();
+            }
 
             if (verboseReceiveLogs && (firstTime || hadPending))
                 Debug.Log($"[Lighting:Receive] Registry finalized ({_cells.Count} cells).");
@@ -382,6 +407,7 @@ namespace JRogue.World.Lighting
         {
             _cells.Clear();
             _pending.Clear();
+            _emitterCells.Clear();
             _carriedEmitters.Clear();
             _registryFinalized = false;
             EnsureDefaultAmbientRegion();
@@ -404,7 +430,7 @@ namespace JRogue.World.Lighting
             AmbientRegion region = GetOrCreateAmbientRegion(defaultFloorAmbientRegionId);
             region.CurrentAmbientLight = LightLevel.FullDaylightAmbient;
             EnsureRegistryFinalized();
-            OnPartyVisionActivity();
+            RecomputeAll();
         }
 
         void EnsureRegistryFinalized()
@@ -505,6 +531,7 @@ namespace JRogue.World.Lighting
             }
 
             _pending.Clear();
+            RebuildEmitterCellIndex();
         }
 
         void RecomputeAroundEmitter(Vector3Int emitterCell)
@@ -519,14 +546,30 @@ namespace JRogue.World.Lighting
                 ? emitterData.EmitterDefinition.FalloffRadius
                 : LightLevel.Max;
 
-            var affected = new List<Vector3Int>();
-            foreach (Vector3Int cell in _cells.Keys)
-            {
-                if (!_cells[cell].IsReceiver)
-                    continue;
+            RecomputeReceiversNear(new[] { emitterCell }, radius);
+        }
 
-                if (ManhattanDistance(emitterCell, cell) <= radius)
-                    affected.Add(cell);
+        void RecomputeReceiversNear(IReadOnlyList<Vector3Int> centers, int radius)
+        {
+            if (centers == null || centers.Count == 0 || radius <= 0)
+                return;
+
+            var affected = new HashSet<Vector3Int>();
+            for (int c = 0; c < centers.Count; c++)
+            {
+                Vector3Int center = Flatten(centers[c]);
+                for (int dx = -radius; dx <= radius; dx++)
+                {
+                    for (int dy = -radius; dy <= radius; dy++)
+                    {
+                        if (Mathf.Abs(dx) + Mathf.Abs(dy) > radius)
+                            continue;
+
+                        Vector3Int cell = new Vector3Int(center.x + dx, center.y + dy, 0);
+                        if (_cells.TryGetValue(cell, out LightCellData data) && data.IsReceiver)
+                            affected.Add(cell);
+                    }
+                }
             }
 
             RecomputeReceivers(affected);
@@ -558,7 +601,7 @@ namespace JRogue.World.Lighting
 
         int ComputeReceivedLightAt(Vector3Int cell)
         {
-            int fromEmitters = SumEmitterContribution(cell, _cells);
+            int fromEmitters = SumEmitterContribution(cell);
             fromEmitters += SumCarriedEmitterContribution(cell);
             int ambient = GetAmbientForCell(cell);
             return LightLevel.Clamp(fromEmitters + ambient);
@@ -588,14 +631,18 @@ namespace JRogue.World.Lighting
             return total;
         }
 
-        static int SumEmitterContribution(Vector3Int cell, Dictionary<Vector3Int, LightCellData> emitters)
+        int SumEmitterContribution(Vector3Int cell)
         {
             int fromEmitters = 0;
-            foreach (KeyValuePair<Vector3Int, LightCellData> entry in emitters)
+            for (int i = 0; i < _emitterCells.Count; i++)
             {
-                LightCellData source = entry.Value;
-                if (!source.IsEmitter || source.EmitLight <= 0)
+                Vector3Int emitterCell = _emitterCells[i];
+                if (!_cells.TryGetValue(emitterCell, out LightCellData source)
+                    || !source.IsEmitter
+                    || source.EmitLight <= 0)
+                {
                     continue;
+                }
 
                 int radius = source.EmitterDefinition != null
                     ? source.EmitterDefinition.FalloffRadius
@@ -604,7 +651,7 @@ namespace JRogue.World.Lighting
                     ? source.EmitterDefinition.FalloffPerTile
                     : 0;
 
-                int distance = ManhattanDistance(entry.Key, cell);
+                int distance = ManhattanDistance(emitterCell, cell);
                 if (distance > radius)
                     continue;
 
@@ -613,6 +660,16 @@ namespace JRogue.World.Lighting
             }
 
             return fromEmitters;
+        }
+
+        void RebuildEmitterCellIndex()
+        {
+            _emitterCells.Clear();
+            foreach (KeyValuePair<Vector3Int, LightCellData> entry in _cells)
+            {
+                if (entry.Value.IsEmitter)
+                    _emitterCells.Add(entry.Key);
+            }
         }
 
         int GetAmbientForCell(Vector3Int cell)

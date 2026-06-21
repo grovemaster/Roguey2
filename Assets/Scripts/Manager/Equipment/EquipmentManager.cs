@@ -123,7 +123,6 @@ namespace JRogue.Manager.Equipment
             JRogue.Quest.QuestService.Instance?.NotifyItemEquipped(GetComponent<BaseActor>(), newItem, slot);
             TryNotifyPriestBladedWeaponEquip(slot, newItem);
             PartyLightEmitterBridge.RefreshMember(GetComponent<BaseActor>());
-            LightingService.Instance?.OnPartyVisionActivity();
         }
 
         static bool IsBladedWeapon(ItemData item)
@@ -272,7 +271,6 @@ namespace JRogue.Manager.Equipment
 
             Debug.Log($"[Unequip] Moved {inst.Definition.itemName} from {slot} to bag ({inst.Id}).");
             PartyLightEmitterBridge.RefreshMember(GetComponent<BaseActor>());
-            LightingService.Instance?.OnPartyVisionActivity();
             return true;
         }
 
