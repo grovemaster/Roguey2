@@ -165,5 +165,35 @@ END";
             Assert.IsFalse(VaultFileParser.TryParse("NOPE", out _, out string error));
             Assert.IsNotEmpty(error);
         }
+
+        [Test]
+        public void TryParse_ProductionMonumentVault_Succeeds()
+        {
+            const string monument = @"
+VAULT vault_monument_8x8
+ORIGIN 3 3
+TILES .=DcssCavern:grey_dirt_0_new;g1=DcssCavern:floor_nerves_2_cyan;g2=DcssCavern:floor_nerves_4_cyan;W=DcssCavern:wall_stone2_gray_2_new
+MAP
+........
+........
+..g1.g2..
+...WW...
+...WW...
+..g2.g1..
+........
+........
+ENDMAP
+INTERACTABLE bump_monument_inscription AT 3 3
+INTERACTABLE bump_monument_inscription AT 4 3
+INTERACTABLE bump_monument_inscription AT 3 4
+INTERACTABLE bump_monument_inscription AT 4 4
+END";
+
+            Assert.IsTrue(VaultFileParser.TryParse(monument, out VaultBlueprint blueprint, out string error), error);
+            Assert.AreEqual("vault_monument_8x8", blueprint.VaultId);
+            Assert.AreEqual(8, blueprint.Width);
+            Assert.AreEqual(8, blueprint.Height);
+            Assert.AreEqual(4, blueprint.Interactables.Count);
+        }
     }
 }

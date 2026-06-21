@@ -1,0 +1,13 @@
+# Luminescent Cavern — shallow pond template (8 tiles, meander).
+VAULT vault_pond_snake_8
+WEIGHT 1
+MIN_DISTANCE_FROM_PLAYER_START 0
+ORIGIN 1 1
+TILES .=DcssCavern:grey_dirt_0_new;~=DcssCavern:shoals_shallow_water_4_new
+MAP
+~~~
+~~.
+.~~
+~..
+ENDMAP
+END

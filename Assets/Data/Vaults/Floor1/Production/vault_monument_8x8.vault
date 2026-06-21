@@ -1,0 +1,24 @@
+# Luminescent Cavern — mandatory monument pocket (8×8 open floor).
+# 2×2 impassable monument (wall tiles) centered; four glow floor tiles at monument corners.
+# Placement: always at geographic center of luminescent_cavern (see catalog placementRule).
+# Bump → "There is a faded inscription on the monument."
+VAULT vault_monument_8x8
+WEIGHT 1
+MIN_DISTANCE_FROM_PLAYER_START 0
+ORIGIN 3 3
+TILES .=DcssCavern:grey_dirt_0_new;g1=DcssCavern:floor_nerves_2_cyan;g2=DcssCavern:floor_nerves_4_cyan;W=DcssCavern:wall_stone2_gray_2_new
+MAP
+........
+........
+..g1.g2..
+...WW...
+...WW...
+..g2.g1..
+........
+........
+ENDMAP
+INTERACTABLE bump_monument_inscription AT 3 3
+INTERACTABLE bump_monument_inscription AT 4 3
+INTERACTABLE bump_monument_inscription AT 3 4
+INTERACTABLE bump_monument_inscription AT 4 4
+END

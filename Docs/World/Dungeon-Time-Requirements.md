@@ -268,7 +268,7 @@ Each `TurnManager.ExecuteRestPlayerPhaseStep` counts as **one** dungeon time pla
 2. Run **dungeon teardown** (same as voluntary exit):
    - `DungeonFloorInstanceManager.ExitDungeon()` / `DungeonRunState.ExitDungeon()` — destroy all floor instances, clear floor services ([Dynamic dungeon floors](Dynamic-Dungeon-Floor-Generation-Requirements.md) §1.3).
 3. Apply **survivor rules** (§7.3) on the DDOL party **before** or **after** unload as long as inventory references remain valid (prefer **before** scene unload).
-4. `SceneManager.LoadScene` → **Town** production scene (name TBD; until then `TownTest` for development).
+4. `SceneManager.LoadScene` → hub scene (**v0:** **`DimensionSquareTest`** per [Floor 1 §9.11](Dungeon-Floor-1-Production-Requirements.md); production name TBD).
 5. Town bootstrap places living party at authored **dungeon return spawn** (TBD marker on town stamp).
 
 **Narrative:** “The dungeon collapses / ejects you” — exact copy TBD; mechanics are authoritative.
@@ -359,7 +359,7 @@ Lifetime: **DDOL** on run layer; created with `DungeonRunState` / `DungeonRunBoo
 |------|-----|
 | Debug overlay | Optional: `Day 3/Night, cycle 2/7, turns 12/50` |
 | Player-facing HUD | **Future** |
-| Expiry modal | **None** — immediate transition (§7) |
+| Expiry modal | **One-button modal** on time expiry ([Floor 1 §9.11.1](Dungeon-Floor-1-Production-Requirements.md)) — show highest floor reached; on dismiss → **immediate** forced exit (§7) |
 | Log on phase change | `[DungeonTime] Phase→Night (floor dungeon_floor_01, 0/30 turns)` |
 
 ---

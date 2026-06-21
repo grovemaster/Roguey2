@@ -1,0 +1,15 @@
+# Northern Dark — mandatory altar pocket (3×3 open floor, impassable altar overlay at center).
+# Always placed exactly once somewhere in northern_dark (random anchor per run; see §7.6).
+# Bump → "There are 3 small indentations and 1 larger indentation."
+VAULT vault_altar_3x3
+WEIGHT 1
+MIN_DISTANCE_FROM_PLAYER_START 0
+ORIGIN 1 1
+TILES .=DcssCavern:grey_dirt_0_new
+MAP
+...
+...
+...
+ENDMAP
+INTERACTABLE bump_altar_indentations AT 1 1
+END

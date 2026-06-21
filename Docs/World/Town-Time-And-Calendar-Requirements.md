@@ -240,18 +240,22 @@ If art hook is deferred, **logic gate alone** satisfies AC.
 
 ## 7. Dungeon exit → town phase
 
-When the party returns to town from the dungeon — **forced time exit** ([Dungeon time §7](Dungeon-Time-Requirements.md)), voluntary retreat (future), or floor chain back to hub:
+When the party returns to town from the dungeon:
 
-| Rule | Behavior |
-|------|----------|
-| **Phase on arrival** | Set `currentPhase = Day` |
-| **Calendar day** | **Do not** increment; preserve `calendarDayIndex` from when the party entered the dungeon |
-| **Time frozen in dungeon** | Phases did not tick while underground (§3) |
-| **Portal window** | Evaluate §6 on arrival — if arrival day is `{1,4,7…}` and phase is now **Day**, portal is **closed** until next qualifying morning |
+| Exit kind | Phase on arrival | Calendar day |
+|-----------|------------------|--------------|
+| **Forced time expiry** ([Floor 1 §9.11](Dungeon-Floor-1-Production-Requirements.md), StGaaB parity) | **`Day`** (daytime) | **`calendarDayIndex++`** — always the **next** calendar day |
+| **Other returns** (future voluntary retreat, floor chain back to hub — not v0) | **`Day`** | **Unchanged** — same `calendarDayIndex` as when the party entered |
 
-**Example:** Party leaves town on **day 1 morning** (portal open), clears dungeon, returns same session → town **day 1, Day phase**, portal **closed** until day 4 morning.
+**Forced-expiry example:** Party enters on **day 1 morning** (portal open) → dungeon time expires → **`DimensionSquareTest`**, **day 2, Day phase**, portal **closed** until day 4 morning.
 
-**Contrast — forced dungeon exit survivor rules** (HP, statuses) remain in [Dungeon time §7.3](Dungeon-Time-Requirements.md); this section **only** sets town phase.
+**Other-return example:** Party leaves on day 1 morning, returns same session without day increment (future flows) → **day 1, Day phase**, portal closed until day 4 morning.
+
+**Time frozen in dungeon:** Town phases do not tick while underground (§3).
+
+**Portal window:** Evaluate §6 on arrival — if phase is **Day**, portal is **closed** until the next qualifying **Morning** on days `{1,4,7…}`.
+
+**Survivor rules** (HP, inventory, statuses, permadeath): [Dungeon time §7.3](Dungeon-Time-Requirements.md) + [Floor 1 §9.11](Dungeon-Floor-1-Production-Requirements.md). This section **only** sets town phase and calendar.
 
 ---
 
@@ -311,7 +315,8 @@ Mapping (locked in [Improved Illumination §8.2](Improved-Illumination-Requireme
 | Own §4.3 state (DDOL) |
 | `AdvancePhase(TownPhaseAdvanceSource)` / `TryAdvancePhase` |
 | `bool IsDungeonPortalOpen()` — §6 |
-| `ApplyDungeonReturnPhase()` — §7 |
+| `ApplyDungeonReturnPhase()` — §7 (non-expiry returns) |
+| `ApplyForcedExpiryReturn()` — §7 forced expiry: day++, phase **Day** |
 | Events: `PhaseChanged`, `CalendarDayChanged`, `PortalWindowOpened`, `PortalWindowClosed` |
 | Log prefix: **`[TownTime]`** |
 
@@ -353,7 +358,8 @@ Example: `Town D1 · Morning · Portal OPEN` or `Town D2 · Morning · Portal CL
 | **AC-TT5** | Portal enterable **only** when `calendarDayIndex % 3 == 1` **and** phase is **Morning**. |
 | **AC-TT6** | Advancing **Morning → Day** on a window day **closes** portal until next window morning. |
 | **AC-TT7** | Day **1** morning: portal **open**. Days **2–3** morning: portal **closed**. Day **4** morning: portal **open**. |
-| **AC-TT8** | Dungeon → town return sets phase to **Day** without changing `calendarDayIndex`. |
+| **AC-TT8** | Non-expiry dungeon → town return sets phase to **Day** **without** changing `calendarDayIndex`. |
+| **AC-TT12** | Forced time expiry increments `calendarDayIndex` and sets phase to **Day** ([Floor 1 §9.11](Dungeon-Floor-1-Production-Requirements.md)). |
 | **AC-TT9** | Dungeon calendar ticks **do not** advance town phase while in dungeon. |
 | **AC-TT10** | Town phase state survives town ↔ dungeon travel within a run. |
 | **AC-TT11** | `[TownTime]` logs phase changes, day rollovers, portal open/close, and rejected portal attempts. |
