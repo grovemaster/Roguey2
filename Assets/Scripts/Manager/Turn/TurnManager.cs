@@ -3,17 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Controller.Enemy;
+using JRogue.Hazards;
+using JRogue.Item;
 using JRogue.Manager.Combat;
 using JRogue.Manager.Essence;
+using JRogue.Manager.Floor;
 using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
 using JRogue.Manager.Progression;
-using JRogue.Hazards;
-using JRogue.Item;
-using JRogue.Traps;
 using JRogue.Racial;
 using JRogue.Status;
-using JRogue.Manager.Floor;
+using JRogue.Traps;
 using JRogue.World.Generation;
 using JRogue.World.Lighting;
 using UnityEngine;
@@ -192,7 +192,7 @@ namespace JRogue.Manager.Turn
                 if (enemy != null)
                 {
                     enemy.TakeTurn();
-                    yield return new WaitForSeconds(0.05f);
+                    yield return new WaitForSeconds(0.0005f);
                 }
             }
 
