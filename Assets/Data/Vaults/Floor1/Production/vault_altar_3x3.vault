@@ -5,10 +5,10 @@ VAULT vault_altar_3x3
 WEIGHT 1
 MIN_DISTANCE_FROM_PLAYER_START 0
 ORIGIN 1 1
-TILES .=DcssCavern:grey_dirt_0_new
+TILES .=DcssCavern:grey_dirt_0_new;A=DcssCavern:altar_misc
 MAP
 ...
-...
+.A.
 ...
 ENDMAP
 INTERACTABLE bump_altar_indentations AT 1 1

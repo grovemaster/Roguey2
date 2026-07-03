@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JRogue.Hazards;
+using JRogue.Interactables;
 using JRogue.Manager.Floor;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
@@ -7,6 +8,7 @@ using JRogue.Manager.Party;
 using JRogue.Traps;
 using JRogue.World.Lighting;
 using JRogue.World.Generation.Phases;
+using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using JRogue.World.Town;
 using UnityEngine;
@@ -315,6 +317,28 @@ namespace JRogue.World.Generation
             visibility.ResetForNewFloor();
             visibility.RefreshPartyVision();
             RefreshWorldFeatureOverlayVisibility();
+
+            DungeonFloorInstance activeFloor = Instance?.GetActiveFloorInstance();
+            MapManager map = MapManager.Instance;
+            if (activeFloor != null && map != null)
+            {
+                VaultStampDiagnostics.LogPlacedVaultsAudit(
+                    activeFloor.VaultPlacementRecords,
+                    map,
+                    "afterVisibilityRefresh");
+                VaultStampDiagnostics.LogVisibilityAudit(
+                    activeFloor.VaultPlacementRecords,
+                    map,
+                    visibility,
+                    "afterVisibilityRefresh");
+                VaultStampDiagnostics.LogMonumentVaultRenderAudit(
+                    activeFloor.VaultPlacementRecords,
+                    map,
+                    visibility,
+                    InteractableTileService.Instance,
+                    "afterVisibilityRefresh");
+                VaultStampDiagnostics.LogFloorScanForVaultTiles(map, "afterVisibilityRefresh");
+            }
         }
 
         static void RefreshWorldFeatureOverlayVisibility()

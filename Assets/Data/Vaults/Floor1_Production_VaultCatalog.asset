@@ -21,6 +21,8 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: luminescent_cavern
+    placementRule: 1
+    mandatory: 1
   - vaultId: vault_pond_line_3
     sourceFile: {fileID: 0}
     sourceAssetPath: Data/Vaults/Floor1/Production/vault_pond_line_3.vault
@@ -28,6 +30,8 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: luminescent_cavern
+    placementRule: 3
+    mandatory: 0
   - vaultId: vault_pond_pool_4
     sourceFile: {fileID: 0}
     sourceAssetPath: Data/Vaults/Floor1/Production/vault_pond_pool_4.vault
@@ -35,6 +39,8 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: luminescent_cavern
+    placementRule: 3
+    mandatory: 0
   - vaultId: vault_pond_cross_5
     sourceFile: {fileID: 0}
     sourceAssetPath: Data/Vaults/Floor1/Production/vault_pond_cross_5.vault
@@ -42,6 +48,8 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: luminescent_cavern
+    placementRule: 3
+    mandatory: 0
   - vaultId: vault_pond_l_5
     sourceFile: {fileID: 0}
     sourceAssetPath: Data/Vaults/Floor1/Production/vault_pond_l_5.vault
@@ -49,6 +57,8 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: luminescent_cavern
+    placementRule: 3
+    mandatory: 0
   - vaultId: vault_pond_rect_6
     sourceFile: {fileID: 0}
     sourceAssetPath: Data/Vaults/Floor1/Production/vault_pond_rect_6.vault
@@ -56,6 +66,8 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: luminescent_cavern
+    placementRule: 3
+    mandatory: 0
   - vaultId: vault_pond_t_7
     sourceFile: {fileID: 0}
     sourceAssetPath: Data/Vaults/Floor1/Production/vault_pond_t_7.vault
@@ -63,6 +75,8 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: luminescent_cavern
+    placementRule: 3
+    mandatory: 0
   - vaultId: vault_pond_hook_7
     sourceFile: {fileID: 0}
     sourceAssetPath: Data/Vaults/Floor1/Production/vault_pond_hook_7.vault
@@ -70,6 +84,8 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: luminescent_cavern
+    placementRule: 3
+    mandatory: 0
   - vaultId: vault_pond_snake_8
     sourceFile: {fileID: 0}
     sourceAssetPath: Data/Vaults/Floor1/Production/vault_pond_snake_8.vault
@@ -77,6 +93,8 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: luminescent_cavern
+    placementRule: 3
+    mandatory: 0
   - vaultId: vault_altar_3x3
     sourceFile: {fileID: 0}
     sourceAssetPath: Data/Vaults/Floor1/Production/vault_altar_3x3.vault
@@ -84,3 +102,5 @@ MonoBehaviour:
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: northern_dark
+    placementRule: 2
+    mandatory: 1

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Manager.Map;
 using JRogue.World.Generation.MonsterSpawn;
 using JRogue.World.Generation.Phases;
+using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using JRogue.World.Town;
 using UnityEngine;
@@ -136,7 +137,13 @@ namespace JRogue.World.Generation
                 context.PortalArrivals,
                 context.ZoneCellMap,
                 context.ResolvedZonePieces);
+            instance.StoreVaultPlacementRecords(context.PlacedVaultRecords);
             ApplyInitialMonsterSpawnSchedule(instance, runSeed);
+            VaultStampDiagnostics.LogPlacedVaultsAudit(
+                context.PlacedVaultRecords,
+                MapManager.Instance,
+                "preActivation");
+            VaultStampDiagnostics.LogFloorScanForVaultTiles(MapManager.Instance, "preActivation");
             DungeonFloorServiceBinder.CaptureFeatureState(instance);
             instance.MarkFeaturesLiveOnServices();
             ZoneGenerationDiagnostics.LogCheckpoint(context, "after all phases (pre-activation)");

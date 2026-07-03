@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JRogue.Spawn;
+using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using UnityEngine;
 
@@ -38,6 +39,9 @@ namespace JRogue.World.Generation
         public int ZoneFillAttempt { get; set; }
         public Dictionary<string, ZonePopulationScatterCounts> ZoneScatterCountsByInstance { get; } =
             new Dictionary<string, ZonePopulationScatterCounts>();
+
+        /// <summary>Populated by <see cref="VaultStamper"/> for post-generation diagnostics.</summary>
+        public List<VaultPlacementRecord> PlacedVaultRecords { get; } = new List<VaultPlacementRecord>();
 
         public DungeonGenerationContext(
             DungeonFloorDefinition definition,

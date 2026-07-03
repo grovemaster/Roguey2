@@ -1,6 +1,7 @@
 using JRogue.Manager.Map;
 using JRogue.World.Generation;
 using JRogue.World.Generation.Phases;
+using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using JRogue.World.Lighting;
 using UnityEngine;
@@ -59,6 +60,10 @@ namespace JRogue.World.Generation.Phases
 
             VisibilityManager visibility = Object.FindAnyObjectByType<VisibilityManager>();
             visibility?.RefreshPartyVision();
+
+            MapManager postLightingMap = MapManager.Instance;
+            VaultStampDiagnostics.LogPlacedVaultsAudit(context.PlacedVaultRecords, postLightingMap, "afterLightingInit");
+            VaultStampDiagnostics.LogFloorScanForVaultTiles(postLightingMap, "afterLightingInit");
 
             if (context.Definition != null && context.Definition.FloorId == TownTorchSetupPhase.TownFloorId)
             {

@@ -269,7 +269,9 @@ namespace JRogue.World.Generation.Vaults
                         blueprint.DefaultDoorRegistryId = right;
                         break;
                     default:
-                        error = $"Unknown TILES role '{left}'. Use a single MAP character or floor/wall/door.";
+                        error = left.Length > 1
+                            ? $"Unknown TILES role '{left}'. Glyph keys must be a single character (e.g. 1={right}; use MAP ..1.2.. not ..{left}..)."
+                            : $"Unknown TILES role '{left}'. Use a single MAP character or floor/wall/door.";
                         return false;
                 }
             }

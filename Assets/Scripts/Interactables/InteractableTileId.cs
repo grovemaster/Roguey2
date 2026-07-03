@@ -14,5 +14,7 @@ namespace JRogue.Interactables
         SoulBeastRitualCircle = 9,
         HallOfAncestorsAltar = 10,
         InnBed = 11,
+        BumpMonumentInscription = 12,
+        BumpAltarIndentations = 13,
     }
 }

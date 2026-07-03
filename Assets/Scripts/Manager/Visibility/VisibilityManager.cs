@@ -13,6 +13,7 @@ using JRogue.Interactables;
 using JRogue.Manager.Door;
 using JRogue.Traps;
 using JRogue.World.Generation;
+using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Zones;
 using JRogue.World.Lighting;
@@ -282,7 +283,73 @@ public class VisibilityManager : MonoBehaviour
         if (verboseLightingDiagnostics)
             LogVisionDiagnostics(currentVisible, currentLitVisible, losUnlit);
 
+        EnsureVisibleTerrainIsOpaque(currentVisible, currentLitVisible);
+        LogMonumentRenderWhenInSight(currentVisible);
         ApplyEntityVisibility();
+    }
+
+    void LogMonumentRenderWhenInSight(HashSet<Vector3Int> currentVisible)
+    {
+        if (currentVisible == null || currentVisible.Count == 0)
+            return;
+
+        DungeonFloorInstance floor = DungeonFloorInstanceManager.Instance?.GetActiveFloorInstance();
+        MapManager map = MapManager.Instance;
+        if (floor?.VaultPlacementRecords == null || map == null)
+            return;
+
+        IReadOnlyList<VaultPlacementRecord> records = floor.VaultPlacementRecords;
+        for (int i = 0; i < records.Count; i++)
+        {
+            VaultPlacementRecord record = records[i];
+            if (record.VaultId != VaultStampDiagnostics.MonumentVaultId)
+                continue;
+
+            IReadOnlyList<Vector3Int> cells = record.FootprintCells;
+            if (cells == null)
+                return;
+
+            for (int c = 0; c < cells.Count; c++)
+            {
+                if (currentVisible.Contains(cells[c]))
+                {
+                    VaultStampDiagnostics.LogMonumentVaultRenderAudit(
+                        records,
+                        map,
+                        this,
+                        InteractableTileService.Instance,
+                        "onVisionRefresh");
+                    return;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Vault-stamped tiles can inherit alpha-0 fog color across SetTile; visible cells must be opaque.
+    /// </summary>
+    void EnsureVisibleTerrainIsOpaque(HashSet<Vector3Int> visible, HashSet<Vector3Int> litVisible)
+    {
+        if (visible == null || visible.Count == 0 || tilemaps == null)
+            return;
+
+        foreach (Vector3Int cell in visible)
+        {
+            bool lit = litVisible != null && litVisible.Contains(cell);
+            Color target = lit ? visibleColor : darkTileColor;
+
+            for (int i = 0; i < tilemaps.Count; i++)
+            {
+                Tilemap tm = tilemaps[i];
+                if (tm == null || !tm.HasTile(cell))
+                    continue;
+
+                if (tm.GetColor(cell).a > 0.01f)
+                    continue;
+
+                tm.SetColor(cell, target);
+            }
+        }
     }
 
     void LogVisionDiagnostics(

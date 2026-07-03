@@ -5,6 +5,7 @@ using JRogue.Controller.Npc;
 using JRogue.Core.Actor;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
+using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using JRogue.World.MapInteract;
 using UnityEngine;
@@ -34,6 +35,7 @@ namespace JRogue.World.Generation
         readonly List<PortalInteractable> _portals = new List<PortalInteractable>();
         readonly List<JRogue.World.MapInteract.IAdjacentMapInteractable> _extraMapInteractables =
             new List<JRogue.World.MapInteract.IAdjacentMapInteractable>();
+        readonly List<VaultPlacementRecord> _vaultPlacementRecords = new List<VaultPlacementRecord>();
         readonly List<PortalVisual> _portalVisuals = new List<PortalVisual>();
         readonly DungeonFloorFeatureSnapshot _featureSnapshot = new DungeonFloorFeatureSnapshot();
         readonly HashSet<string> _monsterSpawnOnceLedger = new HashSet<string>();
@@ -95,6 +97,7 @@ namespace JRogue.World.Generation
         public Transform DynamicViewsRoot => dynamicViewsRoot;
         public IReadOnlyList<ZoneCellMapEntry> ZoneCellMapSnapshot => _zoneCellMapSnapshot;
         public IReadOnlyList<ResolvedZonePiece> ResolvedZonePieces => _resolvedZonePieces;
+        public IReadOnlyList<VaultPlacementRecord> VaultPlacementRecords => _vaultPlacementRecords;
 
         public int GetLastAppliedMonsterSpawnDay() => _lastAppliedMonsterSpawnDay;
 
@@ -285,6 +288,26 @@ namespace JRogue.World.Generation
             {
                 for (int i = 0; i < resolvedZonePieces.Length; i++)
                     _resolvedZonePieces.Add(resolvedZonePieces[i]);
+            }
+        }
+
+        public void StoreVaultPlacementRecords(IReadOnlyList<VaultPlacementRecord> records)
+        {
+            _vaultPlacementRecords.Clear();
+            if (records == null)
+                return;
+
+            for (int i = 0; i < records.Count; i++)
+            {
+                VaultPlacementRecord record = records[i];
+                _vaultPlacementRecords.Add(new VaultPlacementRecord
+                {
+                    VaultId = record.VaultId,
+                    Origin = record.Origin,
+                    FootprintCells = record.FootprintCells != null
+                        ? new List<Vector3Int>(record.FootprintCells)
+                        : new List<Vector3Int>(),
+                });
             }
         }
 

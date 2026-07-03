@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.GridFeatures;
 using JRogue.Manager.Map;
+using JRogue.World.Generation.Vaults;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -218,6 +219,18 @@ namespace JRogue.Interactables
                 return;
             }
 
+            if (UsesTerrainTileArtOnly(instance.Definition))
+            {
+                GridOverlayPainter.Clear(interactableOverlayMap, instance.Cell);
+                VaultStampDiagnostics.LogMonumentInteractableOverlayPaint(
+                    instance.Cell,
+                    instance,
+                    paintedSprite: null,
+                    cellVisible: true,
+                    spriteSource: "skipped-terrain-only-bump");
+                return;
+            }
+
             Sprite sprite = instance.IsOn
                 ? instance.Definition.spriteOn
                 : instance.Definition.spriteOff;
@@ -235,6 +248,12 @@ namespace JRogue.Interactables
 
             GridOverlayPainter.Paint(interactableOverlayMap, instance.Cell, tile: null, sprite: sprite);
         }
+
+        /// <summary>
+        /// Bump interactables with no overlay art (monument inscription, altar) use stamped floor/wall tiles only.
+        /// </summary>
+        static bool UsesTerrainTileArtOnly(InteractableTileDefinition definition) =>
+            definition != null && definition.spriteOff == null && definition.spriteOn == null;
 
         static bool IsCellVisibleToPlayer(Vector3Int cell)
         {

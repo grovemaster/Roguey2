@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using JRogue.Data.Door;
 using JRogue.Hazards;
 using JRogue.Interactables;
@@ -14,6 +15,17 @@ namespace JRogue.World.Generation.Vaults
 {
     internal static class VaultStamper
     {
+        struct PaintedCellSnapshot
+        {
+            public Vector3Int Cell;
+            public TileBase FloorTile;
+            public TileBase WallTile;
+            public Matrix4x4 FloorMatrix;
+            public Matrix4x4 WallMatrix;
+            public Color FloorColor;
+            public Color WallColor;
+        }
+
         public static bool TryStamp(
             VaultBlueprint blueprint,
             VaultAssetRegistry registry,
@@ -50,6 +62,7 @@ namespace JRogue.World.Generation.Vaults
             DoorService doors = DoorService.Instance;
             EnsureDoorOverlay(context, doors, blueprint.VaultId, placementOrigin);
             int mapDoorGlyphs = 0;
+            var paintedSnapshots = new List<PaintedCellSnapshot>();
 
             foreach (VaultMapCell cell in blueprint.OccupiedCells())
             {
@@ -59,17 +72,43 @@ namespace JRogue.World.Generation.Vaults
                 switch (glyph.Kind)
                 {
                     case VaultCellKind.Floor:
-                        if (!TryPaintFloor(registry, map, world, glyph.TileKey, out error))
-                            return false;
+                        CaptureCellSnapshot(map, world, paintedSnapshots);
+                        {
+                            string before = VaultStampDiagnostics.DescribeCell(map, world);
+                            if (!TryPaintFloor(registry, map, world, glyph.TileKey, out error, blueprint.VaultId, before))
+                            {
+                                VaultStampDiagnostics.LogStampFailed(blueprint.VaultId, placementOrigin, error);
+                                RestorePaintedCells(map, paintedSnapshots);
+                                return false;
+                            }
+                        }
+
                         break;
                     case VaultCellKind.Wall:
-                        if (!TryPaintWall(registry, map, world, glyph.TileKey, out error))
-                            return false;
+                        CaptureCellSnapshot(map, world, paintedSnapshots);
+                        {
+                            string before = VaultStampDiagnostics.DescribeCell(map, world);
+                            if (!TryPaintWall(registry, map, world, glyph.TileKey, out error, blueprint.VaultId, before))
+                            {
+                                VaultStampDiagnostics.LogStampFailed(blueprint.VaultId, placementOrigin, error);
+                                RestorePaintedCells(map, paintedSnapshots);
+                                return false;
+                            }
+                        }
+
                         break;
                     case VaultCellKind.Door:
                         mapDoorGlyphs++;
-                        if (!TryPaintFloor(registry, map, world, glyph.TileKey, out error))
-                            return false;
+                        CaptureCellSnapshot(map, world, paintedSnapshots);
+                        {
+                            string before = VaultStampDiagnostics.DescribeCell(map, world);
+                            if (!TryPaintFloor(registry, map, world, glyph.TileKey, out error, blueprint.VaultId, before))
+                            {
+                                VaultStampDiagnostics.LogStampFailed(blueprint.VaultId, placementOrigin, error);
+                                RestorePaintedCells(map, paintedSnapshots);
+                                return false;
+                            }
+                        }
 
                         Debug.Log(
                             $"[VaultDoor] MAP 'D' vault={blueprint.VaultId} local=({cell.X},{cell.Y}) " +
@@ -88,6 +127,7 @@ namespace JRogue.World.Generation.Vaults
             if (!registry.TryResolveTile(defaultFloorKey, out TileBase defaultFloorTile))
             {
                 error = $"Unknown default floor tile key '{defaultFloorKey}'.";
+                RestorePaintedCells(map, paintedSnapshots);
                 return false;
             }
 
@@ -100,9 +140,90 @@ namespace JRogue.World.Generation.Vaults
             }
 
             VaultPlacementUtility.ReserveFootprint(blueprint, placementOrigin, context);
+            RecordPlacement(context, blueprint, placementOrigin);
             map.FloorMap?.CompressBounds();
             map.WallMap?.CompressBounds();
+
+            int cellCount = 0;
+            foreach (VaultMapCell _ in blueprint.OccupiedCells())
+                cellCount++;
+
+            VaultStampDiagnostics.LogStampComplete(blueprint.VaultId, placementOrigin, blueprint, map, cellCount);
+            if (blueprint.VaultId == VaultStampDiagnostics.MonumentVaultId)
+            {
+                VaultStampDiagnostics.LogMonumentVaultRenderAudit(
+                    context.PlacedVaultRecords,
+                    map,
+                    Object.FindAnyObjectByType<VisibilityManager>(),
+                    InteractableTileService.Instance,
+                    "afterStamp");
+            }
+
             return true;
+        }
+
+        static void RecordPlacement(
+            DungeonGenerationContext context,
+            VaultBlueprint blueprint,
+            Vector3Int placementOrigin)
+        {
+            if (context == null || blueprint == null)
+                return;
+
+            var footprint = new List<Vector3Int>();
+            foreach (VaultMapCell cell in blueprint.OccupiedCells())
+                footprint.Add(blueprint.LocalToWorld(placementOrigin, cell.X, cell.Y));
+
+            context.PlacedVaultRecords.Add(new VaultPlacementRecord
+            {
+                VaultId = blueprint.VaultId,
+                Origin = placementOrigin,
+                FootprintCells = footprint,
+            });
+        }
+
+        static void CaptureCellSnapshot(MapManager map, Vector3Int world, List<PaintedCellSnapshot> snapshots)
+        {
+            Tilemap floorMap = map.FloorMap;
+            Tilemap wallMap = map.WallMap;
+            snapshots.Add(new PaintedCellSnapshot
+            {
+                Cell = world,
+                FloorTile = floorMap != null ? floorMap.GetTile(world) : null,
+                WallTile = wallMap != null ? wallMap.GetTile(world) : null,
+                FloorMatrix = floorMap != null ? floorMap.GetTransformMatrix(world) : Matrix4x4.identity,
+                WallMatrix = wallMap != null ? wallMap.GetTransformMatrix(world) : Matrix4x4.identity,
+                FloorColor = floorMap != null ? floorMap.GetColor(world) : Color.white,
+                WallColor = wallMap != null ? wallMap.GetColor(world) : Color.white,
+            });
+        }
+
+        static void RestorePaintedCells(MapManager map, List<PaintedCellSnapshot> snapshots)
+        {
+            if (map == null || snapshots == null || snapshots.Count == 0)
+                return;
+
+            Tilemap floorMap = map.FloorMap;
+            Tilemap wallMap = map.WallMap;
+            for (int i = 0; i < snapshots.Count; i++)
+            {
+                PaintedCellSnapshot snapshot = snapshots[i];
+                Vector3Int cell = snapshot.Cell;
+
+                if (floorMap != null)
+                {
+                    floorMap.SetTile(cell, snapshot.FloorTile);
+                    floorMap.SetTransformMatrix(cell, snapshot.FloorMatrix);
+                    floorMap.SetColor(cell, snapshot.FloorColor);
+                }
+
+                if (wallMap != null)
+                {
+                    wallMap.SetTile(cell, snapshot.WallTile);
+                    wallMap.SetTransformMatrix(cell, snapshot.WallMatrix);
+                    wallMap.SetColor(cell, snapshot.WallColor);
+                }
+            }
         }
 
         static bool TryPaintFloor(
@@ -110,34 +231,72 @@ namespace JRogue.World.Generation.Vaults
             MapManager map,
             Vector3Int world,
             string tileKey,
-            out string error)
+            out string error,
+            string vaultId = null,
+            string beforeSummary = null)
         {
             error = null;
             if (!registry.TryResolveTile(tileKey, out TileBase tile) || tile == null)
             {
                 error = $"Unknown floor tile key '{tileKey}'.";
+                Debug.LogWarning(
+                    $"{VaultStampDiagnostics.Tag} ResolveMiss layer=Floor vault={vaultId ?? "?"} " +
+                    $"world=({world.x},{world.y}) key='{tileKey}'");
                 return false;
             }
 
             map.SetCellFloor(world, tile);
+            if (ShouldVerboseCellLog(vaultId))
+            {
+                VaultStampDiagnostics.LogPaintCell(
+                    vaultId ?? "?",
+                    world,
+                    VaultCellKind.Floor,
+                    tileKey,
+                    tile,
+                    map,
+                    beforeSummary ?? "?");
+            }
+
             return true;
         }
+
+        static bool ShouldVerboseCellLog(string vaultId) =>
+            vaultId != null
+            && (vaultId.StartsWith("vault_pond_") || vaultId == "vault_monument_8x8");
 
         static bool TryPaintWall(
             VaultAssetRegistry registry,
             MapManager map,
             Vector3Int world,
             string tileKey,
-            out string error)
+            out string error,
+            string vaultId = null,
+            string beforeSummary = null)
         {
             error = null;
             if (!registry.TryResolveTile(tileKey, out TileBase tile) || tile == null)
             {
                 error = $"Unknown wall tile key '{tileKey}'.";
+                Debug.LogWarning(
+                    $"{VaultStampDiagnostics.Tag} ResolveMiss layer=Wall vault={vaultId ?? "?"} " +
+                    $"world=({world.x},{world.y}) key='{tileKey}'");
                 return false;
             }
 
             map.SetCellWall(world, tile);
+            if (ShouldVerboseCellLog(vaultId))
+            {
+                VaultStampDiagnostics.LogPaintCell(
+                    vaultId ?? "?",
+                    world,
+                    VaultCellKind.Wall,
+                    tileKey,
+                    tile,
+                    map,
+                    beforeSummary ?? "?");
+            }
+
             return true;
         }
 

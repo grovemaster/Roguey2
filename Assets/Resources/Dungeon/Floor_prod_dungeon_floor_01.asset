@@ -45,4 +45,4 @@ MonoBehaviour:
   safeZoneRegions: []
   doorPolicy: 0
   vaults: []
-  vaultCatalog: {fileID: 11400000, guid: 5de9a4b1839630877a5988afee25f3aa, type: 2}
+  vaultCatalog: {fileID: 11400000, guid: ae4f63965a836ddddb4f0ec0c7463827, type: 2}

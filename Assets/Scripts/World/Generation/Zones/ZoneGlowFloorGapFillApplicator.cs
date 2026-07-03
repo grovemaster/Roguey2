@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Manager.Map;
 using JRogue.World.Generation.Phases;
+using JRogue.World.Generation.Vaults;
 using JRogue.World.Lighting;
 using UnityEngine;
 
@@ -33,6 +34,7 @@ namespace JRogue.World.Generation.Zones
             var paintContext = ZoneTilePaintContext.From(context);
             var placed = new List<Vector3Int>();
             int applied = 0;
+            int skippedReserved = 0;
 
             DungeonZoneDefinition[] definitions = layout.ZoneDefinitions;
             for (int z = 0; z < definitions.Length; z++)
@@ -57,6 +59,12 @@ namespace JRogue.World.Generation.Zones
                         Vector3Int cell = new Vector3Int(x, y, 0);
                         if (!map.IsWalkable(cell))
                             continue;
+
+                        if (context.ReservedCells.Contains(cell))
+                        {
+                            skippedReserved++;
+                            continue;
+                        }
 
                         if (!context.TryGetZoneId(cell, out string cellZoneId) || cellZoneId != zoneId)
                             continue;
@@ -108,6 +116,13 @@ namespace JRogue.World.Generation.Zones
                         applied++;
                     }
                 }
+            }
+
+            if (skippedReserved > 0)
+            {
+                Debug.Log(
+                    $"{VaultStampDiagnostics.Tag} GlowGapFill skippedReserved={skippedReserved} " +
+                    $"(vault footprint cells not overwritten)");
             }
 
             return applied;

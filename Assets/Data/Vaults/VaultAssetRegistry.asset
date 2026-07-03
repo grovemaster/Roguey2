@@ -21,12 +21,44 @@ MonoBehaviour:
     tile: {fileID: 11400000, guid: 33f77e733655c2fd0b38ee535c22ed9e, type: 2}
   - key: SnowTheme:48
     tile: {fileID: 11400000, guid: b8c17fa4f107143fcbf03a5ad8bce89e, type: 2}
+  - key: DcssCavern:grey_dirt_0_new
+    tile: {fileID: 11400000, guid: b9b4b5a96949b22ce97ab72cfe59669d, type: 2}
+  - key: DcssCavern:grey_dirt_1_new
+    tile: {fileID: 11400000, guid: 80153500ef72d690ca8ea8eb4bf2b8ca, type: 2}
+  - key: DcssCavern:grey_dirt_2_new
+    tile: {fileID: 11400000, guid: 0432d6f4f3ce2ce80ab7efb20cb4e245, type: 2}
+  - key: DcssCavern:grey_dirt_3_new
+    tile: {fileID: 11400000, guid: 85a566634563c5cb8996438f8f23b943, type: 2}
+  - key: DcssCavern:grey_dirt_4_new
+    tile: {fileID: 11400000, guid: 9ee893c16945c892bafeebc0e11a8d4c, type: 2}
+  - key: DcssCavern:stone2_gray_2_new
+    tile: {fileID: 11400000, guid: 57f4ddf71aa112bdf88813b5ab72977e, type: 2}
+  - key: DcssCavern:stone2_gray_3_new
+    tile: {fileID: 11400000, guid: 562a618f7c242d95db42ff96175e2340, type: 2}
+  - key: DcssCavern:altar_misc
+    tile: {fileID: 11400000, guid: f3c4d5e6f7081920a1b2c3d4e5f60705, type: 2}
+  - key: DcssCavern:shoals_shallow_water_1_new
+    tile: {fileID: 11400000, guid: f3c4d5e6f7081920a1b2c3d4e5f60701, type: 2}
+  - key: DcssCavern:shoals_shallow_water_2_new
+    tile: {fileID: 11400000, guid: f3c4d5e6f7081920a1b2c3d4e5f60702, type: 2}
+  - key: DcssCavern:shoals_shallow_water_3_new
+    tile: {fileID: 11400000, guid: f3c4d5e6f7081920a1b2c3d4e5f60703, type: 2}
+  - key: DcssCavern:shoals_shallow_water_4_new
+    tile: {fileID: 11400000, guid: f3c4d5e6f7081920a1b2c3d4e5f60704, type: 2}
+  - key: DcssCavern:_cyan_floor_nerves_2_new
+    tile: {fileID: 11400000, guid: 34efe1f587ec526c2993043269de4d3f, type: 2}
+  - key: DcssCavern:_cyan_floor_nerves_4_new
+    tile: {fileID: 11400000, guid: 0784f570e54266c8ab7e74e9c557066c, type: 2}
   items:
   - id: healing_potion
     item: {fileID: 11400000, guid: 390da36adb5c41edb9ca22cae4e5872f, type: 2}
   interactables:
   - id: lever_shrine
     definition: {fileID: 11400000, guid: 2c19d8f630fa4d5ea3a8d7c22427cc4d, type: 2}
+  - id: bump_monument_inscription
+    definition: {fileID: 11400000, guid: e2b3c4d5e6f7489091bbccddeeff0101, type: 2}
+  - id: bump_altar_indentations
+    definition: {fileID: 11400000, guid: e2b3c4d5e6f7489091bbccddeeff0102, type: 2}
   hazards:
   - id: lava
     definition: {fileID: 11400000, guid: b1c2d3e4f5a6478990abcdef12345001, type: 2}

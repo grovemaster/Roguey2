@@ -4,6 +4,15 @@ using UnityEngine;
 
 namespace JRogue.World.Generation.Vaults
 {
+    /// <summary>How a catalog entry is anchored during <see cref="Phases.VaultPlacementPhase"/>.</summary>
+    public enum VaultPlacementRule
+    {
+        Random = 0,
+        ZoneCenter = 1,
+        MandatoryRandom = 2,
+        PondScatter = 3,
+    }
+
     [CreateAssetMenu(fileName = "Floor1_VaultCatalog", menuName = "JRogue/World/Dungeon Vault Catalog")]
     public sealed class DungeonVaultCatalog : ScriptableObject
     {
@@ -33,5 +42,36 @@ namespace JRogue.World.Generation.Vaults
 
         [Tooltip("When set, every vault footprint cell must lie in this habitat zone id.")]
         public string requiredZoneId;
+
+        public VaultPlacementRule placementRule = VaultPlacementRule.Random;
+
+        [Tooltip("When true, placement failure emits an error (monument, altar).")]
+        public bool mandatory;
+    }
+
+    /// <summary>Floor 1 production pond count rules (§7.7).</summary>
+    public static class Floor01PondPlacementLogic
+    {
+        public const int MinimumPondCount = 2;
+        public const int TypicalMaxPondCount = 5;
+        public const int HardCapPondCount = 8;
+        public const float OverflowChance = 0.15f;
+
+        public static int RollPondCount(int runSeed, string floorId)
+        {
+            System.Random rng = Zones.ZoneGenerationRng.CreatePopulationRng(runSeed, floorId + "_pond_vaults");
+            return RollPondCount(rng);
+        }
+
+        public static int RollPondCount(System.Random rng)
+        {
+            if (rng == null)
+                return MinimumPondCount;
+
+            if (rng.NextDouble() < OverflowChance)
+                return rng.Next(6, HardCapPondCount + 1);
+
+            return rng.Next(MinimumPondCount, TypicalMaxPondCount + 1);
+        }
     }
 }

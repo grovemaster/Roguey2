@@ -176,6 +176,8 @@ namespace JRogue.Manager.Map
         {
             tilemap.SetTile(cell, tile);
             tilemap.SetTransformMatrix(cell, CenterPivotTileTranslate);
+            // Unity can preserve per-cell fog alpha across SetTile; vault stamps must start opaque.
+            tilemap.SetColor(cell, Color.white);
         }
 
         public void PaintLayoutStamp(DungeonLayoutStamp stamp)

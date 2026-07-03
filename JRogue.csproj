@@ -145,6 +145,7 @@
     <Compile Include="Assets/Scripts/World/Lighting/IlluminationVisibilityLogic.cs" />
     <Compile Include="Assets/Scripts/Manager/Essence/EssenceSlotManager.cs" />
     <Compile Include="Assets/Scripts/World/Town/ResidentialTownFloorIds.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Effects/ShowFlavorDialogEffect.cs" />
     <Compile Include="Assets/Scripts/Shop/ShopDataTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneDebugOverlay.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyRules.cs" />
@@ -423,6 +424,7 @@
     <Compile Include="Assets/Scripts/World/Town/ScenePaintedMarkerUtility.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryDetailFormatter.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestPietyService.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultStampDiagnostics.cs" />
     <Compile Include="Assets/Scripts/Input/EssenceMoveGate.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryCarriedSorter.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/PlayerSpawnAnchorResolver.cs" />
