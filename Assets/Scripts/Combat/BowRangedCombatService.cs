@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JRogue.Combat.FriendlyFire;
 using System.Linq;
+using JRogue.Ability.Essence;
 using JRogue.Actors;
 using JRogue.Controller.Enemy;
 using JRogue.Core.Actor;
@@ -116,7 +117,10 @@ namespace JRogue.Combat
                     continue;
 
                 if (target is BaseActor actor)
+                {
                     actor.TakeDamage(damage, damageType, shooter.gameObject);
+                    EssenceWeaponProcService.TryApplyPoisonWeaponOnHit(shooter.gameObject, actor.gameObject);
+                }
                 else
                     target.TakeDamage(damage, shooter.gameObject);
             }

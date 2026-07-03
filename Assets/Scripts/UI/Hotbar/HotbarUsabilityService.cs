@@ -1,4 +1,5 @@
 using JRogue.Ability;
+using JRogue.Ability.Essence;
 using JRogue.Actors;
 using JRogue.Combat;
 using JRogue.Input;
@@ -314,6 +315,9 @@ namespace JRogue.UI.Hotbar
 
         public static bool RequiresTurnSlotBeforeUse(BaseActor actor, HotbarResolvedAction resolved)
         {
+            if (resolved.Ability != null && !AbilityConsumesPlayerTurn(resolved.Ability))
+                return false;
+
             if (resolved.Kind == HotbarEntryKind.ElementalSpiritSummon)
                 return false;
 
@@ -332,6 +336,9 @@ namespace JRogue.UI.Hotbar
 
         public static bool RequiresTurnSlotAfterUse(BaseActor actor, HotbarResolvedAction resolved)
         {
+            if (resolved.Ability != null && !AbilityConsumesPlayerTurn(resolved.Ability))
+                return false;
+
             if (resolved.Kind == HotbarEntryKind.ElementalSpiritSummon)
                 return false;
 
@@ -347,6 +354,9 @@ namespace JRogue.UI.Hotbar
 
             return true;
         }
+
+        static bool AbilityConsumesPlayerTurn(AbilityAction ability) =>
+            ability is not EssenceDesignAbility essence || essence.consumesPlayerTurn;
 
         static string InsufficientResourceMessage(BaseActor actor)
         {

@@ -83,6 +83,7 @@
     <Compile Include="Assets/Scripts/World/Generation/GameCalendarDate.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestShrineQuestLogic.cs" />
     <Compile Include="Assets/Scripts/World/Town/InnLodgingService.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Essence/AdrenalineRushEssenceRuntime.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridCellWorld.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorPickupCoordinator.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryCurrencyDisplay.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingDoorInteractable.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/DwarfClanBodyView.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Essence/EssenceWeaponProcService.cs" />
     <Compile Include="Assets/Scripts/Abilities/ArcaneMight/ArcaneMightAbility.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultCellKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationUtility.cs" />
@@ -312,6 +314,7 @@
     <Compile Include="Assets/Scripts/World/Lighting/LightingBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/VaultPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/DwarfClanQuestService.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Essence/DashEssenceRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyCompositionPresets.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestVowLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/SafeZonePolicyService.cs" />
@@ -540,6 +543,7 @@
     <Compile Include="Assets/Scripts/UI/Racial/DragonianSpellBodyView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneGenerationRng.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementSet.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Essence/PoisonWeaponEssenceRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/EnemyPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyDetailPaneView.cs" />
     <Compile Include="Assets/Scripts/Quest/QuestTypes.cs" />

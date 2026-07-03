@@ -163,7 +163,7 @@ MonoBehaviour:
   Agility:
     baseValue: 10
   Constitution:
-    baseValue: 10
+    baseValue: 1
   Intelligence:
     baseValue: 10
   Wisdom:

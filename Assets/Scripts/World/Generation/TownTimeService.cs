@@ -142,6 +142,22 @@ namespace JRogue.World.Generation
             JRogue.World.Lighting.TownLightingSync.ApplyForPhase(currentPhase);
         }
 
+        /// <summary>
+        /// Forced dungeon time expiry (StGaaB): advance calendar day and land in daytime with portal closed.
+        /// </summary>
+        public void ApplyForcedDungeonExpiryReturn()
+        {
+            EnsureRunInitialized();
+
+            TownTimePhase previousPhase = currentPhase;
+            calendarDayIndex++;
+            currentPhase = TownTimePhase.Day;
+            Debug.Log(
+                $"{LogPrefix} Forced dungeon expiry — day advanced to {calendarDayIndex}, phase {previousPhase}→{currentPhase}.");
+            RefreshTownPortalVisual();
+            JRogue.World.Lighting.TownLightingSync.ApplyForPhase(currentPhase);
+        }
+
         public void OnTimeLeverActivated(InteractableTileId leverId, InteractableTileService service)
         {
             if (leverId != TownTimeLeverA && leverId != TownTimeLeverB)

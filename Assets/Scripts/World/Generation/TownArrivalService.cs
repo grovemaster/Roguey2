@@ -31,14 +31,29 @@ namespace JRogue.World.Generation
 
             TownTimeService.EnsureRunService();
 
+            bool forcedExpiry = RunPartyPersistence.ConsumeForcedDungeonExpiryPending();
             GameCalendarService calendar = GameCalendarService.Instance;
-            if (calendar != null && calendar.IsEnabled)
+            if (forcedExpiry)
+            {
+                if (calendar != null && calendar.IsEnabled)
+                {
+                    calendar.AdvanceDay(GameCalendarDayAdvanceSource.DungeonReturn);
+                    TownTimeService.Instance?.ApplyDungeonReturnPhase();
+                }
+                else
+                {
+                    TownTimeService.Instance?.ApplyForcedDungeonExpiryReturn();
+                }
+            }
+            else if (calendar != null && calendar.IsEnabled)
             {
                 calendar.AdvanceDay(GameCalendarDayAdvanceSource.DungeonReturn);
                 TownTimeService.Instance?.ApplyDungeonReturnPhase();
             }
             else
+            {
                 TownTimeService.Instance?.ApplyDungeonReturnPhase();
+            }
 
             TurnManager turn = TurnManager.Instance;
             if (turn != null)

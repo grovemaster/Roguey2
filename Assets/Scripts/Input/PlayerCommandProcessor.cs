@@ -454,7 +454,7 @@ namespace JRogue.Input
             {
                 CompleteFormationMemberMove(activeMember, oldPosition);
             }
-            else
+            else if (JRogue.Ability.Essence.DashEssenceRuntime.ShouldCompleteTurnAfterMove(activeMember))
             {
                 turnManager.OnPlayerActionComplete(activeMember.gameObject);
             }

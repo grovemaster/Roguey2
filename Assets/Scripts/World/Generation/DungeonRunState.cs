@@ -9,9 +9,11 @@ namespace JRogue.World.Generation
 
         [SerializeField] int runSeed = 12345;
         [SerializeField] string activeFloorId;
+        [SerializeField] int deepestFloorNumberReached;
 
         public int RunSeed => runSeed;
         public string ActiveFloorId => activeFloorId;
+        public int DeepestFloorNumberReached => deepestFloorNumberReached;
 
         void Awake()
         {
@@ -30,10 +32,35 @@ namespace JRogue.World.Generation
         {
             runSeed = seed;
             activeFloorId = null;
+            deepestFloorNumberReached = 0;
             JRogue.Quest.QuestService.Instance?.ResetForNewRun();
         }
 
-        public void SetActiveFloor(string floorId) => activeFloorId = floorId;
+        public void SetActiveFloor(string floorId)
+        {
+            activeFloorId = floorId;
+            RecordFloorVisit(floorId);
+        }
+
+        public static int ParseFloorNumber(string floorId)
+        {
+            if (string.IsNullOrEmpty(floorId))
+                return 0;
+
+            int lastUnderscore = floorId.LastIndexOf('_');
+            if (lastUnderscore < 0 || lastUnderscore >= floorId.Length - 1)
+                return 0;
+
+            string suffix = floorId.Substring(lastUnderscore + 1);
+            return int.TryParse(suffix, out int floorNumber) ? floorNumber : 0;
+        }
+
+        void RecordFloorVisit(string floorId)
+        {
+            int floorNumber = ParseFloorNumber(floorId);
+            if (floorNumber > deepestFloorNumberReached)
+                deepestFloorNumberReached = floorNumber;
+        }
 
         public void ExitDungeon()
         {

@@ -8,6 +8,26 @@ namespace JRogue.World.Generation.Phases
 {
     internal static class PopulationPlacementUtility
     {
+        public const int DefaultPortalTrapBufferChebyshev = 5;
+
+        public static bool IsWithinChebyshevDistanceOfAny(
+            Vector3Int cell,
+            IReadOnlyList<Vector3Int> centers,
+            int distance)
+        {
+            if (centers == null || centers.Count == 0 || distance <= 0)
+                return false;
+
+            for (int i = 0; i < centers.Count; i++)
+            {
+                Vector3Int center = centers[i];
+                if (Mathf.Max(Mathf.Abs(cell.x - center.x), Mathf.Abs(cell.y - center.y)) <= distance)
+                    return true;
+            }
+
+            return false;
+        }
+
         public static List<Vector3Int> CollectFloorCandidates(
             MapManager map,
             DungeonGenerationContext context,

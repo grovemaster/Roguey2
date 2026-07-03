@@ -11,12 +11,15 @@ namespace JRogue.UI.Gameplay
     /// </summary>
     public sealed class DungeonEndedDialogUI : MonoBehaviour
     {
-        const string Title = "Dungeon ended";
+        const string Title = "The Dungeon Has Ended";
+        const string DefaultButtonLabel = "Continue";
 
         static DungeonEndedDialogUI _instance;
 
         GameObject _modalRoot;
+        TextMeshProUGUI _titleText;
         TextMeshProUGUI _bodyText;
+        TextMeshProUGUI _buttonLabelText;
         Action _onOk;
         bool _blocking;
 
@@ -63,14 +66,23 @@ namespace JRogue.UI.Gameplay
                 CommitOk();
         }
 
-        public void Show(string bodyMessage, Action onOk)
+        public void Show(string bodyMessage, Action onOk) =>
+            Show(Title, bodyMessage, DefaultButtonLabel, onOk);
+
+        public void Show(string title, string bodyMessage, string buttonLabel, Action onOk)
         {
             EnsureModalBuilt();
             _onOk = onOk;
             _blocking = true;
 
+            if (_titleText != null)
+                _titleText.text = title;
+
             if (_bodyText != null)
                 _bodyText.text = bodyMessage;
+
+            if (_buttonLabelText != null)
+                _buttonLabelText.text = buttonLabel;
 
             _modalRoot.SetActive(true);
             _modalRoot.transform.SetAsLastSibling();
@@ -143,7 +155,7 @@ namespace JRogue.UI.Gameplay
             vlg.childControlWidth = true;
             vlg.childForceExpandWidth = true;
 
-            CreateTmp(bubble.transform, Title, 22, FontStyles.Bold, out _);
+            CreateTmp(bubble.transform, Title, 22, FontStyles.Bold, out _titleText);
 
             var bodyGo = new GameObject("Body", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
             bodyGo.transform.SetParent(bubble.transform, false);
@@ -186,7 +198,8 @@ namespace JRogue.UI.Gameplay
             labelRt.offsetMax = Vector2.zero;
 
             TextMeshProUGUI label = labelGo.GetComponent<TextMeshProUGUI>();
-            label.text = "OK";
+            label.text = DefaultButtonLabel;
+            _buttonLabelText = label;
             label.fontSize = 18f;
             label.fontStyle = FontStyles.Bold;
             label.color = Color.white;

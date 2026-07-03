@@ -110,6 +110,7 @@
     <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantForgemasterLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/DungeonGenerationPipelineTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/DungeonTimeLogicTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/DungeonFloor1Phase5Tests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Quest/DragonianElderQuestLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/TelekinesisAbilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/VaultPlacementLogicTests.cs" />

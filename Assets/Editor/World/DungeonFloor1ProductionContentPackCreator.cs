@@ -7,6 +7,7 @@ using JRogue.Controller.Enemy;
 using JRogue.Data.Enemy;
 using JRogue.Item.Essence;
 using JRogue.Spawn;
+using JRogue.Status;
 using JRogue.Stats;
 using JRogue.Traps;
 using JRogue.World.Generation.MonsterSpawn;
@@ -35,6 +36,8 @@ namespace JRogue.Editor.World
         const string PopDarkPath = "Assets/Data/Dungeon/Zones/Population/Population_NorthernDark_Floor01.asset";
         const string BaseEnemyPrefabPath = "Assets/Prefabs/Actor/Enemy/Enemy.prefab";
         const string BearTrapPath = "Assets/Data/Traps/TrapDefinition_Bear.asset";
+        const string PoisonStatusPath = "Assets/Data/Status/Status_Poisoned_Default.asset";
+        const string PoisonStatusResourcesPath = "Assets/Resources/Status/Status_Poisoned_Default.asset";
         const string MapIconPath = "Assets/Art/Essence/Sprites/Essence_MapIcon_YellowFlame.png";
 
         const string DcssRoot = "Assets/Sprites/DCSS/Dungeon Crawl Stone Soup Full";
@@ -62,6 +65,8 @@ namespace JRogue.Editor.World
             EnsureFolder(AbilityRoot);
             EnsureFolder(Path.GetDirectoryName(SchedulePath)?.Replace('\\', '/'));
             EnsureFolder(Path.GetDirectoryName(PopCavernPath)?.Replace('\\', '/'));
+
+            EnsurePoisonStatusDefinition();
 
             Sprite mapIcon = AssetDatabase.LoadAssetAtPath<Sprite>(MapIconPath);
             TrapDefinition bearTrap = AssetDatabase.LoadAssetAtPath<TrapDefinition>(BearTrapPath);
@@ -166,6 +171,24 @@ namespace JRogue.Editor.World
                 "[Floor1Production] Created production enemies, essences, schedule, and trap profiles. " +
                 "Tune stats on prefabs under PrefabRoot; tune essences under EssenceRoot; " +
                 "tune day schedules on Schedule_Floor01_Production.");
+        }
+
+        static void EnsurePoisonStatusDefinition()
+        {
+            EnsureFolder("Assets/Data/Status");
+            EnsureFolder("Assets/Resources/Status");
+
+            var definition = LoadOrCreate<PoisonStatusEffectDefinition>(PoisonStatusPath);
+            definition.damagePerTick = 1;
+            definition.damageType = DamageType.Poison;
+            definition.escapeDifficulty = 12;
+            EditorUtility.SetDirty(definition);
+
+            if (!File.Exists(PoisonStatusResourcesPath))
+            {
+                AssetDatabase.CopyAsset(PoisonStatusPath, PoisonStatusResourcesPath);
+                AssetDatabase.Refresh();
+            }
         }
 
         static void CreateProductionSchedule(

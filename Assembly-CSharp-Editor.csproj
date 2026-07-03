@@ -53,6 +53,7 @@
     <Compile Include="Assets/Editor/World/DungeonTilePalettePackCreator.cs" />
     <Compile Include="Assets/Editor/World/ResidentialDistrictPortalsEditor.cs" />
     <Compile Include="Assets/Editor/World/DungeonFloor1ProductionVaultPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/DungeonFloor1ProductionPhase5PackCreator.cs" />
     <Compile Include="Assets/Editor/World/DcssRectGrayFloorVarietyEditor.cs" />
     <Compile Include="Assets/Editor/World/DragonianElderPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DungeonFloor1ProductionContentPackCreator.cs" />

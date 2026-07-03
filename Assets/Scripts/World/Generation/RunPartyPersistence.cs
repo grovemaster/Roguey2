@@ -15,6 +15,7 @@ namespace JRogue.World.Generation
 
         public static bool AwaitingTownArrival { get; private set; }
         public static bool EnteringDungeonFromTown { get; private set; }
+        public static bool ForcedDungeonExpiryPending { get; private set; }
 
         static string _returnTownSceneName = DefaultReturnTownSceneName;
 
@@ -26,6 +27,8 @@ namespace JRogue.World.Generation
             && PartyManager.Instance.partyMembers.Count > 0;
 
         public static void MarkAwaitingTownArrival() => AwaitingTownArrival = true;
+
+        public static void MarkForcedDungeonExpiryPending() => ForcedDungeonExpiryPending = true;
 
         public static void MarkEnteringDungeonFromTown() => EnteringDungeonFromTown = true;
 
@@ -51,6 +54,15 @@ namespace JRogue.World.Generation
                 return false;
 
             AwaitingTownArrival = false;
+            return true;
+        }
+
+        public static bool ConsumeForcedDungeonExpiryPending()
+        {
+            if (!ForcedDungeonExpiryPending)
+                return false;
+
+            ForcedDungeonExpiryPending = false;
             return true;
         }
 

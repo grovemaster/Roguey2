@@ -30,7 +30,7 @@ namespace JRogue.Effects.Timed
             IsApplied = true;
         }
 
-        public void OnPlayerPhaseStart()
+        public virtual void OnPlayerPhaseStart()
         {
             if (!IsApplied || turnsRemaining <= 0)
                 return;

@@ -124,7 +124,8 @@ namespace JRogue.Actors
 
             if (gameObject.CompareTag("Player")
                 && turnManager != null
-                && !turnManager.CanActorTakeAction(this.gameObject))
+                && !turnManager.CanActorTakeAction(this.gameObject)
+                && !JRogue.Ability.Essence.DashEssenceRuntime.AllowsMoveWhileActed(this))
             {
                 Debug.Log($"{gameObject.name} has already moved this turn. Skipping move.");
                 return false;

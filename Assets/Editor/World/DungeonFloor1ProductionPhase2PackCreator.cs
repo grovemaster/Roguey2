@@ -119,6 +119,23 @@ namespace JRogue.Editor.World
                 "Scene wiring: run JRogue → Dungeon → Phase 1 — Setup Production Dungeon.");
         }
 
+        /// <summary>Re-wire zone population + schedule references without regenerating tiles/layout.</summary>
+        public static void RefreshProductionContentWiring()
+        {
+            DungeonFloorZoneLayout layout =
+                AssetDatabase.LoadAssetAtPath<DungeonFloorZoneLayout>(LayoutPath);
+            if (layout == null)
+            {
+                Debug.LogError($"[Floor1Production] Missing layout at {LayoutPath}. Run Phase 2 first.");
+                return;
+            }
+
+            CreateZoneDefinitions();
+            CreateProductionFloor(layout);
+            CreateProductionCatalog();
+            EditorUtility.SetDirty(layout);
+        }
+
         [MenuItem("JRogue/Dungeon/Refresh Luminescent Cavern Emitters", false, 54)]
         public static void RefreshLuminescentCavernEmitters()
         {

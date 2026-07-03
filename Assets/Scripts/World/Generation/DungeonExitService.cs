@@ -38,17 +38,32 @@ namespace JRogue.World.Generation
 
         static void ShowDungeonEndedDialog()
         {
-            DungeonTimeService time = DungeonTimeService.Instance;
-            int cycles = time != null ? time.ElapsedCycles : 0;
-            int maximum = time != null ? time.MaximumCycles : 0;
-
+            int highestFloor = ResolveHighestFloorReached();
             string body =
-                "Your allotted time in the dungeon has run out.\n\n" +
-                $"You survived <b>{cycles}</b> of <b>{maximum}</b> day–night cycles.\n\n" +
-                "<size=14>Survivors are healed and returned to town. " +
-                "The fallen do not return.</size>";
+                $"Your time in the dungeon is over. You reached Floor {highestFloor} before returning to town.";
 
-            DungeonEndedDialogUI.EnsureInstance().Show(body, OnDungeonEndedDialogAcknowledged);
+            Debug.Log($"{LogPrefix} Forced exit — highest floor {highestFloor}.");
+            DungeonEndedDialogUI.EnsureInstance().Show(
+                title: "The Dungeon Has Ended",
+                bodyMessage: body,
+                buttonLabel: "Continue",
+                onOk: OnDungeonEndedDialogAcknowledged);
+        }
+
+        static int ResolveHighestFloorReached()
+        {
+            DungeonRunState run = DungeonRunState.Instance;
+            if (run != null && run.DeepestFloorNumberReached > 0)
+                return run.DeepestFloorNumberReached;
+
+            if (run != null && !string.IsNullOrEmpty(run.ActiveFloorId))
+            {
+                int active = DungeonRunState.ParseFloorNumber(run.ActiveFloorId);
+                if (active > 0)
+                    return active;
+            }
+
+            return 1;
         }
 
         static void OnDungeonEndedDialogAcknowledged()
@@ -110,6 +125,7 @@ namespace JRogue.World.Generation
             ApplySurvivorRules();
             RunPartyPersistence.EnsurePartySurvivesSceneLoad();
             RunPartyPersistence.MarkAwaitingTownArrival();
+            RunPartyPersistence.MarkForcedDungeonExpiryPending();
 
             DungeonFloorInstanceManager manager = DungeonFloorInstanceManager.Instance;
             manager?.ExitDungeon();

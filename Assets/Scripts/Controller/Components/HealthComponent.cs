@@ -1,4 +1,5 @@
 using System;
+using JRogue.Ability.Essence;
 using JRogue.Manager.Essence;
 using JRogue.Racial;
 using JRogue.Stats;
@@ -46,7 +47,8 @@ namespace JRogue.Actors.Components
             // Factor in AC for physical types
             if (type == DamageType.Blunt || type == DamageType.Slash || type == DamageType.Pierce)
             {
-                damage = Mathf.Max(1, damage - (stats.ArmorClass / 5));
+                int armorClass = stats.ArmorClass + ResolveFlatArmorClassBonus();
+                damage = Mathf.Max(1, damage - (armorClass / 5));
             }
 
             stats.currentHP = Mathf.Max(0, stats.currentHP - damage);
@@ -65,6 +67,12 @@ namespace JRogue.Actors.Components
             {
                 Died?.Invoke();
             }
+        }
+
+        int ResolveFlatArmorClassBonus()
+        {
+            AdrenalineRushEssenceRuntime adrenaline = GetComponent<AdrenalineRushEssenceRuntime>();
+            return adrenaline != null ? adrenaline.ArmorClassBonus : 0;
         }
     }
 }

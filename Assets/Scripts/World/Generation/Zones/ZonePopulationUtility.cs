@@ -456,6 +456,7 @@ namespace JRogue.World.Generation.Zones
             int placed = 0;
             DungeonFloorZoneLayout layout = context.Definition?.ZoneLayout;
             RectInt bounds = zoneInstance.Bounds;
+            IReadOnlyList<Vector3Int> portalBufferCells = ResolvePortalBufferCells(context, zoneInstance.ZoneId);
 
             for (int entryIndex = 0; entryIndex < entries.Count; entryIndex++)
             {
@@ -477,7 +478,11 @@ namespace JRogue.World.Generation.Zones
                     bounds,
                     entry.forbiddenNearEdge,
                     cell => PopulationPlacementUtility.IsPopulationCell(map, context, cell)
-                            && !traps.IsFloorTrapAt(cell));
+                            && !traps.IsFloorTrapAt(cell)
+                            && !PopulationPlacementUtility.IsWithinChebyshevDistanceOfAny(
+                                cell,
+                                portalBufferCells,
+                                PopulationPlacementUtility.DefaultPortalTrapBufferChebyshev));
                 int count = ZonePopulationEntryRules.RollSpawnCount(
                     entry.densityMode,
                     entry.minCount,
@@ -499,6 +504,14 @@ namespace JRogue.World.Generation.Zones
 
                         if (!PopulationPlacementUtility.IsPopulationCell(map, context, cell))
                             continue;
+
+                        if (PopulationPlacementUtility.IsWithinChebyshevDistanceOfAny(
+                                cell,
+                                portalBufferCells,
+                                PopulationPlacementUtility.DefaultPortalTrapBufferChebyshev))
+                        {
+                            continue;
+                        }
 
                         if (traps.IsFloorTrapAt(cell))
                             continue;
@@ -692,6 +705,24 @@ namespace JRogue.World.Generation.Zones
             }
 
             return converted;
+        }
+
+        static IReadOnlyList<Vector3Int> ResolvePortalBufferCells(DungeonGenerationContext context, string zoneId)
+        {
+            if (context?.ResolvedPortals == null || context.ResolvedPortals.Count == 0 || string.IsNullOrEmpty(zoneId))
+                return Array.Empty<Vector3Int>();
+
+            var cells = new List<Vector3Int>();
+            for (int i = 0; i < context.ResolvedPortals.Count; i++)
+            {
+                ResolvedPortalPlacement portal = context.ResolvedPortals[i];
+                if (!context.TryGetZoneId(portal.cell, out string portalZoneId) || portalZoneId != zoneId)
+                    continue;
+
+                cells.Add(portal.cell);
+            }
+
+            return cells;
         }
 
         static bool IsHabitatZone(string zoneId) =>
