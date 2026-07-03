@@ -192,6 +192,7 @@ namespace JRogue.Manager.Turn
                 if (enemy != null)
                 {
                     enemy.TakeTurn();
+                    // TODO Do not yield for each enemy, yield once for all enemies
                     yield return new WaitForSeconds(0.0005f);
                 }
             }
