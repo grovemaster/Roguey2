@@ -109,14 +109,14 @@ namespace JRogue.Editor.World
             DungeonFloorZoneLayout layout = CreateProductionLayout(zoneLuminescent);
             CreateProductionFloor(layout);
             CreateProductionCatalog();
-            WireProductionScene();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
             Debug.Log(
                 "[Floor1 Phase2] Created 50×80 layout, DCSS cavern tiles/palettes, zones, " +
-                $"Floor_prod_dungeon_floor_01, and wired production scene catalog.");
+                $"Floor_prod_dungeon_floor_01, and DungeonProdFloor1Catalog. " +
+                "Scene wiring: run JRogue → Dungeon → Phase 1 — Setup Production Dungeon.");
         }
 
         [MenuItem("JRogue/Dungeon/Refresh Luminescent Cavern Emitters", false, 54)]
@@ -506,8 +506,36 @@ namespace JRogue.Editor.World
                     ? (int)MonsterPopulationMode.ScheduledGroups
                     : (int)MonsterPopulationMode.Scatter;
             so.FindProperty("monsterSpawnSchedule").objectReferenceValue = schedule;
+            SetFixedMapRowPortalRule(
+                so.FindProperty("portalPlacementRules"),
+                zoneId: ZoneNorthernDark,
+                mapRow: 79,
+                portalLinkId: "link_floor01_to_floor02",
+                targetFloorId: "dungeon_floor_02",
+                listLabel: "Portal (Deeper)",
+                rngSalt: "portal_floor02");
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(floor);
+        }
+
+        static void SetFixedMapRowPortalRule(
+            SerializedProperty rules,
+            string zoneId,
+            int mapRow,
+            string portalLinkId,
+            string targetFloorId,
+            string listLabel,
+            string rngSalt)
+        {
+            rules.arraySize = 1;
+            SerializedProperty rule = rules.GetArrayElementAtIndex(0);
+            rule.FindPropertyRelative("kind").enumValueIndex = (int)PortalPlacementRuleKind.FixedMapRowEdge;
+            rule.FindPropertyRelative("portalLinkId").stringValue = portalLinkId;
+            rule.FindPropertyRelative("targetFloorId").stringValue = targetFloorId;
+            rule.FindPropertyRelative("listLabel").stringValue = listLabel;
+            rule.FindPropertyRelative("zoneId").stringValue = zoneId;
+            rule.FindPropertyRelative("fixedMapRow").intValue = mapRow;
+            rule.FindPropertyRelative("rngSalt").stringValue = rngSalt;
         }
 
         static void CreateProductionCatalog()

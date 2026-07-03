@@ -8,6 +8,7 @@ namespace JRogue.World.Generation
         OrthogonalMapEdge = 0,
         FixedStampMarker = 1,
         TaggedRegionEdge = 2,
+        FixedMapRowEdge = 3,
     }
 
     public enum TaggedRegionPortalMetric
@@ -44,6 +45,12 @@ namespace JRogue.World.Generation
         public string regionTag;
         public TaggedRegionPortalMetric metric;
         [Min(0)] public int minChebyshevFromStart;
+
+        [Header("FixedMapRowEdge")]
+        [Tooltip("Exact map row (y) for the portal; x is chosen at random from walkable cells.")]
+        public int fixedMapRow;
+        [Tooltip("RNG salt appended to floorId (e.g. portal_floor02).")]
+        public string rngSalt;
     }
 
     public struct ResolvedPortalPlacement

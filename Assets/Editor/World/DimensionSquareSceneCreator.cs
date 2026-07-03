@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using System.IO;
 using JRogue.Editor;
 using JRogue.GridFeatures;
@@ -90,8 +91,11 @@ namespace JRogue.Editor.World
             EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
             Debug.Log(
-                $"[DimensionSquare] Saved {ScenePath}. Square-only hub restored; north transition strip repainted (y=39, x=15–24). " +
-                "For square + market playtest use JRogue → Town → Fix District Town Test Scene.");
+                $"[DimensionSquare] Saved {ScenePath}. Hub restored with dimension square + Adventure Guild facade" +
+                (LoadIntegratedMarketFloorDefinition() != null ? " + market district" : string.Empty) +
+                (LoadGuildInteriorFloorDefinition() != null ? " + guild interior" : string.Empty) +
+                ". North strip repainted (y=39, x=15–24). " +
+                "For full district playtest use JRogue → Town → Fix District Town Test Scene.");
         }
 
         static void EnsureFloorDefinition()
@@ -125,7 +129,10 @@ namespace JRogue.Editor.World
 
         static void EnsureCatalog()
         {
-            DungeonFloorDefinition floorDef = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(FloorDefPath);
+            List<DungeonFloorDefinition> hubFloors = CollectIntegratedHubFloorDefinitions();
+            if (hubFloors.Count == 0)
+                return;
+
             var catalog = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>(CatalogPath);
             if (catalog == null)
             {
@@ -133,13 +140,53 @@ namespace JRogue.Editor.World
                 AssetDatabase.CreateAsset(catalog, CatalogPath);
             }
 
+            WriteCatalogFloors(catalog, hubFloors);
+        }
+
+        static List<DungeonFloorDefinition> CollectIntegratedHubFloorDefinitions()
+        {
+            var floors = new List<DungeonFloorDefinition>(3);
+            DungeonFloorDefinition squareDef = ResolveSquareFloorDefinition();
+            if (squareDef != null)
+                floors.Add(squareDef);
+
+            DungeonFloorDefinition marketDef = LoadIntegratedMarketFloorDefinition();
+            if (marketDef != null)
+                floors.Add(marketDef);
+
+            DungeonFloorDefinition guildInteriorDef = LoadGuildInteriorFloorDefinition();
+            if (guildInteriorDef != null)
+                floors.Add(guildInteriorDef);
+
+            return floors;
+        }
+
+        static void WriteCatalogFloors(DungeonFloorDefinitionCatalog catalog, List<DungeonFloorDefinition> floors)
+        {
             var so = new SerializedObject(catalog);
-            SerializedProperty floors = so.FindProperty("floors");
-            floors.arraySize = 1;
-            floors.GetArrayElementAtIndex(0).objectReferenceValue = floorDef;
+            SerializedProperty catalogFloors = so.FindProperty("floors");
+            catalogFloors.arraySize = floors.Count;
+            for (int i = 0; i < floors.Count; i++)
+                catalogFloors.GetArrayElementAtIndex(i).objectReferenceValue = floors[i];
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(catalog);
         }
+
+        static DungeonFloorDefinition ResolveSquareFloorDefinition()
+        {
+            DungeonFloorDefinition districtDef =
+                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.DimensionSquareFloorDef);
+            if (districtDef != null)
+                return districtDef;
+
+            return AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(FloorDefPath);
+        }
+
+        static DungeonFloorDefinition LoadIntegratedMarketFloorDefinition() =>
+            AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.MarketFloorDef);
+
+        static DungeonFloorDefinition LoadGuildInteriorFloorDefinition() =>
+            AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.AdventureGuildInteriorFloorDef);
 
         static void EnsureDcssFloorTiles()
         {
@@ -164,7 +211,15 @@ namespace JRogue.Editor.World
             if (systems.GetComponent<PortalEntryService>() == null)
                 systems.AddComponent<PortalEntryService>();
 
-            DungeonFloorDefinition floorDef = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(FloorDefPath);
+            List<DungeonFloorDefinition> hubFloors = CollectIntegratedHubFloorDefinitions();
+            DungeonFloorDefinition floorDef = hubFloors.Count > 0 ? hubFloors[0] : ResolveSquareFloorDefinition();
+            if (floorDef == null)
+            {
+                Debug.LogError("[DimensionSquare] Missing dimension_square floor definition.");
+                return;
+            }
+            DungeonFloorDefinition marketDef = LoadIntegratedMarketFloorDefinition();
+            DungeonFloorDefinition guildInteriorDef = LoadGuildInteriorFloorDefinition();
             DungeonFloorDefinitionCatalog catalog =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>(CatalogPath);
 
@@ -173,14 +228,32 @@ namespace JRogue.Editor.World
 
             var managerSo = new SerializedObject(floorManager);
             managerSo.FindProperty("useDontDestroyOnLoad").boolValue = false;
-            managerSo.FindProperty("floorDefinitions").arraySize = 1;
-            managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(0).objectReferenceValue = floorDef;
+            managerSo.FindProperty("floorDefinitions").arraySize = hubFloors.Count;
+            for (int i = 0; i < hubFloors.Count; i++)
+                managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(i).objectReferenceValue = hubFloors[i];
             Transform floorsRoot = EnsureFloorsRoot(systems, floorManager);
             managerSo.ApplyModifiedPropertiesWithoutUndo();
 
-            RemoveChildFloorsExcept(floorsRoot, DimensionSquareFloorIds.FloorId);
+            RemoveChildFloorsExcept(
+                floorsRoot,
+                CollectIntegratedHubFloorIds(floorDef, marketDef, guildInteriorDef));
+
             DungeonFloorInstance instance = EnsureScenePaintedFloor(floorsRoot, floorDef);
             instance.gameObject.SetActive(true);
+
+            if (marketDef != null)
+            {
+                DungeonFloorInstance marketInstance = EnsureScenePaintedFloor(floorsRoot, marketDef);
+                marketInstance.gameObject.SetActive(false);
+                MarketTownPackCreator.IntegrateDistrictTownScene(marketInstance);
+            }
+
+            if (guildInteriorDef != null)
+            {
+                DungeonFloorInstance guildInteriorInstance = EnsureScenePaintedFloor(floorsRoot, guildInteriorDef);
+                guildInteriorInstance.gameObject.SetActive(false);
+                AdventureGuildExchangePackCreator.IntegrateDistrictTownScene(guildInteriorInstance);
+            }
 
             DungeonFloorTestController test = systems.GetComponent<DungeonFloorTestController>()
                 ?? systems.AddComponent<DungeonFloorTestController>();
@@ -257,6 +330,7 @@ namespace JRogue.Editor.World
             Undo.RecordObject(floorMap, "Paint dimension square floor");
             Undo.RecordObject(wallMap, "Paint dimension square walls");
             DimensionSquareLayout.Paint(floorMap, wallMap, floorTiles, wallTile);
+            AdventureGuildExchangePackCreator.PaintAdventureGuildExteriorFacade(floorMap, wallMap);
 
             GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(floorMap);
             GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(wallMap);
@@ -374,12 +448,27 @@ namespace JRogue.Editor.World
             return floors;
         }
 
+        static string[] CollectIntegratedHubFloorIds(
+            DungeonFloorDefinition squareDef,
+            DungeonFloorDefinition marketDef,
+            DungeonFloorDefinition guildInteriorDef)
+        {
+            var ids = new List<string>(3);
+            if (squareDef != null && !string.IsNullOrEmpty(squareDef.FloorId))
+                ids.Add(squareDef.FloorId);
+            if (marketDef != null && !string.IsNullOrEmpty(marketDef.FloorId))
+                ids.Add(marketDef.FloorId);
+            if (guildInteriorDef != null && !string.IsNullOrEmpty(guildInteriorDef.FloorId))
+                ids.Add(guildInteriorDef.FloorId);
+            return ids.ToArray();
+        }
+
         static void RemoveChildFloorsExcept(Transform floorsRoot, params string[] keepFloorIds)
         {
             if (floorsRoot == null || keepFloorIds == null || keepFloorIds.Length == 0)
                 return;
 
-            var keep = new System.Collections.Generic.HashSet<string>(keepFloorIds);
+            var keep = new HashSet<string>(keepFloorIds);
             for (int i = floorsRoot.childCount - 1; i >= 0; i--)
             {
                 Transform child = floorsRoot.GetChild(i);

@@ -42,6 +42,9 @@ namespace JRogue.Editor.World
         const string GameControlsPath = "Assets/Controls/GameControls.inputactions";
         const string ExperienceCurvePath = "Assets/Resources/Progression/DefaultExperienceCurve.asset";
         const string SampleScenePath = "Assets/Scenes/SampleScene.unity";
+        const string DimensionSquareScenePath = "Assets/Scenes/Town/DimensionSquareTest.unity";
+        const string DistrictTownTestScenePath = "Assets/Scenes/Town/DistrictTownTest.unity";
+        const string TownTestScenePath = "Assets/Scenes/Town/TownTest.unity";
 
         [MenuItem("JRogue/Dungeon/Create v0a Test Data")]
         public static void CreateV0aTestData() => CreateV0aTestDataInternal();
@@ -74,7 +77,18 @@ namespace JRogue.Editor.World
         /// </summary>
         public static void FixProductionSceneHierarchyInPlace()
         {
-            FixSceneHierarchyInPlace();
+            var activeScene = UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene();
+            string activePath = activeScene.path?.Replace('\\', '/');
+            if (activePath != DungeonFloorProductionSceneCreator.ProductionScenePath
+                && activePath != DungeonFloorProductionSceneCreator.LegacyProductionScenePath)
+            {
+                Debug.LogWarning(
+                    $"[Dungeon] FixProductionSceneHierarchy skipped — active scene is '{activePath ?? activeScene.name}', " +
+                    $"not the production dungeon ({DungeonFloorProductionSceneCreator.ProductionScenePath}).");
+                return;
+            }
+
+            EnsureSharedDungeonSystemsInPlace();
 
             GameObject systems = GameObject.Find(DungeonFloorTestSceneValidator.SystemsObjectName);
             if (systems == null)
@@ -154,6 +168,39 @@ namespace JRogue.Editor.World
 
         static void FixSceneHierarchyInPlace()
         {
+            string activePath = EditorSceneManager.GetActiveScene().path?.Replace('\\', '/');
+            if (activePath != TestScenePath)
+            {
+                if (IsHubTownScenePath(activePath))
+                {
+                    Debug.LogWarning(
+                        $"[Dungeon] FixSceneHierarchy skipped for hub scene '{activePath}'. " +
+                        "Use JRogue → Town → Fix Dimension Square Test Scene (or the matching town fix menu).");
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        $"[Dungeon] FixSceneHierarchy skipped — active scene is '{activePath ?? "(unsaved)"}', " +
+                        $"expected {TestScenePath}.");
+                }
+
+                return;
+            }
+
+            EnsureSharedDungeonSystemsInPlace();
+            WireDungeonTestSceneHierarchyInPlace();
+        }
+
+        static bool IsHubTownScenePath(string path) =>
+            path == DimensionSquareScenePath
+            || path == DistrictTownTestScenePath
+            || path == TownTestScenePath;
+
+        /// <summary>
+        /// Core dungeon play hierarchy shared by test and production scenes — no test controller or floor catalog wiring.
+        /// </summary>
+        static void EnsureSharedDungeonSystemsInPlace()
+        {
             GameObject systems = GameObject.Find(DungeonFloorTestSceneValidator.SystemsObjectName);
             if (systems == null)
             {
@@ -185,23 +232,8 @@ namespace JRogue.Editor.World
 
             SerializedObject managerSo = new SerializedObject(floorManager);
             managerSo.FindProperty("useDontDestroyOnLoad").boolValue = false;
-            if (managerSo.FindProperty("floorDefinitions").arraySize == 0)
-            {
-                managerSo.FindProperty("floorDefinitions").arraySize = 2;
-                managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(0).objectReferenceValue =
-                    AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_01.asset");
-                managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(1).objectReferenceValue =
-                    AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_02.asset");
-            }
-            Transform floorsRoot = EnsureFloorsRoot(systems, floorManager);
-            EnsureFloorScaffold(floorsRoot, "dungeon_floor_01",
-                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_01.asset"));
-            EnsureFloorScaffold(floorsRoot, "dungeon_floor_02",
-                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_02.asset"));
             managerSo.ApplyModifiedPropertiesWithoutUndo();
-
-            if (systems.GetComponent<DungeonFloorTestController>() == null)
-                systems.AddComponent<DungeonFloorTestController>();
+            EnsureFloorsRoot(systems, floorManager);
 
             GameObject inputRoot = GameObject.Find(DungeonFloorTestSceneValidator.InputObjectName);
             GameObject party = GameObject.Find(DungeonFloorTestSceneValidator.PartyObjectName);
@@ -266,16 +298,6 @@ namespace JRogue.Editor.World
             }
             bootstrapSo.ApplyModifiedPropertiesWithoutUndo();
 
-            DungeonFloorTestController test = systems.GetComponent<DungeonFloorTestController>();
-            SerializedObject testSo = new SerializedObject(test);
-            testSo.FindProperty("runBootstrap").objectReferenceValue = bootstrap;
-            testSo.FindProperty("floorInstanceManager").objectReferenceValue = floorManager;
-            testSo.FindProperty("floorCatalog").objectReferenceValue =
-                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>($"{DataRoot}/DungeonV0aCatalog.asset");
-            testSo.FindProperty("tryRepairSceneAtRuntime").boolValue = true;
-            testSo.FindProperty("autoGenerateOnPlay").boolValue = true;
-            testSo.ApplyModifiedPropertiesWithoutUndo();
-
             Camera cam = Camera.main;
             if (cam != null)
             {
@@ -285,6 +307,49 @@ namespace JRogue.Editor.World
                 if (cam.GetComponent<CameraFollow>() == null)
                     cam.gameObject.AddComponent<CameraFollow>();
             }
+        }
+
+        static void WireDungeonTestSceneHierarchyInPlace()
+        {
+            GameObject systems = GameObject.Find(DungeonFloorTestSceneValidator.SystemsObjectName);
+            if (systems == null)
+                return;
+
+            DungeonFloorInstanceManager floorManager = systems.GetComponent<DungeonFloorInstanceManager>();
+            if (floorManager == null)
+                return;
+
+            SerializedObject managerSo = new SerializedObject(floorManager);
+            if (managerSo.FindProperty("floorDefinitions").arraySize == 0)
+            {
+                managerSo.FindProperty("floorDefinitions").arraySize = 2;
+                managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(0).objectReferenceValue =
+                    AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_01.asset");
+                managerSo.FindProperty("floorDefinitions").GetArrayElementAtIndex(1).objectReferenceValue =
+                    AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_02.asset");
+            }
+            Transform floorsRoot = EnsureFloorsRoot(systems, floorManager);
+            EnsureFloorScaffold(floorsRoot, "dungeon_floor_01",
+                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_01.asset"));
+            EnsureFloorScaffold(floorsRoot, "dungeon_floor_02",
+                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_02.asset"));
+            managerSo.ApplyModifiedPropertiesWithoutUndo();
+
+            if (systems.GetComponent<DungeonFloorTestController>() == null)
+                systems.AddComponent<DungeonFloorTestController>();
+
+            GameObject party = GameObject.Find(DungeonFloorTestSceneValidator.PartyObjectName);
+            DungeonRunBootstrap bootstrap = party != null ? party.GetComponent<DungeonRunBootstrap>() : null;
+
+            DungeonFloorTestController test = systems.GetComponent<DungeonFloorTestController>();
+            SerializedObject testSo = new SerializedObject(test);
+            testSo.FindProperty("runBootstrap").objectReferenceValue = bootstrap;
+            testSo.FindProperty("floorInstanceManager").objectReferenceValue = floorManager;
+            testSo.FindProperty("floorCatalog").objectReferenceValue =
+                AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>($"{DataRoot}/DungeonV0aCatalog.asset");
+            testSo.FindProperty("tryRepairSceneAtRuntime").boolValue = true;
+            testSo.FindProperty("autoGenerateOnPlay").boolValue = true;
+            testSo.ApplyModifiedPropertiesWithoutUndo();
         }
 
         static T EnsureComponent<T>(GameObject go) where T : Component

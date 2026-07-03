@@ -5,7 +5,7 @@ using UnityEngine;
 namespace JRogue.World.Generation.Phases
 {
     /// <summary>
-    /// Runs after zone fill/boundary so playerStart sits on a painted walkable floor tile.
+    /// Runs after vault placement so playerStart respects reserved vault footprints.
     /// </summary>
     public sealed class PlayerSpawnAnchorPhase : IDungeonGenerationPhase
     {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JRogue.World.Generation;
+using JRogue.World.Generation.Zones;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -128,6 +129,37 @@ namespace JRogue.Tests.World
                 TaggedRegionPortalMetric.MinY);
 
             Assert.Greater(south, north);
+        }
+
+        [Test]
+        public void FixedMapRowPick_SameSeedPicksSameCandidate()
+        {
+            var candidates = new List<Vector3Int>();
+            for (int x = 0; x < 50; x++)
+                candidates.Add(new Vector3Int(x, 79, 0));
+
+            var rngA = ZoneGenerationRng.CreatePopulationRng(4242, "dungeon_floor_01portal_floor02");
+            var rngB = ZoneGenerationRng.CreatePopulationRng(4242, "dungeon_floor_01portal_floor02");
+            Vector3Int pickA = candidates[rngA.Next(candidates.Count)];
+            Vector3Int pickB = candidates[rngB.Next(candidates.Count)];
+
+            Assert.AreEqual(pickA, pickB);
+            Assert.AreEqual(79, pickA.y);
+        }
+
+        [Test]
+        public void FixedMapRowPick_DifferentSeedsMayDiffer()
+        {
+            var candidates = new List<Vector3Int>();
+            for (int x = 0; x < 50; x++)
+                candidates.Add(new Vector3Int(x, 79, 0));
+
+            var rngA = ZoneGenerationRng.CreatePopulationRng(1, "dungeon_floor_01portal_floor02");
+            var rngB = ZoneGenerationRng.CreatePopulationRng(999_999, "dungeon_floor_01portal_floor02");
+            Vector3Int pickA = candidates[rngA.Next(candidates.Count)];
+            Vector3Int pickB = candidates[rngB.Next(candidates.Count)];
+
+            Assert.AreNotEqual(pickA.x, pickB.x);
         }
     }
 }

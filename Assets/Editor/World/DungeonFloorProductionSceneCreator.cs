@@ -28,28 +28,16 @@ namespace JRogue.Editor.World
         [MenuItem("JRogue/Dungeon/Phase 1 — Setup Production Dungeon")]
         public static void SetupProductionDungeonPhase1()
         {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            {
+                Debug.Log("[Dungeon] Phase 1 cancelled — save or discard open scene changes first.");
+                return;
+            }
+
             EnsureFolder(ProductionSceneFolder);
 
-            if (!File.Exists(ProductionScenePath))
-            {
-                if (File.Exists(LegacyProductionScenePath))
-                {
-                    AssetDatabase.CopyAsset(LegacyProductionScenePath, ProductionScenePath);
-                    AssetDatabase.Refresh();
-                    Debug.Log($"[Dungeon] Copied legacy scene to {ProductionScenePath}.");
-                }
-                else if (File.Exists(DungeonV0aPackCreator.TestScenePath))
-                {
-                    DungeonV0aPackCreator.CreateDungeonFloorTestScene();
-                    AssetDatabase.CopyAsset(DungeonV0aPackCreator.TestScenePath, ProductionScenePath);
-                    AssetDatabase.Refresh();
-                }
-                else
-                {
-                    Debug.LogError("[Dungeon] No template scene found — run Create DungeonFloorTest Scene first.");
-                    return;
-                }
-            }
+            if (!EnsureProductionSceneAssetExists())
+                return;
 
             var scene = EditorSceneManager.OpenScene(ProductionScenePath, OpenSceneMode.Single);
             DungeonV0aPackCreator.FixProductionSceneHierarchyInPlace();
@@ -60,7 +48,37 @@ namespace JRogue.Editor.World
 
             Debug.Log(
                 "[Dungeon] Phase 1 complete: production scene at Assets/Scenes/Dungeon/DungeonFloor/DungeonFloor.unity, " +
-                "Build Settings updated. TownTest → DungeonFloorTest; other hubs → DungeonFloor.");
+                "Build Settings updated. TownTest → DungeonFloorTest; other hubs → DungeonFloor. " +
+                "Hub scenes (DimensionSquareTest, etc.) were not modified — re-open your hub scene if needed.");
+        }
+
+        /// <summary>
+        /// Creates the production scene asset from legacy or test template without opening or rewriting hub scenes.
+        /// </summary>
+        static bool EnsureProductionSceneAssetExists()
+        {
+            if (File.Exists(ProductionScenePath))
+                return true;
+
+            if (File.Exists(LegacyProductionScenePath))
+            {
+                AssetDatabase.CopyAsset(LegacyProductionScenePath, ProductionScenePath);
+                AssetDatabase.Refresh();
+                Debug.Log($"[Dungeon] Copied legacy scene to {ProductionScenePath}.");
+                return true;
+            }
+
+            if (File.Exists(DungeonV0aPackCreator.TestScenePath))
+            {
+                AssetDatabase.CopyAsset(DungeonV0aPackCreator.TestScenePath, ProductionScenePath);
+                AssetDatabase.Refresh();
+                Debug.Log($"[Dungeon] Copied {DungeonV0aPackCreator.TestScenePath} to {ProductionScenePath}.");
+                return true;
+            }
+
+            Debug.LogError(
+                "[Dungeon] No template scene found — run JRogue → Dungeon → Create DungeonFloorTest Scene first.");
+            return false;
         }
 
         public static void EnsureBuildSettings()

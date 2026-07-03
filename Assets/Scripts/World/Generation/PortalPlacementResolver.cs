@@ -93,6 +93,8 @@ namespace JRogue.World.Generation
                     return TryPlaceStampRule(context, rule);
                 case PortalPlacementRuleKind.TaggedRegionEdge:
                     return TryPlaceTaggedRegionRule(context, rule);
+                case PortalPlacementRuleKind.FixedMapRowEdge:
+                    return TryPlaceFixedMapRowRule(context, rule);
                 default:
                     return false;
             }
@@ -177,6 +179,79 @@ namespace JRogue.World.Generation
                 default);
             context.ReservedCells.Add(cell);
             return true;
+        }
+
+        static bool TryPlaceFixedMapRowRule(DungeonGenerationContext context, PortalPlacementRule rule)
+        {
+            MapManager map = MapManager.Instance;
+            if (map == null)
+                return false;
+
+            List<Vector3Int> candidates = CollectFixedMapRowCandidates(context, map, rule);
+            if (candidates.Count == 0)
+            {
+                DungeonGenerationLog.Warn(
+                    $"{nameof(PortalPlacementResolver)}: FixedMapRowEdge found no candidates " +
+                    $"(zoneId='{rule.zoneId}', row={rule.fixedMapRow}).");
+                return false;
+            }
+
+            string salt = string.IsNullOrEmpty(rule.rngSalt) ? "portal" : rule.rngSalt;
+            System.Random rng = Zones.ZoneGenerationRng.CreatePopulationRng(
+                context.RunSeed,
+                context.Definition.FloorId + salt);
+            Vector3Int cell = candidates[rng.Next(candidates.Count)];
+
+            if (context.ReservedCells.Contains(cell))
+                return false;
+
+            AddResolvedPortal(
+                context,
+                cell,
+                rule.portalLinkId,
+                rule.targetFloorId,
+                rule.listLabel,
+                PortalPlacementRuleKind.FixedMapRowEdge,
+                default);
+            context.ReservedCells.Add(cell);
+            return true;
+        }
+
+        public static List<Vector3Int> CollectFixedMapRowCandidates(
+            DungeonGenerationContext context,
+            MapManager map,
+            PortalPlacementRule rule)
+        {
+            var candidates = new List<Vector3Int>();
+            if (context == null || map == null || rule.fixedMapRow < 0)
+                return candidates;
+
+            if (!PopulationPlacementUtility.TryGetMapBounds(context, out int width, out int height))
+                return candidates;
+
+            int y = rule.fixedMapRow;
+            if (y >= height)
+                return candidates;
+
+            for (int x = 0; x < width; x++)
+            {
+                Vector3Int cell = new Vector3Int(x, y, 0);
+                if (!map.IsWalkable(cell))
+                    continue;
+
+                if (context.ReservedCells.Contains(cell))
+                    continue;
+
+                if (!string.IsNullOrEmpty(rule.zoneId))
+                {
+                    if (!context.TryGetZoneId(cell, out string zoneId) || zoneId != rule.zoneId)
+                        continue;
+                }
+
+                candidates.Add(cell);
+            }
+
+            return candidates;
         }
 
         public static List<Vector3Int> CollectTaggedRegionCandidates(

@@ -622,6 +622,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonEntryService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/TieflingImplantSlotGridView.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Phases/FloorConnectivityValidationPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/DragonianElderQuestService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/MonsterSpawnSchedulePhase.cs" />

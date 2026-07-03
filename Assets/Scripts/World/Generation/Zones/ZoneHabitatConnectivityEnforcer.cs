@@ -111,10 +111,29 @@ namespace JRogue.World.Generation.Zones
             if (context == null || map == null || !map.IsWalkable(start))
                 return reachableZones;
 
+            HashSet<Vector3Int> reachableCells = CollectReachableCells(map, start);
+            foreach (Vector3Int cell in reachableCells)
+                TryAddZone(context, cell, reachableZones);
+
+            return reachableZones;
+        }
+
+        public static bool TryIsWalkableReachable(MapManager map, Vector3Int start, Vector3Int goal)
+        {
+            if (map == null || !map.IsWalkable(start) || !map.IsWalkable(goal))
+                return false;
+
+            if (start == goal)
+                return true;
+
+            return CollectReachableCells(map, start).Contains(goal);
+        }
+
+        static HashSet<Vector3Int> CollectReachableCells(MapManager map, Vector3Int start)
+        {
             var visited = new HashSet<Vector3Int> { start };
             var queue = new Queue<Vector3Int>();
             queue.Enqueue(start);
-            TryAddZone(context, start, reachableZones);
 
             while (queue.Count > 0)
             {
@@ -126,11 +145,10 @@ namespace JRogue.World.Generation.Zones
                         continue;
 
                     queue.Enqueue(next);
-                    TryAddZone(context, next, reachableZones);
                 }
             }
 
-            return reachableZones;
+            return visited;
         }
 
         static int RepairPlayerAccessToBoundaryOpenings(
@@ -229,28 +247,6 @@ namespace JRogue.World.Generation.Zones
             }
 
             return found;
-        }
-
-        static HashSet<Vector3Int> CollectReachableCells(MapManager map, Vector3Int start)
-        {
-            var visited = new HashSet<Vector3Int> { start };
-            var queue = new Queue<Vector3Int>();
-            queue.Enqueue(start);
-
-            while (queue.Count > 0)
-            {
-                Vector3Int cell = queue.Dequeue();
-                for (int i = 0; i < CardinalOffsets.Length; i++)
-                {
-                    Vector3Int next = cell + CardinalOffsets[i];
-                    if (!visited.Add(next) || !map.IsWalkable(next))
-                        continue;
-
-                    queue.Enqueue(next);
-                }
-            }
-
-            return visited;
         }
 
         static int RepairBoundaryOpenings(

@@ -32,7 +32,7 @@ namespace JRogue.World.Generation.Phases
 
             System.Random rng = ZoneGenerationRng.CreatePopulationRng(
                 context.RunSeed,
-                context.Definition.FloorId + "_playerStart");
+                context.Definition.FloorId + "player_spawn");
             PopulationPlacementUtility.Shuffle(candidates, rng);
 
             for (int i = 0; i < candidates.Count; i++)

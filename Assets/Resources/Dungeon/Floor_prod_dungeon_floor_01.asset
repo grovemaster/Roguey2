@@ -35,7 +35,21 @@ MonoBehaviour:
   arrivalBindings: []
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
-  portalPlacementRules: []
+  portalPlacementRules:
+  - kind: 3
+    portalLinkId: link_floor01_to_floor02
+    targetFloorId: dungeon_floor_02
+    listLabel: Portal (Deeper)
+    edge: 0
+    insetFromEdge: 1
+    portalMarkerId: 
+    portalCell: {x: -2147483648, y: -2147483648, z: 0}
+    zoneId: northern_dark
+    regionTag: 
+    metric: 0
+    minChebyshevFromStart: 0
+    fixedMapRow: 79
+    rngSalt: portal_floor02
   participatesInDungeonTime: 1
   baseDayNightCycles: 4
   additionalDayNightCycles: 0

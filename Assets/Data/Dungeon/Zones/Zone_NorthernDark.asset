@@ -35,6 +35,10 @@ MonoBehaviour:
     minRoomSize: 4
     maxRoomSize: 9
     maxRoomCount: 14
+    glowFloorGapFill: 0
+    glowFloorPalette: {fileID: 0}
+    glowFloorMinReceivedLight: 1
+    glowFloorMinSpacing: 6
   populationProfile: {fileID: 11400000, guid: b286e116cc8a2d176b32b2f67f1f06ad, type: 2}
   monsterPopulationMode: 1
   monsterSpawnSchedule: {fileID: 11400000, guid: 4ca831ab80a78ea3ca5425fa15d94f4f, type: 2}

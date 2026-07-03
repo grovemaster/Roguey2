@@ -249,7 +249,13 @@ namespace JRogue.Editor.World
 
         static void EnsureDimensionSquareBuildingPortals()
         {
-            var def = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.DimensionSquareFloorDef);
+            ApplyDimensionSquareBuildingPortals(TownDistrictTestPaths.DimensionSquareFloorDef);
+            ApplyDimensionSquareBuildingPortals(MarketTownPackCreator.LegacyDimensionSquareFloorDefPath);
+        }
+
+        static void ApplyDimensionSquareBuildingPortals(string floorDefAssetPath)
+        {
+            var def = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(floorDefAssetPath);
             if (def == null)
                 return;
 

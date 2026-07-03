@@ -66,14 +66,17 @@ namespace JRogue.World.Generation
 
         static IDungeonGenerationPhase[] BuildZoneCompositePhases()
         {
-            var phases = new IDungeonGenerationPhase[5 + SharedTailPhases.Length];
+            var phases = new IDungeonGenerationPhase[6 + SharedTailPhases.Length];
             phases[0] = new ZoneLayoutPhase();
             phases[1] = new ZoneFillPhase();
             phases[2] = new ZoneBoundaryPhase();
             phases[3] = new ZoneHabitatConnectivityPhase();
-            phases[4] = new PlayerSpawnAnchorPhase();
-            for (int i = 0; i < SharedTailPhases.Length; i++)
-                phases[i + 5] = SharedTailPhases[i];
+            phases[4] = SharedTailPhases[0];
+            phases[5] = new PlayerSpawnAnchorPhase();
+            phases[6] = SharedTailPhases[1];
+            phases[7] = new FloorConnectivityValidationPhase();
+            for (int i = 2; i < SharedTailPhases.Length; i++)
+                phases[i + 6] = SharedTailPhases[i];
             return phases;
         }
 
