@@ -33,10 +33,11 @@ namespace JRogue.World.Town
                 {
                     var cell = new Vector3Int(x, y, 0);
                     bool isNorthMarketTransition = DistrictSquareMarketTransition.IsSquareNorthTransitionCell(cell);
+                    bool isSouthHolyNexusTransition = DistrictSquareHolyNexusTransition.IsSquareSouthTransitionCell(cell);
                     bool border = x == 0 || y == 0 || x == MapSize - 1 || y == MapSize - 1;
                     bool plus = x >= ArmMin && x <= ArmMax || y >= ArmMin && y <= ArmMax;
 
-                    if ((border && !isNorthMarketTransition) || !plus)
+                    if ((border && !isNorthMarketTransition && !isSouthHolyNexusTransition) || !plus)
                         wallMap.SetTile(cell, wallTile);
                     else
                         floorMap.SetTile(cell, PickFloorTile(x, y, floorTiles));

@@ -261,10 +261,14 @@ namespace JRogue.Manager.Turn
         private bool IsPartyDone()
         {
             var party = PartyManager.Instance.partyMembers;
+            PartyFloorPresenceService presence = PartyFloorPresenceService.Instance;
             bool anyLiving = false;
             foreach (var member in party)
             {
                 if (member == null || member.stats == null || member.stats.currentHP <= 0)
+                    continue;
+
+                if (presence != null && presence.IsParked(member))
                     continue;
 
                 anyLiving = true;

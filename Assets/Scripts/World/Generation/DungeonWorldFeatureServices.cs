@@ -27,6 +27,9 @@ namespace JRogue.World.Generation
 
             if (systemsRoot.GetComponent<DoorService>() == null)
                 systemsRoot.AddComponent<DoorService>();
+
+            if (systemsRoot.GetComponent<PartyFloorPresenceService>() == null)
+                systemsRoot.AddComponent<PartyFloorPresenceService>();
         }
     }
 }

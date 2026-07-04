@@ -45,7 +45,7 @@ namespace JRogue.View
         {
             if (preferPartyActiveMember && PartyManager.Instance != null)
             {
-                BaseActor active = PartyManager.Instance.GetActiveMember();
+                BaseActor active = PartyManager.Instance.GetActivePresentMember();
                 if (active != null)
                     return active.transform;
             }

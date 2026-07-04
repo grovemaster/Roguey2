@@ -77,9 +77,11 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/DoorPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationEntryRules.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyFormationSpawnProfile.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/PartyFloorPresenceService.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/PartyRestState.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryConsumePolicy.cs" />
     <Compile Include="Assets/Scripts/Dialog/HumanPriestShrineDialogSession.cs" />
+    <Compile Include="Assets/Scripts/World/Town/DistrictSquareHolyNexusTransition.cs" />
     <Compile Include="Assets/Scripts/World/Generation/GameCalendarDate.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestShrineQuestLogic.cs" />
     <Compile Include="Assets/Scripts/World/Town/InnLodgingService.cs" />
@@ -246,6 +248,7 @@
     <Compile Include="Assets/Scripts/UI/Racial/DragonianSpellBodyViewModel.cs" />
     <Compile Include="Assets/Scripts/World/Altar/SpawnEnemyAltarCompletionEffect.cs" />
     <Compile Include="Assets/Scripts/Combat/FriendlyFire/FriendlyFirePreview.cs" />
+    <Compile Include="Assets/Scripts/World/Town/HolyLandFloorIds.cs" />
     <Compile Include="Assets/Scripts/World/Generation/IDungeonGenerationPhase.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/TieflingForgemasterNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/GameStoryFlagService.cs" />
@@ -422,6 +425,7 @@
     <Compile Include="Assets/Scripts/Racial/HumanKnightSkillTreeService.cs" />
     <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyListBodyView.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SpawnEnemyInteractableEffect.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/HolyLandPortalTransitionService.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryInspectPaneView.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AltarUsedModalUI.cs" />
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
@@ -561,6 +565,7 @@
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardDefinition.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCompositeLightingSync.cs" />
     <Compile Include="Assets/Scripts/Manager/Combat/CombatThreatCoordinator.cs" />
+    <Compile Include="Assets/Scripts/World/Town/HolyLandNexusLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownPlazaMarkerLayout.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRunner.cs" />
     <Compile Include="Assets/Scripts/World/Generation/GameCalendarLogic.cs" />
@@ -614,6 +619,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/AdjacentInteractPickerModalUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementEntry.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRoller.cs" />
+    <Compile Include="Assets/Scripts/World/Town/BarbarianShamanTentLayout.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentManager.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneTilePainter.cs" />
     <Compile Include="Assets/Scripts/UI/Proficiency/ProficienciesUI.cs" />
@@ -625,11 +631,13 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownShopCounterSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableEffect.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableActivationSource.cs" />
+    <Compile Include="Assets/Scripts/World/Town/HolyLandTransitionIds.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/GameLogService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonEntryService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/TieflingImplantSlotGridView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/FloorConnectivityValidationPhase.cs" />
+    <Compile Include="Assets/Scripts/World/Town/BarbarianHolyLandLayout.cs" />
     <Compile Include="Assets/Scripts/Racial/DragonianElderQuestService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/MonsterSpawnSchedulePhase.cs" />
@@ -670,6 +678,7 @@
     <Compile Include="Assets/Scripts/Input/PlayerCommand.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarSlotFilters.cs" />
     <Compile Include="Assets/Scripts/Testing/Essence/EssenceTestHarness.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/HolyLandControlFilter.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryListColumnHeaderView.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardCellState.cs" />
     <Compile Include="Assets/Scripts/Combat/FriendlyFire/TargetedActionContext.cs" />

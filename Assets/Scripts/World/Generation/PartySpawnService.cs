@@ -16,14 +16,37 @@ namespace JRogue.World.Generation
             PartyFormationSpawnProfile profile,
             out List<Vector3Int> occupiedCells)
         {
+            PartyManager party = PartyManager.Instance;
+            if (party == null)
+            {
+                occupiedCells = new List<Vector3Int>();
+                return false;
+            }
+
+            return TrySpawnFormationAtAnchor(anchor, profile, CollectLivingMembers(party), out occupiedCells);
+        }
+
+        public static bool TrySpawnFormationAtAnchor(
+            Vector3Int anchor,
+            PartyFormationSpawnProfile profile,
+            IReadOnlyList<BaseActor> members,
+            out List<Vector3Int> occupiedCells)
+        {
             occupiedCells = new List<Vector3Int>();
             PartyManager party = PartyManager.Instance;
             MapManager map = MapManager.Instance;
             GridManager grid = GridManager.Instance;
-            if (party == null || map == null || grid == null)
+            if (party == null || map == null || grid == null || members == null || members.Count == 0)
                 return false;
 
-            List<BaseActor> living = CollectLivingMembers(party);
+            List<BaseActor> living = new List<BaseActor>(members.Count);
+            for (int i = 0; i < members.Count; i++)
+            {
+                BaseActor member = members[i];
+                if (member != null)
+                    living.Add(member);
+            }
+
             if (living.Count == 0)
                 return false;
 

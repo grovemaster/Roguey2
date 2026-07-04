@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JRogue.Actors;
 using JRogue.Hazards;
 using JRogue.Interactables;
 using JRogue.Manager.Floor;
@@ -115,7 +116,7 @@ namespace JRogue.World.Generation
             DungeonFloorDefinition startDef = FindDefinition(startFloorId);
             EnsureDungeonTimeService().BeginDungeonRun(startDef, floorDefinitions);
 
-            return TryActivateFloor(startFloorId, null, isFirstVisitSpawn: true);
+            return TryActivateFloor(startFloorId, null, isFirstVisitSpawn: true, spawnMembers: null);
         }
 
         public bool TryTransitionPortal(string portalLinkId, string targetFloorId) =>
@@ -130,10 +131,12 @@ namespace JRogue.World.Generation
             if (string.IsNullOrEmpty(targetFloorId) || _portalTransitionInProgress)
                 return false;
 
+            PartyFloorPresenceService.Instance?.UnparkAll();
+
             _portalTransitionInProgress = true;
             try
             {
-                return TryActivateFloor(targetFloorId, portalLinkId, isFirstVisitSpawn: false);
+                return TryActivateFloor(targetFloorId, portalLinkId, isFirstVisitSpawn: false, spawnMembers: null);
             }
             finally
             {
@@ -141,7 +144,31 @@ namespace JRogue.World.Generation
             }
         }
 
-        public bool TryActivateFloor(string floorId, string portalLinkId, bool isFirstVisitSpawn)
+        public bool TryActivateFloorForMembers(
+            string floorId,
+            string portalLinkId,
+            bool isFirstVisitSpawn,
+            IReadOnlyList<BaseActor> spawnMembers)
+        {
+            if (_portalTransitionInProgress)
+                return false;
+
+            _portalTransitionInProgress = true;
+            try
+            {
+                return TryActivateFloor(floorId, portalLinkId, isFirstVisitSpawn, spawnMembers);
+            }
+            finally
+            {
+                _portalTransitionInProgress = false;
+            }
+        }
+
+        bool TryActivateFloor(
+            string floorId,
+            string portalLinkId,
+            bool isFirstVisitSpawn,
+            IReadOnlyList<BaseActor> spawnMembers)
         {
             DungeonGenerationLog.Info($"ActivateFloor begin floorId={floorId} portal={portalLinkId ?? "none"} firstVisit={isFirstVisitSpawn}");
 
@@ -196,8 +223,24 @@ namespace JRogue.World.Generation
             DungeonGenerationLog.Info($"Party spawn anchor={anchor} floorId={floorId}");
 
             PartyFormationSpawnProfile profile = def.FormationProfile;
-            if (!PartySpawnService.TrySpawnFormationAtAnchor(anchor, profile, out _))
+            if (spawnMembers != null && spawnMembers.Count > 0)
+            {
+                if (!PartySpawnService.TrySpawnFormationAtAnchor(anchor, profile, spawnMembers, out _))
+                    DungeonGenerationLog.Warn("PartySpawnService failed for partial party spawn.");
+
+                PartyFloorPresenceService presence = PartyFloorPresenceService.Instance;
+                if (presence != null && floorId == HolyLandFloorIds.HolyLandProper)
+                {
+                    presence.ParkAllExcept(
+                        spawnMembers,
+                        HolyLandFloorIds.Nexus,
+                        HolyLandNexusLayout.HolyLandReturnAnchor);
+                }
+            }
+            else if (!PartySpawnService.TrySpawnFormationAtAnchor(anchor, profile, out _))
+            {
                 DungeonGenerationLog.Warn("PartySpawnService failed — check party roster and walkable cells.");
+            }
 
             instance.ReregisterNpcOccupancy(grid);
 

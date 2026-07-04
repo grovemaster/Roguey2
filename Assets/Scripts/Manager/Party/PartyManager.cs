@@ -7,6 +7,7 @@ using JRogue.Manager.Loot;
 using JRogue.Manager.Progression;
 using JRogue.Racial;
 using JRogue.View;
+using JRogue.World.Generation;
 using JRogue.World.Generation.Zones;
 using UnityEngine;
 
@@ -175,13 +176,40 @@ namespace JRogue.Manager.Party
         /// <summary>Points the main camera at the currently controlled party member.</summary>
         public void RefreshCameraFollow()
         {
-            BaseActor active = GetActiveMember();
+            BaseActor active = GetActivePresentMember();
             if (active == null)
                 return;
 
             CameraFollow cam = FindAnyObjectByType<CameraFollow>();
             if (cam != null)
                 cam.SetTarget(active.transform);
+        }
+
+        /// <summary>Active member when present on the current floor; skips parked/hidden actors.</summary>
+        public BaseActor GetActivePresentMember()
+        {
+            BaseActor active = GetActiveMember();
+            if (active != null && active.gameObject.activeInHierarchy)
+            {
+                PartyFloorPresenceService presence = PartyFloorPresenceService.Instance;
+                if (presence == null || !presence.IsParked(active))
+                    return active;
+            }
+
+            PartyFloorPresenceService parked = PartyFloorPresenceService.Instance;
+            for (int i = 0; i < partyMembers.Count; i++)
+            {
+                BaseActor member = partyMembers[i];
+                if (member == null || !member.gameObject.activeInHierarchy)
+                    continue;
+
+                if (parked != null && parked.IsParked(member))
+                    continue;
+
+                return member;
+            }
+
+            return null;
         }
 
         /// <summary>One-time main character designation from override or marker (immutable after success).</summary>
@@ -429,8 +457,18 @@ namespace JRogue.Manager.Party
         // Cycle through members (good for a single "Tab" key bind)
         public void CycleActiveMember()
         {
-            int nextIndex = (activeIndex + 1) % partyMembers.Count;
-            SwapActiveMember(nextIndex);
+            if (partyMembers.Count == 0)
+                return;
+
+            for (int step = 1; step <= partyMembers.Count; step++)
+            {
+                int nextIndex = (activeIndex + step) % partyMembers.Count;
+                if (HolyLandControlFilter.IsSelectableControlTarget(partyMembers[nextIndex]))
+                {
+                    SwapActiveMember(nextIndex);
+                    return;
+                }
+            }
         }
 
         /// <summary>
@@ -440,6 +478,9 @@ namespace JRogue.Manager.Party
         public void SwapActiveMember(int index)
         {
             if (partyMembers.Count == 0 || index < 0 || index >= partyMembers.Count)
+                return;
+
+            if (!HolyLandControlFilter.IsSelectableControlTarget(partyMembers[index]))
                 return;
 
             if (index == activeIndex)

@@ -76,6 +76,7 @@
     <Compile Include="Assets/Editor/World/TownTorchPackCreator.cs" />
     <Compile Include="Assets/Editor/World/BlacksmithShopPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DungeonEditorBatchRunner.cs" />
+    <Compile Include="Assets/Editor/World/HolyLandTownPackCreator.cs" />
     <Compile Include="Assets/Editor/World/MarketItemShopPackCreator.cs" />
     <Compile Include="Assets/Editor/Racial/PartyRacialDevSwapMenu.cs" />
     <Compile Include="Assets/Editor/Essence/EssenceAssetPackCreator.cs" />

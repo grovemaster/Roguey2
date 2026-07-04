@@ -55,6 +55,15 @@ namespace JRogue.World.Town
         public const string MarketBlacksmithInteriorFacadeOverlay =
             MarketBlacksmithFolder + "/FacadeOverlay_town_interior_market_blacksmith.asset";
 
+        public const string HolyLandFolder = DistrictTestRoot + "/TownArea/HolyLand";
+        public const string HolyLandNexusFloorDef = HolyLandFolder + "/Floor_holy_land_nexus.asset";
+        public const string HolyLandProperFloorDef = HolyLandFolder + "/Floor_barbarian_holy_land.asset";
+        public const string HolyLandTentInteriorFloorDef = HolyLandFolder + "/Floor_barbarian_shaman_tent_interior.asset";
+        public const string HolyLandNexusFloorPalette = HolyLandFolder + "/Palette_holy_land_nexus_floor.asset";
+        public const string HolyLandProperFloorPalette = HolyLandFolder + "/Palette_barbarian_holy_land_floor.asset";
+        public const string HolyLandTentInteriorFloorPalette = HolyLandFolder + "/Palette_barbarian_shaman_tent_interior_floor.asset";
+        public const string HolyLandWallPalette = HolyLandFolder + "/Palette_holy_land_wall.asset";
+
         public const string ResourcesCatalog = "Town/DistrictTest/DistrictTestCatalog";
     }
 }

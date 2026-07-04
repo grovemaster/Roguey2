@@ -46,6 +46,16 @@ namespace JRogue.World.Generation.Phases
                 ResidentialInnLayout.NpcMarkerId,
                 "Town/Npc/TownNpc_ResidentialInnKeeper",
                 "Assets/Resources/Town/Npc/TownNpc_ResidentialInnKeeper.prefab"),
+            (
+                HolyLandFloorIds.ShamanTentInterior,
+                BarbarianShamanTentLayout.ShamanMarkerId,
+                "Town/Npc/TownNpc_ShamanBarbarian",
+                "Assets/Resources/Town/Npc/TownNpc_ShamanBarbarian.prefab"),
+            (
+                HolyLandFloorIds.HolyLandProper,
+                BarbarianHolyLandLayout.ChiefMarkerId,
+                "Town/Npc/TownNpc_ChiefBarbarian",
+                "Assets/Resources/Town/Npc/TownNpc_ChiefBarbarian.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)

@@ -9,6 +9,7 @@ using JRogue.Manager.Map;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.Pathfinding;
+using JRogue.World.Generation;
 using UnityEngine;
 
 namespace JRogue.Service.Formation
@@ -37,15 +38,17 @@ namespace JRogue.Service.Formation
         {
             if (party == null || turn == null || grid == null || map == null) return;
 
-            List<BaseActor> members = party.partyMembers;
+            List<BaseActor> members = CollectRushMembers(party);
             List<Vector3Int> history = party.positionHistory;
             BaseActor leader = party.GetActiveMember();
-            if (leader == null) return;
+            if (leader == null || !members.Contains(leader))
+                return;
 
-            int leaderIndex = members.IndexOf(leader);
-            if (leaderIndex < 0) return;
+            int leaderPartyIndex = party.partyMembers.IndexOf(leader);
+            if (leaderPartyIndex < 0)
+                return;
 
-            Debug.Log($"[RUSH] Starting Rush. Party: {members.Count}, History: {history.Count}, Leader index: {leaderIndex}");
+            Debug.Log($"[RUSH] Starting Rush. Present: {members.Count}, History: {history.Count}, Leader index: {leaderPartyIndex}");
 
             // 1. Lift everyone off the spatial hash so planning has a clean slate.
             //    We unregister even already-acted followers; they'll be re-claimed
@@ -60,25 +63,23 @@ namespace JRogue.Service.Formation
 
             Dictionary<BaseActor, Vector3Int> plannedMoves = new Dictionary<BaseActor, Vector3Int>();
 
-            // 3. Plan a destination for each follower (skip the acting leader).
+            // 3. Plan a destination for each present follower (skip the acting leader).
             for (int i = 0; i < members.Count; i++)
             {
-                if (i == leaderIndex)
-                    continue;
-
                 BaseActor follower = members[i];
-                if (follower == null) continue;
+                if (follower == null || follower == leader)
+                    continue;
 
                 if (!turn.CanActorTakeAction(follower.gameObject))
                 {
-                    // Already acted: claim current tile so others can't take it.
                     plannedMoves.Add(follower, follower.GridPosition);
                     grid.RegisterActor(follower.GridPosition, follower);
                     continue;
                 }
 
-                Vector3Int historicalTarget = (i < history.Count)
-                    ? history[i]
+                int partyIndex = party.partyMembers.IndexOf(follower);
+                Vector3Int historicalTarget = (partyIndex >= 0 && partyIndex < history.Count)
+                    ? history[partyIndex]
                     : follower.GridPosition;
 
                 Vector3Int rushGoal = ResolveRushGoal(
@@ -677,6 +678,15 @@ namespace JRogue.Service.Formation
                 return false;
 
             return ComputeRushTarget(follower, destination, map, grid, plannedMoves) == destination;
+        }
+
+        static List<BaseActor> CollectRushMembers(PartyManager party)
+        {
+            PartyFloorPresenceService presence = PartyFloorPresenceService.Instance;
+            if (presence != null)
+                return presence.GetPresentMembers();
+
+            return party.partyMembers;
         }
     }
 }

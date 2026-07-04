@@ -5,6 +5,7 @@ using JRogue.Controller.Npc;
 using JRogue.Core.Actor;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
+using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using JRogue.World.MapInteract;
@@ -74,6 +75,15 @@ namespace JRogue.World.Generation
             }
 
             return false;
+        }
+
+        public void MarkNeedsRegeneration()
+        {
+            _isGenerated = false;
+            _featuresLiveOnServices = false;
+            _portals.Clear();
+            _extraMapInteractables.Clear();
+            _portalVisuals.Clear();
         }
 
         public void InvalidateGeneratedState()
@@ -386,6 +396,9 @@ namespace JRogue.World.Generation
 
                 bool open = !visual.RequiresTownTimeOpen || townPortalOpen;
                 bool visible = visibility != null && visibility.IsVisible(visual.Cell);
+                if (!visible && TownPortalSetupPhase.IsHubFloor(FloorId))
+                    visible = true;
+
                 visual.Renderer.enabled = open && visible;
             }
         }

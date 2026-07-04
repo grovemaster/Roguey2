@@ -62,6 +62,7 @@ namespace JRogue.Editor.World
 
             AdventureGuildExchangePackCreator.SetupAdventureGuildExchange();
             MarketTownPackCreator.SetupMarketTown();
+            HolyLandTownPackCreator.SetupHolyLand();
 
             EnsureFolder("Assets/Scenes/Town");
             EnsureFloorDefinition();
@@ -85,7 +86,10 @@ namespace JRogue.Editor.World
             ConfigureSceneHierarchy(scene);
 
             if (repaintTiles)
+            {
                 PaintDimensionSquareLayout();
+                PaintHolyLandLayouts();
+            }
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -158,8 +162,22 @@ namespace JRogue.Editor.World
             if (guildInteriorDef != null)
                 floors.Add(guildInteriorDef);
 
+            AppendHolyLandFloorDefinitions(floors);
+
             return floors;
         }
+
+        static void AppendHolyLandFloorDefinitions(List<DungeonFloorDefinition> floors)
+        {
+            HolyLandTownPackCreator.AppendToDimensionSquareCatalog(
+                floors,
+                LoadHolyLandFloorDefinition(TownDistrictTestPaths.HolyLandNexusFloorDef),
+                LoadHolyLandFloorDefinition(TownDistrictTestPaths.HolyLandProperFloorDef),
+                LoadHolyLandFloorDefinition(TownDistrictTestPaths.HolyLandTentInteriorFloorDef));
+        }
+
+        static DungeonFloorDefinition LoadHolyLandFloorDefinition(string path) =>
+            AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(path);
 
         static void WriteCatalogFloors(DungeonFloorDefinitionCatalog catalog, List<DungeonFloorDefinition> floors)
         {
@@ -220,6 +238,9 @@ namespace JRogue.Editor.World
             }
             DungeonFloorDefinition marketDef = LoadIntegratedMarketFloorDefinition();
             DungeonFloorDefinition guildInteriorDef = LoadGuildInteriorFloorDefinition();
+            DungeonFloorDefinition nexusDef = LoadHolyLandFloorDefinition(TownDistrictTestPaths.HolyLandNexusFloorDef);
+            DungeonFloorDefinition holyLandDef = LoadHolyLandFloorDefinition(TownDistrictTestPaths.HolyLandProperFloorDef);
+            DungeonFloorDefinition tentDef = LoadHolyLandFloorDefinition(TownDistrictTestPaths.HolyLandTentInteriorFloorDef);
             DungeonFloorDefinitionCatalog catalog =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>(CatalogPath);
 
@@ -236,7 +257,7 @@ namespace JRogue.Editor.World
 
             RemoveChildFloorsExcept(
                 floorsRoot,
-                CollectIntegratedHubFloorIds(floorDef, marketDef, guildInteriorDef));
+                CollectIntegratedHubFloorIds(floorDef, marketDef, guildInteriorDef, nexusDef, holyLandDef, tentDef));
 
             DungeonFloorInstance instance = EnsureScenePaintedFloor(floorsRoot, floorDef);
             instance.gameObject.SetActive(true);
@@ -253,6 +274,27 @@ namespace JRogue.Editor.World
                 DungeonFloorInstance guildInteriorInstance = EnsureScenePaintedFloor(floorsRoot, guildInteriorDef);
                 guildInteriorInstance.gameObject.SetActive(false);
                 AdventureGuildExchangePackCreator.IntegrateDistrictTownScene(guildInteriorInstance);
+            }
+
+            if (nexusDef != null)
+            {
+                DungeonFloorInstance nexusInstance = EnsureScenePaintedFloor(floorsRoot, nexusDef);
+                nexusInstance.gameObject.SetActive(false);
+                HolyLandTownPackCreator.IntegrateNexusScene(nexusInstance);
+            }
+
+            if (holyLandDef != null)
+            {
+                DungeonFloorInstance holyLandInstance = EnsureScenePaintedFloor(floorsRoot, holyLandDef);
+                holyLandInstance.gameObject.SetActive(false);
+                HolyLandTownPackCreator.IntegrateHolyLandScene(holyLandInstance);
+            }
+
+            if (tentDef != null)
+            {
+                DungeonFloorInstance tentInstance = EnsureScenePaintedFloor(floorsRoot, tentDef);
+                tentInstance.gameObject.SetActive(false);
+                HolyLandTownPackCreator.IntegrateTentInteriorScene(tentInstance);
             }
 
             DungeonFloorTestController test = systems.GetComponent<DungeonFloorTestController>()
@@ -448,18 +490,42 @@ namespace JRogue.Editor.World
             return floors;
         }
 
+        static void PaintHolyLandLayouts()
+        {
+            DungeonFloorInstance nexus = FindFloorInstance(HolyLandFloorIds.Nexus);
+            if (nexus != null)
+                HolyLandTownPackCreator.IntegrateNexusScene(nexus);
+
+            DungeonFloorInstance holyLand = FindFloorInstance(HolyLandFloorIds.HolyLandProper);
+            if (holyLand != null)
+                HolyLandTownPackCreator.IntegrateHolyLandScene(holyLand);
+
+            DungeonFloorInstance tent = FindFloorInstance(HolyLandFloorIds.ShamanTentInterior);
+            if (tent != null)
+                HolyLandTownPackCreator.IntegrateTentInteriorScene(tent);
+        }
+
         static string[] CollectIntegratedHubFloorIds(
             DungeonFloorDefinition squareDef,
             DungeonFloorDefinition marketDef,
-            DungeonFloorDefinition guildInteriorDef)
+            DungeonFloorDefinition guildInteriorDef,
+            DungeonFloorDefinition nexusDef,
+            DungeonFloorDefinition holyLandDef,
+            DungeonFloorDefinition tentDef)
         {
-            var ids = new List<string>(3);
+            var ids = new List<string>(6);
             if (squareDef != null && !string.IsNullOrEmpty(squareDef.FloorId))
                 ids.Add(squareDef.FloorId);
             if (marketDef != null && !string.IsNullOrEmpty(marketDef.FloorId))
                 ids.Add(marketDef.FloorId);
             if (guildInteriorDef != null && !string.IsNullOrEmpty(guildInteriorDef.FloorId))
                 ids.Add(guildInteriorDef.FloorId);
+            if (nexusDef != null && !string.IsNullOrEmpty(nexusDef.FloorId))
+                ids.Add(nexusDef.FloorId);
+            if (holyLandDef != null && !string.IsNullOrEmpty(holyLandDef.FloorId))
+                ids.Add(holyLandDef.FloorId);
+            if (tentDef != null && !string.IsNullOrEmpty(tentDef.FloorId))
+                ids.Add(tentDef.FloorId);
             return ids.ToArray();
         }
 

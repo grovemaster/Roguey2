@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2622786163683129599
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1502306630421857104, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 9108429539589354065, guid: 3a2dcf4ac7ef55d99a8168579e724a09, type: 3}
+    - target: {fileID: 1502306630421857104, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3177143581076895001, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: npcId
+      value: chief_barbarian
+      objectReference: {fileID: 0}
+    - target: {fileID: 3177143581076895001, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: portrait
+      value: 
+      objectReference: {fileID: 11400000, guid: 9f565915995046b19e0854943157a8ec, type: 2}
+    - target: {fileID: 3177143581076895001, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: displayName
+      value: Chief
+      objectReference: {fileID: 0}
+    - target: {fileID: 3177143581076895001, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: dialogProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 022b4126a92322dad841f0a6005d3d12, type: 2}
+    - target: {fileID: 7068241601829711281, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_Name
+      value: TownNpc_ChiefBarbarian
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523088497130746870, guid: cc27319bdbe1e3400912248769c94a90, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cc27319bdbe1e3400912248769c94a90, type: 3}

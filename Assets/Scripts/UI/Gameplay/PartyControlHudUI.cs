@@ -5,6 +5,7 @@ using JRogue.Input;
 using JRogue.Manager.Party;
 using JRogue.Manager.Turn;
 using JRogue.UI.Hotbar;
+using JRogue.World.Generation;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -126,7 +127,7 @@ namespace JRogue.UI.Gameplay
             for (int i = 0; i < party.partyMembers.Count; i++)
             {
                 BaseActor member = party.partyMembers[i];
-                if (!IsLiving(member))
+                if (!IsLiving(member) || !HolyLandControlFilter.IsSelectableControlTarget(member))
                     continue;
 
                 if (livingIndex >= _chips.Count)
@@ -156,7 +157,8 @@ namespace JRogue.UI.Gameplay
             int livingCount = 0;
             for (int i = 0; i < party.partyMembers.Count; i++)
             {
-                if (IsLiving(party.partyMembers[i]))
+                BaseActor member = party.partyMembers[i];
+                if (IsLiving(member) && HolyLandControlFilter.IsSelectableControlTarget(member))
                     livingCount++;
             }
 
@@ -222,7 +224,7 @@ namespace JRogue.UI.Gameplay
                 return;
 
             BaseActor member = party.partyMembers[listIndex];
-            if (!IsLiving(member))
+            if (!IsLiving(member) || !HolyLandControlFilter.IsSelectableControlTarget(member))
                 return;
 
             if (_inputHandler == null)
