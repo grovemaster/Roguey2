@@ -80,5 +80,13 @@ namespace JRogue.World.Generation
             if (inputRoot != null)
                 Object.DontDestroyOnLoad(inputRoot);
         }
+
+        internal static void ResetForTests()
+        {
+            AwaitingTownArrival = false;
+            EnteringDungeonFromTown = false;
+            ForcedDungeonExpiryPending = false;
+            _returnTownSceneName = DefaultReturnTownSceneName;
+        }
     }
 }

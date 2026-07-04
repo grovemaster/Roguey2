@@ -110,6 +110,7 @@
     <Compile Include="Assets/Editor/World/DungeonV0aPackCreator.cs" />
     <Compile Include="Assets/Editor/Targeting/SplashZoneAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/BeastmanSoulBeastPackCreator.cs" />
+    <Compile Include="Assets/Editor/World/DungeonFloor1ProductionPhase6PackCreator.cs" />
     <Compile Include="Assets/Editor/World/MarketGeneralStorePackCreator.cs" />
     <Compile Include="Assets/Editor/World/ForgeBrothersClanPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DistrictTestCatalogUpdater.cs" />

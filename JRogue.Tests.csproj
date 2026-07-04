@@ -137,6 +137,7 @@
     <Compile Include="Assets/Tests/UnitTests/World/DungeonTilePaletteResolverTests.cs" />
     <Compile Include="Assets/Tests/Mocks/DummyTargetAbility.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DwarfClanSystemTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/DungeonFloor1Phase6Tests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/GridFootprintUtilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/DungeonEntryServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Party/PartyManagerTest.cs" />

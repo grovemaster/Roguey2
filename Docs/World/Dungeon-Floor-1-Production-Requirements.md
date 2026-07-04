@@ -1,6 +1,6 @@
 # Production dungeon — Floor 1 — Requirements (draft)
 
-**Status:** **Draft — Phase 0 (requirements capture, nearing complete)**. Core §4–§9 decisions locked; implementation phases §1+ remain.
+**Status:** **Implemented** (Phases 1–6). Core §4–§9 locked; automated QA via `JRogue → Dungeon → Phase 6 — Validate Production QA` and `DungeonFloor1Phase6Tests`.
 
 **Production floor asset (locked):** Fork to **`Floor_prod_dungeon_floor_01`** — test floor keeps shared `Floor_dungeon_floor_01` on `DungeonFloorTest` for wild experiments.
 
@@ -972,6 +972,7 @@ Extend **`DungeonV0aPackCreator`** or add **`DungeonFloor1ProductionPackCreator`
 | 2026-06-21 | **§7.7 locked** — pond 15% overflow roll; cap 8 |
 | 2026-06-21 | **§9.11 expanded** — StGaaB next-day **Day** phase; `DimensionSquareTest`; expiry modal copy (§9.11.1); survivor refresh; no voluntary retreat; 4-cycle override |
 | 2026-06-21 | **§6.4.3a, §8.2** — proc numbers experimental; portal always reachable |
+| 2026-07-03 | **Phases 1–6 implemented** — production routing, content pack, essence actives, expiry flow; Phase 6 QA validator + unit tests; status → Implemented |
 
 ---
 

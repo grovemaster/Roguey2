@@ -510,6 +510,7 @@
     <Compile Include="Assets/Scripts/Manager/Door/DoorTileBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceResolver.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SetTileEmissionEffect.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonProductionSceneValidator.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRollResult.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/SoulBeastRitualEffect.cs" />
     <Compile Include="Assets/Scripts/Combat/BowRangedCombatService.cs" />
