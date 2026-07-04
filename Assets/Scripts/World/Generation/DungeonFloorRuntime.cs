@@ -56,7 +56,7 @@ namespace JRogue.World.Generation
 
             EnsureFloorCatalog();
             if (floorCatalog != null && floorCatalog.Floors != null && floorCatalog.Floors.Length > 0)
-                manager.ConfigureFloors(floorCatalog.Floors);
+                manager.ConfigureFloors(floorCatalog.Floors, replaceAll: true);
 
             string floorId = string.IsNullOrEmpty(startFloorId)
                 ? DungeonEntryService.StartFloorId

@@ -45,5 +45,15 @@ namespace JRogue.Tests.UnitTests.World
                 layout: null,
                 partyHasPersonalVisionLight: false));
         }
+
+        [Test]
+        public void ShouldSuppressFogMemory_NorthernDarkWithoutCurrentTorch_KeepsMemoryWhenSnapshotWasLit()
+        {
+            Assert.IsFalse(ZoneVisionPolicy.ShouldSuppressFogMemory(
+                ZoneVisionPolicy.NorthernDarkZoneId,
+                layout: null,
+                partyHasPersonalVisionLight: false,
+                snapshotReceivedLight: 6));
+        }
     }
 }

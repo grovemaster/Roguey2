@@ -33,8 +33,23 @@ namespace JRogue.World.Lighting
         public static bool ShouldSuppressFogMemory(
             string zoneId,
             DungeonFloorZoneLayout layout,
-            bool partyHasPersonalVisionLight) =>
-            !partyHasPersonalVisionLight && ZoneRequiresPersonalLightForVision(zoneId, layout);
+            bool partyHasPersonalVisionLight,
+            int snapshotReceivedLight = 0,
+            int snapshotEmitLight = 0)
+        {
+            if (!ZoneRequiresPersonalLightForVision(zoneId, layout))
+                return false;
+
+            if (partyHasPersonalVisionLight)
+                return false;
+
+            // Keep memory for tiles last seen while personally illuminated (helmet/torch),
+            // even after the light source turns off.
+            if (snapshotReceivedLight > 0 || snapshotEmitLight > 0)
+                return false;
+
+            return true;
+        }
 
         public static bool IsPitchDarkForVision(
             string zoneId,

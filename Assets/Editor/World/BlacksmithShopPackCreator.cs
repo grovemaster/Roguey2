@@ -38,6 +38,7 @@ namespace JRogue.Editor.World
         const string BlacksmithPortraitPath = "Assets/Resources/Dialog/Portraits/Portrait_KnightDrillMaster.asset";
         const string BlacksmithSpritePath = "Assets/Art/NPC/Sprites/NPC_KnightDrillMaster.png";
         const string GiantsBladePath = "Assets/Resources/Item/Weapon/Giants_Blade.asset";
+        const string HelmetOfLightPath = "Assets/Resources/Item/Armor/Armor_HelmetOfLight.asset";
         const string ConPlus1Path = "Assets/Resources/Item/Effect/ItemStatMod_ConstitutionPlus1.asset";
         const string ConPlus2Path = "Assets/Resources/Item/Effect/ItemStatMod_ConstitutionPlus2.asset";
 
@@ -250,6 +251,13 @@ namespace JRogue.Editor.World
             ItemData ironSword = AssetDatabase.LoadAssetAtPath<ItemData>(IronSwordPath);
             ItemData steelSword = AssetDatabase.LoadAssetAtPath<ItemData>(SteelSwordPath);
             ItemData giantsBlade = AssetDatabase.LoadAssetAtPath<ItemData>(GiantsBladePath);
+            ItemData helmetOfLight = AssetDatabase.LoadAssetAtPath<ItemData>(HelmetOfLightPath);
+            if (helmetOfLight != null)
+            {
+                helmetOfLight.buyValue = 10;
+                helmetOfLight.sellValue = 5;
+                EditorUtility.SetDirty(helmetOfLight);
+            }
 
             var shop = LoadOrCreate<ShopNpcDefinition>(BlacksmithShopPath);
             shop.shopNpcId = MarketBlacksmithLayout.NpcId;
@@ -270,6 +278,7 @@ namespace JRogue.Editor.World
                 Stock(ironSword, 2),
                 Stock(steelSword, 1),
                 Stock(giantsBlade, 1),
+                Stock(helmetOfLight, 1),
             };
             EditorUtility.SetDirty(shop);
         }

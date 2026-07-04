@@ -85,8 +85,9 @@ namespace JRogue.World.Generation
             }
 
             EnsureFloorCatalog();
+            bool restoreHubAfterDungeon = RunPartyPersistence.AwaitingTownArrival;
             if (floorCatalog != null && floorCatalog.Floors != null && floorCatalog.Floors.Length > 0)
-                manager.ConfigureFloors(floorCatalog.Floors);
+                manager.ConfigureFloors(floorCatalog.Floors, replaceAll: restoreHubAfterDungeon);
             else
                 DungeonGenerationLog.Warn("No floor catalog — using floorDefinitions on DungeonFloorInstanceManager only.");
 

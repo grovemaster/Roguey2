@@ -197,7 +197,8 @@ public class VisibilityManager : MonoBehaviour
             if (currentVisible.Contains(prev))
                 continue;
 
-            if (ShouldSuppressFogMemory(prev, zoneLayout, partyHasPersonalLight))
+            _knowledge.TryGetValue(prev, out CellKnowledge exploredKnowledge);
+            if (ShouldSuppressFogMemory(prev, zoneLayout, partyHasPersonalLight, exploredKnowledge.lightingSnapshot))
             {
                 SetCellState(prev, TileKnowledgeState.Unseen);
                 TintCellUnseen(prev);
@@ -205,7 +206,7 @@ public class VisibilityManager : MonoBehaviour
             }
 
             SetCellState(prev, TileKnowledgeState.Explored);
-            if (_knowledge.TryGetValue(prev, out CellKnowledge exploredKnowledge))
+            if (_knowledge.ContainsKey(prev))
                 TintCell(prev, GetExploredSnapshotColor(exploredKnowledge));
 
             if (verboseFogLogs && _knowledge.TryGetValue(prev, out CellKnowledge frozen))
@@ -707,16 +708,19 @@ public class VisibilityManager : MonoBehaviour
             if (!ZoneVisionPolicy.ZoneRequiresPersonalLightForVision(zoneId, zoneLayout))
                 continue;
 
-            if (ShouldSuppressFogMemory(cell, zoneLayout, partyHasPersonalLight))
+            if (!_knowledge.TryGetValue(cell, out CellKnowledge knowledge))
+                continue;
+
+            if (ShouldSuppressFogMemory(cell, zoneLayout, partyHasPersonalLight, knowledge.lightingSnapshot))
             {
                 TintCellUnseen(cell);
                 continue;
             }
 
-            if (_knowledge.TryGetValue(cell, out CellKnowledge knowledge)
-                && knowledge.state == TileKnowledgeState.Explored)
+            if (_knowledge.TryGetValue(cell, out CellKnowledge exploredKnowledge)
+                && exploredKnowledge.state == TileKnowledgeState.Explored)
             {
-                TintCell(cell, GetExploredSnapshotColor(knowledge));
+                TintCell(cell, GetExploredSnapshotColor(exploredKnowledge));
             }
         }
     }
@@ -826,9 +830,15 @@ public class VisibilityManager : MonoBehaviour
     static bool ShouldSuppressFogMemory(
         Vector3Int cell,
         DungeonFloorZoneLayout zoneLayout,
-        bool partyHasPersonalLight)
+        bool partyHasPersonalLight,
+        LightingSnapshot snapshot = default)
     {
         string zoneId = TryGetZoneId(cell);
-        return ZoneVisionPolicy.ShouldSuppressFogMemory(zoneId, zoneLayout, partyHasPersonalLight);
+        return ZoneVisionPolicy.ShouldSuppressFogMemory(
+            zoneId,
+            zoneLayout,
+            partyHasPersonalLight,
+            snapshot.snapshotReceivedLight,
+            snapshot.snapshotEmitLight);
     }
 }

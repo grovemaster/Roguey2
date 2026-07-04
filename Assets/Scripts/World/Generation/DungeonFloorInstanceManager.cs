@@ -54,8 +54,57 @@ namespace JRogue.World.Generation
             }
         }
 
-        public void ConfigureFloors(DungeonFloorDefinition[] definitions) =>
+        public void ConfigureFloors(DungeonFloorDefinition[] definitions, bool replaceAll = true)
+        {
+            if (definitions == null || definitions.Length == 0)
+                return;
+
+            if (!replaceAll && WouldDropRegisteredFloors(floorDefinitions, definitions))
+            {
+                DungeonGenerationLog.Warn(
+                    $"ConfigureFloors skipped — catalog has {definitions.Length} floor(s) but the manager " +
+                    $"already knows {floorDefinitions?.Length ?? 0}. Re-run the town scene fix menu to refresh " +
+                    $"{nameof(DungeonFloorDefinitionCatalog)}.");
+                return;
+            }
+
             floorDefinitions = definitions;
+        }
+
+        static bool WouldDropRegisteredFloors(
+            DungeonFloorDefinition[] current,
+            DungeonFloorDefinition[] next)
+        {
+            if (current == null || current.Length == 0 || next == null)
+                return false;
+
+            for (int i = 0; i < current.Length; i++)
+            {
+                DungeonFloorDefinition def = current[i];
+                if (def == null || string.IsNullOrEmpty(def.FloorId))
+                    continue;
+
+                if (!ContainsFloorId(next, def.FloorId))
+                    return true;
+            }
+
+            return false;
+        }
+
+        static bool ContainsFloorId(DungeonFloorDefinition[] definitions, string floorId)
+        {
+            if (definitions == null)
+                return false;
+
+            for (int i = 0; i < definitions.Length; i++)
+            {
+                DungeonFloorDefinition def = definitions[i];
+                if (def != null && def.FloorId == floorId)
+                    return true;
+            }
+
+            return false;
+        }
 
         public bool TryBeginRunAtFloor(string startFloorId, int runSeed)
         {
