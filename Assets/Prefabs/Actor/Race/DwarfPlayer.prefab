@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: bodyCapabilities
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4383896588964381980, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -577363764042326570, guid: 93a9fa4787e4456a8d6a210ed01676b9, type: 3}
     - target: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       propertyPath: m_Name
       value: DwarfPlayer
@@ -43,7 +47,7 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: -7296096646264870741}
   m_SourcePrefab: {fileID: 100100000, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
---- !u!1 &6218558407117122571 stripped
+--- !u!1 &3218558407117122552 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
   m_PrefabInstance: {fileID: 7400000000000000005}
@@ -54,7 +58,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6218558407117122571}
+  m_GameObject: {fileID: 3218558407117122552}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 175a728cc8f7402e91332492c1d6d2ae, type: 3}
@@ -72,7 +76,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6218558407117122571}
+  m_GameObject: {fileID: 3218558407117122552}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d550272af404b84a2bbc2c944f1401a, type: 3}

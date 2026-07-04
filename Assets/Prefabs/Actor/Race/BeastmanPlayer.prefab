@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: bodyCapabilities
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4383896588964381980, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -577363764042326570, guid: 79772fdc0cea416d9c80878dba676bd8, type: 3}
     - target: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       propertyPath: m_Name
       value: BeastmanPlayer

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace JRogue.Editor.World
 {
-    /// <summary>Assigns DCSS player race sprites to HumanPlayer and ElfPlayer prefab variants.</summary>
+    /// <summary>Assigns DCSS player race sprites to race player prefab variants.</summary>
     public static class DcssPlayerSpriteAssigner
     {
         const string SpriteFolder = "Assets/Art/Player/Sprites";
@@ -13,6 +13,12 @@ namespace JRogue.Editor.World
         {
             ("Assets/Prefabs/Actor/Race/HumanPlayer.prefab", "Player_Human.png"),
             ("Assets/Prefabs/Actor/Race/ElfPlayer.prefab", "Player_Elf.png"),
+            ("Assets/Prefabs/Actor/Race/BarbarianPlayer.prefab", "Player_Barbarian.png"),
+            ("Assets/Prefabs/Actor/Race/DwarfPlayer.prefab", "Player_Dwarf.png"),
+            ("Assets/Prefabs/Actor/Race/BeastmanPlayer.prefab", "Player_Beastman.png"),
+            ("Assets/Prefabs/Actor/Race/DragonianPlayer.prefab", "Player_Dragonian.png"),
+            ("Assets/Prefabs/Actor/Race/TieflingPlayer.prefab", "Player_Tiefling.png"),
+            ("Assets/Prefabs/Actor/Race/UndeadPlayer.prefab", "Player_Undead.png"),
         };
 
         [MenuItem("JRogue/Player/Assign DCSS Player Race Sprites")]

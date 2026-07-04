@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.View.PlayerRaceWorldSprites
   humanSprite: {fileID: -577363764042326570, guid: 32224ef1078b4650a3916a1bdf0bbfb0, type: 3}
   elfSprite: {fileID: -577363764042326570, guid: d02cea7541b948978d7a4712d7f66e66, type: 3}
+  barbarianSprite: {fileID: -577363764042326570, guid: e1c7ccad0fae4f4db34e98bfef5f1247, type: 3}
+  dwarfSprite: {fileID: -577363764042326570, guid: 93a9fa4787e4456a8d6a210ed01676b9, type: 3}
+  beastmanSprite: {fileID: -577363764042326570, guid: 79772fdc0cea416d9c80878dba676bd8, type: 3}
+  dragonianSprite: {fileID: -577363764042326570, guid: a0b54646d7124b11b5f10efa3dcd5e34, type: 3}
+  tieflingSprite: {fileID: -577363764042326570, guid: fbeeb4fd48cb4c83a2bd40dfbdebc72d, type: 3}
+  undeadSprite: {fileID: -577363764042326570, guid: f4496c322d224fd5a13e1012e7472710, type: 3}

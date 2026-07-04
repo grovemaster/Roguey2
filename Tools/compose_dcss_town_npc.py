@@ -15,7 +15,7 @@ import os
 import shutil
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 REPO = Path(__file__).resolve().parents[1]
 SPRITES = REPO / "Assets/Art/NPC/Sprites"
@@ -148,6 +148,41 @@ PLAYER_RECIPES: dict[str, list[str]] = {
         "player/body/leather_armour2.png",
         "player/cloak/green.png",
     ],
+    "Player_Barbarian": [
+        "player/base/ogre_m.png",
+        "player/body/animal_skin.png",
+    ],
+    "Player_Dwarf": [
+        "player/base/dwarf_m.png",
+        "player/body/chainmail.png",
+    ],
+    "Player_Beastman": [
+        "player/base/minotaur_m.png",
+        "player/body/leather_armour2.png",
+    ],
+    "Player_Dragonian": [
+        "player/base/draconian_red_m.png",
+    ],
+    "Player_Tiefling": [
+        "player/base/demonspawn_red_m.png",
+        "player/body/leather_armour2.png",
+    ],
+    "Player_Undead": [
+        "player/base/vampire_m.png",
+    ],
+}
+
+
+PLAYER_PREVIEW = REPO / "Assets/Art/Player/player_race_preview.png"
+PLAYER_PREVIEW_LABELS: dict[str, str] = {
+    "Player_Human": "Human",
+    "Player_Elf": "Elf",
+    "Player_Barbarian": "Barbarian",
+    "Player_Dwarf": "Dwarf",
+    "Player_Beastman": "Beastman",
+    "Player_Dragonian": "Dragonian",
+    "Player_Tiefling": "Tiefling",
+    "Player_Undead": "Undead",
 }
 
 
@@ -156,6 +191,43 @@ def composite(layers: list[Path]) -> Image.Image:
     for path in layers:
         out.alpha_composite(Image.open(path).convert("RGBA"))
     return out
+
+
+def build_player_preview(scale: int = 4) -> Path:
+    """Compose a labeled preview sheet for all player race sprites."""
+    names = [n for n in PLAYER_PREVIEW_LABELS if n in PLAYER_RECIPES]
+    sprites: list[tuple[str, Image.Image]] = []
+    for name in names:
+        path = PLAYER_SPRITES / f"{name}.png"
+        if not path.exists():
+            raise SystemExit(f"Missing player sprite for preview: {path}")
+        sprites.append((PLAYER_PREVIEW_LABELS[name], Image.open(path).convert("RGBA")))
+
+    cell = 32 * scale
+    pad = 12
+    label_h = 18
+    cols = len(sprites)
+    width = pad + cols * (cell + pad)
+    height = pad + label_h + cell + pad
+    sheet = Image.new("RGBA", (width, height), (40, 40, 44, 255))
+    draw = ImageDraw.Draw(sheet)
+    try:
+        font = ImageFont.truetype("DejaVuSans.ttf", 13)
+    except OSError:
+        font = ImageFont.load_default()
+
+    for i, (label, sprite) in enumerate(sprites):
+        x0 = pad + i * (cell + pad)
+        y0 = pad + label_h
+        scaled = sprite.resize((cell, cell), Image.NEAREST)
+        sheet.paste(scaled, (x0, y0), scaled)
+        bbox = draw.textbbox((0, 0), label, font=font)
+        text_w = bbox[2] - bbox[0]
+        draw.text((x0 + (cell - text_w) // 2, pad - 2), label, fill=(220, 220, 220, 255), font=font)
+
+    PLAYER_PREVIEW.parent.mkdir(parents=True, exist_ok=True)
+    sheet.save(PLAYER_PREVIEW)
+    return PLAYER_PREVIEW
 
 
 def main() -> None:
@@ -175,7 +247,22 @@ def main() -> None:
         "--name",
         help="Single output base name (town NPC or player sprite)",
     )
+    parser.add_argument(
+        "--preview",
+        action="store_true",
+        help="With --player: write Assets/Art/Player/player_race_preview.png",
+    )
+    parser.add_argument(
+        "--preview-only",
+        action="store_true",
+        help="Only rebuild player_race_preview.png from existing Player_*.png files",
+    )
     args = parser.parse_args()
+
+    if args.preview_only:
+        preview = build_player_preview()
+        print(f"Wrote {preview}")
+        return
 
     tiles_root = Path(args.tiles_root)
     if not tiles_root.is_dir():
@@ -217,6 +304,10 @@ def main() -> None:
         out = out_dir / f"{name}.png"
         composite(abs_paths).save(out)
         print(f"Wrote {out}")
+
+    if args.player and args.preview:
+        preview = build_player_preview()
+        print(f"Wrote {preview}")
 
 
 if __name__ == "__main__":

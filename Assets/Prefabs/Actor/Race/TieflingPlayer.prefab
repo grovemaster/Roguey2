@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: bodyCapabilities
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 4383896588964381980, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -577363764042326570, guid: fbeeb4fd48cb4c83a2bd40dfbdebc72d, type: 3}
     - target: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       propertyPath: m_Name
       value: TieflingPlayer
@@ -40,7 +44,7 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: -8296096646264870732}
   m_SourcePrefab: {fileID: 100100000, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
---- !u!1 &5218558407117122561 stripped
+--- !u!1 &3218558407117122553 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
   m_PrefabInstance: {fileID: 7400000000000000004}
@@ -51,7 +55,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5218558407117122561}
+  m_GameObject: {fileID: 3218558407117122553}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1a2b3c4d5e6478990ab1c2d3e4f5a72, type: 3}
