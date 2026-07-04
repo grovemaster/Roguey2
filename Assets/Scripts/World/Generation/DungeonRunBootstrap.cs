@@ -111,6 +111,8 @@ namespace JRogue.World.Generation
                 if (mover != null)
                     mover.enabled = false;
 
+                JRogue.View.PlayerRaceWorldSpriteApplier.Apply(instance);
+
                 BaseActor actor = instance.GetComponent<BaseActor>();
                 if (actor != null)
                     party.partyMembers.Add(actor);

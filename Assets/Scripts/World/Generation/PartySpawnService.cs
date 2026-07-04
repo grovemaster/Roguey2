@@ -48,6 +48,7 @@ namespace JRogue.World.Generation
             for (int i = 0; i < living.Count; i++)
             {
                 BaseActor actor = living[i];
+                JRogue.View.PlayerRaceWorldSpriteApplier.Apply(actor.gameObject);
                 GridMover mover = actor.GetComponent<GridMover>();
                 if (mover == null)
                     continue;

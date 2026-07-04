@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: racialSubsystem
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 4383896588964381980, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -577363764042326570, guid: d02cea7541b948978d7a4712d7f66e66, type: 3}
     - target: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       propertyPath: m_Name
       value: ElfPlayer

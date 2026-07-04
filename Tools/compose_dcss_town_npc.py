@@ -19,7 +19,9 @@ from PIL import Image
 
 REPO = Path(__file__).resolve().parents[1]
 SPRITES = REPO / "Assets/Art/NPC/Sprites"
+PLAYER_SPRITES = REPO / "Assets/Art/Player/Sprites"
 ORIGINALS = REPO / "Assets/Art/NPC/ThirdParty/DungeonCrawl32/originals"
+PLAYER_ORIGINALS = REPO / "Assets/Art/Player/ThirdParty/DungeonCrawl32/originals"
 DEFAULT_TILES_ROOT = (
     REPO / "Assets/Art/NPC/StyleComparison/_temp/crawl-tiles Oct-5-2010"
 )
@@ -133,6 +135,21 @@ RECIPES: dict[str, list[str]] = {
     "NPC_Undead_Revenant": ["player/base/vampire_m.png"],
 }
 
+# Playable race world sprites (player doll layers; distinct from town NPC roster).
+PLAYER_RECIPES: dict[str, list[str]] = {
+    "Player_Human": [
+        "player/base/human_m.png",
+        "player/hair/brown1.png",
+        "player/body/aragorn.png",
+    ],
+    "Player_Elf": [
+        "player/base/elf_m.png",
+        "player/hair/elf_red.png",
+        "player/body/leather_armour2.png",
+        "player/cloak/green.png",
+    ],
+}
+
 
 def composite(layers: list[Path]) -> Image.Image:
     out = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
@@ -149,19 +166,43 @@ def main() -> None:
         help="Extracted crawl-tiles Oct-5-2010 folder",
     )
     parser.add_argument("--all", action="store_true", help="Build all shipped town NPCs")
-    parser.add_argument("--name", choices=sorted(RECIPES), help="Single output base name")
+    parser.add_argument(
+        "--player",
+        action="store_true",
+        help="Build playable race player sprites (Player_Human, Player_Elf, …)",
+    )
+    parser.add_argument(
+        "--name",
+        help="Single output base name (town NPC or player sprite)",
+    )
     args = parser.parse_args()
 
     tiles_root = Path(args.tiles_root)
     if not tiles_root.is_dir():
         raise SystemExit(f"Missing tiles root: {tiles_root}")
 
-    names = sorted(RECIPES) if args.all else [args.name or "NPC_Mira"]
-    SPRITES.mkdir(parents=True, exist_ok=True)
-    ORIGINALS.mkdir(parents=True, exist_ok=True)
+    if args.player:
+        recipe_map = PLAYER_RECIPES
+        out_dir = PLAYER_SPRITES
+        originals_dir = PLAYER_ORIGINALS
+        default_name = "Player_Human"
+    else:
+        recipe_map = RECIPES
+        out_dir = SPRITES
+        originals_dir = ORIGINALS
+        default_name = "NPC_Mira"
+
+    if args.name is not None and args.name not in recipe_map:
+        raise SystemExit(
+            f"Unknown name {args.name!r}. Choices: {', '.join(sorted(recipe_map))}"
+        )
+
+    names = sorted(recipe_map) if args.all else [args.name or default_name]
+    out_dir.mkdir(parents=True, exist_ok=True)
+    originals_dir.mkdir(parents=True, exist_ok=True)
 
     for name in names:
-        rel_paths = RECIPES[name]
+        rel_paths = recipe_map[name]
         abs_paths = [tiles_root / rel for rel in rel_paths]
         missing = [str(p) for p in abs_paths if not p.exists()]
         if missing:
@@ -169,11 +210,11 @@ def main() -> None:
 
         for src in abs_paths:
             rel = str(src.relative_to(tiles_root)).replace(os.sep, "__")
-            dst = ORIGINALS / rel
+            dst = originals_dir / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
 
-        out = SPRITES / f"{name}.png"
+        out = out_dir / f"{name}.png"
         composite(abs_paths).save(out)
         print(f"Wrote {out}")
 

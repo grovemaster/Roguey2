@@ -130,6 +130,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapWallTopology.cs" />
     <Compile Include="Assets/Scripts/UI/Character/EssenceSlotPanelView.cs" />
     <Compile Include="Assets/Scripts/Abilities/Essence/EssenceDesignAbility.cs" />
+    <Compile Include="Assets/Scripts/View/PlayerRaceWorldSpriteApplier.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownPhaseAdvanceSource.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionRule.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapService.cs" />
@@ -386,6 +387,7 @@
     <Compile Include="Assets/Scripts/World/Altar/ManaStoneTierAcceptFilter.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TrapConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingScenarioController.cs" />
+    <Compile Include="Assets/Scripts/View/PlayerRaceWorldSprites.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/BarbarianSpiritImprintViewModel.cs" />
     <Compile Include="Assets/Scripts/Status/PartyStatusQueries.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardBootstrap.cs" />
