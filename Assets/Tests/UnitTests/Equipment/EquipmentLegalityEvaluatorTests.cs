@@ -188,5 +188,166 @@ namespace JRogue.Tests.Equipment
                 EquipmentLegalityEvaluator.CanEquip(go, item, EquipmentSlot.Feet, out string reason),
                 reason);
         }
+
+        [Test]
+        public void MartialCalling_HumanMage_FailsWeapon()
+        {
+            GameObject go = CreateHuman(HumanClass.Mage);
+            ItemData sword = CreateWeapon(requiresMartialCalling: true);
+
+            Assert.IsFalse(
+                EquipmentLegalityEvaluator.CanEquip(go, sword, EquipmentSlot.MainHand, out string reason));
+            Assert.That(reason, Does.Contain("Mages cannot wield this weapon"));
+        }
+
+        [Test]
+        public void MartialCalling_HumanPriest_FailsArmor()
+        {
+            GameObject go = CreateHuman(HumanClass.Priest);
+            ItemData helm = CreateArmor(EquipmentSlot.Head, requiresMartialCalling: true);
+
+            Assert.IsFalse(
+                EquipmentLegalityEvaluator.CanEquip(go, helm, EquipmentSlot.Head, out string reason));
+            Assert.That(reason, Does.Contain("Priests cannot wear this armor"));
+        }
+
+        [Test]
+        public void MartialCalling_HumanNone_PassesAtLevel1()
+        {
+            GameObject go = CreateHuman(HumanClass.None);
+            CharacterStats stats = go.GetComponent<CharacterStats>();
+            stats.Strength.AddModifier(-2, "test");
+
+            ItemData sword = CreateWeapon(requiresMartialCalling: true);
+
+            Assert.IsTrue(
+                EquipmentLegalityEvaluator.CanEquip(go, sword, EquipmentSlot.MainHand, out string reason),
+                reason);
+        }
+
+        [Test]
+        public void MartialCalling_HumanKnight_Passes()
+        {
+            GameObject go = CreateHuman(HumanClass.Knight);
+            ItemData sword = CreateWeapon(requiresMartialCalling: true);
+
+            Assert.IsTrue(
+                EquipmentLegalityEvaluator.CanEquip(go, sword, EquipmentSlot.MainHand, out string reason),
+                reason);
+        }
+
+        [Test]
+        public void MartialCalling_Dwarf_Passes()
+        {
+            GameObject go = new GameObject("Dwarf");
+            _destroy.Add(go);
+            CharacterStats stats = go.AddComponent<CharacterStats>();
+            stats.race = Race.Dwarf;
+
+            ItemData sword = CreateWeapon(requiresMartialCalling: true);
+
+            Assert.IsTrue(
+                EquipmentLegalityEvaluator.CanEquip(go, sword, EquipmentSlot.MainHand, out string reason),
+                reason);
+        }
+
+        [Test]
+        public void CharacterLevel_FailsWhenTooLow()
+        {
+            GameObject go = CreateHuman(HumanClass.Knight);
+            CharacterStats stats = go.GetComponent<CharacterStats>();
+            stats.level = 5;
+
+            ItemData sword = CreateWeapon(requiresMartialCalling: false);
+            sword.minimumCharacterLevel = 10;
+
+            Assert.IsFalse(
+                EquipmentLegalityEvaluator.CanEquip(go, sword, EquipmentSlot.MainHand, out string reason));
+            Assert.That(reason, Does.Contain("Requires character level 10"));
+        }
+
+        [Test]
+        public void StatMinimum_FailsWhenTooLow()
+        {
+            GameObject go = CreateHuman(HumanClass.Knight);
+            CharacterStats stats = go.GetComponent<CharacterStats>();
+            stats.Strength.AddModifier(2, "test");
+
+            ItemData sword = CreateWeapon(requiresMartialCalling: false);
+            sword.statMinimums = new[]
+            {
+                new StatMinimumRequirement { stat = StatType.Strength, minimumEffectiveValue = 16 }
+            };
+
+            Assert.IsFalse(
+                EquipmentLegalityEvaluator.CanEquip(go, sword, EquipmentSlot.MainHand, out string reason));
+            Assert.That(reason, Does.Contain("Requires Strength 16"));
+        }
+
+        [Test]
+        public void StatMinimum_PassesAtThreshold()
+        {
+            GameObject go = CreateHuman(HumanClass.Knight);
+            CharacterStats stats = go.GetComponent<CharacterStats>();
+            stats.Strength.AddModifier(6, "test");
+
+            ItemData sword = CreateWeapon(requiresMartialCalling: false);
+            sword.statMinimums = new[]
+            {
+                new StatMinimumRequirement { stat = StatType.Strength, minimumEffectiveValue = 16 }
+            };
+
+            Assert.IsTrue(
+                EquipmentLegalityEvaluator.CanEquip(go, sword, EquipmentSlot.MainHand, out string reason),
+                reason);
+        }
+
+        [Test]
+        public void MartialCallingCheckedBeforeStatMinimum()
+        {
+            GameObject go = CreateHuman(HumanClass.Mage);
+            CharacterStats stats = go.GetComponent<CharacterStats>();
+            stats.Strength.AddModifier(10, "test");
+
+            ItemData sword = CreateWeapon(requiresMartialCalling: true);
+            sword.statMinimums = new[]
+            {
+                new StatMinimumRequirement { stat = StatType.Strength, minimumEffectiveValue = 18 }
+            };
+
+            Assert.IsFalse(
+                EquipmentLegalityEvaluator.CanEquip(go, sword, EquipmentSlot.MainHand, out string reason));
+            Assert.That(reason, Does.Contain("Mages cannot wield"));
+        }
+
+        GameObject CreateHuman(HumanClass humanClass)
+        {
+            GameObject go = new GameObject("Human");
+            _destroy.Add(go);
+            CharacterStats stats = go.AddComponent<CharacterStats>();
+            stats.race = Race.Human;
+            stats.humanClass = humanClass;
+            return go;
+        }
+
+        ItemData CreateWeapon(bool requiresMartialCalling)
+        {
+            ItemData item = ScriptableObject.CreateInstance<ItemData>();
+            _destroy.Add(item);
+            item.category = ItemCategory.Weapon;
+            item.slotType = EquipmentSlot.MainHand;
+            item.requiresMartialCalling = requiresMartialCalling;
+            return item;
+        }
+
+        ItemData CreateArmor(EquipmentSlot slot, bool requiresMartialCalling)
+        {
+            ItemData item = ScriptableObject.CreateInstance<ItemData>();
+            _destroy.Add(item);
+            item.category = ItemCategory.Armor;
+            item.slotType = slot;
+            item.requiresMartialCalling = requiresMartialCalling;
+            return item;
+        }
     }
 }

@@ -95,6 +95,9 @@ namespace JRogue.Manager.Equipment
                 }
             }
 
+            if (EquipmentRequirementRules.TryGetFirstFailure(stats, item, out reason))
+                return false;
+
             return true;
         }
     }

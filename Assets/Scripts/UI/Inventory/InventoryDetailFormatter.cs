@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text;
 using JRogue.Item;
 using JRogue.Manager.Equipment;
+using JRogue.Stats;
 using UnityEngine;
 
 namespace JRogue.UI.Inventory
@@ -78,6 +79,14 @@ namespace JRogue.UI.Inventory
                     string label = !string.IsNullOrEmpty(a.abilityName) ? a.abilityName : $"Ability{i + 1}";
                     sb.AppendLine($" • {label}");
                 }
+            }
+
+            CharacterStats actorStats = selectedRow.Owner != null ? selectedRow.Owner.stats : null;
+            string requirements = EquipmentRequirementRules.FormatRequirementsBlock(item, actorStats);
+            if (!string.IsNullOrEmpty(requirements))
+            {
+                sb.AppendLine();
+                sb.AppendLine(requirements);
             }
 
             if (selectedRow.Instance != null)

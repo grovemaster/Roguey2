@@ -27,6 +27,9 @@ MonoBehaviour:
   floorLifetimePlayerPhases: 0
   equipRequiresAllFlags: 0
   equipExcludesActorFlags: 0
+  requiresMartialCalling: 1
+  minimumCharacterLevel: 0
+  statMinimums: []
   weaponType: 0
   handsRequired: 1
   requiresBow: 0

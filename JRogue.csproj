@@ -215,6 +215,7 @@
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceHost.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/InnkeeperNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcDialogProfile.cs" />
+    <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentRequirementRules.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/DragonianElderNpcController.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceEffect.cs" />
     <Compile Include="Assets/Scripts/AssemblyInfo.cs" />

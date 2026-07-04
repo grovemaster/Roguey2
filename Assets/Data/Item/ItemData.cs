@@ -109,6 +109,23 @@ namespace JRogue.Item
         [Tooltip("Conflict when actor has any of these bits, unless masked by essence exclusion bypass.")]
         public BodyCapabilityFlags equipExcludesActorFlags = BodyCapabilityFlags.None;
 
+        [Header("Equip requirements")]
+        [Tooltip("When true, Human Mages and Priests cannot equip this item.")]
+        public bool requiresMartialCalling;
+
+        [Tooltip("0 = no level gate; else actor level must be at least this value.")]
+        [Min(0)]
+        public int minimumCharacterLevel;
+
+        [Tooltip("All entries must pass (effective stat value at equip time).")]
+        public StatMinimumRequirement[] statMinimums = System.Array.Empty<StatMinimumRequirement>();
+
+        /// <summary>True when any class, level, or stat equip gate is authored.</summary>
+        public bool HasEquipRequirements =>
+            requiresMartialCalling
+            || minimumCharacterLevel > 0
+            || statMinimums is { Length: > 0 };
+
         [Header("Weapon / ammo (ranged)")]
         public WeaponType weaponType;
         [Min(1)] public int handsRequired = 1;
@@ -214,5 +231,12 @@ namespace JRogue.Item
     {
         public DamageType type;
         public int value;
+    }
+
+    [System.Serializable]
+    public struct StatMinimumRequirement
+    {
+        public StatType stat;
+        [Min(1)] public int minimumEffectiveValue;
     }
 }

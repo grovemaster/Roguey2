@@ -97,74 +97,12 @@ MonoBehaviour:
     portalCell: {x: 24, y: 39, z: 0}
     listLabel: Market
     adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 15, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 16, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 17, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 18, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 19, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 20, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 21, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 22, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 23, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
-  - portalLinkId: district_square_to_holy_nexus
-    targetFloorId: holy_land_nexus
-    portalMarkerId: 
-    portalCell: {x: 24, y: 0, z: 0}
-    listLabel: Holy Land Nexus
-    adjacentConfirmOnly: 0
   edgePortals: []
   arrivalBindings:
   - portalLinkId: building_adventure_guild_exit
     arrivalAnchor: {x: 31, y: 19, z: 0}
   - portalLinkId: district_market_to_square
     arrivalAnchor: {x: 20, y: 38, z: 0}
-  - portalLinkId: district_holy_nexus_to_square
-    arrivalAnchor: {x: 20, y: 1, z: 0}
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
   portalPlacementRules: []

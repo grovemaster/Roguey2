@@ -30,6 +30,8 @@ namespace JRogue.World.Generation
         readonly Dictionary<string, DungeonFloorInstance> _instances =
             new Dictionary<string, DungeonFloorInstance>();
 
+        static DungeonFloorDefinitionCatalog _districtHubCatalog;
+
         DungeonFloorInstance _activeFloor;
         bool _portalTransitionInProgress;
 
@@ -60,16 +62,57 @@ namespace JRogue.World.Generation
             if (definitions == null || definitions.Length == 0)
                 return;
 
-            if (!replaceAll && WouldDropRegisteredFloors(floorDefinitions, definitions))
+            if (replaceAll)
             {
-                DungeonGenerationLog.Warn(
-                    $"ConfigureFloors skipped — catalog has {definitions.Length} floor(s) but the manager " +
-                    $"already knows {floorDefinitions?.Length ?? 0}. Re-run the town scene fix menu to refresh " +
-                    $"{nameof(DungeonFloorDefinitionCatalog)}.");
+                floorDefinitions = definitions;
+                return;
+            }
+
+            if (WouldDropRegisteredFloors(floorDefinitions, definitions))
+            {
+                floorDefinitions = MergeFloorDefinitions(floorDefinitions, definitions);
                 return;
             }
 
             floorDefinitions = definitions;
+        }
+
+        static DungeonFloorDefinition[] MergeFloorDefinitions(
+            DungeonFloorDefinition[] existing,
+            DungeonFloorDefinition[] incoming)
+        {
+            if (existing == null || existing.Length == 0)
+                return incoming;
+
+            if (incoming == null || incoming.Length == 0)
+                return existing;
+
+            var merged = new List<DungeonFloorDefinition>(existing);
+            for (int i = 0; i < incoming.Length; i++)
+            {
+                DungeonFloorDefinition def = incoming[i];
+                if (def == null || string.IsNullOrEmpty(def.FloorId))
+                    continue;
+
+                if (ListContainsFloorId(merged, def.FloorId))
+                    continue;
+
+                merged.Add(def);
+            }
+
+            return merged.ToArray();
+        }
+
+        static bool ListContainsFloorId(List<DungeonFloorDefinition> definitions, string floorId)
+        {
+            for (int i = 0; i < definitions.Count; i++)
+            {
+                DungeonFloorDefinition def = definitions[i];
+                if (def != null && def.FloorId == floorId)
+                    return true;
+            }
+
+            return false;
         }
 
         static bool WouldDropRegisteredFloors(
@@ -346,17 +389,45 @@ namespace JRogue.World.Generation
 
         DungeonFloorDefinition FindDefinition(string floorId)
         {
-            if (floorDefinitions == null)
+            DungeonFloorDefinition def = FindDefinitionInArray(floorDefinitions, floorId);
+            if (def != null)
+                return def;
+
+            return FindDefinitionInCatalog(GetDistrictHubCatalog(), floorId);
+        }
+
+        static DungeonFloorDefinition FindDefinitionInArray(DungeonFloorDefinition[] definitions, string floorId)
+        {
+            if (definitions == null || string.IsNullOrEmpty(floorId))
                 return null;
 
-            for (int i = 0; i < floorDefinitions.Length; i++)
+            for (int i = 0; i < definitions.Length; i++)
             {
-                DungeonFloorDefinition def = floorDefinitions[i];
+                DungeonFloorDefinition def = definitions[i];
                 if (def != null && def.FloorId == floorId)
                     return def;
             }
 
             return null;
+        }
+
+        static DungeonFloorDefinition FindDefinitionInCatalog(DungeonFloorDefinitionCatalog catalog, string floorId)
+        {
+            if (catalog?.Floors == null || string.IsNullOrEmpty(floorId))
+                return null;
+
+            return FindDefinitionInArray(catalog.Floors, floorId);
+        }
+
+        static DungeonFloorDefinitionCatalog GetDistrictHubCatalog()
+        {
+            if (_districtHubCatalog == null)
+            {
+                _districtHubCatalog = Resources.Load<DungeonFloorDefinitionCatalog>(
+                    TownDistrictTestPaths.ResourcesCatalog);
+            }
+
+            return _districtHubCatalog;
         }
 
         static DungeonTimeService EnsureDungeonTimeService()

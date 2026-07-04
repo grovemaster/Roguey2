@@ -1,4 +1,5 @@
 using JRogue.Manager.Essence;
+using JRogue.Manager.Equipment;
 using JRogue.Stats;
 using JRogue.Stats.Racial;
 using UnityEngine;
@@ -83,6 +84,9 @@ namespace JRogue.Racial
                 Debug.Log(
                     $"[HumanClass] Committed {actor.name} to {targetClass}: essences disabled, Soul Power max {stats.MaxSoulPower}.");
             }
+
+            if (targetClass is HumanClass.Mage or HumanClass.Priest)
+                actor.GetComponent<EquipmentManager>()?.StripMartialCallingIncompatibleEquipment();
         }
 
         static HumanMageSpellsRuntime EnsureMageSpellsRuntime(GameObject actor, HumanClass targetClass)

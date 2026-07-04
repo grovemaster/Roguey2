@@ -7,6 +7,7 @@ using JRogue.Item;
 using JRogue.Manager.Inventory;
 using JRogue.Racial;
 using JRogue.Stats;
+using JRogue.Stats.Racial;
 using JRogue.World.Lighting;
 using UnityEngine;
 
@@ -324,6 +325,37 @@ namespace JRogue.Manager.Equipment
 
         public ItemInstance GetEquippedInstance(EquipmentSlot equipmentSlot) =>
             _equipment.TryGetValue(equipmentSlot, out ItemInstance i) ? i : null;
+
+        /// <summary>Unequips martial-calling gear the actor may no longer wear (e.g. Human Mage/Priest commit).</summary>
+        public void StripMartialCallingIncompatibleEquipment()
+        {
+            if (stats == null)
+                return;
+
+            var slots = new List<EquipmentSlot>(_equipment.Keys);
+            for (int i = 0; i < slots.Count; i++)
+            {
+                EquipmentSlot slot = slots[i];
+                if (!_equipment.TryGetValue(slot, out ItemInstance inst) || inst?.Definition == null)
+                    continue;
+
+                ItemData def = inst.Definition;
+                if (!def.requiresMartialCalling
+                    || EquipmentRequirementRules.PassesMartialCalling(stats, def))
+                {
+                    continue;
+                }
+
+                string itemName = def.itemName;
+                HumanClass humanClass = stats.humanClass;
+                if (!TryUnequipToBag(slot))
+                    continue;
+
+                Debug.Log(
+                    $"[HumanClass] {name} can no longer wear {itemName} as a "
+                    + $"{EquipmentRequirementRules.GetHumanClassSingular(humanClass)}.");
+            }
+        }
 
         public bool TryGetEquippedSlot(ItemInstance item, out EquipmentSlot slot)
         {
