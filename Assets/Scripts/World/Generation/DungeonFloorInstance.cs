@@ -395,11 +395,14 @@ namespace JRogue.World.Generation
                     continue;
 
                 bool open = !visual.RequiresTownTimeOpen || townPortalOpen;
-                bool visible = visibility != null && visibility.IsVisible(visual.Cell);
-                if (!visible && TownPortalSetupPhase.IsHubFloor(FloorId))
-                    visible = true;
+                bool cellInFog = visibility != null && visibility.IsVisible(visual.Cell);
+                bool visible = PortalFogVisibilityPolicy.ShouldRenderPortal(
+                    cellInFog,
+                    visual.RequiresTownTimeOpen,
+                    TownPortalSetupPhase.IsHubFloor(FloorId),
+                    open);
 
-                visual.Renderer.enabled = open && visible;
+                visual.Renderer.enabled = visible;
             }
         }
 

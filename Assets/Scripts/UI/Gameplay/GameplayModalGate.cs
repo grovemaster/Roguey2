@@ -33,6 +33,7 @@ namespace JRogue.UI.Gameplay
             || ProficienciesUI.BlocksGameplay
             || FriendlyFireConfirmDialogUI.BlocksGameplay
             || MessageHistoryUI.BlocksGameplay
-            || InventoryGivePickerUI.IsOpen;
+            || InventoryGivePickerUI.IsOpen
+            || InventoryGiveQuantityDialogUI.IsOpen;
     }
 }

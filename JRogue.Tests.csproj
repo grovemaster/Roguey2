@@ -107,6 +107,7 @@
     <Compile Include="Assets/Tests/UnitTests/Racial/HumanPriestShrineQuestTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/UI/GameLogSessionTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Dialog/NpcDialogTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Inventory/PartyInventoryTransferServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/TieflingImplantForgemasterLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/MartialCallingEquipStripTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/DungeonGenerationPipelineTests.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Assets/Tests/UnitTests/World/VaultPlacementLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/AdjacentMapInteractableQueryTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/UI/HotbarEntryTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/PortalFogVisibilityPolicyTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTest.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/EquipmentLegalityEvaluatorTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/UI/Racial/BarbarianSpiritImprintViewModelTests.cs" />

@@ -2481,18 +2481,35 @@ namespace JRogue.UI.Inventory
 
             InventoryGivePickerUI.EnsureInstance().Show(row.Owner, recipient =>
             {
-                if (!PartyInventoryTransferService.TryGiveCarriedItem(
-                        row.Instance,
-                        row.Owner,
-                        recipient,
-                        out string message))
+                void ExecuteGive(int quantity)
                 {
-                    Debug.Log(message);
-                    return;
+                    if (!PartyInventoryTransferService.TryGiveCarriedItem(
+                            row.Instance,
+                            row.Owner,
+                            recipient,
+                            quantity,
+                            out string message))
+                    {
+                        Debug.Log(message);
+                        return;
+                    }
+
+                    RefreshInventoryDisplay();
+                    AbilityHotbarUI.Instance?.RefreshAll();
                 }
 
-                RefreshInventoryDisplay();
-                AbilityHotbarUI.Instance?.RefreshAll();
+                if (row.Instance.Quantity > 1)
+                {
+                    InventoryGiveQuantityDialogUI.EnsureInstance().Show(
+                        row.Instance,
+                        recipient,
+                        row.Instance.Quantity,
+                        ExecuteGive);
+                }
+                else
+                {
+                    ExecuteGive(1);
+                }
             });
         }
 

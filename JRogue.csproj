@@ -317,6 +317,7 @@
     <Compile Include="Assets/Scripts/Status/StatusImmunity.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/DwarfHallAncestorLearnEffect.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingBootstrap.cs" />
+    <Compile Include="Assets/Scripts/UI/Inventory/InventoryGiveQuantityDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/VaultPlacementPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/DwarfClanQuestService.cs" />
     <Compile Include="Assets/Scripts/Abilities/Essence/DashEssenceRuntime.cs" />
@@ -619,8 +620,8 @@
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyMageSpellTags.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AdjacentInteractPickerModalUI.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/LightingPlacementEntry.cs" />
-    <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRoller.cs" />
     <Compile Include="Assets/Scripts/World/Town/BarbarianShamanTentLayout.cs" />
+    <Compile Include="Assets/Scripts/Service/Loot/EnemyLootRoller.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentManager.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneTilePainter.cs" />
     <Compile Include="Assets/Scripts/UI/Proficiency/ProficienciesUI.cs" />
@@ -636,14 +637,15 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/GameLogService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonEntryService.cs" />
     <Compile Include="Assets/Scripts/Status/StatusEffectService.cs" />
+    <Compile Include="Assets/Scripts/World/Town/BarbarianHolyLandLayout.cs" />
     <Compile Include="Assets/Scripts/UI/Racial/TieflingImplantSlotGridView.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/FloorConnectivityValidationPhase.cs" />
-    <Compile Include="Assets/Scripts/World/Town/BarbarianHolyLandLayout.cs" />
     <Compile Include="Assets/Scripts/Racial/DragonianElderQuestService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileInstance.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/MonsterSpawnSchedulePhase.cs" />
     <Compile Include="Assets/Scripts/World/MapPresence/MonsterMapPresenceProfile.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarTooltipUI.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/PortalFogVisibilityPolicy.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonZonePopulationProfile.cs" />
     <Compile Include="Assets/Scripts/World/MapInteract/MapInteractPlayerInteraction.cs" />
     <Compile Include="Assets/Scripts/Racial/PartyRacialDevTools.cs" />

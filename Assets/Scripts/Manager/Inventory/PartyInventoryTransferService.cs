@@ -3,7 +3,6 @@ using JRogue.Actors;
 using JRogue.Item;
 using JRogue.Manager.Combat;
 using JRogue.Manager.Equipment;
-using JRogue.Manager.Inventory;
 using JRogue.Manager.Party;
 using JRogue.UI.Hotbar;
 using UnityEngine;
@@ -18,6 +17,7 @@ namespace JRogue.Manager.Inventory
             ItemInstance instance,
             BaseActor from,
             BaseActor to,
+            int quantity,
             out string message)
         {
             message = null;
@@ -25,6 +25,18 @@ namespace JRogue.Manager.Inventory
             if (instance == null || from == null || to == null)
             {
                 message = "Invalid transfer.";
+                return false;
+            }
+
+            if (quantity < 1)
+            {
+                message = "Invalid quantity.";
+                return false;
+            }
+
+            if (quantity > instance.Quantity)
+            {
+                message = "Not enough items in stack.";
                 return false;
             }
 
@@ -74,29 +86,75 @@ namespace JRogue.Manager.Inventory
                 return false;
             }
 
-            if (!toInventory.CanCarry(instance))
+            bool fullTransfer = quantity >= instance.Quantity;
+            ItemInstance carryCheck = fullTransfer
+                ? instance
+                : CreateCarriedSplit(instance, quantity);
+
+            if (!toInventory.CanCarry(carryCheck))
             {
                 message = $"{to.DisplayName} cannot carry {instance.Definition?.itemName}.";
                 return false;
             }
 
-            if (!fromInventory.TryRemoveCarried(instance))
+            if (fullTransfer)
+            {
+                if (!fromInventory.TryRemoveCarried(instance))
+                {
+                    message = "Could not remove item from giver.";
+                    return false;
+                }
+
+                if (!toInventory.TryStowCarriedItem(instance))
+                {
+                    fromInventory.AddItem(instance);
+                    message = "Recipient could not receive the item.";
+                    return false;
+                }
+
+                ClearHotbarReferences(from, instance.Id);
+                message = FormatSuccessMessage(instance.Definition?.itemName, to.DisplayName, quantity);
+                Debug.Log($"{LogPrefix} {message}");
+                return true;
+            }
+
+            if (!fromInventory.TryConsumeCarriedQuantity(instance, quantity))
             {
                 message = "Could not remove item from giver.";
                 return false;
             }
 
-            if (!toInventory.AddItem(instance))
+            ItemInstance split = CreateCarriedSplit(instance, quantity);
+            if (!toInventory.TryStowCarriedItem(split))
             {
-                fromInventory.AddItem(instance);
+                instance.Quantity += quantity;
                 message = "Recipient could not receive the item.";
                 return false;
             }
 
-            ClearHotbarReferences(from, instance.Id);
-            message = $"Gave {instance.Definition?.itemName} to {to.DisplayName}.";
+            message = FormatSuccessMessage(instance.Definition?.itemName, to.DisplayName, quantity);
             Debug.Log($"{LogPrefix} {message}");
             return true;
+        }
+
+        static string FormatSuccessMessage(string itemName, string recipientName, int quantity)
+        {
+            string label = string.IsNullOrEmpty(itemName) ? "item" : itemName;
+            return quantity > 1
+                ? $"Gave {quantity} × {label} to {recipientName}."
+                : $"Gave {label} to {recipientName}.";
+        }
+
+        static ItemInstance CreateCarriedSplit(ItemInstance source, int quantity)
+        {
+            var split = new ItemInstance(source.Definition, quantity)
+            {
+                IsAppraised = source.IsAppraised,
+                UserMarks = source.UserMarks,
+                UserInscription = source.UserInscription,
+                StorageLocation = ItemStorageLocation.Carried,
+            };
+            return split;
         }
 
         static void ClearHotbarReferences(BaseActor from, string itemInstanceId)
