@@ -12,6 +12,7 @@ namespace JRogue.UI.Gameplay
 
         GameObject _ringRoot;
         SpriteRenderer _ringRenderer;
+        Sprite _ringSprite;
         BaseActor _attachedActor;
 
         public static PartyMemberMapHighlight Instance => _instance;
@@ -52,8 +53,7 @@ namespace JRogue.UI.Gameplay
             if (_ringRoot == null || !_ringRoot.activeSelf || _attachedActor == null)
                 return;
 
-            _ringRoot.transform.position = _attachedActor.transform.position;
-            SyncRingScale(_attachedActor.transform);
+            SyncRingToActor(_attachedActor.transform);
         }
 
         public void AttachTo(BaseActor actor)
@@ -65,8 +65,7 @@ namespace JRogue.UI.Gameplay
                 return;
             }
 
-            SyncRingScale(actor.transform);
-            _ringRoot.transform.position = actor.transform.position;
+            SyncRingToActor(actor.transform);
             SetVisible(true);
         }
 
@@ -81,25 +80,37 @@ namespace JRogue.UI.Gameplay
             _ringRoot = new GameObject("SelectionRing");
             _ringRoot.transform.SetParent(transform, false);
             _ringRenderer = _ringRoot.AddComponent<SpriteRenderer>();
-            _ringRenderer.sprite = CreateRingSprite();
+            _ringSprite = CreateRingSprite();
+            _ringRenderer.sprite = _ringSprite;
             _ringRenderer.color = HighlightColor;
             _ringRenderer.sortingOrder = 120;
         }
 
-        void SyncRingScale(Transform actorRoot)
+        void SyncRingToActor(Transform actorRoot)
         {
             SpriteRenderer source = GridFootprintUtility.FindPrimarySpriteRenderer(actorRoot);
-            if (source == null || source.sprite == null)
+            if (source == null || source.sprite == null || _ringSprite == null)
             {
+                _ringRoot.transform.position = actorRoot.position;
                 _ringRoot.transform.localScale = Vector3.one * 1.35f;
                 return;
             }
 
-            _ringRenderer.sprite = source.sprite;
-            Vector3 sourceScale = source.transform.lossyScale;
+            if (_ringRenderer.sprite != _ringSprite)
+                _ringRenderer.sprite = _ringSprite;
+
+            _ringRenderer.sortingLayerID = source.sortingLayerID;
+            _ringRenderer.sortingOrder = source.sortingOrder - 1;
+            _ringRenderer.flipX = source.flipX;
+
+            // Center on rendered sprite bounds so pivot mismatches (DCSS foot vs ring) do not offset the frame.
+            _ringRoot.transform.position = source.bounds.center;
+
+            Vector2 targetSize = source.bounds.size * 1.18f;
+            Vector2 ringSize = _ringSprite.bounds.size;
             _ringRoot.transform.localScale = new Vector3(
-                sourceScale.x * 1.18f,
-                sourceScale.y * 1.18f,
+                targetSize.x / ringSize.x,
+                targetSize.y / ringSize.y,
                 1f);
         }
 
