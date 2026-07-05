@@ -82,6 +82,7 @@
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintRuntime.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/TieflingImplantSlotModifierSource.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillTreeDefinition.cs" />
+    <Compile Include="Assets/Data/Organizations/OrganizationIds.cs" />
     <Compile Include="Assets/Data/Racial/Undead/UndeadSkillNodeModifierSource.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanClassSkillNodeModifierSource.cs" />
     <Compile Include="Assets/Data/Racial/Elf/ElementalSpiritContractsRuntime.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Assets/Data/Racial/Dwarf/DwarfCommonSlotPreset.cs" />
     <Compile Include="Assets/Data/Item/Evocable/EvocableItemData.cs" />
     <Compile Include="Assets/Data/Racial/Human/PriestPietyBandModifierSource.cs" />
+    <Compile Include="Assets/Data/Organizations/OrganizationMembershipRuntime.cs" />
     <Compile Include="Assets/Data/Status/StatusPolarity.cs" />
     <Compile Include="Assets/Data/Racial/Tiefling/CyborgImplantCostTypes.cs" />
     <Compile Include="Assets/Data/Racial/Human/HumanSkillNodeRankEntry.cs" />
@@ -165,6 +167,7 @@
     <Compile Include="Assets/Data/Racial/SpiritImprint/SpiritImprintUnlockCost.cs" />
     <Compile Include="Assets/Data/Racial/Human/KnightSkillMasteryEntry.cs" />
     <Compile Include="Assets/Data/Racial/Undead/Effects/UndeadLichBargainRestriction.cs" />
+    <Compile Include="Assets/Data/Organizations/OrganizationDefinition.cs" />
     <Compile Include="Assets/Data/Racial/Human/PriestVowDefinition.cs" />
     <Compile Include="Assets/Data/Ability/AbilityAction.cs" />
     <Compile Include="Assets/Data/Item/Effect/StatModifierEffect.cs" />

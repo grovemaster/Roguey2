@@ -21,6 +21,12 @@ namespace JRogue.World.Generation
                 RegisterCounter(cell);
         }
 
+        public static void EnsureAdventureGuildHallCounters()
+        {
+            foreach (Vector3Int cell in AdventureGuildHallLayout.EnumerateCounterCells())
+                RegisterCounter(cell);
+        }
+
         public static void EnsureMarketGeneralStoreCounters()
         {
             foreach (Vector3Int cell in MarketGeneralStoreLayout.EnumerateCounterCells())

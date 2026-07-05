@@ -70,7 +70,7 @@ PrefabInstance:
       addedObject: {fileID: 2131792305129974092}
     - targetCorrespondingSourceObject: {fileID: 8460375592543843392, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7781809256476341704}
+      addedObject: {fileID: 2714647858677543565}
   m_SourcePrefab: {fileID: 100100000, guid: 995b3aed7444e6cbfbee75248241f9ff, type: 3}
 --- !u!1 &5045610397226336184 stripped
 GameObject:
@@ -98,7 +98,7 @@ MonoBehaviour:
   dialogProfile: {fileID: 0}
   portrait: {fileID: 11400000, guid: 6683a623ae69a5d9780aef4e1d3de0a6, type: 2}
   shopDefinition: {fileID: 11400000, guid: 27f8542ce96d4bb49b91d97f76d99710, type: 2}
---- !u!114 &7781809256476341704
+--- !u!114 &2714647858677543565
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

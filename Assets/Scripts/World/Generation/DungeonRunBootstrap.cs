@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.Actors.Components;
 using JRogue.Manager.Party;
+using JRogue.Organizations;
 using JRogue.Shop;
 using JRogue.World.Town;
 using UnityEngine;
@@ -115,7 +116,10 @@ namespace JRogue.World.Generation
 
                 BaseActor actor = instance.GetComponent<BaseActor>();
                 if (actor != null)
+                {
+                    OrganizationMembershipRuntime.EnsureDefaultGuildMembership(instance);
                     party.partyMembers.Add(actor);
+                }
             }
         }
 

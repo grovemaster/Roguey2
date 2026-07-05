@@ -43,6 +43,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8296096646264870732}
+    - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6996128041314664335}
   m_SourcePrefab: {fileID: 100100000, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
 --- !u!1 &3218558407117122553 stripped
 GameObject:
@@ -67,3 +70,19 @@ MonoBehaviour:
   - slot: 2
     implant: {fileID: 11400000, guid: c1d2e3f4a5b6478990ab1c2d3e4f5a93, type: 2}
   requireTieflingImplantSubsystem: 1
+--- !u!114 &6996128041314664335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3218558407117122553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57acfd98b85ff3231bd4ac267ce22297, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Organizations.OrganizationMembershipRuntime
+  memberships:
+  - organizationId: adventurers_guild
+    rank: 9
+    isActiveMember: 1

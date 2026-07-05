@@ -260,22 +260,70 @@ namespace JRogue.Editor.World
                 return;
 
             var so = new SerializedObject(def);
-            SerializedProperty portals = so.FindProperty("portals");
-            portals.arraySize = 1;
-            SerializedProperty enter = portals.GetArrayElementAtIndex(0);
-            enter.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.EnterLinkId;
-            enter.FindPropertyRelative("targetFloorId").stringValue = AdventureGuildExchangeLayout.InteriorFloorId;
-            enter.FindPropertyRelative("portalCell").vector3IntValue = AdventureGuildExchangeLayout.ExteriorDoorCell;
-            enter.FindPropertyRelative("listLabel").stringValue = "Adventure Guild Exchange";
-
-            SerializedProperty arrivals = so.FindProperty("arrivalBindings");
-            arrivals.arraySize = 1;
-            SerializedProperty arrival = arrivals.GetArrayElementAtIndex(0);
-            arrival.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.ExitLinkId;
-            arrival.FindPropertyRelative("arrivalAnchor").vector3IntValue = AdventureGuildExchangeLayout.ExteriorDoorCell;
+            UpsertBuildingPortal(
+                so,
+                AdventureGuildExchangeLayout.EnterLinkId,
+                AdventureGuildExchangeLayout.InteriorFloorId,
+                AdventureGuildExchangeLayout.ExteriorDoorCell,
+                "Adventure Guild Exchange");
+            UpsertArrival(
+                so,
+                AdventureGuildExchangeLayout.ExitLinkId,
+                AdventureGuildExchangeLayout.ExteriorDoorCell);
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(def);
+        }
+
+        static void UpsertBuildingPortal(
+            SerializedObject floorSo,
+            string linkId,
+            string targetFloorId,
+            Vector3Int portalCell,
+            string listLabel)
+        {
+            SerializedProperty portals = floorSo.FindProperty("portals");
+            for (int i = 0; i < portals.arraySize; i++)
+            {
+                SerializedProperty portal = portals.GetArrayElementAtIndex(i);
+                if (portal.FindPropertyRelative("portalLinkId").stringValue != linkId)
+                    continue;
+
+                portal.FindPropertyRelative("targetFloorId").stringValue = targetFloorId;
+                portal.FindPropertyRelative("portalCell").vector3IntValue = portalCell;
+                portal.FindPropertyRelative("listLabel").stringValue = listLabel;
+                return;
+            }
+
+            int index = portals.arraySize;
+            portals.InsertArrayElementAtIndex(index);
+            SerializedProperty added = portals.GetArrayElementAtIndex(index);
+            added.FindPropertyRelative("portalLinkId").stringValue = linkId;
+            added.FindPropertyRelative("targetFloorId").stringValue = targetFloorId;
+            added.FindPropertyRelative("portalCell").vector3IntValue = portalCell;
+            added.FindPropertyRelative("listLabel").stringValue = listLabel;
+            added.FindPropertyRelative("portalMarkerId").stringValue = string.Empty;
+            added.FindPropertyRelative("adjacentConfirmOnly").boolValue = false;
+        }
+
+        static void UpsertArrival(SerializedObject floorSo, string linkId, Vector3Int arrivalAnchor)
+        {
+            SerializedProperty arrivals = floorSo.FindProperty("arrivalBindings");
+            for (int i = 0; i < arrivals.arraySize; i++)
+            {
+                SerializedProperty arrival = arrivals.GetArrayElementAtIndex(i);
+                if (arrival.FindPropertyRelative("portalLinkId").stringValue != linkId)
+                    continue;
+
+                arrival.FindPropertyRelative("arrivalAnchor").vector3IntValue = arrivalAnchor;
+                return;
+            }
+
+            int index = arrivals.arraySize;
+            arrivals.InsertArrayElementAtIndex(index);
+            SerializedProperty added = arrivals.GetArrayElementAtIndex(index);
+            added.FindPropertyRelative("portalLinkId").stringValue = linkId;
+            added.FindPropertyRelative("arrivalAnchor").vector3IntValue = arrivalAnchor;
         }
 
         static void EnsureExteriorFacadeOverlay()

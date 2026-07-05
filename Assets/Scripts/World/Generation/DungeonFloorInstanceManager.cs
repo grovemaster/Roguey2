@@ -290,6 +290,8 @@ namespace JRogue.World.Generation
             TownHubCameraUtility.ApplyForFloor(floorId);
             if (floorId == AdventureGuildExchangeLayout.InteriorFloorId)
                 ShopCounterService.EnsureAdventureGuildExchangeCounters();
+            else if (floorId == AdventureGuildHallLayout.InteriorFloorId)
+                ShopCounterService.EnsureAdventureGuildHallCounters();
             else if (floorId == MarketGeneralStoreLayout.InteriorFloorId)
                 ShopCounterService.EnsureMarketGeneralStoreCounters();
             else if (floorId == MarketItemShopLayout.InteriorFloorId)

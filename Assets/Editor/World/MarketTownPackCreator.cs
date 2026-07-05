@@ -131,8 +131,24 @@ namespace JRogue.Editor.World
             DungeonFloorDefinition storeInteriorDef,
             DungeonFloorDefinition itemShopInteriorDef,
             DungeonFloorDefinition blacksmithInteriorDef,
-            DungeonFloorDefinition innInteriorDef)
+            DungeonFloorDefinition innInteriorDef,
+            DungeonFloorDefinition guildHallInteriorDef = null)
         {
+            if (guildHallInteriorDef != null)
+            {
+                DistrictTestCatalogUpdater.UpdateCatalog(
+                    squareDef,
+                    marketDef,
+                    residentialDef,
+                    guildInteriorDef,
+                    guildHallInteriorDef,
+                    storeInteriorDef,
+                    itemShopInteriorDef,
+                    blacksmithInteriorDef,
+                    innInteriorDef);
+                return;
+            }
+
             DistrictTestCatalogUpdater.UpdateCatalog(
                 squareDef,
                 marketDef,
@@ -240,30 +256,45 @@ namespace JRogue.Editor.World
             SerializedProperty portals = so.FindProperty("portals");
 
             int stripWidth = DistrictSquareMarketTransition.StripMaxX - DistrictSquareMarketTransition.StripMinX + 1;
-            portals.arraySize = 1 + stripWidth;
+            const int buildingPortalCount = 2;
+            portals.arraySize = buildingPortalCount + stripWidth;
 
-            SerializedProperty guildPortal = portals.GetArrayElementAtIndex(0);
-            guildPortal.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.EnterLinkId;
-            guildPortal.FindPropertyRelative("targetFloorId").stringValue = AdventureGuildExchangeLayout.InteriorFloorId;
-            guildPortal.FindPropertyRelative("portalCell").vector3IntValue = AdventureGuildExchangeLayout.ExteriorDoorCell;
-            guildPortal.FindPropertyRelative("listLabel").stringValue = "Adventure Guild Exchange";
+            SerializedProperty exchangePortal = portals.GetArrayElementAtIndex(0);
+            exchangePortal.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.EnterLinkId;
+            exchangePortal.FindPropertyRelative("targetFloorId").stringValue = AdventureGuildExchangeLayout.InteriorFloorId;
+            exchangePortal.FindPropertyRelative("portalCell").vector3IntValue = AdventureGuildExchangeLayout.ExteriorDoorCell;
+            exchangePortal.FindPropertyRelative("listLabel").stringValue = "Adventure Guild Exchange";
+            exchangePortal.FindPropertyRelative("portalMarkerId").stringValue = string.Empty;
+            exchangePortal.FindPropertyRelative("adjacentConfirmOnly").boolValue = false;
+
+            SerializedProperty hallPortal = portals.GetArrayElementAtIndex(1);
+            hallPortal.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildHallLayout.EnterLinkId;
+            hallPortal.FindPropertyRelative("targetFloorId").stringValue = AdventureGuildHallLayout.InteriorFloorId;
+            hallPortal.FindPropertyRelative("portalCell").vector3IntValue = AdventureGuildHallLayout.ExteriorDoorCell;
+            hallPortal.FindPropertyRelative("listLabel").stringValue = "Adventurer's Guild Hall";
+            hallPortal.FindPropertyRelative("portalMarkerId").stringValue = string.Empty;
+            hallPortal.FindPropertyRelative("adjacentConfirmOnly").boolValue = false;
 
             WriteNorthStripPortals(
                 portals,
-                startIndex: 1,
+                startIndex: buildingPortalCount,
                 DistrictSquareMarketTransition.SquareToMarketLinkId,
                 MarketTownFloorIds.FloorId,
                 DistrictSquareMarketTransition.SquareNorthEdgeY,
                 "Market");
 
             SerializedProperty arrivals = so.FindProperty("arrivalBindings");
-            arrivals.arraySize = 2;
+            arrivals.arraySize = 3;
 
-            SerializedProperty guildArrival = arrivals.GetArrayElementAtIndex(0);
-            guildArrival.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.ExitLinkId;
-            guildArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue = AdventureGuildExchangeLayout.ExteriorDoorCell;
+            SerializedProperty exchangeArrival = arrivals.GetArrayElementAtIndex(0);
+            exchangeArrival.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.ExitLinkId;
+            exchangeArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue = AdventureGuildExchangeLayout.ExteriorDoorCell;
 
-            SerializedProperty marketArrival = arrivals.GetArrayElementAtIndex(1);
+            SerializedProperty hallArrival = arrivals.GetArrayElementAtIndex(1);
+            hallArrival.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildHallLayout.ExitLinkId;
+            hallArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue = AdventureGuildHallLayout.ExteriorDoorCell;
+
+            SerializedProperty marketArrival = arrivals.GetArrayElementAtIndex(2);
             marketArrival.FindPropertyRelative("portalLinkId").stringValue =
                 DistrictSquareMarketTransition.MarketToSquareLinkId;
             marketArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue =

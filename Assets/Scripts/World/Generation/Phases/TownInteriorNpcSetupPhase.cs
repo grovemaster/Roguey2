@@ -27,6 +27,11 @@ namespace JRogue.World.Generation.Phases
                 "Town/Npc/TownNpc_AdventureGuildClerk",
                 "Assets/Resources/Town/Npc/TownNpc_AdventureGuildClerk.prefab"),
             (
+                AdventureGuildHallLayout.InteriorFloorId,
+                AdventureGuildHallLayout.NpcMarkerId,
+                "Town/Npc/TownNpc_AdventureGuildSecretary",
+                "Assets/Resources/Town/Npc/TownNpc_AdventureGuildSecretary.prefab"),
+            (
                 MarketGeneralStoreLayout.InteriorFloorId,
                 MarketGeneralStoreLayout.NpcMarkerId,
                 "Town/Npc/TownNpc_MarketGeneralStoreKeeper",
@@ -102,7 +107,8 @@ namespace JRogue.World.Generation.Phases
                     ConfigureCounterTalkBinding(counterBinding, floorId);
 
                 if (instance.GetComponent<ShopNpcController>() != null
-                    || instance.GetComponent<InnkeeperNpcController>() != null)
+                    || instance.GetComponent<InnkeeperNpcController>() != null
+                    || instance.GetComponent<AdventurersGuildSecretaryNpcController>() != null)
                     TownShopStateService.EnsureRunService();
 
                 GridMover mover = instance.GetComponent<GridMover>();
@@ -133,6 +139,14 @@ namespace JRogue.World.Generation.Phases
                 counterBinding.Configure(
                     AdventureGuildExchangeLayout.CustomerRowY,
                     AdventureGuildExchangeLayout.CounterRowY);
+                return;
+            }
+
+            if (floorId == AdventureGuildHallLayout.InteriorFloorId)
+            {
+                counterBinding.Configure(
+                    AdventureGuildHallLayout.CustomerRowY,
+                    AdventureGuildHallLayout.CounterRowY);
                 return;
             }
 

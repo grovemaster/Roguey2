@@ -61,6 +61,7 @@ namespace JRogue.Editor.World
             }
 
             AdventureGuildExchangePackCreator.SetupAdventureGuildExchange();
+            AdventureGuildHallPackCreator.SetupAdventureGuildHall();
             MarketTownPackCreator.SetupMarketTown();
             MarketGeneralStorePackCreator.SetupMarketGeneralStore();
             MarketItemShopPackCreator.SetupMarketItemShop();
@@ -101,6 +102,7 @@ namespace JRogue.Editor.World
                 $"[DimensionSquare] Saved {ScenePath}. Hub restored with dimension square + Adventure Guild facade" +
                 (LoadIntegratedMarketFloorDefinition() != null ? " + market district" : string.Empty) +
                 (LoadGuildInteriorFloorDefinition() != null ? " + guild interior" : string.Empty) +
+                (LoadGuildHallInteriorFloorDefinition() != null ? " + guild hall" : string.Empty) +
                 ". North strip repainted (y=39, x=15–24). " +
                 "For full district playtest use JRogue → Town → Fix District Town Test Scene.");
         }
@@ -164,6 +166,8 @@ namespace JRogue.Editor.World
             DungeonFloorDefinition guildInteriorDef = LoadGuildInteriorFloorDefinition();
             if (guildInteriorDef != null)
                 floors.Add(guildInteriorDef);
+
+            AppendUniqueFloorDefinition(floors, LoadGuildHallInteriorFloorDefinition());
 
             AppendMarketBuildingInteriorDefinitions(floors);
             AppendHolyLandFloorDefinitions(floors);
@@ -231,6 +235,9 @@ namespace JRogue.Editor.World
         static DungeonFloorDefinition LoadGuildInteriorFloorDefinition() =>
             AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.AdventureGuildInteriorFloorDef);
 
+        static DungeonFloorDefinition LoadGuildHallInteriorFloorDefinition() =>
+            AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.AdventureGuildHallInteriorFloorDef);
+
         static DungeonFloorDefinition LoadGeneralStoreInteriorFloorDefinition() =>
             AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.MarketGeneralStoreInteriorFloorDef);
 
@@ -272,6 +279,7 @@ namespace JRogue.Editor.World
             }
             DungeonFloorDefinition marketDef = LoadIntegratedMarketFloorDefinition();
             DungeonFloorDefinition guildInteriorDef = LoadGuildInteriorFloorDefinition();
+            DungeonFloorDefinition guildHallInteriorDef = LoadGuildHallInteriorFloorDefinition();
             DungeonFloorDefinition storeInteriorDef = LoadGeneralStoreInteriorFloorDefinition();
             DungeonFloorDefinition itemShopInteriorDef = LoadItemShopInteriorFloorDefinition();
             DungeonFloorDefinition blacksmithInteriorDef = LoadBlacksmithInteriorFloorDefinition();
@@ -298,6 +306,7 @@ namespace JRogue.Editor.World
                     floorDef,
                     marketDef,
                     guildInteriorDef,
+                    guildHallInteriorDef,
                     storeInteriorDef,
                     itemShopInteriorDef,
                     blacksmithInteriorDef,
@@ -320,6 +329,13 @@ namespace JRogue.Editor.World
                 DungeonFloorInstance guildInteriorInstance = EnsureScenePaintedFloor(floorsRoot, guildInteriorDef);
                 guildInteriorInstance.gameObject.SetActive(false);
                 AdventureGuildExchangePackCreator.IntegrateDistrictTownScene(guildInteriorInstance);
+            }
+
+            if (guildHallInteriorDef != null)
+            {
+                DungeonFloorInstance guildHallInteriorInstance = EnsureScenePaintedFloor(floorsRoot, guildHallInteriorDef);
+                guildHallInteriorInstance.gameObject.SetActive(false);
+                AdventureGuildHallPackCreator.IntegrateDistrictTownScene(guildHallInteriorInstance);
             }
 
             if (storeInteriorDef != null)
@@ -440,6 +456,7 @@ namespace JRogue.Editor.World
             Undo.RecordObject(wallMap, "Paint dimension square walls");
             DimensionSquareLayout.Paint(floorMap, wallMap, floorTiles, wallTile);
             AdventureGuildExchangePackCreator.PaintAdventureGuildExteriorFacade(floorMap, wallMap);
+            AdventureGuildHallPackCreator.PaintAdventureGuildHallExteriorFacade(floorMap, wallMap);
 
             GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(floorMap);
             GridOverlayPainter.ApplyCenterPivotAlignmentToPaintedCells(wallMap);
@@ -576,6 +593,7 @@ namespace JRogue.Editor.World
             DungeonFloorDefinition squareDef,
             DungeonFloorDefinition marketDef,
             DungeonFloorDefinition guildInteriorDef,
+            DungeonFloorDefinition guildHallInteriorDef,
             DungeonFloorDefinition storeInteriorDef,
             DungeonFloorDefinition itemShopInteriorDef,
             DungeonFloorDefinition blacksmithInteriorDef,
@@ -590,6 +608,8 @@ namespace JRogue.Editor.World
                 ids.Add(marketDef.FloorId);
             if (guildInteriorDef != null && !string.IsNullOrEmpty(guildInteriorDef.FloorId))
                 ids.Add(guildInteriorDef.FloorId);
+            if (guildHallInteriorDef != null && !string.IsNullOrEmpty(guildHallInteriorDef.FloorId))
+                ids.Add(guildHallInteriorDef.FloorId);
             if (storeInteriorDef != null && !string.IsNullOrEmpty(storeInteriorDef.FloorId))
                 ids.Add(storeInteriorDef.FloorId);
             if (itemShopInteriorDef != null && !string.IsNullOrEmpty(itemShopInteriorDef.FloorId))

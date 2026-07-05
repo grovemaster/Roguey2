@@ -44,6 +44,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
       insertIndex: -1
       addedObject: {fileID: 339046730152217508}
+    - targetCorrespondingSourceObject: {fileID: 5339168105576016893, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8002899919591620084}
   m_SourcePrefab: {fileID: 100100000, guid: 5733ee9eb4e4f836b9e937e461b1d473, type: 3}
 --- !u!1 &3218558407117122556 stripped
 GameObject:
@@ -106,3 +109,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.KnightAuraStateRuntime
   activeStanceNodeId: 
   activeAuraNodeIds: []
+--- !u!114 &8002899919591620084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3218558407117122556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57acfd98b85ff3231bd4ac267ce22297, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Organizations.OrganizationMembershipRuntime
+  memberships:
+  - organizationId: adventurers_guild
+    rank: 9
+    isActiveMember: 1

@@ -21,6 +21,7 @@ namespace JRogue.World.Town
         public static bool TryGetOrthoSize(string floorId, out float size)
         {
             if (floorId == AdventureGuildExchangeLayout.InteriorFloorId
+                || floorId == AdventureGuildHallLayout.InteriorFloorId
                 || floorId == MarketGeneralStoreLayout.InteriorFloorId
                 || floorId == MarketItemShopLayout.InteriorFloorId
                 || floorId == MarketBlacksmithLayout.InteriorFloorId

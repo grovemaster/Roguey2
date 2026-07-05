@@ -167,6 +167,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryActionsBarView.cs" />
     <Compile Include="Assets/Scripts/Abilities/Essence/EssenceWeaponProcService.cs" />
     <Compile Include="Assets/Scripts/Abilities/ArcaneMight/ArcaneMightAbility.cs" />
+    <Compile Include="Assets/Scripts/World/Town/AdventureGuildHallLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultCellKind.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZonePopulationUtility.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/HumanKnightDrillMasterNpcController.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Assets/Scripts/Racial/DwarfAncestorLearnService.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritMeditationLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownInnBedSetupPhase.cs" />
+    <Compile Include="Assets/Scripts/Organizations/OrganizationRankLogic.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanMageHotbarSync.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanKnightHotbarSync.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntry.cs" />
@@ -299,6 +301,7 @@
     <Compile Include="Assets/Scripts/Traps/TrapBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCompassRectResolver.cs" />
     <Compile Include="Assets/Scripts/Manager/Door/DoorPlayerInteraction.cs" />
+    <Compile Include="Assets/Scripts/Controller/Npc/AdventurersGuildSecretaryNpcController.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestDevotionLoadoutService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneBoundaryResolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneBoundaryOpeningPlanner.cs" />
@@ -415,6 +418,7 @@
     <Compile Include="Assets/Scripts/Status/StatusEffectController.cs" />
     <Compile Include="Assets/Scripts/Racial/IElementalSpiritRosterSort.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractableTileId.cs" />
+    <Compile Include="Assets/Scripts/Dialog/AdventurersGuildSecretaryDialogSession.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryManager.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/MessageHistoryUI.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarInteractable.cs" />
@@ -433,6 +437,7 @@
     <Compile Include="Assets/Scripts/Input/PlayerCommandProcessor.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/AbilityHotbarUI.cs" />
     <Compile Include="Assets/Scripts/World/Town/ScenePaintedMarkerUtility.cs" />
+    <Compile Include="Assets/Scripts/Organizations/IOrganizationRankScoreContributor.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryDetailFormatter.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanPriestPietyService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultStampDiagnostics.cs" />
@@ -450,6 +455,7 @@
     <Compile Include="Assets/Scripts/World/Altar/AltarCompletionEvaluator.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyMainCharacterMarker.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/HazardPopulationPhase.cs" />
+    <Compile Include="Assets/Scripts/Organizations/OrganizationRankService.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassAbilityResources.cs" />
     <Compile Include="Assets/Scripts/World/Town/MarketTownFloorIds.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownArrivalService.cs" />
@@ -527,6 +533,7 @@
     <Compile Include="Assets/Scripts/View/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/InnBedSleepPromptEffect.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnGroupMembership.cs" />
+    <Compile Include="Assets/Scripts/Organizations/OrganizationRankScoreService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/PartyLightEmitterBridge.cs" />
     <Compile Include="Assets/Scripts/Racial/DragonianSpellLoadoutService.cs" />
@@ -584,6 +591,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCellMapBuilder.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/AltarOfferingModalUI.cs" />
     <Compile Include="Assets/Scripts/Abilities/Progression/GrantPartyExperienceAbility.cs" />
+    <Compile Include="Assets/Scripts/Organizations/EssenceSlotScoreContributor.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/ZoneLayoutPhase.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneHabitatConnectivityEnforcer.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarResolver.cs" />

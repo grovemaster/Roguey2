@@ -16,6 +16,13 @@ namespace JRogue.World.Town
             AdventureGuildExchangeFolder + "/Floor_town_interior_adventure_guild_exchange.asset";
         public const string AdventureGuildInteriorFacadeOverlay =
             AdventureGuildExchangeFolder + "/FacadeOverlay_town_interior_adventure_guild_exchange.asset";
+
+        public const string AdventureGuildHallFolder = DistrictTestRoot + "/Building/AdventureGuildHall";
+        public const string AdventureGuildHallInteriorFloorDef =
+            AdventureGuildHallFolder + "/Floor_town_interior_adventure_guild_hall.asset";
+        public const string AdventureGuildHallInteriorFacadeOverlay =
+            AdventureGuildHallFolder + "/FacadeOverlay_town_interior_adventure_guild_hall.asset";
+
         public const string DimensionSquareFacadeOverlay =
             DimensionSquareFolder + "/FacadeOverlay_dimension_square.asset";
 
