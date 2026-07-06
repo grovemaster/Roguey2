@@ -5,6 +5,7 @@ using JRogue.Controller.Npc;
 using JRogue.Dialog;
 using JRogue.Manager.Party;
 using JRogue.Organizations;
+using JRogue.Party.Recruitment;
 using JRogue.UI.Gameplay;
 using UnityEngine;
 
@@ -13,11 +14,17 @@ namespace JRogue.Dialog
     public sealed class AdventurersGuildSecretaryDialogSession
     {
         const string RankUpPayload = "__rank_up__";
+        const string RecruitPayload = "__recruit__";
         const string LeavePayload = "__leave__";
         const string PromoteAgainPayload = "__promote_again__";
         const string PromoteSomeoneElsePayload = "__promote_someone_else__";
         const string DonePayload = "__done__";
+        const string BackPayload = "__back__";
+        const string RecruitAgainPayload = "__recruit_again__";
+        const string ConfirmYesPayload = "__confirm_yes__";
+        const string ConfirmNoPayload = "__confirm_no__";
         const string MemberPayloadPrefix = "__member__";
+        const string RecruitPayloadPrefix = "__recruit_id__";
 
         readonly BaseActor _speaker;
         readonly INpcTalkTarget _target;
@@ -27,6 +34,7 @@ namespace JRogue.Dialog
         readonly PartyManager _party;
 
         BaseActor _lastPromotedMember;
+        string _pendingRecruitId;
 
         public AdventurersGuildSecretaryDialogSession(
             BaseActor speaker,
@@ -74,6 +82,10 @@ namespace JRogue.Dialog
                 ? "Select a service."
                 : "Select a service.\n\nNo one meets the essence requirements to rank up yet.";
 
+            string recruitHint = BuildRecruitMenuHint();
+            if (!string.IsNullOrEmpty(recruitHint))
+                prompt += recruitHint;
+
             var options = new List<DialogChoiceOptionData>
             {
                 new()
@@ -84,6 +96,12 @@ namespace JRogue.Dialog
                 },
                 new()
                 {
+                    label = "Recruit party member",
+                    payload = RecruitPayload,
+                    enabled = CanEnableRecruitMenu(),
+                },
+                new()
+                {
                     label = "Leave",
                     payload = LeavePayload,
                     enabled = true,
@@ -91,6 +109,30 @@ namespace JRogue.Dialog
             };
 
             ShowChoice(prompt, options, OnMainMenuChoice);
+        }
+
+        string BuildRecruitMenuHint()
+        {
+            PartyCapacityService capacity = PartyCapacityService.Instance;
+            if (capacity != null && !capacity.CanAddMember(_party))
+            {
+                int living = capacity.GetLivingMemberCount(_party);
+                return $"\n\nYour party is full ({living}/{capacity.MaxPartyMembers}).";
+            }
+
+            if (!PartyRecruitmentService.HasAvailableRecruitsOnBoard())
+                return "\n\nNo adventurers are seeking a party right now.";
+
+            return string.Empty;
+        }
+
+        bool CanEnableRecruitMenu()
+        {
+            PartyCapacityService capacity = PartyCapacityService.Instance;
+            if (capacity != null && !capacity.CanAddMember(_party))
+                return false;
+
+            return PartyRecruitmentService.HasAvailableRecruitsOnBoard();
         }
 
         void OnMainMenuChoice(DialogChoiceOptionData option)
@@ -104,7 +146,183 @@ namespace JRogue.Dialog
             }
 
             if (option.payload == RankUpPayload)
+            {
                 ShowMemberPicker();
+                return;
+            }
+
+            if (option.payload == RecruitPayload)
+                ShowRecruitPicker();
+        }
+
+        void ShowRecruitPicker()
+        {
+            List<PartyRecruitOptionView> options = PartyRecruitmentService.GetRecruitOptions(
+                _organization,
+                _party);
+
+            if (options.Count == 0)
+            {
+                ShowLine("No adventurers are seeking a party right now.", ShowMainMenu);
+                return;
+            }
+
+            var choiceOptions = new List<DialogChoiceOptionData>();
+            for (int i = 0; i < options.Count; i++)
+            {
+                PartyRecruitOptionView view = options[i];
+                PartyRecruitDefinition recruit = view.Recruit;
+                string label = $"{recruit.displayName}  (rank {recruit.guildRank}, {view.GoldCost} gold)";
+                if (!view.CanSelect && !string.IsNullOrEmpty(view.DenyReason))
+                    label += $" — {view.DenyReason}";
+
+                choiceOptions.Add(new DialogChoiceOptionData
+                {
+                    label = label,
+                    payload = RecruitPayloadPrefix + recruit.recruitId,
+                    enabled = view.CanSelect,
+                });
+            }
+
+            choiceOptions.Add(new DialogChoiceOptionData
+            {
+                label = "Back",
+                payload = BackPayload,
+                enabled = true,
+            });
+
+            ShowChoice("Who would you like to recruit?", choiceOptions, OnRecruitChoice);
+        }
+
+        void OnRecruitChoice(DialogChoiceOptionData option)
+        {
+            NpcDialogBoxUI.EnsureInstance().Close();
+
+            if (option == null || option.payload == BackPayload)
+            {
+                ShowMainMenu();
+                return;
+            }
+
+            if (option.payload == null || !option.payload.StartsWith(RecruitPayloadPrefix, System.StringComparison.Ordinal))
+                return;
+
+            _pendingRecruitId = option.payload.Substring(RecruitPayloadPrefix.Length);
+            ShowRecruitConfirm();
+        }
+
+        void ShowRecruitConfirm()
+        {
+            PartyRecruitCatalog catalog = PartyRecruitCatalog.LoadDefault();
+            PartyRecruitDefinition recruit = catalog?.FindById(_pendingRecruitId);
+            if (recruit == null)
+            {
+                ShowLine("That adventurer is no longer available.", ShowRecruitPicker);
+                return;
+            }
+
+            int cost = PartyRecruitmentService.GetRecruitCost(recruit);
+            var options = new List<DialogChoiceOptionData>
+            {
+                new()
+                {
+                    label = "Yes",
+                    payload = ConfirmYesPayload,
+                    enabled = true,
+                },
+                new()
+                {
+                    label = "No",
+                    payload = ConfirmNoPayload,
+                    enabled = true,
+                },
+            };
+
+            ShowChoice(
+                $"Recruit {recruit.displayName} for {cost} gold?",
+                options,
+                OnRecruitConfirmChoice);
+        }
+
+        void OnRecruitConfirmChoice(DialogChoiceOptionData option)
+        {
+            NpcDialogBoxUI.EnsureInstance().Close();
+
+            if (option == null || option.payload == ConfirmNoPayload)
+            {
+                ShowRecruitPicker();
+                return;
+            }
+
+            if (option.payload != ConfirmYesPayload)
+                return;
+
+            if (!PartyRecruitmentService.TryRecruit(
+                    _organization,
+                    _party,
+                    _pendingRecruitId,
+                    out string message))
+            {
+                ShowLine(message, ShowRecruitPicker);
+                return;
+            }
+
+            ShowLine(message, ShowPostRecruitMenu);
+        }
+
+        void ShowPostRecruitMenu()
+        {
+            bool canRecruitAgain = PartyRecruitmentService.CanOpenRecruitMenu(_party)
+                && HasSelectableRecruit();
+
+            var options = new List<DialogChoiceOptionData>();
+            if (canRecruitAgain)
+            {
+                options.Add(new DialogChoiceOptionData
+                {
+                    label = "Recruit another",
+                    payload = RecruitAgainPayload,
+                    enabled = true,
+                });
+            }
+
+            options.Add(new DialogChoiceOptionData
+            {
+                label = "Done",
+                payload = DonePayload,
+                enabled = true,
+            });
+
+            ShowChoice("Anything else?", options, OnPostRecruitChoice);
+        }
+
+        bool HasSelectableRecruit()
+        {
+            List<PartyRecruitOptionView> options = PartyRecruitmentService.GetRecruitOptions(
+                _organization,
+                _party);
+
+            for (int i = 0; i < options.Count; i++)
+            {
+                if (options[i].CanSelect)
+                    return true;
+            }
+
+            return false;
+        }
+
+        void OnPostRecruitChoice(DialogChoiceOptionData option)
+        {
+            NpcDialogBoxUI.EnsureInstance().Close();
+
+            if (option == null || option.payload == DonePayload)
+            {
+                ShowMainMenu();
+                return;
+            }
+
+            if (option.payload == RecruitAgainPayload)
+                ShowRecruitPicker();
         }
 
         void ShowMemberPicker()
@@ -123,7 +341,7 @@ namespace JRogue.Dialog
             options.Add(new DialogChoiceOptionData
             {
                 label = "Back",
-                payload = DonePayload,
+                payload = BackPayload,
                 enabled = true,
             });
 
@@ -150,7 +368,7 @@ namespace JRogue.Dialog
         {
             NpcDialogBoxUI.EnsureInstance().Close();
 
-            if (option == null || option.payload == DonePayload)
+            if (option == null || option.payload == BackPayload)
             {
                 ShowMainMenu();
                 return;

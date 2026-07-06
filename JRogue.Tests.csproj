@@ -127,6 +127,7 @@
     <Compile Include="Assets/Tests/UnitTests/Racial/ElfRacialAbilitiesMenuTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/SoulBeastRitualLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Loot/AutoPickupConfirmationTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Party/PartyRecruitmentTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/WarriorWillpowerHealingPotionTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/TownPlazaMarkerLayoutTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Equipment/EquipmentStackSplitTests.cs" />

@@ -68,6 +68,7 @@
     <Compile Include="Assets/Editor/Inventory/HealingPotionSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/World/KnightDrillMasterPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DungeonFloorProductionSceneCreator.cs" />
+    <Compile Include="Assets/Editor/Party/PartyRecruitCatalogCreator.cs" />
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/ResidentialTownPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />

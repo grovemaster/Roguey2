@@ -69,6 +69,9 @@ namespace JRogue.World.Generation
                 return false;
 
             for (int i = 0; i < living.Count; i++)
+                UnregisterFromGrid(living[i], grid);
+
+            for (int i = 0; i < living.Count; i++)
             {
                 BaseActor actor = living[i];
                 JRogue.View.PlayerRaceWorldSpriteApplier.Apply(actor.gameObject);
@@ -88,6 +91,128 @@ namespace JRogue.World.Generation
             party.InitializeRosterAfterDeferredSpawn();
             PortalEntryService.Instance?.SubscribePartyMembers();
             return true;
+        }
+
+        /// <summary>
+        /// Places a newly recruited member on a nearby open tile without repositioning the rest of the party.
+        /// </summary>
+        public static bool TryPlaceRecruitNearParty(BaseActor recruit, PartyManager party)
+        {
+            if (recruit == null || party?.partyMembers == null)
+                return false;
+
+            MapManager map = MapManager.Instance;
+            GridManager grid = GridManager.Instance;
+            if (map == null || grid == null)
+                return false;
+
+            GridMover mover = recruit.GetComponent<GridMover>();
+            if (mover == null)
+                return false;
+
+            var searchOrigins = new List<Vector3Int>();
+            BaseActor leader = party.GetFormationLeader();
+            if (leader != null && leader != recruit)
+                searchOrigins.Add(leader.GridPosition);
+
+            BaseActor active = party.GetActiveMember();
+            if (active != null && active != recruit && active != leader)
+                searchOrigins.Add(active.GridPosition);
+
+            for (int i = 0; i < party.partyMembers.Count; i++)
+            {
+                BaseActor member = party.partyMembers[i];
+                if (member == null || member == recruit)
+                    continue;
+
+                Vector3Int pos = member.GridPosition;
+                if (!searchOrigins.Contains(pos))
+                    searchOrigins.Add(pos);
+            }
+
+            if (searchOrigins.Count == 0
+                || !TryFindRecruitPlacementCell(searchOrigins, recruit, map, grid, out Vector3Int cell))
+                return false;
+
+            JRogue.View.PlayerRaceWorldSpriteApplier.Apply(recruit.gameObject);
+            mover.InitializeAtGridAnchor(cell);
+            if (!mover.enabled)
+                mover.enabled = true;
+
+            party.SnapHistoryToCurrentPositions();
+            return true;
+        }
+
+        static bool TryFindRecruitPlacementCell(
+            List<Vector3Int> origins,
+            BaseActor recruit,
+            MapManager map,
+            GridManager grid,
+            out Vector3Int cell)
+        {
+            cell = default;
+            var visited = new HashSet<Vector3Int>();
+
+            for (int radius = 1; radius <= 8; radius++)
+            {
+                for (int o = 0; o < origins.Count; o++)
+                {
+                    Vector3Int origin = origins[o];
+                    for (int dy = -radius; dy <= radius; dy++)
+                    {
+                        for (int dx = -radius; dx <= radius; dx++)
+                        {
+                            if (Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy)) != radius)
+                                continue;
+
+                            Vector3Int candidate = origin + new Vector3Int(dx, dy, 0);
+                            if (!visited.Add(candidate))
+                                continue;
+
+                            if (!IsOpenRecruitCell(candidate, recruit, map, grid))
+                                continue;
+
+                            cell = candidate;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        static bool IsOpenRecruitCell(
+            Vector3Int cell,
+            BaseActor recruit,
+            MapManager map,
+            GridManager grid)
+        {
+            if (!map.IsWalkable(cell))
+                return false;
+
+            IBattleTarget occupant = grid.GetActorAt(cell);
+            if (occupant == null)
+                return true;
+
+            return occupant.Owner == recruit.gameObject;
+        }
+
+        static void UnregisterFromGrid(BaseActor actor, GridManager grid)
+        {
+            if (actor == null || grid == null)
+                return;
+
+            GridMover mover = actor.GetComponent<GridMover>();
+            if (mover == null)
+                return;
+
+            IBattleTarget self = actor.GetComponent<IBattleTarget>();
+            IGridFootprint footprint = actor.GetComponent<IGridFootprint>();
+            if (footprint != null)
+                grid.UnregisterFootprint(self);
+            else
+                grid.UnregisterActor(mover.GridPosition);
         }
 
         static List<BaseActor> CollectLivingMembers(PartyManager party)
@@ -144,9 +269,13 @@ namespace JRogue.World.Generation
             GridManager grid,
             List<BaseActor> partyMembers)
         {
+            var used = new HashSet<Vector3Int>();
             for (int i = 0; i < cells.Count; i++)
             {
                 Vector3Int cell = cells[i];
+                if (!used.Add(cell))
+                    return false;
+
                 if (!map.IsWalkable(cell))
                     return false;
 
@@ -154,18 +283,11 @@ namespace JRogue.World.Generation
                 if (occupant == null)
                     continue;
 
-                bool partyOccupant = false;
-                for (int p = 0; p < partyMembers.Count; p++)
-                {
-                    if (partyMembers[p] != null && occupant.Owner == partyMembers[p].gameObject)
-                    {
-                        partyOccupant = true;
-                        break;
-                    }
-                }
+                BaseActor expected = i < partyMembers.Count ? partyMembers[i] : null;
+                if (expected != null && occupant.Owner == expected.gameObject)
+                    continue;
 
-                if (!partyOccupant)
-                    return false;
+                return false;
             }
 
             return true;

@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1859
     height: 1417
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Inspector
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -1176,16 +1176,9 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -123614
-      - m_Data: -123602
-      - m_Data: -123596
-      - m_Data: -118152
-      - m_Data: -116178
-      - m_Data: -81988
-      - m_Data: -72406
-      - m_Data: -1344
-      - m_Data: -12
-      - m_Data: 75380
+      - m_Data: -238244
+      - m_Data: -226440
+      - m_Data: -218702
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1388,43 +1381,43 @@ MonoBehaviour:
       m_Data: 58306
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 147434
-    - m_Data: 147436
-    - m_Data: 147438
-    - m_Data: 147440
-    - m_Data: 147442
-    - m_Data: 147444
-    - m_Data: 147446
-    - m_Data: 147448
-    - m_Data: 147450
-    - m_Data: 147452
-    - m_Data: 147454
-    - m_Data: 147456
-    - m_Data: 147458
-    - m_Data: 147460
-    - m_Data: 147462
-    - m_Data: 147464
-    - m_Data: 147466
-    - m_Data: 147468
-    - m_Data: 147470
-    - m_Data: 147472
-    - m_Data: 147474
-    - m_Data: 147476
-    - m_Data: 147478
-    - m_Data: 147480
-    - m_Data: 147482
-    - m_Data: 147484
-    - m_Data: 147486
-    - m_Data: 147488
-    - m_Data: 147490
-    - m_Data: 147492
-    - m_Data: 147494
-    - m_Data: 147496
-    - m_Data: 147498
-    - m_Data: 147500
-    - m_Data: 147502
-    - m_Data: 147504
-    - m_Data: 147506
+    - m_Data: 147796
+    - m_Data: 147798
+    - m_Data: 147800
+    - m_Data: 147802
+    - m_Data: 147804
+    - m_Data: 147806
+    - m_Data: 147808
+    - m_Data: 147810
+    - m_Data: 147812
+    - m_Data: 147814
+    - m_Data: 147816
+    - m_Data: 147818
+    - m_Data: 147820
+    - m_Data: 147822
+    - m_Data: 147824
+    - m_Data: 147826
+    - m_Data: 147828
+    - m_Data: 147830
+    - m_Data: 147832
+    - m_Data: 147834
+    - m_Data: 147836
+    - m_Data: 147838
+    - m_Data: 147840
+    - m_Data: 147842
+    - m_Data: 147844
+    - m_Data: 147846
+    - m_Data: 147848
+    - m_Data: 147850
+    - m_Data: 147852
+    - m_Data: 147854
+    - m_Data: 147856
+    - m_Data: 147858
+    - m_Data: 147860
+    - m_Data: 147862
+    - m_Data: 147864
+    - m_Data: 147866
+    - m_Data: 147868
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1459,43 +1452,43 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 147434
-    - m_Data: 147436
-    - m_Data: 147438
-    - m_Data: 147440
-    - m_Data: 147442
-    - m_Data: 147444
-    - m_Data: 147446
-    - m_Data: 147448
-    - m_Data: 147450
-    - m_Data: 147452
-    - m_Data: 147454
-    - m_Data: 147456
-    - m_Data: 147458
-    - m_Data: 147460
-    - m_Data: 147462
-    - m_Data: 147464
-    - m_Data: 147466
-    - m_Data: 147468
-    - m_Data: 147470
-    - m_Data: 147472
-    - m_Data: 147474
-    - m_Data: 147476
-    - m_Data: 147478
-    - m_Data: 147480
-    - m_Data: 147482
-    - m_Data: 147484
-    - m_Data: 147486
-    - m_Data: 147488
-    - m_Data: 147490
-    - m_Data: 147492
-    - m_Data: 147494
-    - m_Data: 147496
-    - m_Data: 147498
-    - m_Data: 147500
-    - m_Data: 147502
-    - m_Data: 147504
-    - m_Data: 147506
+    - m_Data: 147796
+    - m_Data: 147798
+    - m_Data: 147800
+    - m_Data: 147802
+    - m_Data: 147804
+    - m_Data: 147806
+    - m_Data: 147808
+    - m_Data: 147810
+    - m_Data: 147812
+    - m_Data: 147814
+    - m_Data: 147816
+    - m_Data: 147818
+    - m_Data: 147820
+    - m_Data: 147822
+    - m_Data: 147824
+    - m_Data: 147826
+    - m_Data: 147828
+    - m_Data: 147830
+    - m_Data: 147832
+    - m_Data: 147834
+    - m_Data: 147836
+    - m_Data: 147838
+    - m_Data: 147840
+    - m_Data: 147842
+    - m_Data: 147844
+    - m_Data: 147846
+    - m_Data: 147848
+    - m_Data: 147850
+    - m_Data: 147852
+    - m_Data: 147854
+    - m_Data: 147856
+    - m_Data: 147858
+    - m_Data: 147860
+    - m_Data: 147862
+    - m_Data: 147864
+    - m_Data: 147866
+    - m_Data: 147868
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

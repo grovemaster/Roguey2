@@ -165,7 +165,7 @@ namespace JRogue.Editor.World
             var profile = LoadOrCreate<PartyFormationSpawnProfile>(ShopFormationPath);
             var so = new SerializedObject(profile);
             SerializedProperty layouts = so.FindProperty("layouts");
-            layouts.arraySize = 4;
+            layouts.arraySize = 6;
 
             SetFormationLayout(layouts, 0, 1, new[] { Vector3Int.zero });
             SetFormationLayout(layouts, 1, 2, new[] { Vector3Int.zero, new Vector3Int(-1, 0, 0) });
@@ -184,6 +184,31 @@ namespace JRogue.Editor.World
                     Vector3Int.zero,
                     new Vector3Int(1, 0, 0),
                     new Vector3Int(0, -1, 0),
+                });
+            SetFormationLayout(
+                layouts,
+                4,
+                5,
+                new[]
+                {
+                    Vector3Int.zero,
+                    new Vector3Int(0, -1, 0),
+                    new Vector3Int(0, -2, 0),
+                    new Vector3Int(1, 0, 0),
+                    new Vector3Int(1, -1, 0),
+                });
+            SetFormationLayout(
+                layouts,
+                5,
+                6,
+                new[]
+                {
+                    Vector3Int.zero,
+                    new Vector3Int(0, -1, 0),
+                    new Vector3Int(0, -2, 0),
+                    new Vector3Int(1, 0, 0),
+                    new Vector3Int(1, -1, 0),
+                    new Vector3Int(1, -2, 0),
                 });
 
             so.ApplyModifiedPropertiesWithoutUndo();

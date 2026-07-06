@@ -45,6 +45,8 @@ namespace JRogue.Actors
         public string DisplayName =>
             string.IsNullOrWhiteSpace(displayName) ? gameObject.name : displayName.Trim();
 
+        public void SetDisplayName(string name) => displayName = name;
+
         public JRogue.Dialog.PortraitDefinition PortraitOverride => portraitOverride;
 
         protected MapManager mapManager;

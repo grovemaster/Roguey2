@@ -7,6 +7,7 @@ using JRogue.Manager.Loot;
 using JRogue.Manager.Progression;
 using JRogue.Racial;
 using JRogue.View;
+using JRogue.Party.Recruitment;
 using JRogue.World.Generation;
 using JRogue.World.Generation.Zones;
 using UnityEngine;
@@ -110,6 +111,8 @@ namespace JRogue.Manager.Party
             EnsureComponent<EnemyLootService>();
             EnsureComponent<PartyManaStoneLedger>();
             EnsureComponent<PartyCurrencyLedger>();
+            EnsureComponent<PartyCapacityService>();
+            EnsureComponent<PartyRecruitBoardState>();
             EnsureComponent<ManaStoneAutoPickupService>();
             EnsureComponent<PartyRestState>();
             EnsureComponent<RestSessionService>();

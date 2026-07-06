@@ -103,6 +103,31 @@ namespace JRogue.World.Generation
                     new Vector3Int(0, -3, 0),
                 },
             },
+            new FormationOffsetSet
+            {
+                memberCount = 5,
+                relativeOffsets = new[]
+                {
+                    Vector3Int.zero,
+                    new Vector3Int(0, -1, 0),
+                    new Vector3Int(0, -2, 0),
+                    new Vector3Int(1, 0, 0),
+                    new Vector3Int(1, -1, 0),
+                },
+            },
+            new FormationOffsetSet
+            {
+                memberCount = 6,
+                relativeOffsets = new[]
+                {
+                    Vector3Int.zero,
+                    new Vector3Int(0, -1, 0),
+                    new Vector3Int(0, -2, 0),
+                    new Vector3Int(1, 0, 0),
+                    new Vector3Int(1, -1, 0),
+                    new Vector3Int(1, -2, 0),
+                },
+            },
         };
     }
 }
