@@ -186,6 +186,87 @@ namespace JRogue.Tests.World
                 Is.True);
         }
 
+        [Test]
+        public void Tiefling_holy_land_gate_is_south_of_barbarian_gate_with_approach_path()
+        {
+            Assert.That(HolyLandNexusLayout.TieflingHolyLandGateCell, Is.EqualTo(new Vector3Int(13, 29, 0)));
+            Assert.That(
+                HolyLandNexusLayout.TieflingHolyLandGateCell.y,
+                Is.LessThan(HolyLandNexusLayout.HolyLandGateCell.y));
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(13, 29), Is.True);
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(13, 34), Is.True);
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(14, 29), Is.True);
+        }
+
+        [Test]
+        public void Tiefling_gate_is_at_least_five_tiles_from_north_portal_strip_and_other_gates()
+        {
+            for (int x = DistrictSquareHolyNexusTransition.StripMinX;
+                 x <= DistrictSquareHolyNexusTransition.StripMaxX;
+                 x++)
+            {
+                var stripCell = new Vector3Int(x, DistrictSquareHolyNexusTransition.NexusNorthEdgeY, 0);
+                if (!DistrictSquareHolyNexusTransition.IsNexusNorthTransitionCell(stripCell))
+                    continue;
+
+                int tieflingDist = Manhattan(
+                    stripCell.x,
+                    stripCell.y,
+                    HolyLandNexusLayout.TieflingHolyLandGateCell.x,
+                    HolyLandNexusLayout.TieflingHolyLandGateCell.y);
+
+                Assert.That(tieflingDist, Is.GreaterThanOrEqualTo(5));
+            }
+
+            Assert.That(
+                Manhattan(
+                    HolyLandNexusLayout.TieflingHolyLandGateCell.x,
+                    HolyLandNexusLayout.TieflingHolyLandGateCell.y,
+                    HolyLandNexusLayout.HolyLandGateCell.x,
+                    HolyLandNexusLayout.HolyLandGateCell.y),
+                Is.GreaterThanOrEqualTo(5));
+            Assert.That(
+                Manhattan(
+                    HolyLandNexusLayout.TieflingHolyLandGateCell.x,
+                    HolyLandNexusLayout.TieflingHolyLandGateCell.y,
+                    HolyLandNexusLayout.ElfHolyLandGateCell.x,
+                    HolyLandNexusLayout.ElfHolyLandGateCell.y),
+                Is.GreaterThanOrEqualTo(5));
+            Assert.That(
+                Manhattan(
+                    HolyLandNexusLayout.TieflingHolyLandGateCell.x,
+                    HolyLandNexusLayout.TieflingHolyLandGateCell.y,
+                    HolyLandNexusLayout.BeastmanHolyLandGateCell.x,
+                    HolyLandNexusLayout.BeastmanHolyLandGateCell.y),
+                Is.GreaterThanOrEqualTo(5));
+        }
+
+        [Test]
+        public void Tiefling_holy_land_exit_arrival_and_stand_cells_are_configured()
+        {
+            Assert.That(
+                HolyLandNexusLayout.TieflingHolyLandNexusArrivalCell,
+                Is.EqualTo(new Vector3Int(13, 28, 0)));
+            Assert.That(
+                HolyLandTransitionIds.GetNexusReturnAnchorForExit(HolyLandTransitionIds.TieflingHolyLandToNexus),
+                Is.EqualTo(HolyLandNexusLayout.TieflingHolyLandNexusArrivalCell));
+            Assert.That(HolyLandNexusLayout.TieflingHolyLandExitStandCell, Is.EqualTo(new Vector3Int(14, 29, 0)));
+            Assert.That(
+                HolyLandNexusLayout.TryGetHolyLandExitStandCell(
+                    HolyLandTransitionIds.TieflingHolyLandToNexus,
+                    out Vector3Int tieflingStand),
+                Is.True);
+            Assert.That(tieflingStand, Is.EqualTo(HolyLandNexusLayout.TieflingHolyLandExitStandCell));
+            Assert.That(
+                HolyLandNexusLayout.IsHolyLandExitActivationCell(HolyLandNexusLayout.TieflingHolyLandExitStandCell),
+                Is.True);
+            Assert.That(
+                HolyLandNexusLayout.IsWalkableCell(
+                    HolyLandNexusLayout.TieflingHolyLandNexusArrivalCell.x,
+                    HolyLandNexusLayout.TieflingHolyLandNexusArrivalCell.y),
+                Is.True);
+        }
+
         static int Manhattan(int x1, int y1, int x2, int y2) =>
             Mathf.Abs(x1 - x2) + Mathf.Abs(y1 - y2);
 

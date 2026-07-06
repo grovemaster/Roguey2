@@ -299,6 +299,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/MessageConsoleUI.cs" />
     <Compile Include="Assets/Scripts/Manager/Floor/FloorEssenceService.cs" />
     <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeService.cs" />
+    <Compile Include="Assets/Scripts/World/Town/TieflingHolyLandSanctumLayout.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapMoveGate.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateInteractableEffect.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventoryPartyStripView.cs" />
@@ -473,6 +474,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacer.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
+    <Compile Include="Assets/Scripts/World/Town/TieflingHolyLandLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorGenerator.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/FriendlyFireConfirmDialogUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownBuildingDoorInteraction.cs" />

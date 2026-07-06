@@ -214,6 +214,7 @@ namespace JRogue.World.Generation
                 Race.Barbarian => "Barbarian",
                 Race.Elf => "Elf",
                 Race.Beastman => "Beastman",
+                Race.Tiefling => "Tiefling",
                 _ => race.ToString()
             };
 

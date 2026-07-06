@@ -14,12 +14,16 @@ namespace JRogue.World.Town
         public const string ElfHolyLandToNexus = "elf_holy_land_to_nexus";
         public const string NexusToBeastmanHolyLand = "holy_nexus_to_beastman_holy_land";
         public const string BeastmanHolyLandToNexus = "beastman_holy_land_to_nexus";
+        public const string NexusToTieflingHolyLand = "holy_nexus_to_tiefling_holy_land";
+        public const string TieflingHolyLandToNexus = "tiefling_holy_land_to_nexus";
         public const string TentEnter = "building_barbarian_tent_enter";
         public const string TentExit = "building_barbarian_tent_exit";
         public const string ElfHouseEnter = "building_elf_holy_land_house_enter";
         public const string ElfHouseExit = "building_elf_holy_land_house_exit";
         public const string BeastmanDenEnter = "building_beastman_den_enter";
         public const string BeastmanDenExit = "building_beastman_den_exit";
+        public const string TieflingSanctumEnter = "building_tiefling_sanctum_enter";
+        public const string TieflingSanctumExit = "building_tiefling_sanctum_exit";
 
         public static bool IsHolyLandAdmission(string portalLinkId) =>
             TryGetHolyLandAdmissionRace(portalLinkId, out _);
@@ -33,7 +37,9 @@ namespace JRogue.World.Town
             ||             portalLinkId == ElfHouseEnter
             || portalLinkId == ElfHouseExit
             || portalLinkId == BeastmanDenEnter
-            || portalLinkId == BeastmanDenExit;
+            || portalLinkId == BeastmanDenExit
+            || portalLinkId == TieflingSanctumEnter
+            || portalLinkId == TieflingSanctumExit;
 
         public static bool TryGetHolyLandAdmissionRace(string portalLinkId, out Race race)
         {
@@ -52,6 +58,12 @@ namespace JRogue.World.Town
             if (portalLinkId == NexusToBeastmanHolyLand)
             {
                 race = Race.Beastman;
+                return true;
+            }
+
+            if (portalLinkId == NexusToTieflingHolyLand)
+            {
+                race = Race.Tiefling;
                 return true;
             }
 
@@ -79,6 +91,12 @@ namespace JRogue.World.Town
                 return true;
             }
 
+            if (portalLinkId == TieflingHolyLandToNexus)
+            {
+                race = Race.Tiefling;
+                return true;
+            }
+
             race = default;
             return false;
         }
@@ -87,6 +105,9 @@ namespace JRogue.World.Town
         {
             if (portalLinkId == NexusToBeastmanHolyLand)
                 return HolyLandNexusLayout.BeastmanHolyLandReturnAnchor;
+
+            if (portalLinkId == NexusToTieflingHolyLand)
+                return HolyLandNexusLayout.TieflingHolyLandReturnAnchor;
 
             if (portalLinkId == NexusToElfHolyLand)
                 return HolyLandNexusLayout.ElfHolyLandReturnAnchor;
@@ -98,6 +119,9 @@ namespace JRogue.World.Town
         {
             if (portalLinkId == BeastmanHolyLandToNexus)
                 return HolyLandNexusLayout.BeastmanHolyLandNexusArrivalCell;
+
+            if (portalLinkId == TieflingHolyLandToNexus)
+                return HolyLandNexusLayout.TieflingHolyLandNexusArrivalCell;
 
             if (portalLinkId == ElfHolyLandToNexus)
                 return HolyLandNexusLayout.ElfHolyLandNexusArrivalCell;
@@ -128,6 +152,12 @@ namespace JRogue.World.Town
                 return true;
             }
 
+            if (portalLinkId == TieflingSanctumEnter || portalLinkId == TieflingSanctumExit)
+            {
+                race = Race.Tiefling;
+                return true;
+            }
+
             race = default;
             return false;
         }
@@ -136,6 +166,9 @@ namespace JRogue.World.Town
         {
             if (race == Race.Beastman)
                 return HolyLandNexusLayout.BeastmanHolyLandReturnAnchor;
+
+            if (race == Race.Tiefling)
+                return HolyLandNexusLayout.TieflingHolyLandReturnAnchor;
 
             if (race == Race.Elf)
                 return HolyLandNexusLayout.ElfHolyLandReturnAnchor;

@@ -35,7 +35,9 @@ namespace JRogue.World.Town
                 || floorId == HolyLandFloorIds.ElfHolyLandProper
                 || floorId == HolyLandFloorIds.ElfHouseInterior
                 || floorId == HolyLandFloorIds.BeastmanHolyLandProper
-                || floorId == HolyLandFloorIds.BeastmanDenInterior)
+                || floorId == HolyLandFloorIds.BeastmanDenInterior
+                || floorId == HolyLandFloorIds.TieflingHolyLandProper
+                || floorId == HolyLandFloorIds.TieflingSanctumInterior)
             {
                 size = AdventureGuildExchangeLayout.DistrictHubCameraOrthoSize;
                 return true;

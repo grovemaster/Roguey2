@@ -14,14 +14,17 @@ namespace JRogue.World.Town
         public static readonly Vector3Int HolyLandGateCell = new Vector3Int(13, 35, 0);
         public static readonly Vector3Int ElfHolyLandGateCell = new Vector3Int(7, 35, 0);
         public static readonly Vector3Int BeastmanHolyLandGateCell = new Vector3Int(1, 35, 0);
+        public static readonly Vector3Int TieflingHolyLandGateCell = new Vector3Int(13, 29, 0);
         public static readonly Vector3Int HolyLandArrivalCell = new Vector3Int(20, 4, 0);
         public static readonly Vector3Int HolyLandReturnAnchor = HolyLandGateCell;
         public static readonly Vector3Int ElfHolyLandReturnAnchor = ElfHolyLandGateCell;
         public static readonly Vector3Int BeastmanHolyLandReturnAnchor = BeastmanHolyLandGateCell;
+        public static readonly Vector3Int TieflingHolyLandReturnAnchor = TieflingHolyLandGateCell;
         /// <summary>Spawn one tile inward from the gate so exit does not land on the admission portal.</summary>
         public static readonly Vector3Int BarbarianHolyLandNexusArrivalCell = new Vector3Int(13, 34, 0);
         public static readonly Vector3Int ElfHolyLandNexusArrivalCell = new Vector3Int(7, 34, 0);
         public static readonly Vector3Int BeastmanHolyLandNexusArrivalCell = new Vector3Int(1, 34, 0);
+        public static readonly Vector3Int TieflingHolyLandNexusArrivalCell = new Vector3Int(13, 28, 0);
 
         /// <summary>
         /// Stand-on cell for racial holy land return portals. The gate marker cell sits in the map corner;
@@ -30,9 +33,16 @@ namespace JRogue.World.Town
         public static readonly Vector3Int ElfHolyLandExitStandCell = new Vector3Int(8, 35, 0);
         public static readonly Vector3Int BarbarianHolyLandExitStandCell = new Vector3Int(12, 35, 0);
         public static readonly Vector3Int BeastmanHolyLandExitStandCell = new Vector3Int(2, 35, 0);
+        public static readonly Vector3Int TieflingHolyLandExitStandCell = new Vector3Int(14, 29, 0);
 
         public static bool TryGetHolyLandExitStandCell(string portalLinkId, out Vector3Int standCell)
         {
+            if (portalLinkId == HolyLandTransitionIds.TieflingHolyLandToNexus)
+            {
+                standCell = TieflingHolyLandExitStandCell;
+                return true;
+            }
+
             if (portalLinkId == HolyLandTransitionIds.BeastmanHolyLandToNexus)
             {
                 standCell = BeastmanHolyLandExitStandCell;
@@ -56,7 +66,9 @@ namespace JRogue.World.Town
         }
 
         public static bool IsHolyLandExitActivationCell(Vector3Int cell) =>
-            cell == BeastmanHolyLandGateCell
+            cell == TieflingHolyLandGateCell
+            || cell == TieflingHolyLandExitStandCell
+            || cell == BeastmanHolyLandGateCell
             || cell == BeastmanHolyLandExitStandCell
             || cell == ElfHolyLandGateCell
             || cell == ElfHolyLandExitStandCell
@@ -111,6 +123,22 @@ namespace JRogue.World.Town
             return false;
         }
 
+        /// <summary>Walkable spur south of the barbarian gate along the nexus edge.</summary>
+        public static bool IsTieflingHolyLandGateApproach(int x, int y)
+        {
+            Vector3Int gate = TieflingHolyLandGateCell;
+            if (x == gate.x && y == gate.y)
+                return true;
+
+            if (x == gate.x && y > gate.y && y <= HolyLandGateCell.y)
+                return true;
+
+            if (y == gate.y + 1 && x >= gate.x && x <= HolyLandGateCell.x)
+                return true;
+
+            return false;
+        }
+
         /// <summary>North strip + corridor linking the decagon interior to dimension_square.</summary>
         public static bool IsNorthHubConnection(int x, int y)
         {
@@ -129,6 +157,7 @@ namespace JRogue.World.Town
             || IsHolyLandGateApproach(x, y)
             || IsElfHolyLandGateApproach(x, y)
             || IsBeastmanHolyLandGateApproach(x, y)
+            || IsTieflingHolyLandGateApproach(x, y)
             || DistrictSquareHolyNexusTransition.IsNexusNorthTransitionCell(new Vector3Int(x, y, 0));
 
         public static void Paint(Tilemap floorMap, Tilemap wallMap, TileBase[] floorTiles, TileBase wallTile)

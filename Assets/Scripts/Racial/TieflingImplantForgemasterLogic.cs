@@ -31,6 +31,7 @@ namespace JRogue.Racial
     public static class TieflingForgemasterIds
     {
         public const string NpcId = "tiefling_fleshmetal_forgemaster";
+        public const string HolyLandForgemasterNpcId = "tiefling_holy_land_forgemaster";
         public const string InstallPayloadPrefix = "install:";
         public const string RemovePayloadPrefix = "remove:";
         public const string CancelPayload = "__cancel__";

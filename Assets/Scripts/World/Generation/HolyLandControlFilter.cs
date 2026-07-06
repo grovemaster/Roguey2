@@ -113,6 +113,13 @@ namespace JRogue.World.Generation
                 return true;
             }
 
+            if (floorId == HolyLandFloorIds.TieflingHolyLandProper
+                || floorId == HolyLandFloorIds.TieflingSanctumInterior)
+            {
+                race = Race.Tiefling;
+                return true;
+            }
+
             race = default;
             return false;
         }

@@ -14,4 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinitionCatalog
   floors:
   - {fileID: 11400000, guid: 22cdb2ddae68231759a3002fed0c24e8, type: 2}
+  - {fileID: 11400000, guid: b728ef7519769a5498368e1b5af7ab9b, type: 2}
+  - {fileID: 11400000, guid: bf09a753ab8d9742da685ac64e1be2e6, type: 2}
   - {fileID: 11400000, guid: 76f31d7a0b2c4af2f9e9005005b0428c, type: 2}
+  - {fileID: 11400000, guid: 5de45f40a8b2ae79488689b6f36a38b3, type: 2}
+  - {fileID: 11400000, guid: fd82c7190b44ced269799e6cddd5bfe7, type: 2}
+  - {fileID: 11400000, guid: 3e39b6e1ff6f520c6b19519f9d9f692c, type: 2}
+  - {fileID: 11400000, guid: c51a23996a4d2cc2ebf2e3daabdad394, type: 2}
+  - {fileID: 11400000, guid: 4d04ff8dcce7ee507805843bc99bce30, type: 2}
+  - {fileID: 11400000, guid: 0bf2d54871d6ee775a0de37b4c030dc0, type: 2}
+  - {fileID: 11400000, guid: ccba6d98d44d337089f7714bc6c496fe, type: 2}
+  - {fileID: 11400000, guid: 29f637327967f156c93a67de7039c6d3, type: 2}
+  - {fileID: 11400000, guid: 0255d203ec5114950aba4043a550761b, type: 2}
+  - {fileID: 11400000, guid: 00a1ba85da91dfb84a356fc76e7bae85, type: 2}
+  - {fileID: 11400000, guid: 12086308e656b2ea8898c761f3d52948, type: 2}
+  - {fileID: 11400000, guid: d703a4d475fc96347a51cfaf068efac3, type: 2}
+  - {fileID: 11400000, guid: c353d3acdf178aeba824996e972fa3c6, type: 2}
+  - {fileID: 11400000, guid: 6b9133141a594ce548e2d9b897bf92cc, type: 2}

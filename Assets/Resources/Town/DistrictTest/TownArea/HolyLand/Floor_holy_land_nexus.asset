@@ -109,6 +109,12 @@ MonoBehaviour:
     portalCell: {x: 1, y: 35, z: 0}
     listLabel: Beastman Holy Land
     adjacentConfirmOnly: 0
+  - portalLinkId: holy_nexus_to_tiefling_holy_land
+    targetFloorId: tiefling_holy_land
+    portalMarkerId: 
+    portalCell: {x: 13, y: 29, z: 0}
+    listLabel: Tiefling Holy Land
+    adjacentConfirmOnly: 0
   edgePortals: []
   arrivalBindings:
   - portalLinkId: district_square_to_holy_nexus
@@ -119,6 +125,8 @@ MonoBehaviour:
     arrivalAnchor: {x: 7, y: 34, z: 0}
   - portalLinkId: beastman_holy_land_to_nexus
     arrivalAnchor: {x: 1, y: 34, z: 0}
+  - portalLinkId: tiefling_holy_land_to_nexus
+    arrivalAnchor: {x: 13, y: 28, z: 0}
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
   portalPlacementRules: []

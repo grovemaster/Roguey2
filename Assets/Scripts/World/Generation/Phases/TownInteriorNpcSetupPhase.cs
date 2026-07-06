@@ -81,6 +81,16 @@ namespace JRogue.World.Generation.Phases
                 BeastmanHolyLandDenLayout.BeastBloodMerchantMarkerId,
                 "Town/Npc/TownNpc_BeastmanDenBeastBloodMerchant",
                 "Assets/Resources/Town/Npc/TownNpc_BeastmanDenBeastBloodMerchant.prefab"),
+            (
+                HolyLandFloorIds.TieflingHolyLandProper,
+                TieflingHolyLandLayout.ChiefMarkerId,
+                "Town/Npc/TownNpc_ChiefTiefling",
+                "Assets/Resources/Town/Npc/TownNpc_ChiefTiefling.prefab"),
+            (
+                HolyLandFloorIds.TieflingSanctumInterior,
+                TieflingHolyLandSanctumLayout.ForgemasterMarkerId,
+                "Town/Npc/TownNpc_TieflingHolyLandForgemaster",
+                "Assets/Resources/Town/Npc/TownNpc_TieflingHolyLandForgemaster.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)

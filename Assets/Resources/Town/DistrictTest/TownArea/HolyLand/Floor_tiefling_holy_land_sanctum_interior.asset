@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e0224dc9f34f4f92efbfa176094eb2, type: 3}
+  m_Name: Floor_tiefling_holy_land_sanctum_interior
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinition
+  floorId: tiefling_holy_land_sanctum_interior
+  layoutMode: 2
+  layoutStamp: {fileID: 0}
+  zoneLayout: {fileID: 0}
+  floorTile: {fileID: 11400000, guid: 0034a01c676d39e6599ffbc90ceff704, type: 2}
+  wallTile: {fileID: 11400000, guid: c3d4e5f6a7b84990a1b2c3d4e5f67812, type: 2}
+  defaultFloorPalette: {fileID: 11400000, guid: e61cb4b34cfa99dec90cd0123d0254f8, type: 2}
+  defaultWallPalette: {fileID: 11400000, guid: 2e2fc110a8fa41915bca3151aebc9fde, type: 2}
+  playerSafeRadius: 5
+  formationProfile: {fileID: 11400000, guid: bc9b8ea4cc7eebeef321ff560e79df53, type: 2}
+  enemyPopulation: []
+  hazardPopulation: []
+  trapPopulation: []
+  interactablePopulation: []
+  floorItemPopulation: []
+  useFloorPopulationAsFallback: 1
+  monsterPopulationMode: 0
+  monsterSpawnSchedule: {fileID: 0}
+  portals:
+  - portalLinkId: building_tiefling_sanctum_exit
+    targetFloorId: tiefling_holy_land
+    portalMarkerId: 
+    portalCell: {x: 4, y: 0, z: 0}
+    listLabel: Tiefling Holy Land
+    adjacentConfirmOnly: 0
+  edgePortals: []
+  arrivalBindings:
+  - portalLinkId: building_tiefling_sanctum_enter
+    arrivalAnchor: {x: 4, y: 1, z: 0}
+  orthogonalEdgePortalCount: 0
+  orthogonalEdgeInset: 2
+  portalPlacementRules: []
+  participatesInDungeonTime: 0
+  baseDayNightCycles: 7
+  additionalDayNightCycles: 0
+  playerTurnsPerDay: 5
+  playerTurnsPerNight: 5
+  combatPolicy: 1
+  safeZoneRegions: []
+  doorPolicy: 0
+  vaults: []
+  vaultCatalog: {fileID: 0}
