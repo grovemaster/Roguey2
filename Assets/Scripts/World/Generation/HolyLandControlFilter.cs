@@ -5,12 +5,11 @@ using JRogue.World.Town;
 
 namespace JRogue.World.Generation
 {
-    /// <summary>Party control filter for Barbarian-only Holy Land floors.</summary>
+    /// <summary>Party control filter for race-restricted Holy Land floors.</summary>
     public static class HolyLandControlFilter
     {
         public static bool IsHolyLandControlFloor(string floorId) =>
-            floorId == HolyLandFloorIds.HolyLandProper
-            || floorId == HolyLandFloorIds.ShamanTentInterior;
+            TryGetRequiredRaceForFloor(floorId, out _);
 
         public static string GetActiveFloorId()
         {
@@ -28,13 +27,13 @@ namespace JRogue.World.Generation
                 return false;
 
             string floorId = GetActiveFloorId();
-            if (!IsHolyLandControlFloor(floorId))
+            if (!TryGetRequiredRaceForFloor(floorId, out Race requiredRace))
                 return true;
 
-            return member.stats != null && member.stats.race == Race.Barbarian;
+            return member.stats != null && member.stats.race == requiredRace;
         }
 
-        public static bool TryEnsureActiveBarbarian(PartyManager party)
+        public static bool TryEnsureActiveHolyLandMember(PartyManager party)
         {
             if (party == null)
                 return false;
@@ -43,24 +42,28 @@ namespace JRogue.World.Generation
             if (active != null && IsSelectableControlTarget(active))
                 return true;
 
-            return TryForceActiveBarbarianForAdmission(party);
+            if (!TryGetRequiredRaceForFloor(GetActiveFloorId(), out Race requiredRace))
+                return true;
+
+            return TryForceActiveRaceForAdmission(party, requiredRace);
         }
 
-        /// <summary>
-        /// Holy Land admission always controls a living Barbarian, even on the nexus
-        /// where non-Barbarians are normally selectable.
-        /// </summary>
-        public static bool TryForceActiveBarbarianForAdmission(PartyManager party)
+        public static bool TryForceActiveBarbarianForAdmission(PartyManager party) =>
+            TryForceActiveRaceForAdmission(party, Race.Barbarian);
+
+        public static bool TryForceActiveRaceForAdmission(PartyManager party, Race requiredRace)
         {
             if (party?.partyMembers == null)
                 return false;
 
+            PartyFloorPresenceService presence = PartyFloorPresenceService.Instance;
             BaseActor active = party.GetActiveMember();
             if (active != null
                 && active.stats != null
                 && active.stats.currentHP > 0
-                && active.stats.race == Race.Barbarian
-                && active.gameObject.activeInHierarchy)
+                && active.stats.race == requiredRace
+                && active.gameObject.activeInHierarchy
+                && (presence == null || !presence.IsParked(active)))
             {
                 return true;
             }
@@ -71,13 +74,39 @@ namespace JRogue.World.Generation
                 if (member == null || member.stats == null || member.stats.currentHP <= 0)
                     continue;
 
-                if (member.stats.race != Race.Barbarian)
+                if (member.stats.race != requiredRace)
+                    continue;
+
+                if (presence != null && presence.IsParked(member))
+                    continue;
+
+                if (!member.gameObject.activeInHierarchy)
                     continue;
 
                 party.SwapActiveMember(i);
                 return true;
             }
 
+            return false;
+        }
+
+        public static bool TryGetRequiredRaceForFloor(string floorId, out Race race)
+        {
+            if (floorId == HolyLandFloorIds.HolyLandProper
+                || floorId == HolyLandFloorIds.ShamanTentInterior)
+            {
+                race = Race.Barbarian;
+                return true;
+            }
+
+            if (floorId == HolyLandFloorIds.ElfHolyLandProper
+                || floorId == HolyLandFloorIds.ElfHouseInterior)
+            {
+                race = Race.Elf;
+                return true;
+            }
+
+            race = default;
             return false;
         }
     }

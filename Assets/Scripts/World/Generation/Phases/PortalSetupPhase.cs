@@ -1,3 +1,4 @@
+using JRogue.World.Town;
 using UnityEngine;
 
 namespace JRogue.World.Generation.Phases
@@ -84,6 +85,34 @@ namespace JRogue.World.Generation.Phases
 
             context.Portals.Add(interactable);
             context.Instance.RegisterPortal(interactable);
+            placed++;
+            TryPlaceHolyLandExitStandCell(context, spec, usedCells, ref placed);
+        }
+
+        static void TryPlaceHolyLandExitStandCell(
+            DungeonGenerationContext context,
+            DungeonPortalSpec spec,
+            System.Collections.Generic.HashSet<Vector3Int> usedCells,
+            ref int placed)
+        {
+            if (!HolyLandTransitionIds.IsHolyLandExit(spec.portalLinkId)
+                || !HolyLandNexusLayout.TryGetHolyLandExitStandCell(spec.portalLinkId, out Vector3Int standCell)
+                || standCell == spec.portalCell
+                || !usedCells.Add(standCell))
+            {
+                return;
+            }
+
+            context.ReservedCells.Add(standCell);
+
+            var standInteractable = new PortalInteractable(
+                standCell,
+                spec.portalLinkId,
+                spec.targetFloorId,
+                string.IsNullOrEmpty(spec.listLabel) ? "Portal" : spec.listLabel);
+
+            context.Portals.Add(standInteractable);
+            context.Instance.RegisterPortal(standInteractable);
             placed++;
         }
 

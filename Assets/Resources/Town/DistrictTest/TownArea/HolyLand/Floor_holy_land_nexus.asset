@@ -95,14 +95,22 @@ MonoBehaviour:
     targetFloorId: barbarian_holy_land
     portalMarkerId: 
     portalCell: {x: 13, y: 35, z: 0}
-    listLabel: Holy Land
+    listLabel: Barbarian Holy Land
+    adjacentConfirmOnly: 0
+  - portalLinkId: holy_nexus_to_elf_holy_land
+    targetFloorId: elf_holy_land
+    portalMarkerId: 
+    portalCell: {x: 7, y: 35, z: 0}
+    listLabel: Elf Holy Land
     adjacentConfirmOnly: 0
   edgePortals: []
   arrivalBindings:
   - portalLinkId: district_square_to_holy_nexus
     arrivalAnchor: {x: 20, y: 38, z: 0}
   - portalLinkId: barbarian_holy_land_to_nexus
-    arrivalAnchor: {x: 13, y: 35, z: 0}
+    arrivalAnchor: {x: 13, y: 34, z: 0}
+  - portalLinkId: elf_holy_land_to_nexus
+    arrivalAnchor: {x: 7, y: 34, z: 0}
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
   portalPlacementRules: []

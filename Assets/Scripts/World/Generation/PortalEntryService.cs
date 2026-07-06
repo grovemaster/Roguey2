@@ -3,6 +3,7 @@ using JRogue.Actors;
 using JRogue.Actors.Components;
 using JRogue.Manager.Party;
 using JRogue.World.MapInteract;
+using JRogue.World.Town;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -15,6 +16,8 @@ namespace JRogue.World.Generation
     /// </summary>
     public sealed class PortalEntryService : MonoBehaviour
     {
+        public const string DebugTag = "[HolyLandPortal]";
+
         public static PortalEntryService Instance { get; private set; }
 
         readonly HashSet<GridMover> _subscribed = new HashSet<GridMover>();
@@ -50,32 +53,49 @@ namespace JRogue.World.Generation
                 if (member == null)
                     continue;
 
-                GridMover mover = member.GetComponent<GridMover>();
-                if (mover == null || _subscribed.Contains(mover))
-                    continue;
-
-                mover.Moved += OnPartyMemberMovedHandler;
-                _subscribed.Add(mover);
+                SubscribeMover(member.GetComponent<GridMover>());
             }
         }
 
-        void OnPartyMemberMovedHandler(Vector3Int oldPos, Vector3Int newPos)
+        void SubscribeMover(GridMover mover)
         {
-            if (oldPos == newPos)
+            if (mover == null || _subscribed.Contains(mover))
                 return;
 
-            foreach (GridMover mover in _subscribed)
+            mover.Moved += (oldPos, newPos) => OnPartyMemberMoved(mover, oldPos, newPos);
+            _subscribed.Add(mover);
+        }
+
+        void OnPartyMemberMoved(GridMover mover, Vector3Int oldPos, Vector3Int newPos)
+        {
+            if (oldPos == newPos || mover == null)
+                return;
+
+            BaseActor actor = mover.GetComponent<BaseActor>();
+            if (actor == null)
             {
-                if (mover == null || mover.GridPosition != newPos)
-                    continue;
-
-                BaseActor actor = mover.GetComponent<BaseActor>();
-                if (actor != null)
-                    TryActivatePortalAt(actor, newPos);
-
+                Debug.LogWarning($"{DebugTag} Mover at {newPos} has no BaseActor.");
                 return;
             }
+
+            PartyManager party = PartyManager.Instance;
+            if (!CanMemberTriggerStepOnPortal(actor, party))
+                return;
+
+            if (HolyLandNexusLayout.IsHolyLandExitActivationCell(newPos))
+            {
+                Debug.Log(
+                    $"{DebugTag} Step on holy-land exit cell {newPos} — actor={actor.name} " +
+                    $"race={actor.stats?.race} activeFloor={GetActiveFloorId()}");
+            }
+
+            bool activated = TryActivatePortalAt(actor, newPos);
+            if (HolyLandNexusLayout.IsHolyLandExitActivationCell(newPos) && !activated)
+                Debug.LogWarning($"{DebugTag} Exit cell {newPos} — portal activation FAILED for {actor.name}.");
         }
+
+        static string GetActiveFloorId() =>
+            DungeonFloorInstanceManager.Instance?.GetActiveFloorInstance()?.FloorId ?? "(none)";
 
         public static bool CanMemberTriggerStepOnPortal(BaseActor partyMember, PartyManager party)
         {
@@ -91,15 +111,46 @@ namespace JRogue.World.Generation
         public static bool TryActivatePortalAt(BaseActor partyMember, Vector3Int cell)
         {
             if (partyMember == null)
+            {
+                Debug.LogWarning($"{DebugTag} TryActivatePortalAt — partyMember is null at {cell}.");
                 return false;
+            }
+
+            DungeonFloorInstanceManager floorManager = DungeonFloorInstanceManager.Instance;
+            if (floorManager != null && floorManager.IsPortalTransitionInProgress)
+            {
+                Debug.LogWarning(
+                    $"{DebugTag} TryActivatePortalAt blocked — transition in progress at {cell} for {partyMember.name}.");
+                return false;
+            }
 
             PartyManager party = PartyManager.Instance;
             if (!CanMemberTriggerStepOnPortal(partyMember, party))
+            {
+                BaseActor active = party?.GetActiveMember();
+                Debug.LogWarning(
+                    $"{DebugTag} TryActivatePortalAt blocked — {partyMember.name} cannot trigger step-on portal at {cell}. " +
+                    $"formationActive={party?.IsFormationActive ?? false} activeMember={active?.name ?? "(none)"}.");
                 return false;
+            }
 
             AdjacentMapInteractableService mapInteract = AdjacentMapInteractableService.Instance;
-            if (mapInteract == null || !mapInteract.TryGetAtCell(cell, out IAdjacentMapInteractable interactable))
+            if (mapInteract == null)
+            {
+                Debug.LogError($"{DebugTag} TryActivatePortalAt — AdjacentMapInteractableService.Instance is null.");
                 return false;
+            }
+
+            if (!mapInteract.TryGetAtCell(cell, out IAdjacentMapInteractable interactable))
+            {
+                Debug.LogWarning(
+                    $"{DebugTag} No interactable registered at {cell} on floor '{GetActiveFloorId()}'. " +
+                    $"Instance portals: {floorManager?.GetActiveFloorInstance()?.DebugDescribePortals() ?? "(no floor)"}");
+                return false;
+            }
+
+            Debug.Log(
+                $"{DebugTag} Interactable at {cell}: {interactable.GetType().Name} label='{interactable.ListLabel}'");
 
             if (interactable is TownToDungeonPortalInteractable townPortal)
                 return townPortal.TryActivate(partyMember);
@@ -107,6 +158,8 @@ namespace JRogue.World.Generation
             if (interactable is PortalInteractable portal)
                 return portal.TryActivatePartyTeleport(partyMember);
 
+            Debug.LogWarning(
+                $"{DebugTag} Interactable at {cell} is {interactable.GetType().Name}, not a floor portal.");
             return false;
         }
     }

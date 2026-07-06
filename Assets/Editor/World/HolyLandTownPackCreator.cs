@@ -91,6 +91,11 @@ namespace JRogue.Editor.World
 
         static void AppendIfMissing(List<DungeonFloorDefinition> floors, DungeonFloorDefinition def)
         {
+            AppendIfMissingPublic(floors, def);
+        }
+
+        public static void AppendIfMissingPublic(List<DungeonFloorDefinition> floors, DungeonFloorDefinition def)
+        {
             if (def == null)
                 return;
 
@@ -190,7 +195,7 @@ namespace JRogue.Editor.World
 
             int stripWidth = DistrictSquareHolyNexusTransition.StripMaxX - DistrictSquareHolyNexusTransition.StripMinX + 1;
             SerializedProperty portals = so.FindProperty("portals");
-            portals.arraySize = stripWidth + 1;
+            portals.arraySize = stripWidth + 2;
             WriteStripPortals(
                 portals,
                 0,
@@ -202,10 +207,15 @@ namespace JRogue.Editor.World
             holyGate.FindPropertyRelative("portalLinkId").stringValue = HolyLandTransitionIds.NexusToHolyLand;
             holyGate.FindPropertyRelative("targetFloorId").stringValue = HolyLandFloorIds.HolyLandProper;
             holyGate.FindPropertyRelative("portalCell").vector3IntValue = HolyLandNexusLayout.HolyLandGateCell;
-            holyGate.FindPropertyRelative("listLabel").stringValue = "Holy Land";
+            holyGate.FindPropertyRelative("listLabel").stringValue = "Barbarian Holy Land";
+            SerializedProperty elfGate = portals.GetArrayElementAtIndex(stripWidth + 1);
+            elfGate.FindPropertyRelative("portalLinkId").stringValue = HolyLandTransitionIds.NexusToElfHolyLand;
+            elfGate.FindPropertyRelative("targetFloorId").stringValue = HolyLandFloorIds.ElfHolyLandProper;
+            elfGate.FindPropertyRelative("portalCell").vector3IntValue = HolyLandNexusLayout.ElfHolyLandGateCell;
+            elfGate.FindPropertyRelative("listLabel").stringValue = "Elf Holy Land";
 
             SerializedProperty arrivals = so.FindProperty("arrivalBindings");
-            arrivals.arraySize = 2;
+            arrivals.arraySize = 3;
             arrivals.GetArrayElementAtIndex(0).FindPropertyRelative("portalLinkId").stringValue =
                 HolyLandTransitionIds.SquareToNexus;
             arrivals.GetArrayElementAtIndex(0).FindPropertyRelative("arrivalAnchor").vector3IntValue =
@@ -213,7 +223,11 @@ namespace JRogue.Editor.World
             arrivals.GetArrayElementAtIndex(1).FindPropertyRelative("portalLinkId").stringValue =
                 HolyLandTransitionIds.HolyLandToNexus;
             arrivals.GetArrayElementAtIndex(1).FindPropertyRelative("arrivalAnchor").vector3IntValue =
-                HolyLandNexusLayout.HolyLandReturnAnchor;
+                HolyLandNexusLayout.BarbarianHolyLandNexusArrivalCell;
+            arrivals.GetArrayElementAtIndex(2).FindPropertyRelative("portalLinkId").stringValue =
+                HolyLandTransitionIds.ElfHolyLandToNexus;
+            arrivals.GetArrayElementAtIndex(2).FindPropertyRelative("arrivalAnchor").vector3IntValue =
+                HolyLandNexusLayout.ElfHolyLandNexusArrivalCell;
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(def);
@@ -471,6 +485,7 @@ namespace JRogue.Editor.World
             BarbarianHolyLandLayout.Paint(floorMap, wallMap, dirtTiles, wallTile, buildingWall, buildingDoor);
             FinalizePaint(floorMap, wallMap);
             EnsureHolyLandMarkers(instance);
+            instance.MarkNeedsRegeneration();
         }
 
         static void PaintTentInteriorLayout(DungeonFloorInstance instance)

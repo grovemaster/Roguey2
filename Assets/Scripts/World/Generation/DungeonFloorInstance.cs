@@ -9,6 +9,7 @@ using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using JRogue.World.MapInteract;
+using JRogue.World.Town;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -327,6 +328,148 @@ namespace JRogue.World.Generation
         public bool TryGetArrivalBinding(string portalLinkId, out PortalArrivalBinding binding) =>
             _arrivalBindings.TryGetValue(portalLinkId, out binding);
 
+        public string DebugDescribePortals()
+        {
+            if (_portals.Count == 0)
+                return "(empty)";
+
+            var parts = new System.Text.StringBuilder();
+            for (int i = 0; i < _portals.Count; i++)
+            {
+                PortalInteractable portal = _portals[i];
+                if (parts.Length > 0)
+                    parts.Append("; ");
+
+                parts.Append(portal.PortalLinkId);
+                parts.Append('@');
+                parts.Append(portal.Cell);
+                parts.Append("->");
+                parts.Append(portal.TargetFloorId);
+            }
+
+            return parts.ToString();
+        }
+
+        /// <summary>
+        /// Refreshes cached arrival bindings and step-on portals from the floor definition.
+        /// Scene-painted floors reuse generated state across visits; definition updates must
+        /// still apply without a full regen.
+        /// </summary>
+        public void SyncRuntimeStateFromDefinition()
+        {
+            SyncArrivalBindingsFromDefinition();
+            SyncPortalsFromDefinition();
+        }
+
+        void SyncArrivalBindingsFromDefinition()
+        {
+            IReadOnlyList<PortalArrivalBinding> bindings = definition?.ArrivalBindings;
+            if (bindings == null)
+                return;
+
+            for (int i = 0; i < bindings.Count; i++)
+            {
+                PortalArrivalBinding binding = bindings[i];
+                if (!string.IsNullOrEmpty(binding.portalLinkId))
+                    _arrivalBindings[binding.portalLinkId] = binding;
+            }
+        }
+
+        void SyncPortalsFromDefinition()
+        {
+            IReadOnlyList<DungeonPortalSpec> specs = definition?.Portals;
+            if (specs == null)
+                return;
+
+            for (int i = 0; i < specs.Count; i++)
+            {
+                DungeonPortalSpec spec = specs[i];
+                if (spec.adjacentConfirmOnly || string.IsNullOrEmpty(spec.targetFloorId))
+                    continue;
+
+                Vector3Int cell = spec.portalCell;
+                string label = string.IsNullOrEmpty(spec.listLabel) ? "Portal" : spec.listLabel;
+                int existing = FindPortalIndex(spec.portalLinkId, cell);
+                if (existing >= 0)
+                {
+                    PortalInteractable portal = _portals[existing];
+                    if (portal.TargetFloorId != spec.targetFloorId
+                        || portal.ListLabel != label
+                        || portal.PortalLinkId != spec.portalLinkId)
+                    {
+                        _portals[existing] = new PortalInteractable(
+                            cell,
+                            spec.portalLinkId,
+                            spec.targetFloorId,
+                            label);
+                    }
+
+                    continue;
+                }
+
+                RemovePortalsAtCellExcept(cell, spec.portalLinkId);
+                _portals.Add(new PortalInteractable(cell, spec.portalLinkId, spec.targetFloorId, label));
+                Debug.Log(
+                    $"{PortalEntryService.DebugTag} Sync added portal floor='{FloorId}' " +
+                    $"link={spec.portalLinkId} cell={cell} target={spec.targetFloorId}");
+
+                if (!HasPortalVisualAt(cell))
+                    PlacePortalVisual(cell);
+
+                TrySyncHolyLandExitStandCell(spec);
+            }
+        }
+
+        void TrySyncHolyLandExitStandCell(DungeonPortalSpec spec)
+        {
+            if (!HolyLandTransitionIds.IsHolyLandExit(spec.portalLinkId)
+                || !HolyLandNexusLayout.TryGetHolyLandExitStandCell(spec.portalLinkId, out Vector3Int standCell)
+                || standCell == spec.portalCell
+                || FindPortalIndex(spec.portalLinkId, standCell) >= 0)
+            {
+                return;
+            }
+
+            string label = string.IsNullOrEmpty(spec.listLabel) ? "Portal" : spec.listLabel;
+            _portals.Add(new PortalInteractable(standCell, spec.portalLinkId, spec.targetFloorId, label));
+            Debug.Log(
+                $"{PortalEntryService.DebugTag} Sync added holy land exit stand cell floor='{FloorId}' " +
+                $"link={spec.portalLinkId} cell={standCell} target={spec.targetFloorId}");
+        }
+
+        int FindPortalIndex(string portalLinkId, Vector3Int cell)
+        {
+            for (int i = 0; i < _portals.Count; i++)
+            {
+                PortalInteractable portal = _portals[i];
+                if (portal.PortalLinkId == portalLinkId && portal.Cell == cell)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        void RemovePortalsAtCellExcept(Vector3Int cell, string portalLinkId)
+        {
+            for (int i = _portals.Count - 1; i >= 0; i--)
+            {
+                PortalInteractable portal = _portals[i];
+                if (portal.Cell == cell && portal.PortalLinkId != portalLinkId)
+                    _portals.RemoveAt(i);
+            }
+        }
+
+        bool HasPortalVisualAt(Vector3Int cell)
+        {
+            for (int i = 0; i < _portalVisuals.Count; i++)
+            {
+                if (_portalVisuals[i].Cell == cell)
+                    return true;
+            }
+
+            return false;
+        }
+
         public void RegisterPortal(PortalInteractable portal) => _portals.Add(portal);
 
         public void RegisterMapInteractable(JRogue.World.MapInteract.IAdjacentMapInteractable interactable)
@@ -487,7 +630,13 @@ namespace JRogue.World.Generation
 
             service.SetOverlayMap(interactableOverlayMap);
             for (int i = 0; i < _portals.Count; i++)
-                service.Register(_portals[i].Cell, _portals[i]);
+            {
+                PortalInteractable portal = _portals[i];
+                service.Register(portal.Cell, portal);
+                Debug.Log(
+                    $"{PortalEntryService.DebugTag} Register portal floor='{FloorId}' " +
+                    $"link={portal.PortalLinkId} cell={portal.Cell} target={portal.TargetFloorId}");
+            }
 
             for (int i = 0; i < _extraMapInteractables.Count; i++)
             {

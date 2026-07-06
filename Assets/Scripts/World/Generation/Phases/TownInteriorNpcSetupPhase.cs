@@ -61,6 +61,16 @@ namespace JRogue.World.Generation.Phases
                 BarbarianHolyLandLayout.ChiefMarkerId,
                 "Town/Npc/TownNpc_ChiefBarbarian",
                 "Assets/Resources/Town/Npc/TownNpc_ChiefBarbarian.prefab"),
+            (
+                HolyLandFloorIds.ElfHolyLandProper,
+                ElfHolyLandLayout.ChiefMarkerId,
+                "Town/Npc/TownNpc_ChiefElf",
+                "Assets/Resources/Town/Npc/TownNpc_ChiefElf.prefab"),
+            (
+                HolyLandFloorIds.ElfHouseInterior,
+                ElfHolyLandHouseLayout.FairyMerchantMarkerId,
+                "Town/Npc/TownNpc_ElfGroveFairyMerchant",
+                "Assets/Resources/Town/Npc/TownNpc_ElfGroveFairyMerchant.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)

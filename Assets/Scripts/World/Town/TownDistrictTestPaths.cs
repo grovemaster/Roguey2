@@ -71,6 +71,11 @@ namespace JRogue.World.Town
         public const string HolyLandTentInteriorFloorPalette = HolyLandFolder + "/Palette_barbarian_shaman_tent_interior_floor.asset";
         public const string HolyLandWallPalette = HolyLandFolder + "/Palette_holy_land_wall.asset";
 
+        public const string ElfHolyLandProperFloorDef = HolyLandFolder + "/Floor_elf_holy_land.asset";
+        public const string ElfHolyLandHouseInteriorFloorDef = HolyLandFolder + "/Floor_elf_holy_land_house_interior.asset";
+        public const string ElfHolyLandProperFloorPalette = HolyLandFolder + "/Palette_elf_holy_land_floor.asset";
+        public const string ElfHolyLandHouseInteriorFloorPalette = HolyLandFolder + "/Palette_elf_holy_land_house_interior_floor.asset";
+
         public const string ResourcesCatalog = "Town/DistrictTest/DistrictTestCatalog";
     }
 }

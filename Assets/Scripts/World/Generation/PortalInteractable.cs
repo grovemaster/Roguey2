@@ -36,11 +36,21 @@ namespace JRogue.World.Generation
             if (triggeringMember == null)
                 return false;
 
+            Debug.Log(
+                $"{PortalEntryService.DebugTag} PortalInteractable activate link={PortalLinkId} " +
+                $"cell={Cell} target={TargetFloorId} actor={triggeringMember.name}");
+
             if (HolyLandTransitionIds.IsHolyLandAdmission(PortalLinkId))
                 return HolyLandPortalTransitionService.TryEnterHolyLand(PortalLinkId, TargetFloorId, triggeringMember);
 
             if (HolyLandTransitionIds.IsHolyLandExit(PortalLinkId))
                 return HolyLandPortalTransitionService.TryExitHolyLand(PortalLinkId, TargetFloorId, triggeringMember);
+
+            if (HolyLandTransitionIds.IsHolyLandBuildingPortal(PortalLinkId))
+                return HolyLandPortalTransitionService.TryTransitionHolyLandBuilding(
+                    PortalLinkId,
+                    TargetFloorId,
+                    triggeringMember);
 
             if (IsBuildingPortal(PortalLinkId) || IsDistrictPortal(PortalLinkId))
             {

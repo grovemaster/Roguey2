@@ -151,11 +151,17 @@ namespace JRogue.World.Generation
             DungeonGenerationLog.Info($"Unparked {toRestore.Count} member(s).");
         }
 
-        public static List<BaseActor> CollectLivingBarbarians(PartyManager party)
+        public static List<BaseActor> CollectLivingBarbarians(PartyManager party) =>
+            CollectLivingByRace(party, Race.Barbarian);
+
+        public static List<BaseActor> CollectLivingElves(PartyManager party) =>
+            CollectLivingByRace(party, Race.Elf);
+
+        public static List<BaseActor> CollectLivingByRace(PartyManager party, Race race)
         {
-            var barbarians = new List<BaseActor>();
+            var members = new List<BaseActor>();
             if (party?.partyMembers == null)
-                return barbarians;
+                return members;
 
             for (int i = 0; i < party.partyMembers.Count; i++)
             {
@@ -163,11 +169,11 @@ namespace JRogue.World.Generation
                 if (member == null || member.stats == null || member.stats.currentHP <= 0)
                     continue;
 
-                if (member.stats.race == Race.Barbarian)
-                    barbarians.Add(member);
+                if (member.stats.race == race)
+                    members.Add(member);
             }
 
-            return barbarians;
+            return members;
         }
 
         public static List<BaseActor> CollectLivingNonBarbarians(PartyManager party)

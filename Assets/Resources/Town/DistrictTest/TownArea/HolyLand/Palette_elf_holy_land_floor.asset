@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef860a9827b1561d8ec41f65f51e711, type: 3}
+  m_Name: Palette_elf_holy_land_floor
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.Zones.DungeonTilePalette
+  paletteId: elf_holy_land_floor
+  layer: 0
+  defaultVariationMode: 0
+  entries:
+  - tile: {fileID: 11400000, guid: 9b4b47cc7b2783a35af989cc211057dc, type: 2}
+    registryKey: 
+    weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 88080219a37d9f0e39a8b72439f3f964, type: 2}
+    registryKey: 
+    weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 94db83fd9819ce175923176509f12eec, type: 2}
+    registryKey: 
+    weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 901412e4c92f1c257bc7524dd1ead8e8, type: 2}
+    registryKey: 
+    weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 07d0e43ee5aada52b9eb63d63108bf91, type: 2}
+    registryKey: 
+    weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: e53408e49257fc0c7a8ff3d616a7728b, type: 2}
+    registryKey: 
+    weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 826cc575f296f49de905ae31e21d65f4, type: 2}
+    registryKey: 
+    weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0
+  - tile: {fileID: 11400000, guid: 6f2a489718439b6869ecfc5caaed7cc8, type: 2}
+    registryKey: 
+    weight: 5
+    isLightEmitter: 0
+    emitLight: {fileID: 0}
+    emissionOverride: 0

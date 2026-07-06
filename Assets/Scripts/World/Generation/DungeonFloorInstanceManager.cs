@@ -35,6 +35,8 @@ namespace JRogue.World.Generation
         DungeonFloorInstance _activeFloor;
         bool _portalTransitionInProgress;
 
+        public bool IsPortalTransitionInProgress => _portalTransitionInProgress;
+
         void Awake()
         {
             if (Instance == null)
@@ -261,6 +263,8 @@ namespace JRogue.World.Generation
             else
                 DungeonGenerationLog.Info($"Floor '{floorId}' already generated — reusing parked state.");
 
+            instance.SyncRuntimeStateFromDefinition();
+
             ActivateInstance(instance, grid);
             Vector3Int anchor = ResolvePartyAnchor(instance, portalLinkId, isFirstVisitSpawn);
             DungeonGenerationLog.Info($"Party spawn anchor={anchor} floorId={floorId}");
@@ -272,12 +276,13 @@ namespace JRogue.World.Generation
                     DungeonGenerationLog.Warn("PartySpawnService failed for partial party spawn.");
 
                 PartyFloorPresenceService presence = PartyFloorPresenceService.Instance;
-                if (presence != null && floorId == HolyLandFloorIds.HolyLandProper)
+                if (presence != null
+                    && HolyLandFloorIds.TryGetNexusParkAnchorForRacialFloor(floorId, out Vector3Int parkAnchor))
                 {
                     presence.ParkAllExcept(
                         spawnMembers,
                         HolyLandFloorIds.Nexus,
-                        HolyLandNexusLayout.HolyLandReturnAnchor);
+                        parkAnchor);
                 }
             }
             else if (!PartySpawnService.TrySpawnFormationAtAnchor(anchor, profile, out _))
@@ -339,9 +344,18 @@ namespace JRogue.World.Generation
             string portalLinkId,
             bool isFirstVisitSpawn)
         {
-            if (!string.IsNullOrEmpty(portalLinkId) &&
-                instance.TryGetArrivalBinding(portalLinkId, out PortalArrivalBinding binding))
-                return binding.arrivalAnchor;
+            if (!string.IsNullOrEmpty(portalLinkId))
+            {
+                if (instance.TryGetArrivalBinding(portalLinkId, out PortalArrivalBinding binding))
+                    return binding.arrivalAnchor;
+
+                DungeonFloorDefinition def = instance.Definition;
+                if (def != null && def.TryGetArrivalBinding(portalLinkId, out binding))
+                {
+                    instance.StoreArrivalBinding(binding);
+                    return binding.arrivalAnchor;
+                }
+            }
 
             if (!isFirstVisitSpawn && !string.IsNullOrEmpty(portalLinkId))
                 Debug.LogWarning($"[DungeonFloor] Missing arrival binding for {portalLinkId}.");

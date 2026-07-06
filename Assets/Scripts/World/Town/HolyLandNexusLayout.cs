@@ -12,10 +12,46 @@ namespace JRogue.World.Town
 
         public static readonly Vector3Int PlayerStartCell = new Vector3Int(Center, Center, 0);
         public static readonly Vector3Int HolyLandGateCell = new Vector3Int(13, 35, 0);
+        public static readonly Vector3Int ElfHolyLandGateCell = new Vector3Int(7, 35, 0);
         public static readonly Vector3Int HolyLandArrivalCell = new Vector3Int(20, 4, 0);
         public static readonly Vector3Int HolyLandReturnAnchor = HolyLandGateCell;
+        public static readonly Vector3Int ElfHolyLandReturnAnchor = ElfHolyLandGateCell;
+        /// <summary>Spawn one tile inward from the gate so exit does not land on the admission portal.</summary>
+        public static readonly Vector3Int BarbarianHolyLandNexusArrivalCell = new Vector3Int(13, 34, 0);
+        public static readonly Vector3Int ElfHolyLandNexusArrivalCell = new Vector3Int(7, 34, 0);
 
-        /// <summary>Walkable bridge from the decagon to the Holy Land gate (west of north hub).</summary>
+        /// <summary>
+        /// Stand-on cell for racial holy land return portals. The gate marker cell (7,35)/(13,35)
+        /// sits in the map corner; players approach from one tile inward.
+        /// </summary>
+        public static readonly Vector3Int ElfHolyLandExitStandCell = new Vector3Int(8, 35, 0);
+        public static readonly Vector3Int BarbarianHolyLandExitStandCell = new Vector3Int(12, 35, 0);
+
+        public static bool TryGetHolyLandExitStandCell(string portalLinkId, out Vector3Int standCell)
+        {
+            if (portalLinkId == HolyLandTransitionIds.ElfHolyLandToNexus)
+            {
+                standCell = ElfHolyLandExitStandCell;
+                return true;
+            }
+
+            if (portalLinkId == HolyLandTransitionIds.HolyLandToNexus)
+            {
+                standCell = BarbarianHolyLandExitStandCell;
+                return true;
+            }
+
+            standCell = default;
+            return false;
+        }
+
+        public static bool IsHolyLandExitActivationCell(Vector3Int cell) =>
+            cell == ElfHolyLandGateCell
+            || cell == ElfHolyLandExitStandCell
+            || cell == HolyLandGateCell
+            || cell == BarbarianHolyLandExitStandCell;
+
+        /// <summary>Walkable bridge from the decagon to the Barbarian Holy Land gate (west of north hub).</summary>
         public static bool IsHolyLandGateApproach(int x, int y)
         {
             Vector3Int gate = HolyLandGateCell;
@@ -26,6 +62,22 @@ namespace JRogue.World.Town
                 return true;
 
             if (y == gate.y - 1 && x >= gate.x && x <= DistrictSquareHolyNexusTransition.StripMinX)
+                return true;
+
+            return false;
+        }
+
+        /// <summary>Walkable bridge from the decagon to the Elf Holy Land gate (west of the barbarian gate).</summary>
+        public static bool IsElfHolyLandGateApproach(int x, int y)
+        {
+            Vector3Int gate = ElfHolyLandGateCell;
+            if (x == gate.x && y == gate.y)
+                return true;
+
+            if (y == gate.y && x > gate.x && x < HolyLandGateCell.x)
+                return true;
+
+            if (y == gate.y - 1 && x >= gate.x && x <= HolyLandGateCell.x)
                 return true;
 
             return false;
@@ -47,6 +99,7 @@ namespace JRogue.World.Town
             IsInsideDecagon(x, y)
             || IsNorthHubConnection(x, y)
             || IsHolyLandGateApproach(x, y)
+            || IsElfHolyLandGateApproach(x, y)
             || DistrictSquareHolyNexusTransition.IsNexusNorthTransitionCell(new Vector3Int(x, y, 0));
 
         public static void Paint(Tilemap floorMap, Tilemap wallMap, TileBase[] floorTiles, TileBase wallTile)

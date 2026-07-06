@@ -40,6 +40,85 @@ namespace JRogue.Tests.World
         }
 
         [Test]
+        public void Elf_holy_land_gate_is_at_7_35_with_approach_path()
+        {
+            Assert.That(HolyLandNexusLayout.ElfHolyLandGateCell, Is.EqualTo(new Vector3Int(7, 35, 0)));
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(7, 35), Is.True);
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(8, 35), Is.True);
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(12, 35), Is.True);
+        }
+
+        [Test]
+        public void Elf_and_barbarian_gates_are_at_least_five_tiles_from_north_portal_strip()
+        {
+            for (int x = DistrictSquareHolyNexusTransition.StripMinX;
+                 x <= DistrictSquareHolyNexusTransition.StripMaxX;
+                 x++)
+            {
+                var stripCell = new Vector3Int(x, DistrictSquareHolyNexusTransition.NexusNorthEdgeY, 0);
+                if (!DistrictSquareHolyNexusTransition.IsNexusNorthTransitionCell(stripCell))
+                    continue;
+
+                int barbarianDist = Manhattan(
+                    stripCell.x,
+                    stripCell.y,
+                    HolyLandNexusLayout.HolyLandGateCell.x,
+                    HolyLandNexusLayout.HolyLandGateCell.y);
+                int elfDist = Manhattan(
+                    stripCell.x,
+                    stripCell.y,
+                    HolyLandNexusLayout.ElfHolyLandGateCell.x,
+                    HolyLandNexusLayout.ElfHolyLandGateCell.y);
+
+                Assert.That(barbarianDist, Is.GreaterThanOrEqualTo(5));
+                Assert.That(elfDist, Is.GreaterThanOrEqualTo(5));
+            }
+        }
+
+        [Test]
+        public void Nexus_exit_arrival_cells_are_inward_from_gate_portals()
+        {
+            Assert.That(
+                HolyLandNexusLayout.BarbarianHolyLandNexusArrivalCell,
+                Is.EqualTo(new Vector3Int(13, 34, 0)));
+            Assert.That(
+                HolyLandNexusLayout.ElfHolyLandNexusArrivalCell,
+                Is.EqualTo(new Vector3Int(7, 34, 0)));
+            Assert.That(
+                HolyLandTransitionIds.GetNexusReturnAnchorForExit(HolyLandTransitionIds.ElfHolyLandToNexus),
+                Is.EqualTo(HolyLandNexusLayout.ElfHolyLandNexusArrivalCell));
+            Assert.That(
+                HolyLandTransitionIds.GetNexusReturnAnchorForExit(HolyLandTransitionIds.HolyLandToNexus),
+                Is.EqualTo(HolyLandNexusLayout.BarbarianHolyLandNexusArrivalCell));
+        }
+
+        [Test]
+        public void Elf_holy_land_exit_arrival_cell_is_walkable()
+        {
+            Vector3Int arrival = HolyLandNexusLayout.ElfHolyLandNexusArrivalCell;
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(arrival.x, arrival.y), Is.True);
+        }
+
+        [Test]
+        public void Holy_land_exit_stand_cells_are_inward_from_gate_markers()
+        {
+            Assert.That(HolyLandNexusLayout.ElfHolyLandExitStandCell, Is.EqualTo(new Vector3Int(8, 35, 0)));
+            Assert.That(HolyLandNexusLayout.BarbarianHolyLandExitStandCell, Is.EqualTo(new Vector3Int(12, 35, 0)));
+            Assert.That(
+                HolyLandNexusLayout.TryGetHolyLandExitStandCell(
+                    HolyLandTransitionIds.ElfHolyLandToNexus,
+                    out Vector3Int elfStand),
+                Is.True);
+            Assert.That(elfStand, Is.EqualTo(HolyLandNexusLayout.ElfHolyLandExitStandCell));
+            Assert.That(
+                HolyLandNexusLayout.IsHolyLandExitActivationCell(HolyLandNexusLayout.ElfHolyLandExitStandCell),
+                Is.True);
+        }
+
+        static int Manhattan(int x1, int y1, int x2, int y2) =>
+            Mathf.Abs(x1 - x2) + Mathf.Abs(y1 - y2);
+
+        [Test]
         public void Arrival_from_dimension_square_is_walkable()
         {
             Vector3Int arrival = DistrictSquareHolyNexusTransition.NexusArrivalCell;

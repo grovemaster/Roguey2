@@ -16,6 +16,7 @@ namespace JRogue.Shop
         public const string Npc4 = "town_npc_4";
         public const string Npc5 = "town_npc_5";
         public const string FairyMerchant = "fairy_merchant";
+        public const string ElfGroveFairyMerchant = "elf_grove_fairy_merchant";
         public const string BeastBloodMerchant = "beast_blood_merchant";
         public const string ResidentialInnKeeper = "residential_inn_keeper";
         public const string MarketItemShopClerk = "market_item_shop_clerk";

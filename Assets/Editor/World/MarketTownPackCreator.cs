@@ -255,9 +255,10 @@ namespace JRogue.Editor.World
             var so = new SerializedObject(def);
             SerializedProperty portals = so.FindProperty("portals");
 
-            int stripWidth = DistrictSquareMarketTransition.StripMaxX - DistrictSquareMarketTransition.StripMinX + 1;
+            int marketStripWidth = DistrictSquareMarketTransition.StripMaxX - DistrictSquareMarketTransition.StripMinX + 1;
+            int holyStripWidth = DistrictSquareHolyNexusTransition.StripMaxX - DistrictSquareHolyNexusTransition.StripMinX + 1;
             const int buildingPortalCount = 2;
-            portals.arraySize = buildingPortalCount + stripWidth;
+            portals.arraySize = buildingPortalCount + marketStripWidth + holyStripWidth;
 
             SerializedProperty exchangePortal = portals.GetArrayElementAtIndex(0);
             exchangePortal.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.EnterLinkId;
@@ -283,8 +284,16 @@ namespace JRogue.Editor.World
                 DistrictSquareMarketTransition.SquareNorthEdgeY,
                 "Market");
 
+            WriteNorthStripPortals(
+                portals,
+                startIndex: buildingPortalCount + marketStripWidth,
+                HolyLandTransitionIds.SquareToNexus,
+                HolyLandFloorIds.Nexus,
+                DistrictSquareHolyNexusTransition.SquareSouthEdgeY,
+                "Holy Land Nexus");
+
             SerializedProperty arrivals = so.FindProperty("arrivalBindings");
-            arrivals.arraySize = 3;
+            arrivals.arraySize = 4;
 
             SerializedProperty exchangeArrival = arrivals.GetArrayElementAtIndex(0);
             exchangeArrival.FindPropertyRelative("portalLinkId").stringValue = AdventureGuildExchangeLayout.ExitLinkId;
@@ -299,6 +308,12 @@ namespace JRogue.Editor.World
                 DistrictSquareMarketTransition.MarketToSquareLinkId;
             marketArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue =
                 DistrictSquareMarketTransition.SquareArrivalCell;
+
+            SerializedProperty nexusArrival = arrivals.GetArrayElementAtIndex(3);
+            nexusArrival.FindPropertyRelative("portalLinkId").stringValue =
+                HolyLandTransitionIds.NexusToSquare;
+            nexusArrival.FindPropertyRelative("arrivalAnchor").vector3IntValue =
+                DistrictSquareHolyNexusTransition.SquareArrivalCell;
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(def);

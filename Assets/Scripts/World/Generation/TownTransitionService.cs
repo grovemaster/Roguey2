@@ -1,6 +1,7 @@
 using JRogue.Actors;
 using JRogue.Manager.Party;
 using JRogue.UI.Gameplay;
+using JRogue.World.Town;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -24,6 +25,12 @@ namespace JRogue.World.Generation
 
             if (IsTransitionInProgress)
                 return false;
+
+            if (HolyLandTransitionIds.IsHolyLandBuildingPortal(portalLinkId))
+                return HolyLandPortalTransitionService.TryTransitionHolyLandBuilding(
+                    portalLinkId,
+                    targetFloorId,
+                    triggeringMember);
 
             TownTransitionCurtainUI curtain = TownTransitionCurtainUI.EnsureInstance();
             return curtain.RunTransition(() => ExecuteTransition(portalLinkId, targetFloorId));

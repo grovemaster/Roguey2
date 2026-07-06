@@ -32,7 +32,8 @@ namespace JRogue.World.Generation.Phases
             || floorId == MarketTownFloorIds.FloorId
             || floorId == ResidentialTownFloorIds.FloorId
             || floorId == HolyLandFloorIds.Nexus
-            || floorId == HolyLandFloorIds.HolyLandProper;
+            || floorId == HolyLandFloorIds.HolyLandProper
+            || floorId == HolyLandFloorIds.ElfHolyLandProper;
 
         /// <summary>Only dimension_square (and legacy town_main) expose the town → dungeon portal.</summary>
         public static bool HasTownDungeonPortal(string floorId) =>
@@ -40,7 +41,9 @@ namespace JRogue.World.Generation.Phases
 
         public static bool IsTownInterior(string floorId) =>
             !string.IsNullOrEmpty(floorId)
-            && (floorId.StartsWith("town_interior") || floorId == HolyLandFloorIds.ShamanTentInterior);
+            && (floorId.StartsWith("town_interior")
+                || floorId == HolyLandFloorIds.ShamanTentInterior
+                || floorId == HolyLandFloorIds.ElfHouseInterior);
 
         static Vector3Int ResolvePortalCell(DungeonGenerationContext context)
         {
