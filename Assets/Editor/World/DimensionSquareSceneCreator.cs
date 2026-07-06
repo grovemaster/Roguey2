@@ -68,6 +68,7 @@ namespace JRogue.Editor.World
             BlacksmithShopPackCreator.SetupBlacksmithShop();
             HolyLandTownPackCreator.SetupHolyLand();
             ElfHolyLandTownPackCreator.SetupElfHolyLand();
+            BeastmanHolyLandTownPackCreator.SetupBeastmanHolyLand();
 
             EnsureFolder("Assets/Scenes/Town");
             EnsureFloorDefinition();
@@ -208,6 +209,10 @@ namespace JRogue.Editor.World
                 floors,
                 LoadHolyLandFloorDefinition(TownDistrictTestPaths.ElfHolyLandProperFloorDef),
                 LoadHolyLandFloorDefinition(TownDistrictTestPaths.ElfHolyLandHouseInteriorFloorDef));
+            BeastmanHolyLandTownPackCreator.AppendToDimensionSquareCatalog(
+                floors,
+                LoadHolyLandFloorDefinition(TownDistrictTestPaths.BeastmanHolyLandProperFloorDef),
+                LoadHolyLandFloorDefinition(TownDistrictTestPaths.BeastmanDenInteriorFloorDef));
         }
 
         static DungeonFloorDefinition LoadHolyLandFloorDefinition(string path) =>
@@ -293,6 +298,8 @@ namespace JRogue.Editor.World
             DungeonFloorDefinition tentDef = LoadHolyLandFloorDefinition(TownDistrictTestPaths.HolyLandTentInteriorFloorDef);
             DungeonFloorDefinition elfHolyLandDef = LoadHolyLandFloorDefinition(TownDistrictTestPaths.ElfHolyLandProperFloorDef);
             DungeonFloorDefinition elfHouseDef = LoadHolyLandFloorDefinition(TownDistrictTestPaths.ElfHolyLandHouseInteriorFloorDef);
+            DungeonFloorDefinition beastmanHolyLandDef = LoadHolyLandFloorDefinition(TownDistrictTestPaths.BeastmanHolyLandProperFloorDef);
+            DungeonFloorDefinition beastmanDenDef = LoadHolyLandFloorDefinition(TownDistrictTestPaths.BeastmanDenInteriorFloorDef);
             DungeonFloorDefinitionCatalog catalog =
                 AssetDatabase.LoadAssetAtPath<DungeonFloorDefinitionCatalog>(CatalogPath);
 
@@ -321,7 +328,9 @@ namespace JRogue.Editor.World
                     holyLandDef,
                     tentDef,
                     elfHolyLandDef,
-                    elfHouseDef));
+                    elfHouseDef,
+                    beastmanHolyLandDef,
+                    beastmanDenDef));
 
             DungeonFloorInstance instance = EnsureScenePaintedFloor(floorsRoot, floorDef);
             instance.gameObject.SetActive(true);
@@ -401,6 +410,20 @@ namespace JRogue.Editor.World
                 DungeonFloorInstance elfHouseInstance = EnsureScenePaintedFloor(floorsRoot, elfHouseDef);
                 elfHouseInstance.gameObject.SetActive(false);
                 ElfHolyLandTownPackCreator.IntegrateElfHouseInteriorScene(elfHouseInstance);
+            }
+
+            if (beastmanHolyLandDef != null)
+            {
+                DungeonFloorInstance beastmanHolyLandInstance = EnsureScenePaintedFloor(floorsRoot, beastmanHolyLandDef);
+                beastmanHolyLandInstance.gameObject.SetActive(false);
+                BeastmanHolyLandTownPackCreator.IntegrateBeastmanHolyLandScene(beastmanHolyLandInstance);
+            }
+
+            if (beastmanDenDef != null)
+            {
+                DungeonFloorInstance beastmanDenInstance = EnsureScenePaintedFloor(floorsRoot, beastmanDenDef);
+                beastmanDenInstance.gameObject.SetActive(false);
+                BeastmanHolyLandTownPackCreator.IntegrateBeastmanDenInteriorScene(beastmanDenInstance);
             }
 
             DungeonFloorTestController test = systems.GetComponent<DungeonFloorTestController>()
@@ -618,6 +641,14 @@ namespace JRogue.Editor.World
             DungeonFloorInstance elfHouse = FindFloorInstance(HolyLandFloorIds.ElfHouseInterior);
             if (elfHouse != null)
                 ElfHolyLandTownPackCreator.IntegrateElfHouseInteriorScene(elfHouse);
+
+            DungeonFloorInstance beastmanHolyLand = FindFloorInstance(HolyLandFloorIds.BeastmanHolyLandProper);
+            if (beastmanHolyLand != null)
+                BeastmanHolyLandTownPackCreator.IntegrateBeastmanHolyLandScene(beastmanHolyLand);
+
+            DungeonFloorInstance beastmanDen = FindFloorInstance(HolyLandFloorIds.BeastmanDenInterior);
+            if (beastmanDen != null)
+                BeastmanHolyLandTownPackCreator.IntegrateBeastmanDenInteriorScene(beastmanDen);
         }
 
         static string[] CollectIntegratedHubFloorIds(
@@ -632,9 +663,11 @@ namespace JRogue.Editor.World
             DungeonFloorDefinition holyLandDef,
             DungeonFloorDefinition tentDef,
             DungeonFloorDefinition elfHolyLandDef,
-            DungeonFloorDefinition elfHouseDef)
+            DungeonFloorDefinition elfHouseDef,
+            DungeonFloorDefinition beastmanHolyLandDef,
+            DungeonFloorDefinition beastmanDenDef)
         {
-            var ids = new List<string>(11);
+            var ids = new List<string>(13);
             if (squareDef != null && !string.IsNullOrEmpty(squareDef.FloorId))
                 ids.Add(squareDef.FloorId);
             if (marketDef != null && !string.IsNullOrEmpty(marketDef.FloorId))
@@ -659,6 +692,10 @@ namespace JRogue.Editor.World
                 ids.Add(elfHolyLandDef.FloorId);
             if (elfHouseDef != null && !string.IsNullOrEmpty(elfHouseDef.FloorId))
                 ids.Add(elfHouseDef.FloorId);
+            if (beastmanHolyLandDef != null && !string.IsNullOrEmpty(beastmanHolyLandDef.FloorId))
+                ids.Add(beastmanHolyLandDef.FloorId);
+            if (beastmanDenDef != null && !string.IsNullOrEmpty(beastmanDenDef.FloorId))
+                ids.Add(beastmanDenDef.FloorId);
             return ids.ToArray();
         }
 

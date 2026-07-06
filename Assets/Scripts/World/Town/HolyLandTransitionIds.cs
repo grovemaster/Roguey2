@@ -12,10 +12,14 @@ namespace JRogue.World.Town
         public const string HolyLandToNexus = "barbarian_holy_land_to_nexus";
         public const string NexusToElfHolyLand = "holy_nexus_to_elf_holy_land";
         public const string ElfHolyLandToNexus = "elf_holy_land_to_nexus";
+        public const string NexusToBeastmanHolyLand = "holy_nexus_to_beastman_holy_land";
+        public const string BeastmanHolyLandToNexus = "beastman_holy_land_to_nexus";
         public const string TentEnter = "building_barbarian_tent_enter";
         public const string TentExit = "building_barbarian_tent_exit";
         public const string ElfHouseEnter = "building_elf_holy_land_house_enter";
         public const string ElfHouseExit = "building_elf_holy_land_house_exit";
+        public const string BeastmanDenEnter = "building_beastman_den_enter";
+        public const string BeastmanDenExit = "building_beastman_den_exit";
 
         public static bool IsHolyLandAdmission(string portalLinkId) =>
             TryGetHolyLandAdmissionRace(portalLinkId, out _);
@@ -26,8 +30,10 @@ namespace JRogue.World.Town
         public static bool IsHolyLandBuildingPortal(string portalLinkId) =>
             portalLinkId == TentEnter
             || portalLinkId == TentExit
-            || portalLinkId == ElfHouseEnter
-            || portalLinkId == ElfHouseExit;
+            ||             portalLinkId == ElfHouseEnter
+            || portalLinkId == ElfHouseExit
+            || portalLinkId == BeastmanDenEnter
+            || portalLinkId == BeastmanDenExit;
 
         public static bool TryGetHolyLandAdmissionRace(string portalLinkId, out Race race)
         {
@@ -40,6 +46,12 @@ namespace JRogue.World.Town
             if (portalLinkId == NexusToElfHolyLand)
             {
                 race = Race.Elf;
+                return true;
+            }
+
+            if (portalLinkId == NexusToBeastmanHolyLand)
+            {
+                race = Race.Beastman;
                 return true;
             }
 
@@ -61,12 +73,21 @@ namespace JRogue.World.Town
                 return true;
             }
 
+            if (portalLinkId == BeastmanHolyLandToNexus)
+            {
+                race = Race.Beastman;
+                return true;
+            }
+
             race = default;
             return false;
         }
 
         public static Vector3Int GetNexusParkAnchorForAdmission(string portalLinkId)
         {
+            if (portalLinkId == NexusToBeastmanHolyLand)
+                return HolyLandNexusLayout.BeastmanHolyLandReturnAnchor;
+
             if (portalLinkId == NexusToElfHolyLand)
                 return HolyLandNexusLayout.ElfHolyLandReturnAnchor;
 
@@ -75,6 +96,9 @@ namespace JRogue.World.Town
 
         public static Vector3Int GetNexusReturnAnchorForExit(string portalLinkId)
         {
+            if (portalLinkId == BeastmanHolyLandToNexus)
+                return HolyLandNexusLayout.BeastmanHolyLandNexusArrivalCell;
+
             if (portalLinkId == ElfHolyLandToNexus)
                 return HolyLandNexusLayout.ElfHolyLandNexusArrivalCell;
 
@@ -98,13 +122,25 @@ namespace JRogue.World.Town
                 return true;
             }
 
+            if (portalLinkId == BeastmanDenEnter || portalLinkId == BeastmanDenExit)
+            {
+                race = Race.Beastman;
+                return true;
+            }
+
             race = default;
             return false;
         }
 
-        public static Vector3Int GetNexusParkAnchorForRace(Race race) =>
-            race == Race.Elf
-                ? HolyLandNexusLayout.ElfHolyLandReturnAnchor
-                : HolyLandNexusLayout.HolyLandReturnAnchor;
+        public static Vector3Int GetNexusParkAnchorForRace(Race race)
+        {
+            if (race == Race.Beastman)
+                return HolyLandNexusLayout.BeastmanHolyLandReturnAnchor;
+
+            if (race == Race.Elf)
+                return HolyLandNexusLayout.ElfHolyLandReturnAnchor;
+
+            return HolyLandNexusLayout.HolyLandReturnAnchor;
+        }
     }
 }

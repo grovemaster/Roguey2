@@ -106,6 +106,13 @@ namespace JRogue.World.Generation
                 return true;
             }
 
+            if (floorId == HolyLandFloorIds.BeastmanHolyLandProper
+                || floorId == HolyLandFloorIds.BeastmanDenInterior)
+            {
+                race = Race.Beastman;
+                return true;
+            }
+
             race = default;
             return false;
         }

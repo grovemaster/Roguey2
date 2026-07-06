@@ -9,17 +9,28 @@ namespace JRogue.World.Town
         public const string ShamanTentInterior = "barbarian_shaman_tent_interior";
         public const string ElfHolyLandProper = "elf_holy_land";
         public const string ElfHouseInterior = "elf_holy_land_house_interior";
+        public const string BeastmanHolyLandProper = "beastman_holy_land";
+        public const string BeastmanDenInterior = "beastman_den_interior";
 
         public static bool IsRacialHolyLandProper(string floorId) =>
-            floorId == HolyLandProper || floorId == ElfHolyLandProper;
+            floorId == HolyLandProper
+            || floorId == ElfHolyLandProper
+            || floorId == BeastmanHolyLandProper;
 
         public static bool IsRacialHolyLandFloor(string floorId) =>
             IsRacialHolyLandProper(floorId)
             || floorId == ShamanTentInterior
-            || floorId == ElfHouseInterior;
+            || floorId == ElfHouseInterior
+            || floorId == BeastmanDenInterior;
 
         public static bool TryGetNexusParkAnchorForRacialFloor(string floorId, out Vector3Int anchor)
         {
+            if (floorId == BeastmanHolyLandProper || floorId == BeastmanDenInterior)
+            {
+                anchor = HolyLandNexusLayout.BeastmanHolyLandReturnAnchor;
+                return true;
+            }
+
             if (floorId == ElfHolyLandProper || floorId == ElfHouseInterior)
             {
                 anchor = HolyLandNexusLayout.ElfHolyLandReturnAnchor;

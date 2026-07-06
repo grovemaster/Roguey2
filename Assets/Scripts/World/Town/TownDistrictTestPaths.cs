@@ -76,6 +76,11 @@ namespace JRogue.World.Town
         public const string ElfHolyLandProperFloorPalette = HolyLandFolder + "/Palette_elf_holy_land_floor.asset";
         public const string ElfHolyLandHouseInteriorFloorPalette = HolyLandFolder + "/Palette_elf_holy_land_house_interior_floor.asset";
 
+        public const string BeastmanHolyLandProperFloorDef = HolyLandFolder + "/Floor_beastman_holy_land.asset";
+        public const string BeastmanDenInteriorFloorDef = HolyLandFolder + "/Floor_beastman_den_interior.asset";
+        public const string BeastmanHolyLandProperFloorPalette = HolyLandFolder + "/Palette_beastman_holy_land_floor.asset";
+        public const string BeastmanDenInteriorFloorPalette = HolyLandFolder + "/Palette_beastman_den_interior_floor.asset";
+
         public const string ResourcesCatalog = "Town/DistrictTest/DistrictTestCatalog";
     }
 }

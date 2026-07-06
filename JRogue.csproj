@@ -185,6 +185,7 @@
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntry.cs" />
     <Compile Include="Assets/Scripts/World/Town/InnBedSleepPromptService.cs" />
     <Compile Include="Assets/Scripts/Racial/TieflingImplantForgemasterService.cs" />
+    <Compile Include="Assets/Scripts/World/Town/BeastmanHolyLandLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneJigsawSolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
     <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillProficiencyDispatcher.cs" />
@@ -554,6 +555,7 @@
     <Compile Include="Assets/Scripts/UI/Gameplay/TownTransitionCurtainUI.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnAreaResolver.cs" />
+    <Compile Include="Assets/Scripts/World/Town/BeastmanHolyLandDenLayout.cs" />
     <Compile Include="Assets/Scripts/World/Town/ElfHolyLandHouseLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeRunState.cs" />

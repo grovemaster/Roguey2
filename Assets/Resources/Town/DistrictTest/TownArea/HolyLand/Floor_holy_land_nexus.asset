@@ -103,6 +103,12 @@ MonoBehaviour:
     portalCell: {x: 7, y: 35, z: 0}
     listLabel: Elf Holy Land
     adjacentConfirmOnly: 0
+  - portalLinkId: holy_nexus_to_beastman_holy_land
+    targetFloorId: beastman_holy_land
+    portalMarkerId: 
+    portalCell: {x: 1, y: 35, z: 0}
+    listLabel: Beastman Holy Land
+    adjacentConfirmOnly: 0
   edgePortals: []
   arrivalBindings:
   - portalLinkId: district_square_to_holy_nexus
@@ -111,6 +117,8 @@ MonoBehaviour:
     arrivalAnchor: {x: 13, y: 34, z: 0}
   - portalLinkId: elf_holy_land_to_nexus
     arrivalAnchor: {x: 7, y: 34, z: 0}
+  - portalLinkId: beastman_holy_land_to_nexus
+    arrivalAnchor: {x: 1, y: 34, z: 0}
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
   portalPlacementRules: []

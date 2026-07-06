@@ -71,6 +71,16 @@ namespace JRogue.World.Generation.Phases
                 ElfHolyLandHouseLayout.FairyMerchantMarkerId,
                 "Town/Npc/TownNpc_ElfGroveFairyMerchant",
                 "Assets/Resources/Town/Npc/TownNpc_ElfGroveFairyMerchant.prefab"),
+            (
+                HolyLandFloorIds.BeastmanHolyLandProper,
+                BeastmanHolyLandLayout.ChiefMarkerId,
+                "Town/Npc/TownNpc_ChiefBeastman",
+                "Assets/Resources/Town/Npc/TownNpc_ChiefBeastman.prefab"),
+            (
+                HolyLandFloorIds.BeastmanDenInterior,
+                BeastmanHolyLandDenLayout.BeastBloodMerchantMarkerId,
+                "Town/Npc/TownNpc_BeastmanDenBeastBloodMerchant",
+                "Assets/Resources/Town/Npc/TownNpc_BeastmanDenBeastBloodMerchant.prefab"),
         };
 
         public void Execute(DungeonGenerationContext context)

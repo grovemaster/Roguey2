@@ -195,7 +195,7 @@ namespace JRogue.Editor.World
 
             int stripWidth = DistrictSquareHolyNexusTransition.StripMaxX - DistrictSquareHolyNexusTransition.StripMinX + 1;
             SerializedProperty portals = so.FindProperty("portals");
-            portals.arraySize = stripWidth + 2;
+            portals.arraySize = stripWidth + 3;
             WriteStripPortals(
                 portals,
                 0,
@@ -213,9 +213,14 @@ namespace JRogue.Editor.World
             elfGate.FindPropertyRelative("targetFloorId").stringValue = HolyLandFloorIds.ElfHolyLandProper;
             elfGate.FindPropertyRelative("portalCell").vector3IntValue = HolyLandNexusLayout.ElfHolyLandGateCell;
             elfGate.FindPropertyRelative("listLabel").stringValue = "Elf Holy Land";
+            SerializedProperty beastmanGate = portals.GetArrayElementAtIndex(stripWidth + 2);
+            beastmanGate.FindPropertyRelative("portalLinkId").stringValue = HolyLandTransitionIds.NexusToBeastmanHolyLand;
+            beastmanGate.FindPropertyRelative("targetFloorId").stringValue = HolyLandFloorIds.BeastmanHolyLandProper;
+            beastmanGate.FindPropertyRelative("portalCell").vector3IntValue = HolyLandNexusLayout.BeastmanHolyLandGateCell;
+            beastmanGate.FindPropertyRelative("listLabel").stringValue = "Beastman Holy Land";
 
             SerializedProperty arrivals = so.FindProperty("arrivalBindings");
-            arrivals.arraySize = 3;
+            arrivals.arraySize = 4;
             arrivals.GetArrayElementAtIndex(0).FindPropertyRelative("portalLinkId").stringValue =
                 HolyLandTransitionIds.SquareToNexus;
             arrivals.GetArrayElementAtIndex(0).FindPropertyRelative("arrivalAnchor").vector3IntValue =
@@ -228,6 +233,10 @@ namespace JRogue.Editor.World
                 HolyLandTransitionIds.ElfHolyLandToNexus;
             arrivals.GetArrayElementAtIndex(2).FindPropertyRelative("arrivalAnchor").vector3IntValue =
                 HolyLandNexusLayout.ElfHolyLandNexusArrivalCell;
+            arrivals.GetArrayElementAtIndex(3).FindPropertyRelative("portalLinkId").stringValue =
+                HolyLandTransitionIds.BeastmanHolyLandToNexus;
+            arrivals.GetArrayElementAtIndex(3).FindPropertyRelative("arrivalAnchor").vector3IntValue =
+                HolyLandNexusLayout.BeastmanHolyLandNexusArrivalCell;
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(def);

@@ -115,6 +115,77 @@ namespace JRogue.Tests.World
                 Is.True);
         }
 
+        [Test]
+        public void Beastman_holy_land_gate_is_at_1_35_with_approach_path()
+        {
+            Assert.That(HolyLandNexusLayout.BeastmanHolyLandGateCell, Is.EqualTo(new Vector3Int(1, 35, 0)));
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(1, 35), Is.True);
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(2, 35), Is.True);
+            Assert.That(HolyLandNexusLayout.IsWalkableCell(6, 35), Is.True);
+        }
+
+        [Test]
+        public void Beastman_gate_is_at_least_five_tiles_from_north_portal_strip_and_other_gates()
+        {
+            for (int x = DistrictSquareHolyNexusTransition.StripMinX;
+                 x <= DistrictSquareHolyNexusTransition.StripMaxX;
+                 x++)
+            {
+                var stripCell = new Vector3Int(x, DistrictSquareHolyNexusTransition.NexusNorthEdgeY, 0);
+                if (!DistrictSquareHolyNexusTransition.IsNexusNorthTransitionCell(stripCell))
+                    continue;
+
+                int beastmanDist = Manhattan(
+                    stripCell.x,
+                    stripCell.y,
+                    HolyLandNexusLayout.BeastmanHolyLandGateCell.x,
+                    HolyLandNexusLayout.BeastmanHolyLandGateCell.y);
+
+                Assert.That(beastmanDist, Is.GreaterThanOrEqualTo(5));
+            }
+
+            Assert.That(
+                Manhattan(
+                    HolyLandNexusLayout.BeastmanHolyLandGateCell.x,
+                    HolyLandNexusLayout.BeastmanHolyLandGateCell.y,
+                    HolyLandNexusLayout.ElfHolyLandGateCell.x,
+                    HolyLandNexusLayout.ElfHolyLandGateCell.y),
+                Is.GreaterThanOrEqualTo(5));
+            Assert.That(
+                Manhattan(
+                    HolyLandNexusLayout.BeastmanHolyLandGateCell.x,
+                    HolyLandNexusLayout.BeastmanHolyLandGateCell.y,
+                    HolyLandNexusLayout.HolyLandGateCell.x,
+                    HolyLandNexusLayout.HolyLandGateCell.y),
+                Is.GreaterThanOrEqualTo(5));
+        }
+
+        [Test]
+        public void Beastman_holy_land_exit_arrival_and_stand_cells_are_configured()
+        {
+            Assert.That(
+                HolyLandNexusLayout.BeastmanHolyLandNexusArrivalCell,
+                Is.EqualTo(new Vector3Int(1, 34, 0)));
+            Assert.That(
+                HolyLandTransitionIds.GetNexusReturnAnchorForExit(HolyLandTransitionIds.BeastmanHolyLandToNexus),
+                Is.EqualTo(HolyLandNexusLayout.BeastmanHolyLandNexusArrivalCell));
+            Assert.That(HolyLandNexusLayout.BeastmanHolyLandExitStandCell, Is.EqualTo(new Vector3Int(2, 35, 0)));
+            Assert.That(
+                HolyLandNexusLayout.TryGetHolyLandExitStandCell(
+                    HolyLandTransitionIds.BeastmanHolyLandToNexus,
+                    out Vector3Int beastmanStand),
+                Is.True);
+            Assert.That(beastmanStand, Is.EqualTo(HolyLandNexusLayout.BeastmanHolyLandExitStandCell));
+            Assert.That(
+                HolyLandNexusLayout.IsHolyLandExitActivationCell(HolyLandNexusLayout.BeastmanHolyLandExitStandCell),
+                Is.True);
+            Assert.That(
+                HolyLandNexusLayout.IsWalkableCell(
+                    HolyLandNexusLayout.BeastmanHolyLandNexusArrivalCell.x,
+                    HolyLandNexusLayout.BeastmanHolyLandNexusArrivalCell.y),
+                Is.True);
+        }
+
         static int Manhattan(int x1, int y1, int x2, int y2) =>
             Mathf.Abs(x1 - x2) + Mathf.Abs(y1 - y2);
 
