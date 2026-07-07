@@ -293,7 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df05b20ba2db44d2b481954e0664cdd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorInstance
-  definition: {fileID: 11400000, guid: 172ac1a1766071f9afc2d8273678f48f, type: 2}
+  definition: {fileID: 11400000, guid: 54a2a18e3307ccb138853b611abbd326, type: 2}
   enemyContainer: {fileID: 444116001}
   dynamicViewsRoot: {fileID: 1565628404}
   floorMap: {fileID: 1740798955}
@@ -375,6 +375,7 @@ GameObject:
   - component: {fileID: 434795530}
   - component: {fileID: 434795529}
   - component: {fileID: 434795533}
+  - component: {fileID: 434795534}
   m_Layer: 0
   m_Name: DungeonTestSystems
   m_TagString: Untagged
@@ -416,7 +417,7 @@ MonoBehaviour:
   floorsRoot: {fileID: 857100529}
   floorDefinitions:
   - {fileID: 11400000, guid: bb22fa8d36cb3f1bdbfb08c388d46f9a, type: 2}
-  - {fileID: 11400000, guid: 172ac1a1766071f9afc2d8273678f48f, type: 2}
+  - {fileID: 11400000, guid: 54a2a18e3307ccb138853b611abbd326, type: 2}
   useDontDestroyOnLoad: 0
 --- !u!114 &434795521
 MonoBehaviour:
@@ -614,6 +615,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: JRogue::JRogue.Manager.Door.DoorService
   doorOverlayMap: {fileID: 0}
+--- !u!114 &434795534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434795518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4338319ffc24e688f5a731e5353b74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.PartyFloorPresenceService
 --- !u!1 &444116000
 GameObject:
   m_ObjectHideFlags: 0

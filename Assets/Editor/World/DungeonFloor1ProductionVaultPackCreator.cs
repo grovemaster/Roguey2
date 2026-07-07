@@ -56,23 +56,23 @@ namespace JRogue.Editor.World
             ShowFlavorDialogEffect monumentEffect = EnsureFlavorEffect(
                 $"{EffectRoot}/ShowFlavorDialog_Monument.asset",
                 "There is a faded inscription on the monument.");
-            ShowFlavorDialogEffect altarEffect = EnsureFlavorEffect(
-                $"{EffectRoot}/ShowFlavorDialog_Altar.asset",
-                "There are 3 small indentations and 1 larger indentation.");
+            ActivateDescentPlinthPortalEffect plinthEffect = EnsureDescentPlinthEffect(
+                $"{EffectRoot}/ActivateDescentPlinthPortal.asset");
 
             InteractableTileDefinition monumentDef = EnsureBumpInteractable(
                 $"{InteractableRoot}/BumpMonumentInscription.asset",
                 "Monument inscription",
                 InteractableTileId.BumpMonumentInscription,
                 monumentEffect);
-            InteractableTileDefinition altarDef = EnsureBumpInteractable(
-                $"{InteractableRoot}/BumpAltarIndentations.asset",
-                "Altar indentations",
-                InteractableTileId.BumpAltarIndentations,
-                altarEffect);
+            InteractableTileDefinition plinthDef = EnsureBumpInteractable(
+                $"{InteractableRoot}/BumpDescentPlinth.asset",
+                "Descent plinth",
+                InteractableTileId.BumpDescentPlinth,
+                plinthEffect,
+                allowRepeatActivation: false);
 
             VaultAssetRegistry registry = LoadOrCreateRegistry();
-            WireRegistry(registry, monumentDef, altarDef);
+            WireRegistry(registry, monumentDef, plinthDef);
 
             DungeonVaultCatalog catalog = LoadOrCreateCatalog(registry);
             WireProductionCatalog(catalog);
@@ -101,12 +101,12 @@ namespace JRogue.Editor.World
         static void WireRegistry(
             VaultAssetRegistry registry,
             InteractableTileDefinition monumentDef,
-            InteractableTileDefinition altarDef)
+            InteractableTileDefinition plinthDef)
         {
             SerializedObject so = new SerializedObject(registry);
 
             WriteTileEntries(so);
-            WriteInteractableEntries(so, monumentDef, altarDef);
+            WriteInteractableEntries(so, monumentDef, plinthDef);
 
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(registry);
@@ -165,10 +165,10 @@ namespace JRogue.Editor.World
         static void WriteInteractableEntries(
             SerializedObject registrySo,
             InteractableTileDefinition monumentDef,
-            InteractableTileDefinition altarDef)
+            InteractableTileDefinition plinthDef)
         {
             UpsertInteractable(registrySo, "bump_monument_inscription", monumentDef);
-            UpsertInteractable(registrySo, "bump_altar_indentations", altarDef);
+            UpsertInteractable(registrySo, "bump_descent_plinth", plinthDef);
         }
 
         static void UpsertInteractable(
@@ -210,9 +210,10 @@ namespace JRogue.Editor.World
                     entry.FindPropertyRelative("mandatory").boolValue = true;
                     entry.FindPropertyRelative("requiredZoneId").stringValue = "luminescent_cavern";
                 }
-                else if (vaultId == "vault_altar_3x3")
+                else if (vaultId == "vault_descent_plinth_3x3")
                 {
-                    entry.FindPropertyRelative("placementRule").enumValueIndex = (int)VaultPlacementRule.MandatoryRandom;
+                    entry.FindPropertyRelative("placementRule").enumValueIndex =
+                        (int)VaultPlacementRule.NearZoneNorthEdge;
                     entry.FindPropertyRelative("mandatory").boolValue = true;
                     entry.FindPropertyRelative("requiredZoneId").stringValue = "northern_dark";
                 }
@@ -246,11 +247,30 @@ namespace JRogue.Editor.World
             return effect;
         }
 
+        static ActivateDescentPlinthPortalEffect EnsureDescentPlinthEffect(string path)
+        {
+            var effect = AssetDatabase.LoadAssetAtPath<ActivateDescentPlinthPortalEffect>(path);
+            if (effect == null)
+            {
+                effect = ScriptableObject.CreateInstance<ActivateDescentPlinthPortalEffect>();
+                effect.experienceAmount = 2;
+                AssetDatabase.CreateAsset(effect, path);
+            }
+            else
+            {
+                effect.experienceAmount = 2;
+                EditorUtility.SetDirty(effect);
+            }
+
+            return effect;
+        }
+
         static InteractableTileDefinition EnsureBumpInteractable(
             string path,
             string displayName,
             InteractableTileId interactableId,
-            ShowFlavorDialogEffect effect)
+            InteractableEffect effect,
+            bool allowRepeatActivation = true)
         {
             var def = AssetDatabase.LoadAssetAtPath<InteractableTileDefinition>(path);
             if (def == null)
@@ -264,10 +284,19 @@ namespace JRogue.Editor.World
             def.kind = InteractableTileKind.Shrine;
             def.blocksOccupancy = true;
             def.bumpEnabled = true;
-            def.allowRepeatActivation = true;
+            def.allowRepeatActivation = allowRepeatActivation;
             def.onActivateEffects = new InteractableEffect[] { effect };
             EditorUtility.SetDirty(def);
             return def;
+        }
+
+        static InteractableTileDefinition EnsureBumpInteractable(
+            string path,
+            string displayName,
+            InteractableTileId interactableId,
+            ShowFlavorDialogEffect effect)
+        {
+            return EnsureBumpInteractable(path, displayName, interactableId, (InteractableEffect)effect);
         }
 
         static VaultAssetRegistry LoadOrCreateRegistry()

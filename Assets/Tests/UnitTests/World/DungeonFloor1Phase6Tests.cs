@@ -41,6 +41,37 @@ namespace JRogue.Tests.UnitTests.World
         }
 
         [Test]
+        public void ProductionFloor1_HasNoEdgePortalPlacementRules()
+        {
+            var floor = Resources.Load<DungeonFloorDefinition>("Dungeon/Floor_prod_dungeon_floor_01");
+            Assert.IsNotNull(floor);
+            Assert.AreEqual(0, floor.PortalPlacementRules.Count);
+        }
+
+        [Test]
+        public void ProductionFloor2_IsTenByTwentyWithSouthReturnPortal()
+        {
+            var floor = Resources.Load<DungeonFloorDefinition>("Dungeon/Floor_prod_dungeon_floor_02");
+            if (floor == null)
+            {
+                Assert.Inconclusive("Run JRogue → Dungeon → Create Floor 2 Production Pack to generate assets.");
+                return;
+            }
+
+            Assert.AreEqual("dungeon_floor_02", floor.FloorId);
+            Assert.AreEqual(FloorLayoutMode.PreBakedStamp, floor.LayoutMode);
+            Assert.IsNotNull(floor.LayoutStamp);
+            Assert.AreEqual(10, floor.LayoutStamp.Width);
+            Assert.AreEqual(20, floor.LayoutStamp.Height);
+            Assert.AreEqual(0, floor.EnemyPopulation.Count);
+
+            Assert.IsTrue(floor.TryGetArrivalBinding(
+                DungeonFloorTransitionIds.Floor01ToFloor02,
+                out PortalArrivalBinding arrival));
+            Assert.AreEqual(new Vector3Int(5, 1, 0), arrival.arrivalAnchor);
+        }
+
+        [Test]
         public void MultiFloorVisit_PreservesRunSeedAndDeepestFloor()
         {
             var go = new GameObject("DungeonRunState_Test");

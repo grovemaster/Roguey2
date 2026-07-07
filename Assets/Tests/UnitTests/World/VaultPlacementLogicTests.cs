@@ -91,6 +91,45 @@ namespace JRogue.Tests.UnitTests.World
         }
 
         [Test]
+        public void IsNearNorthMapEdge_UsesChebyshevDistanceToNorthRow()
+        {
+            Assert.IsTrue(DescentPlinthPlacementLogic.IsNearNorthMapEdge(
+                new Vector3Int(10, 76, 0),
+                DescentPlinthPlacementLogic.Floor01NorthMapRow,
+                DescentPlinthPlacementLogic.MaxChebyshevFromNorthEdge));
+            Assert.IsFalse(DescentPlinthPlacementLogic.IsNearNorthMapEdge(
+                new Vector3Int(10, 75, 0),
+                DescentPlinthPlacementLogic.Floor01NorthMapRow,
+                DescentPlinthPlacementLogic.MaxChebyshevFromNorthEdge));
+        }
+
+        [Test]
+        public void OnPlaced_StoresReturnArrivalBindingSouthOfPlinth()
+        {
+            var blueprint = new VaultBlueprint
+            {
+                VaultId = DescentPlinthPlacementLogic.VaultId,
+                Origin = new Vector2Int(1, 1),
+            };
+            blueprint.AddInteractable("bump_descent_plinth", 1, 1);
+
+            var instanceGo = new GameObject("FloorInstance");
+            var instance = instanceGo.AddComponent<DungeonFloorInstance>();
+            var context = new DungeonGenerationContext(null, instance, runSeed: 1, floorSalt: 0);
+            Vector3Int origin = new Vector3Int(20, 77, 0);
+
+            DescentPlinthPlacementLogic.OnPlaced(context, blueprint, origin);
+
+            Assert.AreEqual(new Vector3Int(20, 77, 0), context.DescentPlinthPortalCell);
+            Assert.IsTrue(instance.TryGetArrivalBinding(
+                DungeonFloorTransitionIds.Floor02ToFloor01,
+                out PortalArrivalBinding binding));
+            Assert.AreEqual(new Vector3Int(20, 76, 0), binding.arrivalAnchor);
+
+            Object.DestroyImmediate(instanceGo);
+        }
+
+        [Test]
         public void LocalToWorld_OriginAnchorMapsMonumentCornerToPlacementOrigin()
         {
             var blueprint = new VaultBlueprint { Origin = new Vector2Int(3, 3) };

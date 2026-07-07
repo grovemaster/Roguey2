@@ -57,8 +57,8 @@ MonoBehaviour:
     definition: {fileID: 11400000, guid: 2c19d8f630fa4d5ea3a8d7c22427cc4d, type: 2}
   - id: bump_monument_inscription
     definition: {fileID: 11400000, guid: e2b3c4d5e6f7489091bbccddeeff0101, type: 2}
-  - id: bump_altar_indentations
-    definition: {fileID: 11400000, guid: e2b3c4d5e6f7489091bbccddeeff0102, type: 2}
+  - id: bump_descent_plinth
+    definition: {fileID: 11400000, guid: c6e5d4f3a2b1c0d9e8f7a6b5c4d3e2ab, type: 2}
   hazards:
   - id: lava
     definition: {fileID: 11400000, guid: b1c2d3e4f5a6478990abcdef12345001, type: 2}

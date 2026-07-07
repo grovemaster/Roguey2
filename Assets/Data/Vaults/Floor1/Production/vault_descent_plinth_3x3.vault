@@ -1,0 +1,14 @@
+# Northern Dark — mandatory descent plinth (3×3 open floor, impassable plinth overlay at center).
+# Placed near north map edge (row y=79, Chebyshev<=3). Bump → portal + 2 party XP once.
+VAULT vault_descent_plinth_3x3
+WEIGHT 1
+MIN_DISTANCE_FROM_PLAYER_START 0
+ORIGIN 1 1
+TILES .=DcssCavern:grey_dirt_0_new;A=DcssCavern:altar_misc
+MAP
+...
+.A.
+...
+ENDMAP
+INTERACTABLE bump_descent_plinth AT 1 1
+END

@@ -63,6 +63,7 @@ namespace JRogue.World.Generation.Vaults
 
             var zoneCenter = new List<PreparedEntry>();
             var mandatoryRandom = new List<PreparedEntry>();
+            var nearZoneNorthEdge = new List<PreparedEntry>();
             var pondScatter = new List<PreparedEntry>();
             var random = new List<PreparedEntry>();
 
@@ -77,6 +78,9 @@ namespace JRogue.World.Generation.Vaults
                     case VaultPlacementRule.MandatoryRandom:
                         mandatoryRandom.Add(entry);
                         break;
+                    case VaultPlacementRule.NearZoneNorthEdge:
+                        nearZoneNorthEdge.Add(entry);
+                        break;
                     case VaultPlacementRule.PondScatter:
                         pondScatter.Add(entry);
                         break;
@@ -89,6 +93,7 @@ namespace JRogue.World.Generation.Vaults
             int placed = 0;
             placed += PlaceZoneCenterEntries(context, registry, zoneCenter);
             placed += PlaceMandatoryRandomEntries(context, registry, mandatoryRandom);
+            placed += PlaceNearZoneNorthEdgeEntries(context, registry, nearZoneNorthEdge);
             placed += PlacePondScatterEntries(context, registry, pondScatter);
             placed += PlaceRandomEntries(context, registry, random);
 
@@ -218,6 +223,53 @@ namespace JRogue.World.Generation.Vaults
                 else
                 {
                     LogMandatoryFailure(entry, blueprint, "no valid random anchor in required zone.");
+                }
+            }
+
+            return placed;
+        }
+
+        static int PlaceNearZoneNorthEdgeEntries(
+            DungeonGenerationContext context,
+            VaultAssetRegistry registry,
+            List<PreparedEntry> entries)
+        {
+            int placed = 0;
+            for (int i = 0; i < entries.Count; i++)
+            {
+                PreparedEntry prepared = entries[i];
+                DungeonVaultCatalogEntry entry = prepared.CatalogEntry;
+                VaultBlueprint blueprint = prepared.Blueprint;
+
+                List<Vector3Int> candidates = VaultPlacementUtility.CollectNearZoneNorthEdgeCandidates(
+                    context,
+                    blueprint,
+                    entry.requiredZoneId,
+                    DescentPlinthPlacementLogic.Floor01NorthMapRow,
+                    DescentPlinthPlacementLogic.MaxChebyshevFromNorthEdge);
+
+                bool ok = VaultPlacer.TryPlaceFromCandidates(
+                    blueprint,
+                    registry,
+                    context,
+                    candidates,
+                    context.Rng,
+                    entry.minDistanceFromPlayerStart,
+                    entry.requiredZoneId,
+                    out Vector3Int origin);
+
+                if (ok)
+                {
+                    placed++;
+                    LogPlaced(blueprint.VaultId, origin, VaultPlacementRule.NearZoneNorthEdge);
+                    DescentPlinthPlacementLogic.OnPlaced(context, blueprint, origin);
+                }
+                else
+                {
+                    LogMandatoryFailure(
+                        entry,
+                        blueprint,
+                        "no valid anchor near northern zone edge (y=79, Chebyshev<=3).");
                 }
             }
 

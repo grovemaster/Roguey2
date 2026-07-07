@@ -32,6 +32,21 @@
 
 **Explicitly out of scope (this milestone):** Full dungeon chain (Floors 2–N production content); save/load across sessions; procedural room-and-corridor generator (v1); changing `SampleScene.unity`; removing or repurposing `DungeonFloorTest`; rewiring `TownTest` away from `DungeonFloorTest`.
 
+### Amendment — Floor 2 descent plinth (2026-07-06)
+
+**Status:** **Pending implementation** — supersedes parts of §7.6 and §8.2 below when [Floor 2 production](Dungeon-Floor-2-Production-Requirements.md) Phase 1 ships.
+
+| Topic | Was (implemented) | Now (locked intent) |
+|-------|-------------------|---------------------|
+| **Floor 1 → Floor 2 gate** | Random walkable portal on **`northern_dark` north edge** (row **y = 79**, seed-driven **x**) | **Mandatory descent plinth** vault in `northern_dark`, **within Chebyshev 3** of row **y = 79** |
+| **Activation** | Step-on portal from generation | **First bump** transforms plinth → portal; awards **+2 party XP once**; remains a portal for the run |
+| **Floor 2 → Floor 1 arrival** | `arrivalBindings` in `luminescent_cavern` (deferred) | Party lands **adjacent to the plinth portal cell** — not random cavern spawn |
+| **Persistence** | (unchanged) | Parked Floor 1 keeps kills, plinth state, fog; schedule may add **new** spawns after a **dungeon day** advances ([Floor 2 §9](Dungeon-Floor-2-Production-Requirements.md)) |
+
+**Portal link ids unchanged:** `link_floor01_to_floor02`, `link_floor02_to_floor01`.
+
+**Acceptance (replaces AC4-3 for production):** Plinth always placed; first bump → portal + XP; reachable from spawn; round-trip preserves Floor 1 state per Floor 2 AC4-1–AC4-3.
+
 ---
 
 ## 1. Goals
@@ -519,6 +534,8 @@ Floor 1 v0 is intentionally **simple** — content is **enemies + vaults + Floor
 
 ### 7.6 — Altar placement (locked)
 
+> **Amendment (2026-07-06):** Production path will replace the flavor-only altar with a **descent plinth** (bump → portal + 2 XP). See [amendment](#amendment--floor-2-descent-plinth-2026-07-06) and [Floor 2 §4](Dungeon-Floor-2-Production-Requirements.md). Until implemented, behavior below remains in builds.
+
 | Rule | Detail |
 |------|--------|
 | **Always present** | Every `dungeon_floor_01` run includes exactly one `vault_altar_3x3` **somewhere in `northern_dark`**. |
@@ -578,15 +595,17 @@ Use **`NpcDialogBoxUI.ShowLine`** (same pattern as [`InnBedSleepPromptService`](
 
 ### 8.2 — Portal placement (locked)
 
+> **Amendment (2026-07-06):** **North-edge random portal (below) is superseded** by the mandatory **descent plinth** near row **y = 79**. See [amendment](#amendment--floor-2-descent-plinth-2026-07-06).
+
 | Portal | Link id | Placement | Target | Notes |
 |--------|---------|-----------|--------|-------|
-| **Floor 1 → Floor 2** | `link_floor01_to_floor02` | **`northern_dark` north map edge** — row **y = 79**; **x random** along walkable edge span (seed-driven) | `dungeon_floor_02` | Progression gate. **Stub OK** until Floor 2 exists — portal may no-op or show *“deeper floors not yet available”* |
-| **Floor 2 → Floor 1** | `link_floor02_to_floor01` | On Floor 2 (deferred) | `dungeon_floor_01` | Arrival binding in `luminescent_cavern` — when Floor 2 authored |
+| **Floor 1 → Floor 2** | `link_floor01_to_floor02` | ~~**`northern_dark` north map edge** — row **y = 79**; **x random**~~ → **descent plinth** near north edge of `northern_dark` (amendment) | `dungeon_floor_02` | Was: edge portal / stub. Now: plinth activation |
+| **Floor 2 → Floor 1** | `link_floor02_to_floor01` | On Floor 2 (deferred) | `dungeon_floor_01` | ~~Arrival in `luminescent_cavern`~~ → **adjacent to plinth portal** ([Floor 2 §8.2](Dungeon-Floor-2-Production-Requirements.md)) |
 | **Town entry** | — | — | — | Scene load only; no on-map town portal on Floor 1 |
 
-**Reachability (locked):** The Floor 2 portal must **always** be reachable on foot from a valid player spawn — no debug teleport required (AC4-3). Placement picks a **walkable** cell on **y = 79**; if the seed roll lands on wall, **re-roll or snap** to the nearest walkable edge cell. Post-generation validation must confirm **global connectivity** cavern → dark → portal (§6.4.3a).
+**Reachability (locked):** The descent plinth (amendment) / Floor 2 portal must **always** be reachable on foot from a valid player spawn — no debug teleport required (AC4-3). Post-generation validation must confirm **global connectivity** cavern → dark → plinth. *(Legacy edge rule: walkable cell on **y = 79**; re-roll or snap if wall.)*
 
-**RNG:** `runSeed` + `floorId` + `"portal_floor02"` for reproducible x on y = 79.
+**RNG:** Plinth **x** along north band — `runSeed` + `floorId` + placement salt (TBD in Floor 2 pack). ~~`"portal_floor02"` for edge **x**~~ superseded.
 
 ### 8.3 — Random spawn resolution — **Locked (2026-06-20)**
 
@@ -903,7 +922,7 @@ Extend **`DungeonV0aPackCreator`** or add **`DungeonFloor1ProductionPackCreator`
 |----|-----------|
 | **AC4-1** | Random `playerStart` in `luminescent_cavern`; vault-overlap rejected; formation fits |
 | **AC4-2** | Same run seed → same spawn anchor; different seed → may differ |
-| **AC4-3** | Floor 2 portal on **y = 79** at seed-driven **x**; **always walkable and reachable** from spawn without debug teleport |
+| **AC4-3** | ~~Floor 2 portal on **y = 79** at seed-driven **x**~~ → **Descent plinth** near north edge of `northern_dark`; first bump → portal; always reachable from spawn ([amendment](#amendment--floor-2-descent-plinth-2026-07-06)) |
 
 ### Phase 5 — Enemies
 
@@ -936,11 +955,11 @@ Extend **`DungeonV0aPackCreator`** or add **`DungeonFloor1ProductionPackCreator`
 | **Q4** | Single vs multi-habitat Floor 1 | **Locked: two mandatory habitats (stacked north/center)** |
 | **Q5** | Fork `Floor_dungeon_floor_01` asset for production vs share with test | **Locked: fork → `Floor_prod_dungeon_floor_01`** |
 | **Q6** | When does `DistrictTownTest` switch to production dungeon? | With Phase 1 (same as Dimension Square) |
-| **Q7** | Floor 2 production scope — same shell, separate milestone? | **Deferred** — portal link must exist for AC4/AC6; portal may stub until Floor 2 |
+| **Q7** | Floor 2 production scope — same shell, separate milestone? | **In progress** — [Floor 2 production](Dungeon-Floor-2-Production-Requirements.md); plinth gate replaces edge portal |
 | **Q8** | Exact DCSS cavern tile indices for glow floors + wall set | **Confirmed** — §6.4.5a |
 | **Q9** | Which 1–2 of the 3 glow floors are emitter palette entries | **Locked: `floor_nerves_2_new` + `floor_nerves_4_new`** |
 | **Q10** | Party spawn cell / narrative within `luminescent_cavern` | **Locked: random** (§8.3) |
-| **Q11** | Floor 2 portal x placement | **Locked: random along y = 79 edge** (§8.2) |
+| **Q11** | Floor 2 portal placement | **Superseded** — plinth near **y = 79**, not random edge tile ([amendment](#amendment--floor-2-descent-plinth-2026-07-06)) |
 | **Q12** | Cavern vs dark proc density | **Locked** — §6.4.3a |
 | **Q13** | Corridor / entrance width | **Locked: 1–3 tiles** — §6.4.3a, §6.3.1 |
 | **Q14** | Floor loot / interactables / quests v0 | **Locked** — §6.7 |
@@ -961,6 +980,7 @@ Extend **`DungeonV0aPackCreator`** or add **`DungeonFloor1ProductionPackCreator`
 
 | Date | Change |
 |------|--------|
+| 2026-07-06 | **Amendment** — Floor 2 descent plinth supersedes §8.2 north-edge portal; §7.6 altar → plinth; AC4-3, Q7, Q11 updated; see [Floor 2 production](Dungeon-Floor-2-Production-Requirements.md) |
 | 2026-06-19 | Initial draft — Phase 0 scaffold; test vs production routing; phased plan; TBD sections for dimensions, zones, vaults, spawn, enemies |
 | 2026-06-19 | **§5–§6 locked** — 50×80 rectangle; `luminescent_cavern` (50×60 center) + `northern_dark` (50×20 north); tilesets deferred to §6.4 |
 | 2026-06-20 | **§6.3–§6.5, §8.2 locked** — DCSS cavern tilesets; Cave + RoomCorridor fill; zero ambient both zones; tile emitters in luminescent; Floor 2 portal at north edge of `northern_dark` |

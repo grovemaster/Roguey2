@@ -68,6 +68,7 @@
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyXpDispatcher.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalInteractable.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Effects/ActivateDescentPlinthPortalEffect.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/ILootRandom.cs" />
     <Compile Include="Assets/Scripts/Item/ItemStorageLocation.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyCompositionSwapService.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownInteriorNpcSetupPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/Knight/KnightSkillProgressionRules.cs" />
     <Compile Include="Assets/Scripts/UI/Character/EquipmentSlotGridView.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTransitionIds.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/TownBuildingDoorSetupPhase.cs" />
     <Compile Include="Assets/Scripts/World/Town/StaticHubMarkerKind.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyAptitudeService.cs" />
@@ -547,6 +549,7 @@
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnGroupMembership.cs" />
     <Compile Include="Assets/Scripts/Organizations/OrganizationRankScoreService.cs" />
     <Compile Include="Assets/Scripts/Party/Recruitment/PartyRecruitBoardState.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/Vaults/DescentPlinthPlacementLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonRunBootstrap.cs" />
     <Compile Include="Assets/Scripts/World/Lighting/PartyLightEmitterBridge.cs" />
     <Compile Include="Assets/Scripts/Racial/DragonianSpellLoadoutService.cs" />

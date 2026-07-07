@@ -16,5 +16,6 @@ namespace JRogue.Interactables
         InnBed = 11,
         BumpMonumentInscription = 12,
         BumpAltarIndentations = 13,
+        BumpDescentPlinth = 14,
     }
 }

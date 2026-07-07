@@ -3,6 +3,7 @@ using JRogue.Actors.Components;
 using JRogue.Controller.Enemy;
 using JRogue.Controller.Npc;
 using JRogue.Core.Actor;
+using JRogue.Interactables;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.World.Generation.Phases;
@@ -41,6 +42,9 @@ namespace JRogue.World.Generation
         readonly List<PortalVisual> _portalVisuals = new List<PortalVisual>();
         readonly DungeonFloorFeatureSnapshot _featureSnapshot = new DungeonFloorFeatureSnapshot();
         readonly HashSet<string> _monsterSpawnOnceLedger = new HashSet<string>();
+
+        Vector3Int? _descentPlinthPortalCell;
+        bool _descentPlinthActivated;
 
         struct PortalVisual
         {
@@ -471,6 +475,48 @@ namespace JRogue.World.Generation
         }
 
         public void RegisterPortal(PortalInteractable portal) => _portals.Add(portal);
+
+        public bool IsDescentPlinthActivated => _descentPlinthActivated;
+
+        public void SetDescentPlinthPortalCell(Vector3Int cell) => _descentPlinthPortalCell = cell;
+
+        public bool TryGetDescentPlinthPortalCell(out Vector3Int cell)
+        {
+            if (!_descentPlinthPortalCell.HasValue)
+            {
+                cell = default;
+                return false;
+            }
+
+            cell = _descentPlinthPortalCell.Value;
+            return true;
+        }
+
+        public void ActivateDescentPlinthPortal(InteractableTileService interactables)
+        {
+            if (_descentPlinthActivated || !_descentPlinthPortalCell.HasValue)
+                return;
+
+            Vector3Int portalCell = _descentPlinthPortalCell.Value;
+            _descentPlinthActivated = true;
+
+            interactables?.UnregisterAtCell(portalCell);
+            PlacePortalVisual(portalCell);
+
+            var portal = new PortalInteractable(
+                portalCell,
+                DungeonFloorTransitionIds.Floor01ToFloor02,
+                DungeonFloorTransitionIds.Floor02Id,
+                "Portal (Deeper)");
+            _portals.Add(portal);
+
+            AdjacentMapInteractableService service = AdjacentMapInteractableService.Instance;
+            if (service != null)
+            {
+                service.SetOverlayMap(interactableOverlayMap);
+                service.Register(portalCell, portal);
+            }
+        }
 
         public void RegisterMapInteractable(JRogue.World.MapInteract.IAdjacentMapInteractable interactable)
         {

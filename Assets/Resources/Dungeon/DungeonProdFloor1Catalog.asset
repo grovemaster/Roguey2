@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinitionCatalog
   floors:
   - {fileID: 11400000, guid: bb22fa8d36cb3f1bdbfb08c388d46f9a, type: 2}
-  - {fileID: 11400000, guid: 172ac1a1766071f9afc2d8273678f48f, type: 2}
+  - {fileID: 11400000, guid: 54a2a18e3307ccb138853b611abbd326, type: 2}

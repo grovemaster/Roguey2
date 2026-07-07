@@ -304,6 +304,19 @@ namespace JRogue.Interactables
             _byId.Clear();
         }
 
+        public void UnregisterAtCell(Vector3Int cell)
+        {
+            if (!_byCell.TryGetValue(cell, out InteractableTileInstance instance))
+                return;
+
+            _byCell.Remove(cell);
+            if (instance?.Definition != null)
+                _byId.Remove(instance.Definition.interactableId);
+
+            if (interactableOverlayMap != null)
+                GridOverlayPainter.Clear(interactableOverlayMap, cell);
+        }
+
         public void CaptureSnapshot(System.Collections.Generic.List<JRogue.World.Generation.InteractableSnapshotEntry> dest)
         {
             if (dest == null)

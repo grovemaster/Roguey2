@@ -349,6 +349,29 @@ namespace JRogue.World.Generation.Vaults
             return candidates;
         }
 
+        public static List<Vector3Int> CollectNearZoneNorthEdgeCandidates(
+            DungeonGenerationContext context,
+            VaultBlueprint blueprint,
+            string requiredZoneId,
+            int northMapRow,
+            int maxChebyshevFromNorthEdge)
+        {
+            List<Vector3Int> candidates = CollectZoneOriginCandidates(context, requiredZoneId);
+            for (int i = candidates.Count - 1; i >= 0; i--)
+            {
+                if (!DescentPlinthPlacementLogic.TryGetPortalCell(blueprint, candidates[i], out Vector3Int portalCell)
+                    || !DescentPlinthPlacementLogic.IsNearNorthMapEdge(
+                        portalCell,
+                        northMapRow,
+                        maxChebyshevFromNorthEdge))
+                {
+                    candidates.RemoveAt(i);
+                }
+            }
+
+            return candidates;
+        }
+
         public static void CollectChebyshevRingOrigins(
             Vector3Int center,
             int maxRadius,

@@ -95,12 +95,12 @@ MonoBehaviour:
     requiredZoneId: luminescent_cavern
     placementRule: 3
     mandatory: 0
-  - vaultId: vault_altar_3x3
+  - vaultId: vault_descent_plinth_3x3
     sourceFile: {fileID: 0}
-    sourceAssetPath: Data/Vaults/Floor1/Production/vault_altar_3x3.vault
+    sourceAssetPath: Data/Vaults/Floor1/Production/vault_descent_plinth_3x3.vault
     weight: 1
     maxPerFloor: 1
     minDistanceFromPlayerStart: 0
     requiredZoneId: northern_dark
-    placementRule: 2
+    placementRule: 4
     mandatory: 1

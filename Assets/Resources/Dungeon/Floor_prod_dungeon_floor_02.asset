@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41e0224dc9f34f4f92efbfa176094eb2, type: 3}
-  m_Name: Floor_prod_dungeon_floor_01
+  m_Name: Floor_prod_dungeon_floor_02
   m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinition
-  floorId: dungeon_floor_01
-  layoutMode: 1
-  layoutStamp: {fileID: 0}
-  zoneLayout: {fileID: 11400000, guid: 483512f1506196c1eae6537089ceaa4b, type: 2}
+  floorId: dungeon_floor_02
+  layoutMode: 0
+  layoutStamp: {fileID: 11400000, guid: aad9ca13dfb2a75479ee551b3f9ce015, type: 2}
+  zoneLayout: {fileID: 0}
   floorTile: {fileID: 11400000, guid: b9b4b5a96949b22ce97ab72cfe59669d, type: 2}
   wallTile: {fileID: 11400000, guid: 57f4ddf71aa112bdf88813b5ab72977e, type: 2}
   defaultFloorPalette: {fileID: 11400000, guid: 132f3f0c4d5dc9ac9bb5e8451a1a8c0d, type: 2}
-  defaultWallPalette: {fileID: 11400000, guid: 6b829c4da5922c4bc8b3fc7dc364547f, type: 2}
-  playerSafeRadius: 5
+  defaultWallPalette: {fileID: 11400000, guid: e0696ecb5f3e4ad58a81481de9265f71, type: 2}
+  playerSafeRadius: 2
   formationProfile: {fileID: 11400000, guid: bc9b8ea4cc7eebeef321ff560e79df53, type: 2}
   enemyPopulation: []
   hazardPopulation: []
@@ -28,21 +28,29 @@ MonoBehaviour:
   interactablePopulation: []
   floorItemPopulation: []
   useFloorPopulationAsFallback: 1
-  monsterPopulationMode: 1
-  monsterSpawnSchedule: {fileID: 11400000, guid: 4ca831ab80a78ea3ca5425fa15d94f4f, type: 2}
-  portals: []
+  monsterPopulationMode: 0
+  monsterSpawnSchedule: {fileID: 0}
+  portals:
+  - portalLinkId: link_floor02_to_floor01
+    targetFloorId: dungeon_floor_01
+    portalMarkerId: portal_south
+    portalCell: {x: 5, y: 0, z: 0}
+    listLabel: Portal (Return)
+    adjacentConfirmOnly: 0
   edgePortals: []
-  arrivalBindings: []
+  arrivalBindings:
+  - portalLinkId: link_floor01_to_floor02
+    arrivalAnchor: {x: 5, y: 1, z: 0}
   orthogonalEdgePortalCount: 0
   orthogonalEdgeInset: 2
   portalPlacementRules: []
   participatesInDungeonTime: 1
-  baseDayNightCycles: 4
+  baseDayNightCycles: 7
   additionalDayNightCycles: 0
-  playerTurnsPerDay: 20
-  playerTurnsPerNight: 20
+  playerTurnsPerDay: 5
+  playerTurnsPerNight: 5
   combatPolicy: 0
   safeZoneRegions: []
   doorPolicy: 0
   vaults: []
-  vaultCatalog: {fileID: 11400000, guid: ae4f63965a836ddddb4f0ec0c7463827, type: 2}
+  vaultCatalog: {fileID: 0}

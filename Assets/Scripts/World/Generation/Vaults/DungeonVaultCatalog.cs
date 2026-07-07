@@ -11,6 +11,7 @@ namespace JRogue.World.Generation.Vaults
         ZoneCenter = 1,
         MandatoryRandom = 2,
         PondScatter = 3,
+        NearZoneNorthEdge = 4,
     }
 
     [CreateAssetMenu(fileName = "Floor1_VaultCatalog", menuName = "JRogue/World/Dungeon Vault Catalog")]

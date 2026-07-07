@@ -43,6 +43,9 @@ namespace JRogue.World.Generation
         /// <summary>Populated by <see cref="VaultStamper"/> for post-generation diagnostics.</summary>
         public List<VaultPlacementRecord> PlacedVaultRecords { get; } = new List<VaultPlacementRecord>();
 
+        /// <summary>World cell of the Floor 1 descent plinth portal (set during vault placement).</summary>
+        public Vector3Int? DescentPlinthPortalCell { get; set; }
+
         public DungeonGenerationContext(
             DungeonFloorDefinition definition,
             DungeonFloorInstance instance,

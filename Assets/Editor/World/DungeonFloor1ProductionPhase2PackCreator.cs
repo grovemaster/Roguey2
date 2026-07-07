@@ -28,7 +28,7 @@ namespace JRogue.Editor.World
         public const string FloorProdPath = "Assets/Resources/Dungeon/Floor_prod_dungeon_floor_01.asset";
         public const string FloorTestPath = "Assets/Resources/Dungeon/Floor_dungeon_floor_01.asset";
         public const string CatalogProdPath = "Assets/Resources/Dungeon/DungeonProdFloor1Catalog.asset";
-        public const string Floor02Path = "Assets/Resources/Dungeon/Floor_dungeon_floor_02.asset";
+        public const string Floor02Path = "Assets/Resources/Dungeon/Floor_prod_dungeon_floor_02.asset";
         public const string SchedulePath = "Assets/Data/Dungeon/SpawnSchedules/Schedule_Floor01_Production.asset";
         public const string PopCavernPath = "Assets/Data/Dungeon/Zones/Population/Population_LuminescentCavern_Floor01.asset";
         public const string PopDarkPath = "Assets/Data/Dungeon/Zones/Population/Population_NorthernDark_Floor01.asset";
@@ -523,14 +523,7 @@ namespace JRogue.Editor.World
                     ? (int)MonsterPopulationMode.ScheduledGroups
                     : (int)MonsterPopulationMode.Scatter;
             so.FindProperty("monsterSpawnSchedule").objectReferenceValue = schedule;
-            SetFixedMapRowPortalRule(
-                so.FindProperty("portalPlacementRules"),
-                zoneId: ZoneNorthernDark,
-                mapRow: 79,
-                portalLinkId: "link_floor01_to_floor02",
-                targetFloorId: "dungeon_floor_02",
-                listLabel: "Portal (Deeper)",
-                rngSalt: "portal_floor02");
+            so.FindProperty("portalPlacementRules").arraySize = 0;
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(floor);
         }

@@ -72,6 +72,31 @@ namespace JRogue.Editor.World
             DungeonFloorProductionSceneCreator.SetupProductionDungeonPhase1();
         }
 
+        [MenuItem("JRogue/Dungeon/Fix DungeonFloor Production Scene")]
+        public static void FixDungeonFloorProductionScene()
+        {
+            string scenePath = DungeonFloorProductionSceneCreator.ProductionScenePath;
+            if (!File.Exists(scenePath))
+            {
+                Debug.LogWarning(
+                    $"[Dungeon] Production scene missing at {scenePath}. " +
+                    "Run JRogue → Dungeon → Phase 1 — Setup Production Dungeon first.");
+                return;
+            }
+
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            {
+                Debug.Log("[Dungeon] Fix production scene cancelled — save or discard open scene changes first.");
+                return;
+            }
+
+            var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+            FixProductionSceneHierarchyInPlace();
+            EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[Dungeon] Fixed {scenePath}. Floor definitions and runtime wiring updated.");
+        }
+
         /// <summary>
         /// Ensures production scene hierarchy: shared dungeon systems, <see cref="DungeonFloorRuntime"/>, no test controller.
         /// </summary>
@@ -129,7 +154,9 @@ namespace JRogue.Editor.World
 
             var prodFloor = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(
                 DungeonFloor1ProductionPhase2PackCreator.FloorProdPath);
-            var floor02 = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_02.asset");
+            var floor02 = AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(
+                DungeonFloor1ProductionPhase2PackCreator.Floor02Path)
+                ?? AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>($"{DataRoot}/Floor_dungeon_floor_02.asset");
             if (prodFloor == null)
                 return;
 

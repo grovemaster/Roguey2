@@ -103,6 +103,7 @@
     <Compile Include="Assets/Editor/Lighting/LightingScenarioSampleSceneBootstrap.cs" />
     <Compile Include="Assets/Editor/Inventory/BowSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/World/DcssTownNpcSpriteAssigner.cs" />
+    <Compile Include="Assets/Editor/World/DungeonFloor2ProductionPackCreator.cs" />
     <Compile Include="Assets/Editor/World/TownRestoreAllPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/FireballScrollSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Doors/DoorPackEditor.cs" />
