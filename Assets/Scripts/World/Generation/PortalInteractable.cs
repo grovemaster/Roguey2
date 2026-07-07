@@ -52,6 +52,9 @@ namespace JRogue.World.Generation
                     TargetFloorId,
                     triggeringMember);
 
+            if (!CanUseDungeonFloorPortal(TargetFloorId))
+                return false;
+
             if (IsBuildingPortal(PortalLinkId) || IsDistrictPortal(PortalLinkId))
             {
                 return TownTransitionService.TryTransitionBuilding(
@@ -73,6 +76,29 @@ namespace JRogue.World.Generation
             }
 
             return transitioned;
+        }
+
+        static bool CanUseDungeonFloorPortal(string targetFloorId)
+        {
+            if (string.IsNullOrEmpty(targetFloorId))
+                return true;
+
+            DungeonTimeService time = DungeonTimeService.Instance;
+            if (time == null || !time.DungeonRunActive)
+                return true;
+
+            DungeonFloorInstanceManager manager = DungeonFloorInstanceManager.Instance;
+            DungeonFloorDefinition targetFloor = manager?.TryFindDefinition(targetFloorId);
+            if (targetFloor == null)
+                return true;
+
+            if (!DungeonFloorTimeLimitLogic.IsFloorExpiredForPortal(targetFloor, time.ElapsedCycles))
+                return true;
+
+            Debug.Log(
+                $"[DungeonTime] Floor '{targetFloorId}' expired (elapsed={time.ElapsedCycles}, " +
+                $"limit={targetFloor.FloorDayNightCycleLimit}) — portal blocked.");
+            return false;
         }
 
         static bool IsBuildingPortal(string portalLinkId) =>

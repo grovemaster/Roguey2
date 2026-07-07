@@ -136,6 +136,7 @@
     <Compile Include="Assets/Tests/UnitTests/Status/StatusEffectPolarityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/BowRangedCombatTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Pathfinding/GridAStarPathfinderTest.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/DungeonFloorTimeLimitLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/UI/Racial/HumanKnightRacialAbilitiesMenuTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/MockMonoBehavior/TestQuietEssenceSlotManager.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/UndeadSkillTreeRuntimeTests.cs" />

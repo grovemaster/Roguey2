@@ -516,6 +516,7 @@ namespace JRogue.Editor.World
             so.FindProperty("playerSafeRadius").intValue = 5;
             so.FindProperty("participatesInDungeonTime").boolValue = true;
             so.FindProperty("baseDayNightCycles").intValue = 4;
+            so.FindProperty("floorDayNightCycleLimit").intValue = 4;
             so.FindProperty("playerTurnsPerDay").intValue = 20;
             so.FindProperty("playerTurnsPerNight").intValue = 20;
             so.FindProperty("monsterPopulationMode").enumValueIndex =

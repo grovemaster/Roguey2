@@ -65,7 +65,15 @@ namespace JRogue.World.Generation
                 cycleCompleted = true;
             }
 
-            bool expired = cycleCompleted && state.ElapsedCycles >= state.MaximumCycles;
+            bool expired = false;
+            if (cycleCompleted && activeFloor != null && activeFloor.ParticipatesInDungeonTime)
+            {
+                if (DungeonFloorTimeLimitLogic.UsesPerFloorLimit(activeFloor))
+                    expired = DungeonFloorTimeLimitLogic.IsActiveFloorTimeExpired(activeFloor, state.ElapsedCycles);
+                else
+                    expired = state.ElapsedCycles >= state.MaximumCycles;
+            }
+
             return new DungeonTimeTickResult(true, cycleCompleted, expired, newPhase);
         }
 

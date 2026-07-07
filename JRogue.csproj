@@ -632,6 +632,7 @@
     <Compile Include="Assets/Scripts/Item/World/FloorEssenceWorldView.cs" />
     <Compile Include="Assets/Scripts/Manager/Loot/EnemyLootService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultAssetRegistry.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTimeLimitLogic.cs" />
     <Compile Include="Assets/Scripts/Hazards/EnvironmentalHazardTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Phases/FloorItemPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/Racial/DivineConductService.cs" />

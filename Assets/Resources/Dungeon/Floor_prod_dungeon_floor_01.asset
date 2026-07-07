@@ -39,6 +39,7 @@ MonoBehaviour:
   participatesInDungeonTime: 1
   baseDayNightCycles: 4
   additionalDayNightCycles: 0
+  floorDayNightCycleLimit: 4
   playerTurnsPerDay: 20
   playerTurnsPerNight: 20
   combatPolicy: 0

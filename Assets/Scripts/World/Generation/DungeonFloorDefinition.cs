@@ -76,6 +76,8 @@ namespace JRogue.World.Generation
         [SerializeField] bool participatesInDungeonTime = true;
         [Min(1)] [SerializeField] int baseDayNightCycles = 7;
         [Min(0)] [SerializeField] int additionalDayNightCycles;
+        [Tooltip("Per-floor cap on global elapsedCycles. 0 = legacy run-wide maximumCycles only.")]
+        [Min(0)] [SerializeField] int floorDayNightCycleLimit;
         [Min(1)] [SerializeField] int playerTurnsPerDay = 5;
         [Min(1)] [SerializeField] int playerTurnsPerNight = 5;
         [Header("Gameplay safe zone")]
@@ -119,6 +121,7 @@ namespace JRogue.World.Generation
         public bool ParticipatesInDungeonTime => participatesInDungeonTime;
         public int BaseDayNightCycles => baseDayNightCycles;
         public int AdditionalDayNightCycles => additionalDayNightCycles;
+        public int FloorDayNightCycleLimit => floorDayNightCycleLimit;
         public int PlayerTurnsPerDay => playerTurnsPerDay;
         public int PlayerTurnsPerNight => playerTurnsPerNight;
 

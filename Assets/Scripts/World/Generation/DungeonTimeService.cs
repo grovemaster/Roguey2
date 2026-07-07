@@ -159,8 +159,11 @@ namespace JRogue.World.Generation
 
             if (result.PhaseAdvanced)
             {
+                int displayLimit = DungeonFloorTimeLimitLogic.ResolveDisplayCycleLimit(
+                    activeFloor,
+                    _state.MaximumCycles);
                 Debug.Log(
-                    $"{LogPrefix} Phase→{_state.CurrentPhase} (cycle {_state.ElapsedCycles}/{_state.MaximumCycles}, " +
+                    $"{LogPrefix} Phase→{_state.CurrentPhase} (cycle {_state.ElapsedCycles}/{displayLimit}, " +
                     $"floor {activeFloor?.FloorId ?? _state.ActiveTimeFloorId}).");
                 SyncLightingPhase();
             }
@@ -173,8 +176,12 @@ namespace JRogue.World.Generation
 
             if (result.TimeExpired)
             {
+                int floorLimit = DungeonFloorTimeLimitLogic.ResolveDisplayCycleLimit(
+                    activeFloor,
+                    _state.MaximumCycles);
                 Debug.Log(
-                    $"{LogPrefix} Time expired after {_state.ElapsedCycles} cycle(s) (limit {_state.MaximumCycles}).");
+                    $"{LogPrefix} Time expired on '{activeFloor?.FloorId ?? _state.ActiveTimeFloorId}' " +
+                    $"after {_state.ElapsedCycles} cycle(s) (floor limit {floorLimit}).");
                 DungeonExitService.RequestForcedExitToTown();
                 return true;
             }
@@ -187,15 +194,22 @@ namespace JRogue.World.Generation
             int remaining = limit - _state.PhasePlayerTurnsElapsed;
             if (remaining == 1)
             {
+                int displayLimit = DungeonFloorTimeLimitLogic.ResolveDisplayCycleLimit(
+                    activeFloor,
+                    _state.MaximumCycles);
                 Debug.Log(
                     $"{LogPrefix} {_state.CurrentPhase} on '{activeFloor?.FloorId}': 1 player phase until phase change " +
-                    $"(cycle {_state.ElapsedCycles}/{_state.MaximumCycles}).");
+                    $"(cycle {_state.ElapsedCycles}/{displayLimit}).");
             }
         }
 
         void WarnIfNearDeadline()
         {
-            int remaining = _state.MaximumCycles - _state.ElapsedCycles;
+            DungeonFloorDefinition activeFloor = ResolveActiveFloorDefinition();
+            int limit = DungeonFloorTimeLimitLogic.ResolveDisplayCycleLimit(
+                activeFloor,
+                _state.MaximumCycles);
+            int remaining = limit - _state.ElapsedCycles;
             if (remaining == 2)
                 Debug.Log($"{LogPrefix} Warning: 2 day–night cycles remaining.");
             else if (remaining == 1)
@@ -271,10 +285,11 @@ namespace JRogue.World.Generation
             }
 
             int phaseLimit = _state.CurrentPhase == DungeonTimePhase.Day ? dayLimit : nightLimit;
+            int cycleLimit = DungeonFloorTimeLimitLogic.ResolveDisplayCycleLimit(active, _state.MaximumCycles);
             string text =
                 $"Dungeon time: {_state.CurrentPhase}  " +
                 $"phase {_state.PhasePlayerTurnsElapsed}/{phaseLimit}  " +
-                $"cycle {_state.ElapsedCycles}/{_state.MaximumCycles}";
+                $"cycle {_state.ElapsedCycles}/{cycleLimit}";
 
             var rect = new Rect(12f, 52f, 520f, 24f);
             GUI.Label(rect, text);

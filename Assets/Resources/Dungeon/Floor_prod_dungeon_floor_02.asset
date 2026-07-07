@@ -45,8 +45,9 @@ MonoBehaviour:
   orthogonalEdgeInset: 2
   portalPlacementRules: []
   participatesInDungeonTime: 1
-  baseDayNightCycles: 7
+  baseDayNightCycles: 6
   additionalDayNightCycles: 0
+  floorDayNightCycleLimit: 6
   playerTurnsPerDay: 5
   playerTurnsPerNight: 5
   combatPolicy: 0

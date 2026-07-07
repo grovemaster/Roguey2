@@ -106,6 +106,11 @@ namespace JRogue.Editor.World
             so.FindProperty("formationProfile").objectReferenceValue = formation;
             so.FindProperty("playerSafeRadius").intValue = 2;
             so.FindProperty("participatesInDungeonTime").boolValue = true;
+            so.FindProperty("baseDayNightCycles").intValue = 6;
+            so.FindProperty("additionalDayNightCycles").intValue = 0;
+            so.FindProperty("floorDayNightCycleLimit").intValue = 6;
+            so.FindProperty("playerTurnsPerDay").intValue = 5;
+            so.FindProperty("playerTurnsPerNight").intValue = 5;
             so.FindProperty("monsterPopulationMode").enumValueIndex = (int)MonsterPopulationMode.Scatter;
             so.FindProperty("enemyPopulation").arraySize = 0;
             so.FindProperty("hazardPopulation").arraySize = 0;
