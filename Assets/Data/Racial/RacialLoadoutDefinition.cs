@@ -22,6 +22,11 @@ namespace JRogue.Racial
         public string loadoutName;
         [TextArea] public string description;
 
+        [Header("Base HP (dual-track Max HP)")]
+        [Tooltip("When > 0, applied to CharacterStats.raceBaseHP on Apply. 0 = leave actor's existing raceBaseHP.")]
+        [Min(0)]
+        public int raceBaseHp;
+
         [Header("Stat & resistance modifiers")]
         public List<AttributeModifier> statModifiers;
         public List<DamageResistanceModifier> resistanceModifiers;
@@ -47,6 +52,11 @@ namespace JRogue.Racial
             var stats = target.GetComponent<CharacterStats>();
             if (stats == null || !CanApplyTo(stats)) return;
 
+            int oldMaxHp = stats.MaxHP;
+
+            if (raceBaseHp > 0)
+                stats.raceBaseHP = raceBaseHp;
+
             statModifiers ??= new List<AttributeModifier>();
             resistanceModifiers ??= new List<DamageResistanceModifier>();
             passiveEffects ??= new List<PassiveEffect>();
@@ -66,6 +76,13 @@ namespace JRogue.Racial
 
             if (grantedRacialTraits != RacialTraitFlags.None)
                 stats.racialTraits |= grantedRacialTraits;
+
+            // Keep current HP in sync when race base / Con mods raise Max HP after Awake.
+            int hpDelta = stats.MaxHP - oldMaxHp;
+            if (hpDelta != 0)
+                stats.currentHP = Mathf.Clamp(stats.currentHP + hpDelta, 0, stats.MaxHP);
+            else
+                stats.currentHP = Mathf.Min(stats.currentHP, stats.MaxHP);
         }
 
         public void Remove(GameObject target)

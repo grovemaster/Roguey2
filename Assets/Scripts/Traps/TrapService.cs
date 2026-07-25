@@ -359,7 +359,7 @@ namespace JRogue.Traps
             HealthComponent health = actor.GetComponent<HealthComponent>();
             if (health != null && def.piercingDamage > 0)
             {
-                health.TakeDamage(def.piercingDamage, DamageType.Pierce, gameObject);
+                health.TakeDamage(def.piercingDamage, DamageType.Pierce, ArmorInteraction.Full, gameObject);
                 Debug.Log(
                     $"[Trap] {def.displayName} triggered by {actor.DisplayName} at {triggerCell} for {def.piercingDamage} Pierce.");
             }

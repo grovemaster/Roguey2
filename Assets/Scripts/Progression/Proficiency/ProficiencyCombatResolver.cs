@@ -30,6 +30,18 @@ namespace JRogue.Progression.Proficiency
             if (baseDamage <= 0)
                 baseDamage = 1;
 
+            CharacterStats stats = actor != null ? actor.GetComponent<CharacterStats>() : null;
+            if (weaponType == WeaponType.Bow)
+            {
+                int dex = stats != null ? stats.Dexterity.GetValue() : 10;
+                baseDamage = AttackDamageLogic.ApplyRangedDexterityBonus(baseDamage, dex);
+            }
+            else
+            {
+                int strength = stats != null ? stats.Strength.GetValue() : 10;
+                baseDamage = AttackDamageLogic.ApplyMeleeStrengthBonus(baseDamage, strength);
+            }
+
             ProficiencyRuntime runtime = actor != null
                 ? actor.GetComponent<ProficiencyRuntime>()
                 : null;

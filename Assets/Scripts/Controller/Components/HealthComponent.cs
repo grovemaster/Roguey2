@@ -33,7 +33,24 @@ namespace JRogue.Actors.Components
             essenceManager = GetComponent<EssenceSlotManager>();
         }
 
+        /// <summary>
+        /// Legacy overload: defaults to <see cref="ArmorInteraction.Full"/> for Blunt/Slash/Pierce
+        /// callers that have not yet authored an interaction. Prefer the overload with
+        /// <see cref="ArmorInteraction"/>.
+        /// </summary>
         public void TakeDamage(int rawDamage, DamageType type, GameObject damageSource = null)
+        {
+            ArmorInteraction interaction = IsLegacyPhysicalType(type)
+                ? ArmorInteraction.Full
+                : ArmorInteraction.None;
+            TakeDamage(rawDamage, type, interaction, damageSource);
+        }
+
+        public void TakeDamage(
+            int rawDamage,
+            DamageType type,
+            ArmorInteraction armorInteraction,
+            GameObject damageSource = null)
         {
             if (SafeZonePolicyService.ShouldSuppressPlayerDamage(gameObject, damageSource))
                 return;
@@ -42,14 +59,12 @@ namespace JRogue.Actors.Components
                 LastDamageSource = damageSource;
 
             int resistanceValue = stats.GetResistance(type);
-            int damage = Mathf.Max(1, rawDamage - resistanceValue);
-
-            // Factor in AC for physical types
-            if (type == DamageType.Blunt || type == DamageType.Slash || type == DamageType.Pierce)
-            {
-                int armorClass = stats.ArmorClass + ResolveFlatArmorClassBonus();
-                damage = Mathf.Max(1, damage - (armorClass / 5));
-            }
+            int armorClass = stats.ArmorClass + ResolveFlatArmorClassBonus();
+            int damage = DamageApplicationLogic.ComputeFinalDamage(
+                rawDamage,
+                resistanceValue,
+                armorClass,
+                armorInteraction);
 
             stats.currentHP = Mathf.Max(0, stats.currentHP - damage);
 
@@ -58,8 +73,8 @@ namespace JRogue.Actors.Components
             essenceManager?.RefreshConditionalPassives();
             RacialPassiveHooks.RefreshPassives(gameObject);
 
-            Debug.Log($"{gameObject.name} took {damage} {type} damage. " +
-                      $"HP: {stats.currentHP}/{stats.MaxHP}");
+            Debug.Log($"{gameObject.name} took {damage} {type} damage " +
+                      $"(armor={armorInteraction}). HP: {stats.currentHP}/{stats.MaxHP}");
 
             Damaged?.Invoke(damage, type);
 
@@ -68,6 +83,9 @@ namespace JRogue.Actors.Components
                 Died?.Invoke();
             }
         }
+
+        static bool IsLegacyPhysicalType(DamageType type) =>
+            type == DamageType.Blunt || type == DamageType.Slash || type == DamageType.Pierce;
 
         int ResolveFlatArmorClassBonus()
         {

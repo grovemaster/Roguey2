@@ -54,7 +54,7 @@ namespace JRogue.Ability.ThrowingKnife
 
                 hitAny = true;
                 if (target is BaseActor actor)
-                    actor.TakeDamage(pierceDamage, damageType, user);
+                    actor.TakeDamage(pierceDamage, damageType, ArmorInteraction.Full, user);
                 else
                     target.TakeDamage(pierceDamage, user);
             }

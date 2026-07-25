@@ -15,7 +15,21 @@ MonoBehaviour:
   requiredRace: 2
   loadoutName: Default Elf
   description: Baseline Elf racial loadout (spirit contracts are separate).
-  statModifiers: []
+  raceBaseHp: 10
+  statModifiers:
+  - attribute: 0
+    value: -1
+  - attribute: 1
+    value: 2
+  - attribute: 2
+    value: 1
+  - attribute: 3
+    value: -2
+  - attribute: 4
+    value: 1
+  - attribute: 5
+    value: 1
   resistanceModifiers: []
   passiveEffects: []
+  grantedRacialTraits: 0
   activeAbilities: []

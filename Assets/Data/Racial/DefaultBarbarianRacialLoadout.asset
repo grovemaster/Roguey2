@@ -14,8 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Racial.RacialLoadoutDefinition
   requiredRace: 3
   loadoutName: Default Barbarian
-  description: Baseline racial loadout for Barbarian actors. Pair with SpiritImprintRuntime + SpiritImprintGraph for imprint payloads (Pattern B).
-  statModifiers: []
+  description: Baseline racial loadout for Barbarian actors. Pair with SpiritImprintRuntime
+    + SpiritImprintGraph for imprint payloads (Pattern B).
+  raceBaseHp: 18
+  statModifiers:
+  - attribute: 0
+    value: 3
+  - attribute: 1
+    value: -2
+  - attribute: 2
+    value: -1
+  - attribute: 3
+    value: 2
+  - attribute: 4
+    value: -2
+  - attribute: 5
+    value: -1
+  - attribute: 6
+    value: -1
   resistanceModifiers: []
   passiveEffects: []
   grantedRacialTraits: 1

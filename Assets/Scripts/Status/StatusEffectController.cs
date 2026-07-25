@@ -123,7 +123,7 @@ namespace JRogue.Status
                 return;
             }
 
-            _health.TakeDamage(poison.damagePerTick, poison.damageType, status.source);
+            _health.TakeDamage(poison.damagePerTick, poison.damageType, ArmorInteraction.None, status.source);
             Debug.Log($"[Status] {DisplayName} takes {poison.damagePerTick} {poison.damageType} from {poison.displayName}.");
 
             // Player party members only: CON check after poison damage.

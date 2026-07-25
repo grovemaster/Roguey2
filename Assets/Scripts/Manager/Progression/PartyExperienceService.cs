@@ -194,6 +194,7 @@ namespace JRogue.Manager.Progression
 
             stats.level++;
             stats.Constitution.AddModifier(experienceCurve.constitutionPerLevel, _levelGrowthSource);
+            stats.levelHpBonus += experienceCurve.hpPerLevel;
             stats.levelSoulPowerBonus += experienceCurve.maxSoulPowerPerLevel;
 
             int hpGain = stats.MaxHP - oldMaxHp;
@@ -206,7 +207,8 @@ namespace JRogue.Manager.Progression
                 : 0;
             Debug.Log(
                 $"[XP] {stats.gameObject.name} leveled up to {stats.level}! " +
-                $"CON+{experienceCurve.constitutionPerLevel}, MaxHP+{hpGain}, MaxSoul+{soulGain}. " +
+                $"CON+{experienceCurve.constitutionPerLevel}, HPTable+{experienceCurve.hpPerLevel}, " +
+                $"MaxHP+{hpGain}, MaxSoul+{soulGain}. " +
                 $"{stats.experience}/{xpToNext} XP toward next level.");
         }
 

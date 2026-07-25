@@ -19,6 +19,18 @@ namespace JRogue.Stats.Racial
         public static bool CanGainEssences(HumanClass humanClass) =>
             GetMaxEssenceSlots(humanClass) > 0;
 
+        /// <summary>
+        /// Placeholder class base HP added into Max HP derivation (Knight tanky, Mage fragile).
+        /// </summary>
+        public static int GetClassBaseHp(HumanClass humanClass) =>
+            humanClass switch
+            {
+                HumanClass.Knight => 4,
+                HumanClass.Priest => 2,
+                HumanClass.Mage => 0,
+                _ => 0
+            };
+
         public static int ComputeMaxSoulPower(CharacterStats stats)
         {
             if (stats == null || !UsesSoulPower(stats.humanClass))

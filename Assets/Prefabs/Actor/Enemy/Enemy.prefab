@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3148838389820078228}
   - component: {fileID: 4487183159315133079}
   - component: {fileID: 4118223904020428948}
+  - component: {fileID: 8235557929859463522}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -111,9 +112,10 @@ MonoBehaviour:
   stats: {fileID: 0}
   currentFacing: 0
   displayName: 
+  portraitOverride: {fileID: 0}
   essenceType: 1
   hp: 10
-  attackPower: 1
+  attackPower: 2
   footprintLayout: 0
   footprintWidth: 1
   footprintHeight: 1
@@ -139,12 +141,15 @@ MonoBehaviour:
   humanClass: 0
   racialSubsystem: 0
   bodyCapabilities: 0
+  racialTraits: 0
   gender: 0
   alignment: 8
   age: 100
   height: 1.7
   weight: 80
   renown: 0
+  painTolerance:
+    baseValue: 10
   sight:
     baseValue: 8
   hearing:
@@ -167,8 +172,18 @@ MonoBehaviour:
     baseValue: 10
   Luck:
     baseValue: 10
+  level: 1
+  experience: 0
+  raceBaseHP: 12
+  levelHpBonus: 0
+  flatMaxHpBonus: 0
+  levelSoulPowerBonus: 0
+  levelMagicPowerBonus: 0
+  levelDivinePowerBonus: 0
   currentHP: 0
   currentSoulPower: 0
+  currentMagicPower: 0
+  currentDivinePower: 0
 --- !u!114 &3148838389820078228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,3 +222,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50e40c737cfecffe4bf3b5c5347aeb79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: JRogue::JRogue.Actors.Components.GridMover
+--- !u!114 &8235557929859463522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4177042056790637932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b91b0734dfb3e5fba8338d65a5d5bf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JRogue::JRogue.Status.StatusEffectController

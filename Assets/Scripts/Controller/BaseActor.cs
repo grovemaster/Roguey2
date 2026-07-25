@@ -107,12 +107,24 @@ namespace JRogue.Actors
 
         public void TakeDamage(int amount, GameObject source)
         {
-            health.TakeDamage(amount, DamageType.Blunt, source);
+            health.TakeDamage(amount, DamageType.Blunt, ArmorInteraction.Full, source);
         }
 
         public virtual void TakeDamage(int rawDamage, DamageType type, GameObject damageSource = null)
         {
-            health.TakeDamage(rawDamage, type, damageSource);
+            ArmorInteraction interaction = type is DamageType.Blunt or DamageType.Slash or DamageType.Pierce
+                ? ArmorInteraction.Full
+                : ArmorInteraction.None;
+            health.TakeDamage(rawDamage, type, interaction, damageSource);
+        }
+
+        public virtual void TakeDamage(
+            int rawDamage,
+            DamageType type,
+            ArmorInteraction armorInteraction,
+            GameObject damageSource = null)
+        {
+            health.TakeDamage(rawDamage, type, armorInteraction, damageSource);
         }
 
         static readonly List<Vector3Int> FootprintCellsBuffer = new List<Vector3Int>(16);

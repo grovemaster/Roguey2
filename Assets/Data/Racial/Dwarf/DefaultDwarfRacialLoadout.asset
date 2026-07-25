@@ -14,8 +14,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue.Data::JRogue.Racial.RacialLoadoutDefinition
   requiredRace: 4
   loadoutName: Default Dwarf
-  description: Baseline racial loadout for Dwarf actors. Patron Ancestor path and common abilities use separate runtimes (Pattern B).
-  statModifiers: []
+  description: Baseline racial loadout for Dwarf actors. Patron Ancestor path and
+    common abilities use separate runtimes (Pattern B).
+  raceBaseHp: 14
+  statModifiers:
+  - attribute: 0
+    value: 1
+  - attribute: 1
+    value: -1
+  - attribute: 2
+    value: -2
+  - attribute: 3
+    value: 2
+  - attribute: 4
+    value: -1
+  - attribute: 5
+    value: 1
+  - attribute: 6
+    value: -1
   resistanceModifiers: []
   passiveEffects: []
+  grantedRacialTraits: 0
   activeAbilities: []

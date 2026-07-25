@@ -118,7 +118,7 @@ namespace JRogue.Combat
 
                 if (target is BaseActor actor)
                 {
-                    actor.TakeDamage(damage, damageType, shooter.gameObject);
+                    actor.TakeDamage(damage, damageType, ArmorInteraction.Full, shooter.gameObject);
                     EssenceWeaponProcService.TryApplyPoisonWeaponOnHit(shooter.gameObject, actor.gameObject);
                 }
                 else

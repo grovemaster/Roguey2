@@ -71,7 +71,7 @@ namespace JRogue.Controller.Player
             DamageType damageType = trainAction.DamageModulesApplied.Count > 0
                 ? trainAction.DamageModulesApplied[0].type
                 : DamageType.Slash;
-            enemy.TakeDamage(damage, damageType, gameObject);
+            enemy.TakeDamage(damage, damageType, ArmorInteraction.Full, gameObject);
             EssenceWeaponProcService.TryApplyPoisonWeaponOnHit(gameObject, enemy.gameObject);
             Debug.Log($"Player attacked {enemy.name} for {damage} damage!");
             ProduceNoise(meleeNoiseVolume);
@@ -86,7 +86,7 @@ namespace JRogue.Controller.Player
                 baseAttack,
                 WeaponType.Unarmed,
                 trainAction.DamageModulesApplied);
-            enemy.TakeDamage(damage, DamageType.Blunt, gameObject);
+            enemy.TakeDamage(damage, DamageType.Blunt, ArmorInteraction.Full, gameObject);
             EssenceWeaponProcService.TryApplyPoisonWeaponOnHit(gameObject, enemy.gameObject);
             Debug.Log($"Player attacked {enemy.name} unarmed for {damage} damage!");
             ProduceNoise(meleeNoiseVolume);

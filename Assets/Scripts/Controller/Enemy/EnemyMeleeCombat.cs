@@ -272,7 +272,7 @@ namespace JRogue.Controller.Enemy
         {
             if (target == null)
                 return;
-            target.TakeDamage(enemy.attackPower, DamageType.Blunt);
+            target.TakeDamage(enemy.attackPower, DamageType.Blunt, ArmorInteraction.Full);
         }
 
         static AttackSide ClassifySide(EnemyController enemy, Vector3Int targetCell)

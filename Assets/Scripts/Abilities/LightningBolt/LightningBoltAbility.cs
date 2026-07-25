@@ -35,7 +35,7 @@ namespace JRogue.Ability.LightningBolt
             {
                 IBattleTarget target = targets[i];
                 if (target is JRogue.Actors.BaseActor actor)
-                    actor.TakeDamage(lightningDamage, DamageType.Lightning, user);
+                    actor.TakeDamage(lightningDamage, DamageType.Lightning, ArmorInteraction.Partial, user);
                 else
                     target.TakeDamage(lightningDamage, user);
             }

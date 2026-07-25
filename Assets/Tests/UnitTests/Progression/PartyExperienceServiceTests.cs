@@ -78,6 +78,7 @@ namespace JRogue.Tests.UnitTests.Progression
             ExperienceCurve curve = ScriptableObject.CreateInstance<ExperienceCurve>();
             curve.baseXpPerLevel = 10;
             curve.constitutionPerLevel = 1;
+            curve.hpPerLevel = 4;
             curve.maxSoulPowerPerLevel = 2;
 
             PartyExperienceService svc = CreateService(curve, 1, out PartyManager party);

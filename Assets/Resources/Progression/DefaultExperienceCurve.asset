@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: JRogue::JRogue.Data.Progression.ExperienceCurve
   baseXpPerLevel: 100
   constitutionPerLevel: 1
+  hpPerLevel: 4
   maxSoulPowerPerLevel: 2

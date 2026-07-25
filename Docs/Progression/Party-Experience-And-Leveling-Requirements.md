@@ -142,11 +142,11 @@ Each level gained applies **permanent** growth to the member (source key e.g. `C
 
 | Stat | v0 rule |
 |------|---------|
-| **Constitution** | `+constitutionPerLevel` from curve/table (default placeholder: **+1** per level unless content overrides). |
-| **Max HP** | Derived from `Constitution` (`MaxHP = Constitution × 10` today); leveling Constitution raises Max HP automatically. |
+| **Constitution** | `+constitutionPerLevel` from curve/table (default placeholder: **+1** per level unless content overrides). Soft Max HP contribution via C1 (`+Con`). |
+| **Max HP** | Dual-track: `RaceBaseHP + ClassBaseHP + levelHpBonus + Con + flatMaxHpBonus` (see [Stat derivation](Stat-Derivation-And-Combat-Scaling-Requirements.md)). Level-up adds **`hpPerLevel`** to `levelHpBonus` (primary growth); Constitution no longer multiplies Max HP by 10. |
 | **Max Soul Power** | Increase via **`+maxSoulPowerPerLevel`** flat bonus **and/or** increases to Intelligence/Wisdom if design ties soul to attributes — v0: **flat +N Max Soul Power per level** applied as modifier or direct pool resize (pick one in code; document in implementation notes). |
 
-**Minimum requirement:** A level-up **measurably** increases Constitution, effective Max HP, and effective Max Soul Power.
+**Minimum requirement:** A level-up **measurably** increases Constitution, effective Max HP (via level HP table and soft Con), and effective Max Soul Power.
 
 **Other attributes** (Strength, Dexterity, etc.): **out of v0** unless added to `LevelRewardTable` later.
 

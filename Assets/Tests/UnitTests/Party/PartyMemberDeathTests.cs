@@ -77,7 +77,10 @@ namespace JRogue.Tests.UnitTests.Party
             GameObject go = new GameObject("TestActor");
             _created.Add(go);
             var stats = go.AddComponent<CharacterStats>();
-            stats.Constitution = new Stat(hp / 10 + 1);
+            stats.raceBaseHP = Mathf.Max(1, hp);
+            stats.Constitution = new Stat(0);
+            stats.levelHpBonus = 0;
+            stats.flatMaxHpBonus = 0;
             stats.currentHP = hp;
             go.AddComponent<HealthComponent>();
             return go;

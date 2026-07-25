@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JRogue.Racial.RacialLoadoutDefinition
   requiredRace: 1
   loadoutName: Default Human
-  description: Empty racial loadout for Human actors. Add stat modifiers, resistances, passives, or actives here or in race-specific assets.
+  description: Empty racial loadout for Human actors. Add stat modifiers, resistances,
+    passives, or actives here or in race-specific assets.
+  raceBaseHp: 12
   statModifiers: []
   resistanceModifiers: []
   passiveEffects: []
+  grantedRacialTraits: 0
   activeAbilities: []

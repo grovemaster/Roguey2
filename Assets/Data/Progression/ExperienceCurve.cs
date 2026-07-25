@@ -14,6 +14,10 @@ namespace JRogue.Data.Progression
         [Min(1)]
         public int constitutionPerLevel = 1;
 
+        [Tooltip("Primary Max HP gain per level (level table). Constitution still adds soft HP via C1.")]
+        [Min(0)]
+        public int hpPerLevel = 4;
+
         [Min(0)]
         public int maxSoulPowerPerLevel = 2;
 

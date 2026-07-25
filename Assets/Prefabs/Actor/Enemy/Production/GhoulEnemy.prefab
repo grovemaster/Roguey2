@@ -115,7 +115,7 @@ MonoBehaviour:
   portraitOverride: {fileID: 0}
   essenceType: 1
   hp: 10
-  attackPower: 1
+  attackPower: 2
   footprintLayout: 0
   footprintWidth: 1
   footprintHeight: 1
@@ -174,6 +174,9 @@ MonoBehaviour:
     baseValue: 10
   level: 1
   experience: 0
+  raceBaseHP: 12
+  levelHpBonus: 0
+  flatMaxHpBonus: 0
   levelSoulPowerBonus: 0
   levelMagicPowerBonus: 0
   levelDivinePowerBonus: 0

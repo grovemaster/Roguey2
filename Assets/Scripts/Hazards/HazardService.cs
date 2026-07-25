@@ -320,7 +320,7 @@ namespace JRogue.Hazards
             if (health == null)
                 return;
 
-            health.TakeDamage(amount, type, gameObject);
+            health.TakeDamage(amount, type, ArmorInteraction.Partial, gameObject);
             Debug.Log(
                 $"[Hazard] {hazardName} ({trigger}) dealt {amount} {type} to {actor.DisplayName} at {actor.GridPosition}.");
         }

@@ -53,6 +53,15 @@ namespace JRogue.Stats
         [Min(1)] public int level = 1;
         [Min(0)] public int experience;
 
+        [Tooltip("Race base HP for Max HP derivation (dual-track). Default 12 ≈ Human.")]
+        [Min(0)] public int raceBaseHP = HpDerivationLogic.DefaultRaceBaseHp;
+
+        [Tooltip("Accumulated Max HP from level-up table (not Constitution×N).")]
+        [Min(0)] public int levelHpBonus;
+
+        [Tooltip("Flat Max HP from gear/essences/other sources (not Constitution).")]
+        [Min(0)] public int flatMaxHpBonus;
+
         [Tooltip("Flat Max Soul Power bonus from level-ups.")]
         [Min(0)] public int levelSoulPowerBonus;
 
@@ -194,8 +203,17 @@ namespace JRogue.Stats
 
         // --- CALCULATED STATS (Formulas) ---
 
-        // Constitution governs HP & Encumbrance
-        public int MaxHP => Constitution.GetValue() * 10;
+        /// <summary>
+        /// Dual-track Max HP: race + class + level table + soft Con contribution + flat bonus.
+        /// </summary>
+        public int MaxHP => HpDerivationLogic.ComputeMaxHp(
+            raceBaseHP,
+            HumanClassRules.GetClassBaseHp(humanClass),
+            levelHpBonus,
+            Constitution.GetValue(),
+            flatMaxHpBonus);
+
+        // Constitution still governs encumbrance (dual-purpose with soft HP contribution)
         public int EncumbranceLimit => Constitution.GetValue() * 5;
 
         public int MaxSoulPower =>

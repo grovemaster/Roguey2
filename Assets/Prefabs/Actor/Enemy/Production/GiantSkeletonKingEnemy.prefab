@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3209509922205570442, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: raceBaseHP
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209509922205570442, guid: 0b086689c782121c4b849847fbbf2551, type: 3}
+      propertyPath: Constitution.baseValue
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 1641161215688175398, guid: 3f8e2d1c0b9a4e576f1d28394a5b6c07, type: 3}
       propertyPath: m_LocalPosition.x
       value: 40
@@ -48,6 +56,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209509922205596858, guid: 3f8e2d1c0b9a4e576f1d28394a5b6c07, type: 3}
+      propertyPath: raceBaseHP
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209509922205596858, guid: 3f8e2d1c0b9a4e576f1d28394a5b6c07, type: 3}
+      propertyPath: Constitution.baseValue
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 3990750752703821831, guid: 3f8e2d1c0b9a4e576f1d28394a5b6c07, type: 3}
       propertyPath: m_Color.b
       value: 0.35
@@ -64,6 +80,10 @@ PrefabInstance:
       propertyPath: species
       value: 
       objectReference: {fileID: 11400000, guid: d112bdef4c871ebbda0b87624ff731c6, type: 2}
+    - target: {fileID: 5257779920492702197, guid: 3f8e2d1c0b9a4e576f1d28394a5b6c07, type: 3}
+      propertyPath: attackPower
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5257779920492702197, guid: 3f8e2d1c0b9a4e576f1d28394a5b6c07, type: 3}
       propertyPath: displayName
       value: Giant Skeleton King, Lord of Giant Skeletons
