@@ -63,6 +63,7 @@
     <Compile Include="Assets/Tests/UnitTests/Input/InputTestSceneBuilder.cs" />
     <Compile Include="Assets/Tests/UnitTests/UI/ElementalSpiritHotbarTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Progression/OrganizationRankTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/MistOfTheAbyssServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/SafeZonePolicyLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Party/PartyMemberDeathTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Essence/EssencePickupEligibilityTests.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Assets/Tests/UnitTests/UI/TurnManagerActedTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/HumanMageSpellsAndSpellbooksTests.cs" />
     <Compile Include="Assets/Tests/JRogueTestAssemblyLogPolicy.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/LordOfTheFloorSummonGateTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DwarfClanP3Tests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/LightSourceItemRulesTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/TownTimeLogicTests.cs" />

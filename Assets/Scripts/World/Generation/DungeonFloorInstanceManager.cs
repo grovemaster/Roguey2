@@ -12,6 +12,7 @@ using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using JRogue.World.Town;
+using JRogue.World.MapPresence;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -310,6 +311,7 @@ namespace JRogue.World.Generation
 
             run.SetActiveFloor(floorId);
             EnsureDungeonTimeService().OnFloorActivated(def, firstVisit);
+            MistOfTheAbyssService.OnActiveFloorChanged(floorId);
             BindVisibilityToActiveFloor(map);
             bool zoneCompositeSyncApplied = RefreshLighting();
             RefreshVisibility();
@@ -374,6 +376,7 @@ namespace JRogue.World.Generation
 
         public void DestroyAllFloors()
         {
+            MistOfTheAbyssService.ResetForNewRun();
             ParkActiveFloor();
             foreach (KeyValuePair<string, DungeonFloorInstance> pair in _instances)
             {

@@ -1,5 +1,6 @@
 using System.Collections;
 using JRogue.World.Lighting;
+using JRogue.World.LotF;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -224,6 +225,7 @@ namespace JRogue.World.Generation
             int dungeonDay = _state.ElapsedCycles + 1;
             int runSeed = DungeonRunState.Instance != null ? DungeonRunState.Instance.RunSeed : 0;
             MonsterSpawn.MonsterSpawnScheduleService.ApplyForActiveFloorOnDayStarted(dungeonDay, runSeed);
+            LordOfTheFloorService.EvaluateOnDayStarted(dungeonDay, runSeed);
         }
 
         void SyncLightingPhase()

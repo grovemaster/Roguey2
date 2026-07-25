@@ -61,15 +61,16 @@
     <Compile Include="Assets/Scripts/World/Generation/PortalPlacementResolver.cs" />
     <Compile Include="Assets/Scripts/Service/Sensing/AcousticsService.cs" />
     <Compile Include="Assets/Scripts/Interactables/InteractablePrecondition.cs" />
+    <Compile Include="Assets/Scripts/World/LotF/LordOfTheFloorRunLedger.cs" />
     <Compile Include="Assets/Scripts/World/Generation/GameCalendarDayAdvanceSource.cs" />
     <Compile Include="Assets/Scripts/Quest/QuestDefinition.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/ItemCategoryRegistry.cs" />
     <Compile Include="Assets/Scripts/Item/ItemInterfaces.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyXpDispatcher.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnScheduleLogic.cs" />
-    <Compile Include="Assets/Scripts/World/Generation/PortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ActivateDescentPlinthPortalEffect.cs" />
     <Compile Include="Assets/Scripts/Service/Loot/ILootRandom.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/PortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Item/ItemStorageLocation.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PartyCompositionSwapService.cs" />
     <Compile Include="Assets/Scripts/Party/Recruitment/PartyRecruitmentService.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Assets/Scripts/Interactables/Preconditions/StatMinimumPrecondition.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownToDungeonPortalInteractable.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedStatModifierRuntime.cs" />
+    <Compile Include="Assets/Scripts/World/MapPresence/MistOfTheAbyssVisualUI.cs" />
     <Compile Include="Assets/Scripts/World/Altar/AltarOfferingService.cs" />
     <Compile Include="Assets/Scripts/World/Town/ResidentialInnLayout.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritLevelCapPolicy.cs" />
@@ -187,6 +189,7 @@
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarEntry.cs" />
     <Compile Include="Assets/Scripts/World/Town/InnBedSleepPromptService.cs" />
     <Compile Include="Assets/Scripts/Racial/TieflingImplantForgemasterService.cs" />
+    <Compile Include="Assets/Scripts/World/LotF/LordOfTheFloorService.cs" />
     <Compile Include="Assets/Scripts/World/Town/BeastmanHolyLandLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneJigsawSolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultFileParser.cs" />
@@ -263,6 +266,7 @@
     <Compile Include="Assets/Scripts/World/Generation/IDungeonGenerationPhase.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/TieflingForgemasterNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/GameStoryFlagService.cs" />
+    <Compile Include="Assets/Scripts/World/MapPresence/MistOfTheAbyssMapEffect.cs" />
     <Compile Include="Assets/Scripts/Dialog/DragonianElderDialogSession.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryPolicy.cs" />
     <Compile Include="Assets/Scripts/Manager/Equipment/EquipmentLegalityEvaluator.cs" />
@@ -270,6 +274,7 @@
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySessionPersistence.cs" />
     <Compile Include="Assets/Scripts/Hazards/HazardPassageEvaluator.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneMinimapLabels.cs" />
+    <Compile Include="Assets/Scripts/World/LotF/LordOfTheFloorDefinition.cs" />
     <Compile Include="Assets/Scripts/Dialog/HumanMageTutorDialogSession.cs" />
     <Compile Include="Assets/Scripts/Racial/SpiritImprintUpgradeLogic.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/UnlockDoorEffect.cs" />
@@ -322,6 +327,7 @@
     <Compile Include="Assets/Scripts/Racial/DwarfAncestorAltarService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTileVariationMode.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanKnightDrillMasterQuestLogic.cs" />
+    <Compile Include="Assets/Scripts/World/MapPresence/MistOfTheAbyssService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonFloorZoneLayout.cs" />
     <Compile Include="Assets/Scripts/Traps/TrapTypes.cs" />
     <Compile Include="Assets/Scripts/Manager/Party/PartyMemberDeathService.cs" />
@@ -470,9 +476,11 @@
     <Compile Include="Assets/Scripts/World/Generation/Phases/HazardPopulationPhase.cs" />
     <Compile Include="Assets/Scripts/Organizations/OrganizationRankService.cs" />
     <Compile Include="Assets/Scripts/Racial/HumanClassAbilityResources.cs" />
+    <Compile Include="Assets/Scripts/World/LotF/LordOfTheFloorHost.cs" />
     <Compile Include="Assets/Scripts/World/Town/MarketTownFloorIds.cs" />
     <Compile Include="Assets/Scripts/World/Generation/TownArrivalService.cs" />
     <Compile Include="Assets/Scripts/World/Generation/PortalEdgePlacement.cs" />
+    <Compile Include="Assets/Scripts/World/LotF/LordOfTheFloorSummonGateLogic.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/VaultPlacer.cs" />
     <Compile Include="Assets/Scripts/Manager/Inventory/InventoryItemUse.cs" />
     <Compile Include="Assets/Scripts/UI/Targeting/TargetingReticleView.cs" />
@@ -559,8 +567,8 @@
     <Compile Include="Assets/Scripts/Manager/Progression/PartySpeciesJournal.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/TownTransitionCurtainUI.cs" />
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
-    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnAreaResolver.cs" />
     <Compile Include="Assets/Scripts/World/Town/BeastmanHolyLandDenLayout.cs" />
+    <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnAreaResolver.cs" />
     <Compile Include="Assets/Scripts/World/Town/ElfHolyLandHouseLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeRunState.cs" />

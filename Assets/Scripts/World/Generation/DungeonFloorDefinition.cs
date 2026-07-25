@@ -6,6 +6,7 @@ using JRogue.Item;
 using JRogue.Spawn;
 using JRogue.Traps;
 using JRogue.World.Generation.Vaults;
+using JRogue.World.LotF;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -65,6 +66,8 @@ namespace JRogue.World.Generation
         [SerializeField] MonsterSpawn.MonsterPopulationMode monsterPopulationMode =
             MonsterSpawn.MonsterPopulationMode.Scatter;
         [SerializeField] MonsterSpawn.MonsterSpawnScheduleProfile monsterSpawnSchedule;
+        [Header("Lords of the Floor")]
+        [SerializeField] LordOfTheFloorDefinition[] lordsOfTheFloor = Array.Empty<LordOfTheFloorDefinition>();
         [SerializeField] List<DungeonPortalSpec> portals = new List<DungeonPortalSpec>();
         [SerializeField] List<EdgePortalSpec> edgePortals = new List<EdgePortalSpec>();
         [SerializeField] List<PortalArrivalBinding> arrivalBindings = new List<PortalArrivalBinding>();
@@ -107,6 +110,7 @@ namespace JRogue.World.Generation
         public bool UseFloorPopulationAsFallback => useFloorPopulationAsFallback;
         public MonsterSpawn.MonsterPopulationMode MonsterPopulationMode => monsterPopulationMode;
         public MonsterSpawn.MonsterSpawnScheduleProfile MonsterSpawnSchedule => monsterSpawnSchedule;
+        public LordOfTheFloorDefinition[] LordsOfTheFloor => lordsOfTheFloor;
         public IReadOnlyList<DungeonPortalSpec> Portals => portals;
         public IReadOnlyList<EdgePortalSpec> EdgePortals => edgePortals;
         public IReadOnlyList<PortalArrivalBinding> ArrivalBindings => arrivalBindings;

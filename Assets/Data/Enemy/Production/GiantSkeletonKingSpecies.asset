@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5df960d3a0bf40ebb180c97745c311ad, type: 3}
+  m_Name: GiantSkeletonKingSpecies
+  m_EditorClassIdentifier: JRogue.Data::JRogue.Data.Enemy.EnemySpeciesDefinition
+  speciesId: giant_skeleton_king
+  displayName: Giant Skeleton King
+  firstKillExperience: 100
+  lootTable: {fileID: 11400000, guid: 394f068bdf64fad1782b0b995d4e5f1a, type: 2}
+  soulPowerRegenRate: -1
+  doorCapability: 0
+  mapPresenceProfileAsset: {fileID: 11400000, guid: 6a670ca9d5972b08cba0923fe03d645c, type: 2}

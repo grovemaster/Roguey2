@@ -277,6 +277,14 @@ namespace JRogue.Manager.Essence
             AbilityAction ability = essence.activeAbilities[abilityIndex];
             var stats = GetComponent<CharacterStats>();
 
+            if (!JRogue.World.MapPresence.MistOfTheAbyssService.TryAllowEssenceActive(
+                    gameObject,
+                    out string mistDeny,
+                    logDeny: true))
+            {
+                return false;
+            }
+
             // 1. Resource check
             if (stats == null || !HumanClassAbilityResources.CanAfford(stats, ability))
             {

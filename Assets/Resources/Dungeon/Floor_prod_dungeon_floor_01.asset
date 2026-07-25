@@ -30,6 +30,8 @@ MonoBehaviour:
   useFloorPopulationAsFallback: 1
   monsterPopulationMode: 1
   monsterSpawnSchedule: {fileID: 11400000, guid: 4ca831ab80a78ea3ca5425fa15d94f4f, type: 2}
+  lordsOfTheFloor:
+  - {fileID: 11400000, guid: 13fb4b30902b6c23ba997d3ef9077bef, type: 2}
   portals: []
   edgePortals: []
   arrivalBindings: []

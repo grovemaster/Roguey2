@@ -70,6 +70,15 @@ namespace JRogue.UI.Hotbar
             if (!TryAllowSource(resolved.Source, logDeny: false, out string safeDeny))
                 return (false, false, safeDeny);
 
+            if (resolved.Source == PlayerAbilitySource.Essence
+                && !JRogue.World.MapPresence.MistOfTheAbyssService.TryAllowEssenceActive(
+                    actor,
+                    out string mistDeny,
+                    logDeny: false))
+            {
+                return (false, false, mistDeny);
+            }
+
             if (!CanAfford(actor, resolved, ability))
                 return (false, false, InsufficientResourceMessage(actor));
 

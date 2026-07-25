@@ -1,4 +1,6 @@
 using JRogue.Shop;
+using JRogue.World.LotF;
+using JRogue.World.MapPresence;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -34,6 +36,8 @@ namespace JRogue.World.Generation
             activeFloorId = null;
             deepestFloorNumberReached = 0;
             JRogue.Quest.QuestService.Instance?.ResetForNewRun();
+            LordOfTheFloorService.ResetForNewRun();
+            MistOfTheAbyssService.ResetForNewRun();
         }
 
         public void SetActiveFloor(string floorId)
@@ -68,6 +72,7 @@ namespace JRogue.World.Generation
             manager?.DestroyAllFloors();
             activeFloorId = null;
             TownShopStateService.Instance?.ClearAll();
+            MistOfTheAbyssService.ResetForNewRun();
         }
     }
 }

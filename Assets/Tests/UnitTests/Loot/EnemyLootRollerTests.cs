@@ -102,6 +102,21 @@ namespace JRogue.Tests.UnitTests.Loot
         }
 
         [Test]
+        public void GiantSkeletonKingLoot_AlwaysDropsExactlyOneTier8()
+        {
+            ManaStoneTierCatalog catalog = CreateCatalog();
+            EnemyLootTable table = CreateGiantSkeletonKingTable();
+            var rng = new QueueLootRandom(0f);
+
+            EnemyLootRollResult drops = EnemyLootRoller.Roll(table, "giant_skeleton_king", catalog, rng);
+
+            Assert.AreEqual(1, drops.Items.Count);
+            Assert.AreEqual(0, drops.Essences.Count);
+            Assert.AreEqual(8, ((ManaStoneItemData)drops.Items[0].Definition).tier);
+            Assert.AreEqual("giant_skeleton_king", drops.Items[0].ManaStoneSourceSpeciesId);
+        }
+
+        [Test]
         public void ManaStoneAutoPickup_AddsToLedgerAndClearsTile()
         {
             LogAssert.ignoreFailingMessages = true;
@@ -189,6 +204,16 @@ namespace JRogue.Tests.UnitTests.Loot
                 new LootTableEntry { dropChance = 1f, payload = LootTablePayload.ManaStone, manaStoneTier = 8 },
                 new LootTableEntry { dropChance = 1f, payload = LootTablePayload.ManaStone, manaStoneTier = 8 },
                 new LootTableEntry { dropChance = 0.3f, payload = LootTablePayload.ManaStone, manaStoneTier = 8 }
+            };
+            return table;
+        }
+
+        static EnemyLootTable CreateGiantSkeletonKingTable()
+        {
+            var table = ScriptableObject.CreateInstance<EnemyLootTable>();
+            table.entries = new List<LootTableEntry>
+            {
+                new LootTableEntry { dropChance = 1f, payload = LootTablePayload.ManaStone, manaStoneTier = 8 },
             };
             return table;
         }
