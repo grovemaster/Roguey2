@@ -267,18 +267,26 @@ namespace JRogue.UI.Gameplay
         {
             if (_placeStacks.Count == 0)
             {
+                if (!AltarPlaceListBuilder.HasOpenSlot(_altar))
+                {
+                    sb.AppendLine("  (altar full)");
+                    return;
+                }
+
                 var needed = new HashSet<int>();
                 AltarPlaceListBuilder.CollectNeededTiers(_altar, needed);
-                if (needed.Count == 0)
-                    sb.AppendLine("  (altar full)");
-                else if (needed.Count == 1)
+                if (needed.Count == 1)
                 {
                     foreach (int tier in needed)
                         sb.AppendLine($"  You have no tier {tier} mana stones to place.");
                 }
-                else
+                else if (needed.Count > 1)
                 {
                     sb.AppendLine("  You have no tier 9 or tier 8 mana stones to place.");
+                }
+                else
+                {
+                    sb.AppendLine("  You have no matching mana stones to place.");
                 }
 
                 return;

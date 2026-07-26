@@ -10,6 +10,7 @@ using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using JRogue.World.MapInteract;
+using JRogue.World.Rift;
 using JRogue.World.Town;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -110,6 +111,7 @@ namespace JRogue.World.Generation
         public Vector3Int PlayerStart => _playerStart;
         public Transform EnemyContainer => enemyContainer;
         public Transform DynamicViewsRoot => dynamicViewsRoot;
+        public Tilemap InteractableOverlayMap => interactableOverlayMap;
         public IReadOnlyList<ZoneCellMapEntry> ZoneCellMapSnapshot => _zoneCellMapSnapshot;
         public IReadOnlyList<ResolvedZonePiece> ResolvedZonePieces => _resolvedZonePieces;
         public IReadOnlyList<VaultPlacementRecord> VaultPlacementRecords => _vaultPlacementRecords;
@@ -476,6 +478,42 @@ namespace JRogue.World.Generation
 
         public void RegisterPortal(PortalInteractable portal) => _portals.Add(portal);
 
+        public void UnregisterPortalAt(Vector3Int cell)
+        {
+            cell.z = 0;
+            for (int i = _portals.Count - 1; i >= 0; i--)
+            {
+                if (_portals[i].Cell == cell)
+                    _portals.RemoveAt(i);
+            }
+
+            ClearPortalVisualAt(cell);
+            PortalPathingBan.UnregisterPortalCell(cell);
+        }
+
+        public void ClearPortalVisualAt(Vector3Int cell)
+        {
+            cell.z = 0;
+            for (int i = _portalVisuals.Count - 1; i >= 0; i--)
+            {
+                PortalVisual visual = _portalVisuals[i];
+                if (visual.Cell != cell)
+                    continue;
+
+                if (visual.Renderer != null)
+                    Object.Destroy(visual.Renderer.gameObject);
+                _portalVisuals.RemoveAt(i);
+            }
+
+            AdjacentMapInteractableService.Instance?.ClearOverlay(cell);
+        }
+
+        public void SyncPortalPathingBan()
+        {
+            for (int i = 0; i < _portals.Count; i++)
+                PortalPathingBan.RegisterPortalCell(_portals[i].Cell);
+        }
+
         public bool IsDescentPlinthActivated => _descentPlinthActivated;
 
         public void SetDescentPlinthPortalCell(Vector3Int cell) => _descentPlinthPortalCell = cell;
@@ -501,6 +539,7 @@ namespace JRogue.World.Generation
             _descentPlinthActivated = true;
 
             interactables?.UnregisterAtCell(portalCell);
+            AdjacentMapInteractableService.Instance?.ClearOverlay(portalCell);
             PlacePortalVisual(portalCell);
 
             var portal = new PortalInteractable(
@@ -509,6 +548,7 @@ namespace JRogue.World.Generation
                 DungeonFloorTransitionIds.Floor02Id,
                 "Portal (Deeper)");
             _portals.Add(portal);
+            PortalPathingBan.RegisterPortalCell(portalCell);
 
             AdjacentMapInteractableService service = AdjacentMapInteractableService.Instance;
             if (service != null)
@@ -516,12 +556,25 @@ namespace JRogue.World.Generation
                 service.SetOverlayMap(interactableOverlayMap);
                 service.Register(portalCell, portal);
             }
+
+            DungeonFloorInstanceManager.Instance?.ApplyPortalVisibilityOnActiveFloor();
         }
 
         public void RegisterMapInteractable(JRogue.World.MapInteract.IAdjacentMapInteractable interactable)
         {
             if (interactable != null)
                 _extraMapInteractables.Add(interactable);
+        }
+
+        public void UnregisterMapInteractableAt(Vector3Int cell)
+        {
+            cell.z = 0;
+            for (int i = _extraMapInteractables.Count - 1; i >= 0; i--)
+            {
+                JRogue.World.MapInteract.IAdjacentMapInteractable interactable = _extraMapInteractables[i];
+                if (interactable != null && interactable.Cell == cell)
+                    _extraMapInteractables.RemoveAt(i);
+            }
         }
 
         public void PlacePortalVisual(Vector3Int cell, bool requiresTownTimeOpen = false)
@@ -674,21 +727,24 @@ namespace JRogue.World.Generation
             if (service == null)
                 return;
 
+            PortalPathingBan.Clear();
             service.SetOverlayMap(interactableOverlayMap);
-            for (int i = 0; i < _portals.Count; i++)
-            {
-                PortalInteractable portal = _portals[i];
-                service.Register(portal.Cell, portal);
-                Debug.Log(
-                    $"{PortalEntryService.DebugTag} Register portal floor='{FloorId}' " +
-                    $"link={portal.PortalLinkId} cell={portal.Cell} target={portal.TargetFloorId}");
-            }
 
             for (int i = 0; i < _extraMapInteractables.Count; i++)
             {
                 JRogue.World.MapInteract.IAdjacentMapInteractable interactable = _extraMapInteractables[i];
                 if (interactable != null)
                     service.Register(interactable.Cell, interactable);
+            }
+
+            for (int i = 0; i < _portals.Count; i++)
+            {
+                PortalInteractable portal = _portals[i];
+                service.Register(portal.Cell, portal);
+                PortalPathingBan.RegisterPortalCell(portal.Cell);
+                Debug.Log(
+                    $"{PortalEntryService.DebugTag} Register portal floor='{FloorId}' " +
+                    $"link={portal.PortalLinkId} cell={portal.Cell} target={portal.TargetFloorId}");
             }
         }
 

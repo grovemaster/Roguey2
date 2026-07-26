@@ -26,11 +26,37 @@ namespace JRogue.World.Altar
                 if (!AltarCompletionEvaluator.IsRuleSatisfied(instance, rule))
                     continue;
 
+                if (!CanRunEffects(instance, rule, out string denyReason))
+                {
+                    if (!string.IsNullOrEmpty(denyReason))
+                        JRogue.UI.Gameplay.GameLogService.ActiveSession.Append(denyReason);
+                    return;
+                }
+
                 instance.MarkRuleFired(ruleId);
                 instance.ClearOfferings();
                 RunEffects(instance, rule);
                 return;
             }
+        }
+
+        static bool CanRunEffects(AltarInstance instance, AltarCompletionRule rule, out string denyReason)
+        {
+            denyReason = null;
+            AltarCompletionEffect[] effects = rule.effects;
+            if (effects == null)
+                return true;
+
+            for (int i = 0; i < effects.Length; i++)
+            {
+                AltarCompletionEffect effect = effects[i];
+                if (effect == null)
+                    continue;
+                if (!effect.CanExecute(instance, out denyReason))
+                    return false;
+            }
+
+            return true;
         }
 
         static void RunEffects(AltarInstance instance, AltarCompletionRule rule)

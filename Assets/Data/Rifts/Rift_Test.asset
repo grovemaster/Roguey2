@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47759d4bb7423d689b2d726da5b62dbb, type: 3}
+  m_Name: Rift_Test
+  m_EditorClassIdentifier: JRogue::JRogue.World.Rift.RiftDefinition
+  riftId: rift_test
+  displayName: Rift Test
+  hostFloorIds:
+  - dungeon_floor_01
+  riftFloorDefinition: {fileID: 11400000, guid: 8a8e8944356ba74d0a715bb2398c9b85, type: 2}
+  entryAnchor: {x: 10, y: 3, z: 0}
+  exitPortalCell: {x: 10, y: 69, z: 0}
+  initialSpawns:
+  - spawnDefinition: {fileID: 11400000, guid: 144e2fa41ea0a97a4ab8ccfde4f1327b, type: 2}
+    cell: {x: 9, y: 8, z: 0}
+    isBoss: 0
+  - spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+    cell: {x: 10, y: 60, z: 0}
+    isBoss: 1
+  conditionalSummons:
+  - conditionId: room_b_first_entry
+    roomMinInclusive: {x: 3, y: 26, z: 0}
+    roomMaxInclusive: {x: 17, y: 40, z: 0}
+    spawns:
+    - spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+      cell: {x: 3, y: 26, z: 0}
+      isBoss: 0
+    - spawnDefinition: {fileID: 11400000, guid: f4751a6679a5e977c8312c3c77d9ea3e, type: 2}
+      cell: {x: 17, y: 26, z: 0}
+      isBoss: 0

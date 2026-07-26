@@ -7,6 +7,7 @@ using JRogue.Spawn;
 using JRogue.Traps;
 using JRogue.World.Generation.Vaults;
 using JRogue.World.LotF;
+using JRogue.World.Rift;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -87,6 +88,9 @@ namespace JRogue.World.Generation
         [SerializeField] FloorCombatPolicy combatPolicy = FloorCombatPolicy.Normal;
         [SerializeField] SafeZoneRegion[] safeZoneRegions = Array.Empty<SafeZoneRegion>();
 
+        [Header("Rifts")]
+        [SerializeField] DungeonFloorRiftPolicy riftPolicy;
+
         [Header("Future / v0b+")]
         [SerializeField] DungeonDoorPolicy doorPolicy = DungeonDoorPolicy.None;
         [SerializeField] List<DungeonVaultReference> vaults = new List<DungeonVaultReference>();
@@ -122,6 +126,7 @@ namespace JRogue.World.Generation
         public DungeonVaultCatalog VaultCatalog => vaultCatalog;
         public FloorCombatPolicy CombatPolicy => combatPolicy;
         public IReadOnlyList<SafeZoneRegion> SafeZoneRegions => safeZoneRegions;
+        public DungeonFloorRiftPolicy RiftPolicy => riftPolicy;
         public bool ParticipatesInDungeonTime => participatesInDungeonTime;
         public int BaseDayNightCycles => baseDayNightCycles;
         public int AdditionalDayNightCycles => additionalDayNightCycles;
@@ -146,6 +151,33 @@ namespace JRogue.World.Generation
             }
 
             return false;
+        }
+
+        /// <summary>Runtime/editor helper to upsert an arrival binding on this floor definition.</summary>
+        public void SetOrReplaceArrivalBinding(string portalLinkId, Vector3Int arrivalAnchor)
+        {
+            if (string.IsNullOrEmpty(portalLinkId))
+                return;
+
+            arrivalBindings ??= new List<PortalArrivalBinding>();
+            for (int i = 0; i < arrivalBindings.Count; i++)
+            {
+                if (arrivalBindings[i].portalLinkId != portalLinkId)
+                    continue;
+
+                arrivalBindings[i] = new PortalArrivalBinding
+                {
+                    portalLinkId = portalLinkId,
+                    arrivalAnchor = arrivalAnchor,
+                };
+                return;
+            }
+
+            arrivalBindings.Add(new PortalArrivalBinding
+            {
+                portalLinkId = portalLinkId,
+                arrivalAnchor = arrivalAnchor,
+            });
         }
 
         public bool TryGetEdgePortalSpec(MapEdge edge, out EdgePortalSpec spec)

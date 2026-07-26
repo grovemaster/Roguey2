@@ -183,6 +183,13 @@ namespace JRogue.World.Generation
                 Debug.Log(
                     $"{LogPrefix} Time expired on '{activeFloor?.FloorId ?? _state.ActiveTimeFloorId}' " +
                     $"after {_state.ElapsedCycles} cycle(s) (floor limit {floorLimit}).");
+
+                if (JRogue.World.Rift.RiftService.IsInsideRift)
+                {
+                    JRogue.World.Rift.RiftService.NotifyDungeonTimeExpiredWhilePossiblyInRift();
+                    return false;
+                }
+
                 DungeonExitService.RequestForcedExitToTown();
                 return true;
             }

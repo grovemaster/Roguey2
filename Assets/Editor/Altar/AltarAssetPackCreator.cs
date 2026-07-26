@@ -155,7 +155,20 @@ namespace JRogue.Editor.Altar
             ledger.Add(9, "giant_skeleton", 1);
             ledger.Add(8, "skeleton", 3);
             ledger.Add(8, "orc", 1);
-            Debug.Log("[Altar] Granted test tier 8/9 mana stones to party ledger.");
+            JRogue.World.Rift.RiftPedestalTestGrants.EnsureOneOfEachRequiredSpecies();
+            Debug.Log("[Altar] Granted test tier 8/9 + rift pedestal (goblin/ghoul/dire wolf) mana stones.");
+        }
+
+        [MenuItem("JRogue/World/Grant Rift Pedestal Mana Stones (Party)", false, 43)]
+        public static void GrantRiftPedestalManaStones()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.LogWarning("[Rift] Enter Play Mode to grant pedestal mana stones.");
+                return;
+            }
+
+            JRogue.World.Rift.RiftPedestalTestGrants.EnsureOneOfEachRequiredSpecies();
         }
 
         static Tilemap FindOrCreateAltarOverlay()

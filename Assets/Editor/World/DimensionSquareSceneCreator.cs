@@ -63,6 +63,8 @@ namespace JRogue.Editor.World
             AdventureGuildExchangePackCreator.SetupAdventureGuildExchange();
             AdventureGuildHallPackCreator.SetupAdventureGuildHall();
             MarketTownPackCreator.SetupMarketTown();
+            ResidentialTownPackCreator.SetupResidentialTown();
+            ResidentialInnPackCreator.SetupResidentialInn();
             MarketGeneralStorePackCreator.SetupMarketGeneralStore();
             MarketItemShopPackCreator.SetupMarketItemShop();
             BlacksmithShopPackCreator.SetupBlacksmithShop();
@@ -95,6 +97,7 @@ namespace JRogue.Editor.World
             if (repaintTiles)
             {
                 PaintDimensionSquareLayout();
+                PaintResidentialTownLayout();
                 PaintHolyLandLayouts();
             }
 
@@ -104,10 +107,11 @@ namespace JRogue.Editor.World
             Debug.Log(
                 $"[DimensionSquare] Saved {ScenePath}. Hub restored with dimension square + Adventure Guild facade" +
                 (LoadIntegratedMarketFloorDefinition() != null ? " + market district" : string.Empty) +
+                (LoadResidentialFloorDefinition() != null ? " + residential district" : string.Empty) +
+                (LoadResidentialInnInteriorFloorDefinition() != null ? " + residential inn" : string.Empty) +
                 (LoadGuildInteriorFloorDefinition() != null ? " + guild interior" : string.Empty) +
                 (LoadGuildHallInteriorFloorDefinition() != null ? " + guild hall" : string.Empty) +
-                ". North strip repainted (y=39, x=15–24). " +
-                "For full district playtest use JRogue → Town → Fix District Town Test Scene.");
+                ". North strip repainted (y=39, x=15–24).");
         }
 
         static void EnsureFloorDefinition()
@@ -165,6 +169,9 @@ namespace JRogue.Editor.World
             DungeonFloorDefinition marketDef = LoadIntegratedMarketFloorDefinition();
             if (marketDef != null)
                 floors.Add(marketDef);
+
+            AppendUniqueFloorDefinition(floors, LoadResidentialFloorDefinition());
+            AppendUniqueFloorDefinition(floors, LoadResidentialInnInteriorFloorDefinition());
 
             DungeonFloorDefinition guildInteriorDef = LoadGuildInteriorFloorDefinition();
             if (guildInteriorDef != null)
@@ -247,6 +254,12 @@ namespace JRogue.Editor.World
         static DungeonFloorDefinition LoadIntegratedMarketFloorDefinition() =>
             AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.MarketFloorDef);
 
+        static DungeonFloorDefinition LoadResidentialFloorDefinition() =>
+            AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.ResidentialFloorDef);
+
+        static DungeonFloorDefinition LoadResidentialInnInteriorFloorDefinition() =>
+            AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.ResidentialInnInteriorFloorDef);
+
         static DungeonFloorDefinition LoadGuildInteriorFloorDefinition() =>
             AssetDatabase.LoadAssetAtPath<DungeonFloorDefinition>(TownDistrictTestPaths.AdventureGuildInteriorFloorDef);
 
@@ -284,6 +297,8 @@ namespace JRogue.Editor.World
                 systems.AddComponent<VisibilityManager>();
             if (systems.GetComponent<PortalEntryService>() == null)
                 systems.AddComponent<PortalEntryService>();
+            if (systems.GetComponent<DistrictTownCalendarBootstrap>() == null)
+                systems.AddComponent<DistrictTownCalendarBootstrap>();
 
             List<DungeonFloorDefinition> hubFloors = CollectIntegratedHubFloorDefinitions();
             DungeonFloorDefinition floorDef = hubFloors.Count > 0 ? hubFloors[0] : ResolveSquareFloorDefinition();
@@ -293,6 +308,8 @@ namespace JRogue.Editor.World
                 return;
             }
             DungeonFloorDefinition marketDef = LoadIntegratedMarketFloorDefinition();
+            DungeonFloorDefinition residentialDef = LoadResidentialFloorDefinition();
+            DungeonFloorDefinition innInteriorDef = LoadResidentialInnInteriorFloorDefinition();
             DungeonFloorDefinition guildInteriorDef = LoadGuildInteriorFloorDefinition();
             DungeonFloorDefinition guildHallInteriorDef = LoadGuildHallInteriorFloorDefinition();
             DungeonFloorDefinition storeInteriorDef = LoadGeneralStoreInteriorFloorDefinition();
@@ -321,25 +338,7 @@ namespace JRogue.Editor.World
             Transform floorsRoot = EnsureFloorsRoot(systems, floorManager);
             managerSo.ApplyModifiedPropertiesWithoutUndo();
 
-            RemoveChildFloorsExcept(
-                floorsRoot,
-                CollectIntegratedHubFloorIds(
-                    floorDef,
-                    marketDef,
-                    guildInteriorDef,
-                    guildHallInteriorDef,
-                    storeInteriorDef,
-                    itemShopInteriorDef,
-                    blacksmithInteriorDef,
-                    nexusDef,
-                    holyLandDef,
-                    tentDef,
-                    elfHolyLandDef,
-                    elfHouseDef,
-                    beastmanHolyLandDef,
-                    beastmanDenDef,
-                    tieflingHolyLandDef,
-                    tieflingSanctumDef));
+            RemoveChildFloorsExcept(floorsRoot, CollectFloorIds(hubFloors));
 
             DungeonFloorInstance instance = EnsureScenePaintedFloor(floorsRoot, floorDef);
             instance.gameObject.SetActive(true);
@@ -349,6 +348,19 @@ namespace JRogue.Editor.World
                 DungeonFloorInstance marketInstance = EnsureScenePaintedFloor(floorsRoot, marketDef);
                 marketInstance.gameObject.SetActive(false);
                 MarketTownPackCreator.IntegrateDistrictTownScene(marketInstance);
+            }
+
+            if (residentialDef != null)
+            {
+                DungeonFloorInstance residentialInstance = EnsureScenePaintedFloor(floorsRoot, residentialDef);
+                residentialInstance.gameObject.SetActive(false);
+                ResidentialTownPackCreator.IntegrateDistrictTownScene(residentialInstance);
+            }
+            else
+            {
+                Debug.LogError(
+                    $"[DimensionSquare] Missing residential floor definition at {TownDistrictTestPaths.ResidentialFloorDef}. " +
+                    "Run JRogue → Town → Setup Residential Town Area.");
             }
 
             if (guildInteriorDef != null)
@@ -384,6 +396,13 @@ namespace JRogue.Editor.World
                 DungeonFloorInstance blacksmithInteriorInstance = EnsureScenePaintedFloor(floorsRoot, blacksmithInteriorDef);
                 blacksmithInteriorInstance.gameObject.SetActive(false);
                 BlacksmithShopPackCreator.IntegrateDistrictTownScene(blacksmithInteriorInstance);
+            }
+
+            if (innInteriorDef != null)
+            {
+                DungeonFloorInstance innInteriorInstance = EnsureScenePaintedFloor(floorsRoot, innInteriorDef);
+                innInteriorInstance.gameObject.SetActive(false);
+                ResidentialInnPackCreator.IntegrateDistrictTownScene(innInteriorInstance);
             }
 
             if (nexusDef != null)
@@ -682,57 +701,31 @@ namespace JRogue.Editor.World
                 TieflingHolyLandTownPackCreator.IntegrateTieflingSanctumInteriorScene(tieflingSanctum);
         }
 
-        static string[] CollectIntegratedHubFloorIds(
-            DungeonFloorDefinition squareDef,
-            DungeonFloorDefinition marketDef,
-            DungeonFloorDefinition guildInteriorDef,
-            DungeonFloorDefinition guildHallInteriorDef,
-            DungeonFloorDefinition storeInteriorDef,
-            DungeonFloorDefinition itemShopInteriorDef,
-            DungeonFloorDefinition blacksmithInteriorDef,
-            DungeonFloorDefinition nexusDef,
-            DungeonFloorDefinition holyLandDef,
-            DungeonFloorDefinition tentDef,
-            DungeonFloorDefinition elfHolyLandDef,
-            DungeonFloorDefinition elfHouseDef,
-            DungeonFloorDefinition beastmanHolyLandDef,
-            DungeonFloorDefinition beastmanDenDef,
-            DungeonFloorDefinition tieflingHolyLandDef,
-            DungeonFloorDefinition tieflingSanctumDef)
+        static void PaintResidentialTownLayout()
         {
-            var ids = new List<string>(15);
-            if (squareDef != null && !string.IsNullOrEmpty(squareDef.FloorId))
-                ids.Add(squareDef.FloorId);
-            if (marketDef != null && !string.IsNullOrEmpty(marketDef.FloorId))
-                ids.Add(marketDef.FloorId);
-            if (guildInteriorDef != null && !string.IsNullOrEmpty(guildInteriorDef.FloorId))
-                ids.Add(guildInteriorDef.FloorId);
-            if (guildHallInteriorDef != null && !string.IsNullOrEmpty(guildHallInteriorDef.FloorId))
-                ids.Add(guildHallInteriorDef.FloorId);
-            if (storeInteriorDef != null && !string.IsNullOrEmpty(storeInteriorDef.FloorId))
-                ids.Add(storeInteriorDef.FloorId);
-            if (itemShopInteriorDef != null && !string.IsNullOrEmpty(itemShopInteriorDef.FloorId))
-                ids.Add(itemShopInteriorDef.FloorId);
-            if (blacksmithInteriorDef != null && !string.IsNullOrEmpty(blacksmithInteriorDef.FloorId))
-                ids.Add(blacksmithInteriorDef.FloorId);
-            if (nexusDef != null && !string.IsNullOrEmpty(nexusDef.FloorId))
-                ids.Add(nexusDef.FloorId);
-            if (holyLandDef != null && !string.IsNullOrEmpty(holyLandDef.FloorId))
-                ids.Add(holyLandDef.FloorId);
-            if (tentDef != null && !string.IsNullOrEmpty(tentDef.FloorId))
-                ids.Add(tentDef.FloorId);
-            if (elfHolyLandDef != null && !string.IsNullOrEmpty(elfHolyLandDef.FloorId))
-                ids.Add(elfHolyLandDef.FloorId);
-            if (elfHouseDef != null && !string.IsNullOrEmpty(elfHouseDef.FloorId))
-                ids.Add(elfHouseDef.FloorId);
-            if (beastmanHolyLandDef != null && !string.IsNullOrEmpty(beastmanHolyLandDef.FloorId))
-                ids.Add(beastmanHolyLandDef.FloorId);
-            if (beastmanDenDef != null && !string.IsNullOrEmpty(beastmanDenDef.FloorId))
-                ids.Add(beastmanDenDef.FloorId);
-            if (tieflingHolyLandDef != null && !string.IsNullOrEmpty(tieflingHolyLandDef.FloorId))
-                ids.Add(tieflingHolyLandDef.FloorId);
-            if (tieflingSanctumDef != null && !string.IsNullOrEmpty(tieflingSanctumDef.FloorId))
-                ids.Add(tieflingSanctumDef.FloorId);
+            DungeonFloorInstance instance = FindFloorInstance(ResidentialTownFloorIds.FloorId);
+            if (instance == null)
+            {
+                Debug.LogError("[DimensionSquare] No town_residential DungeonFloorInstance to paint.");
+                return;
+            }
+
+            ResidentialTownPackCreator.IntegrateDistrictTownScene(instance);
+        }
+
+        static string[] CollectFloorIds(List<DungeonFloorDefinition> floors)
+        {
+            var ids = new List<string>(floors != null ? floors.Count : 0);
+            if (floors == null)
+                return ids.ToArray();
+
+            for (int i = 0; i < floors.Count; i++)
+            {
+                DungeonFloorDefinition def = floors[i];
+                if (def != null && !string.IsNullOrEmpty(def.FloorId))
+                    ids.Add(def.FloorId);
+            }
+
             return ids.ToArray();
         }
 

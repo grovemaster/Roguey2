@@ -28,17 +28,13 @@ namespace JRogue.World.Altar
             if (instance == null || ledger == null)
                 return;
 
-            var neededTiers = new HashSet<int>();
-            CollectNeededTiers(instance, neededTiers);
-            if (neededTiers.Count == 0)
-                return;
-
             foreach (KeyValuePair<PartyManaStoneLedger.ManaStoneStackKey, int> kv in ledger.Snapshot)
             {
                 if (kv.Value <= 0)
                     continue;
 
-                if (!neededTiers.Contains(kv.Key.Tier))
+                // Match whatever empty slot would accept this stone (tier and/or species filters).
+                if (AltarOfferingService.FindPlaceSlotIndex(instance, kv.Key.Tier, kv.Key.SourceSpeciesId) < 0)
                     continue;
 
                 dest.Add(new AltarPlaceableStack(kv.Key.Tier, kv.Key.SourceSpeciesId, kv.Value));
@@ -55,6 +51,26 @@ namespace JRogue.World.Altar
                     b.SourceSpeciesId,
                     System.StringComparison.OrdinalIgnoreCase);
             });
+        }
+
+        public static bool HasOpenSlot(AltarInstance instance)
+        {
+            if (instance?.Definition?.slots == null)
+                return false;
+
+            for (int i = 0; i < instance.Definition.slots.Length; i++)
+            {
+                if (i >= instance.Slots.Count)
+                    break;
+
+                if (!instance.Slots[i].IsEmpty)
+                    continue;
+
+                if (instance.Definition.slots[i]?.acceptFilter != null)
+                    return true;
+            }
+
+            return false;
         }
 
         public static void CollectNeededTiers(AltarInstance instance, HashSet<int> dest)

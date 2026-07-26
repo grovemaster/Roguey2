@@ -15,3 +15,4 @@ MonoBehaviour:
   floors:
   - {fileID: 11400000, guid: bb22fa8d36cb3f1bdbfb08c388d46f9a, type: 2}
   - {fileID: 11400000, guid: 54a2a18e3307ccb138853b611abbd326, type: 2}
+  - {fileID: 11400000, guid: 8a8e8944356ba74d0a715bb2398c9b85, type: 2}

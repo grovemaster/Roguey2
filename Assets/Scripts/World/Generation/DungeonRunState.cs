@@ -1,6 +1,7 @@
 using JRogue.Shop;
 using JRogue.World.LotF;
 using JRogue.World.MapPresence;
+using JRogue.World.Rift;
 using UnityEngine;
 
 namespace JRogue.World.Generation
@@ -38,6 +39,9 @@ namespace JRogue.World.Generation
             JRogue.Quest.QuestService.Instance?.ResetForNewRun();
             LordOfTheFloorService.ResetForNewRun();
             MistOfTheAbyssService.ResetForNewRun();
+            RiftSessionMeta.EnsureInstance().OnDungeonRunBegun();
+            RiftPortalService.OnDungeonRunBegun(null);
+            RiftService.ResetForNewRun();
         }
 
         public void SetActiveFloor(string floorId)

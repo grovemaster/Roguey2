@@ -12,6 +12,7 @@ using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Zones;
 using JRogue.World.Town;
+using JRogue.World.MapInteract;
 using JRogue.World.MapPresence;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -58,6 +59,8 @@ namespace JRogue.World.Generation
                 floors.transform.SetParent(transform, false);
                 floorsRoot = floors.transform;
             }
+
+            ScenePaintedFloorGuard.ResetReportedFloors();
         }
 
         public void ConfigureFloors(DungeonFloorDefinition[] definitions, bool replaceAll = true)
@@ -225,6 +228,13 @@ namespace JRogue.World.Generation
                 return false;
             }
 
+            // Refuse before parking the current floor, otherwise the party is stranded with nowhere to return.
+            if (!IsScenePaintedFloorAuthored(floorId))
+            {
+                ScenePaintedFloorGuard.LogMissing(floorId, $"Refused activation (portal '{portalLinkId ?? "none"}') of");
+                return false;
+            }
+
             ParkActiveFloor();
 
             bool firstVisit = !_instances.ContainsKey(floorId);
@@ -312,6 +322,7 @@ namespace JRogue.World.Generation
             run.SetActiveFloor(floorId);
             EnsureDungeonTimeService().OnFloorActivated(def, firstVisit);
             MistOfTheAbyssService.OnActiveFloorChanged(floorId);
+            JRogue.World.Rift.RiftPortalService.OnHostFloorActivated(def);
             BindVisibilityToActiveFloor(map);
             bool zoneCompositeSyncApplied = RefreshLighting();
             RefreshVisibility();
@@ -332,6 +343,40 @@ namespace JRogue.World.Generation
         }
 
         public DungeonFloorInstance GetActiveFloorInstance() => _activeFloor;
+
+        /// <summary>
+        /// True unless <paramref name="floorId"/> is a scene-painted floor the open scene does not author.
+        /// Non scene-painted floors build their own tiles, so they are always considered available.
+        /// </summary>
+        public bool IsScenePaintedFloorAuthored(string floorId)
+        {
+            DungeonFloorDefinition def = FindDefinition(floorId);
+            if (def == null || def.LayoutMode != FloorLayoutMode.ScenePainted)
+                return true;
+
+            if (_instances.TryGetValue(floorId, out DungeonFloorInstance known))
+                return known != null && known.HasPaintedFloorTiles();
+
+            Transform authored = floorsRoot != null ? floorsRoot.Find(floorId) : null;
+            if (authored == null)
+                return false;
+
+            DungeonFloorInstance instance = authored.GetComponent<DungeonFloorInstance>();
+            if (instance != null)
+                return instance.HasPaintedFloorTiles();
+
+            // Authored tilemaps without the component yet: the instance adopts them when it is added.
+            Tilemap floorMap = authored.Find("Grid/Floor")?.GetComponent<Tilemap>();
+            return floorMap != null && floorMap.GetUsedTilesCount() > 0;
+        }
+
+        public bool TryGetFloorInstance(string floorId, out DungeonFloorInstance instance)
+        {
+            instance = null;
+            if (string.IsNullOrEmpty(floorId))
+                return false;
+            return _instances.TryGetValue(floorId, out instance) && instance != null;
+        }
 
         void ActivateInstance(DungeonFloorInstance instance, GridManager grid)
         {
@@ -534,6 +579,7 @@ namespace JRogue.World.Generation
 
             Manager.Door.DoorService.Instance?.RefreshOverlayVisibility();
             Interactables.InteractableTileService.Instance?.RefreshAllOverlayVisuals();
+            AdjacentMapInteractableService.Instance?.RefreshOverlayVisibility();
             Instance?.ApplyPortalVisibilityOnActiveFloor();
         }
 

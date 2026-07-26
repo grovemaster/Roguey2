@@ -219,6 +219,7 @@ namespace JRogue.World.Generation.Vaults
                 {
                     placed++;
                     LogPlaced(blueprint.VaultId, origin, VaultPlacementRule.MandatoryRandom);
+                    RiftPedestalPlacementLogic.OnPlaced(context, blueprint, origin);
                 }
                 else
                 {

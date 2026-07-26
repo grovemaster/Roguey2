@@ -120,6 +120,7 @@
     <Compile Include="Assets/Tests/UnitTests/Essence/TelekinesisAbilityTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/VaultPlacementLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/AdjacentMapInteractableQueryTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/World/RiftPortalGateLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/UI/HotbarEntryTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/PortalFogVisibilityPolicyTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Manager/Grid/GridManagerTest.cs" />

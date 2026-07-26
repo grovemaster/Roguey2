@@ -1,6 +1,7 @@
 using JRogue.Actors;
 using JRogue.Manager.Party;
 using JRogue.World.MapInteract;
+using JRogue.World.Rift;
 using JRogue.World.Town;
 using UnityEngine;
 
@@ -51,6 +52,12 @@ namespace JRogue.World.Generation
                     PortalLinkId,
                     TargetFloorId,
                     triggeringMember);
+
+            if (RiftTransitionIds.IsHostToRift(PortalLinkId))
+                return RiftPortalService.TryActivateHostPortal(triggeringMember, this);
+
+            if (RiftTransitionIds.IsRiftExit(PortalLinkId))
+                return RiftService.TryExitToHost(triggeringMember);
 
             if (!CanUseDungeonFloorPortal(TargetFloorId))
                 return false;

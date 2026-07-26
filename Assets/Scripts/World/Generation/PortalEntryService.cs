@@ -41,6 +41,11 @@ namespace JRogue.World.Generation
 
         void OnEnable() => SubscribePartyMembers();
 
+        void LateUpdate()
+        {
+            JRogue.World.Rift.RiftPortalService.TickHostPortalEntryArming();
+        }
+
         public void SubscribePartyMembers()
         {
             PartyManager party = PartyManager.Instance;
@@ -141,13 +146,9 @@ namespace JRogue.World.Generation
                 return false;
             }
 
+            // Most stepped-on cells are ordinary floor — not an error.
             if (!mapInteract.TryGetAtCell(cell, out IAdjacentMapInteractable interactable))
-            {
-                Debug.LogWarning(
-                    $"{DebugTag} No interactable registered at {cell} on floor '{GetActiveFloorId()}'. " +
-                    $"Instance portals: {floorManager?.GetActiveFloorInstance()?.DebugDescribePortals() ?? "(no floor)"}");
                 return false;
-            }
 
             Debug.Log(
                 $"{DebugTag} Interactable at {cell}: {interactable.GetType().Name} label='{interactable.ListLabel}'");

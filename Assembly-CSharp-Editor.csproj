@@ -73,6 +73,7 @@
     <Compile Include="Assets/Editor/Interactables/InteractableAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/ResidentialTownPackCreator.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioControllerEditor.cs" />
+    <Compile Include="Assets/Editor/World/RiftTestPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DimensionSquareSceneCreator.cs" />
     <Compile Include="Assets/Editor/Interactables/EnemySpawnAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/MageSpellPackCreator.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Assets/Editor/Essence/EssenceAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/ResidentialInnPackCreator.cs" />
     <Compile Include="Assets/Editor/Inventory/SampleScenePrefabInstanceRepair.cs" />
+    <Compile Include="Assets/Editor/World/DimensionSquareResidentialAutoFix.cs" />
     <Compile Include="Assets/Editor/Lighting/LightingScenarioQaPack.cs" />
     <Compile Include="Assets/Editor/World/DungeonZonePackCreator.cs" />
     <Compile Include="Assets/Editor/World/DistrictTownTestSceneCreator.cs" />

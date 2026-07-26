@@ -16,6 +16,9 @@ namespace JRogue.World.Generation.Phases
             if (ScenePaintedMarkerUtility.TryGetCell(floorRoot, StaticHubMarkerKind.PlayerStart, out Vector3Int playerStart))
                 context.PlayerStart = playerStart;
 
+            if (context.Instance != null && !context.Instance.HasPaintedFloorTiles())
+                ScenePaintedFloorGuard.LogMissing(def.FloorId, "Generated an empty runtime instance for");
+
             DungeonGenerationLog.Phase(
                 nameof(ScenePaintedLayoutPhase),
                 $"playerStart={context.PlayerStart} (tiles unchanged)");

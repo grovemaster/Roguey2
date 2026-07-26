@@ -16,6 +16,7 @@ using JRogue.Status;
 using JRogue.Traps;
 using JRogue.World.Generation;
 using JRogue.World.Lighting;
+using JRogue.World.Rift;
 using UnityEngine;
 public enum GameState { PLAYER_TURN, ENEMY_TURN, BUSY, GAME_OVER }
 
@@ -110,6 +111,7 @@ namespace JRogue.Manager.Turn
             if (DungeonTimeService.Instance != null && DungeonTimeService.Instance.TryTickAfterPlayerPhase())
                 return;
 
+            RiftPortalService.TickAfterPlayerPhase();
             EvocableRechargeService.TickPartyAfterPlayerPhase();
             LightSourceItemRules.TickPartyAfterPlayerPhase();
             RefreshPartyPresentation();
@@ -150,6 +152,7 @@ namespace JRogue.Manager.Turn
             if (DungeonTimeService.Instance != null && DungeonTimeService.Instance.TryTickAfterPlayerPhase())
                 return;
 
+            RiftPortalService.TickAfterPlayerPhase();
             EvocableRechargeService.TickPartyAfterPlayerPhase();
             LightSourceItemRules.TickPartyAfterPlayerPhase();
             RefreshPartyPresentation();

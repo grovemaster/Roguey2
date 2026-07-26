@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e0224dc9f34f4f92efbfa176094eb2, type: 3}
+  m_Name: Floor_rift_test
+  m_EditorClassIdentifier: JRogue::JRogue.World.Generation.DungeonFloorDefinition
+  floorId: rift_test
+  layoutMode: 0
+  layoutStamp: {fileID: 11400000, guid: 47a0a92e9f5db88afbe7e02934ebdafd, type: 2}
+  zoneLayout: {fileID: 0}
+  floorTile: {fileID: 11400000, guid: b9b4b5a96949b22ce97ab72cfe59669d, type: 2}
+  wallTile: {fileID: 11400000, guid: 57f4ddf71aa112bdf88813b5ab72977e, type: 2}
+  defaultFloorPalette: {fileID: 11400000, guid: 15d63dfc5dfb9bae093649e9e3a93a0c, type: 2}
+  defaultWallPalette: {fileID: 11400000, guid: 57f185833e05900039ac9b169dd6280e, type: 2}
+  playerSafeRadius: 2
+  formationProfile: {fileID: 11400000, guid: bc9b8ea4cc7eebeef321ff560e79df53, type: 2}
+  enemyPopulation: []
+  hazardPopulation: []
+  trapPopulation: []
+  interactablePopulation: []
+  floorItemPopulation: []
+  useFloorPopulationAsFallback: 1
+  monsterPopulationMode: 0
+  monsterSpawnSchedule: {fileID: 0}
+  lordsOfTheFloor: []
+  portals: []
+  edgePortals: []
+  arrivalBindings:
+  - portalLinkId: link_host_to_rift_test
+    arrivalAnchor: {x: 10, y: 3, z: 0}
+  orthogonalEdgePortalCount: 0
+  orthogonalEdgeInset: 2
+  portalPlacementRules: []
+  participatesInDungeonTime: 1
+  baseDayNightCycles: 0
+  additionalDayNightCycles: 0
+  floorDayNightCycleLimit: 0
+  playerTurnsPerDay: 5
+  playerTurnsPerNight: 5
+  combatPolicy: 0
+  safeZoneRegions: []
+  riftPolicy:
+    rifts: []
+    riftPedestalAltar: {fileID: 0}
+    maxRiftPortalsPerRun: 1
+    minDungeonRunsBetweenPortals: 3
+    minDungeonDayToOpenPortal: 2
+    minDungeonRunsBeforeWandering: 5
+    riftPortalOpenTurns: 30
+    wanderingRespawnDelayTurns: 20
+  doorPolicy: 0
+  vaults: []
+  vaultCatalog: {fileID: 0}

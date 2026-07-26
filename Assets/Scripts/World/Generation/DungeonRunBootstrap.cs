@@ -121,6 +121,11 @@ namespace JRogue.World.Generation
                     party.partyMembers.Add(actor);
                 }
             }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // Fresh roster → seed pedestal offerings so rift altar can be tested without farming.
+            JRogue.World.Rift.RiftPedestalTestGrants.EnsureOneOfEachRequiredSpecies();
+#endif
         }
 
 #if UNITY_EDITOR

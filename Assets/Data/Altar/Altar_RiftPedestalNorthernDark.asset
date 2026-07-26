@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9770305dd0179eeaaff15363a002563, type: 3}
+  m_Name: Altar_RiftPedestalNorthernDark
+  m_EditorClassIdentifier: JRogue::JRogue.World.Altar.AltarDefinition
+  altarId: altar_rift_pedestal_northern_dark
+  displayName: Pedestal
+  descriptionTemplate: There are 3 small indentations and 1 larger indentation. The
+    three small ones accept mana stones of goblin, ghoul, and dire wolf. The larger
+    indentation is sealed for now.
+  usedDescriptionTemplate: The pedestal's indentations are empty. Its power has opened
+    a rift.
+  slots:
+  - slotId: goblin
+    label: Goblin mana stone
+    acceptFilter: {fileID: 11400000, guid: 6ee7e3245560f843ba142bed3e72085a, type: 2}
+    maxCount: 1
+  - slotId: ghoul
+    label: Ghoul mana stone
+    acceptFilter: {fileID: 11400000, guid: 650bb519b753b350e9f3fc3955ad5e22, type: 2}
+    maxCount: 1
+  - slotId: dire_wolf
+    label: Dire wolf mana stone
+    acceptFilter: {fileID: 11400000, guid: c47f3cd5c6aaba356ad757056dca31fa, type: 2}
+    maxCount: 1
+  completionRules:
+  - ruleId: open_rift_portal
+    requiredSlotIds: []
+    effects:
+    - {fileID: 11400000, guid: 093898487a73231fa8eb1b2619f9be55, type: 2}
+  overlaySprite: {fileID: 21300000, guid: cf09aa1c09174d41ae7859d9184a1def, type: 3}
+  blocksOccupancy: 1
+  pickerSortOrder: 0

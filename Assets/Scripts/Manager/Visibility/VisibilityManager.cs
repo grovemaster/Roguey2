@@ -17,6 +17,7 @@ using JRogue.World.Generation.Vaults;
 using JRogue.World.Generation.Phases;
 using JRogue.World.Generation.Zones;
 using JRogue.World.Lighting;
+using JRogue.World.MapInteract;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -767,6 +768,7 @@ public class VisibilityManager : MonoBehaviour
         HazardService.Instance?.RefreshAllOverlayVisuals();
         DoorService.Instance?.RefreshOverlayVisibility();
         InteractableTileService.Instance?.RefreshAllOverlayVisuals();
+        AdjacentMapInteractableService.Instance?.RefreshOverlayVisibility();
         DungeonFloorInstanceManager.Instance?.ApplyPortalVisibilityOnActiveFloor(this);
     }
 

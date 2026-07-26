@@ -30,6 +30,7 @@ MonoBehaviour:
   useFloorPopulationAsFallback: 1
   monsterPopulationMode: 0
   monsterSpawnSchedule: {fileID: 0}
+  lordsOfTheFloor: []
   portals:
   - portalLinkId: beastman_holy_land_to_nexus
     targetFloorId: holy_land_nexus
@@ -55,10 +56,20 @@ MonoBehaviour:
   participatesInDungeonTime: 0
   baseDayNightCycles: 7
   additionalDayNightCycles: 0
+  floorDayNightCycleLimit: 0
   playerTurnsPerDay: 5
   playerTurnsPerNight: 5
   combatPolicy: 1
   safeZoneRegions: []
+  riftPolicy:
+    rifts: []
+    riftPedestalAltar: {fileID: 0}
+    maxRiftPortalsPerRun: 1
+    minDungeonRunsBetweenPortals: 3
+    minDungeonDayToOpenPortal: 2
+    minDungeonRunsBeforeWandering: 5
+    riftPortalOpenTurns: 30
+    wanderingRespawnDelayTurns: 20
   doorPolicy: 0
   vaults: []
   vaultCatalog: {fileID: 0}

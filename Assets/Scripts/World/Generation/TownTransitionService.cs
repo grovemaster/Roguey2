@@ -26,6 +26,10 @@ namespace JRogue.World.Generation
             if (IsTransitionInProgress)
                 return false;
 
+            // Stop before the curtain so a floor missing from the open scene reads as a closed door.
+            if (ScenePaintedFloorGuard.DenyTransition(targetFloorId, portalLinkId))
+                return false;
+
             if (HolyLandTransitionIds.IsHolyLandBuildingPortal(portalLinkId))
                 return HolyLandPortalTransitionService.TryTransitionHolyLandBuilding(
                     portalLinkId,

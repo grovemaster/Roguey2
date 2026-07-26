@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using JRogue.Actors;
 using JRogue.GridFeatures;
 using JRogue.World.Altar;
+using JRogue.World.Generation;
+using JRogue.World.Rift;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -16,6 +18,10 @@ namespace JRogue.World.MapInteract
         readonly Dictionary<Vector3Int, IAdjacentMapInteractable> _byCell =
             new Dictionary<Vector3Int, IAdjacentMapInteractable>();
 
+        readonly Dictionary<Vector3Int, Sprite> _overlaySprites =
+            new Dictionary<Vector3Int, Sprite>();
+
+        readonly List<Vector3Int> _overlayRefreshScratch = new List<Vector3Int>(16);
         readonly List<Vector3Int> _neighborScratch = new List<Vector3Int>(4);
         readonly List<IAdjacentMapInteractable> _adjacentScratch = new List<IAdjacentMapInteractable>(4);
         readonly List<IAdjacentMapInteractable> _candidateScratch = new List<IAdjacentMapInteractable>(4);
@@ -71,6 +77,10 @@ namespace JRogue.World.MapInteract
                 return def == null || def.blocksOccupancy;
             }
 
+            if (interactable is PortalInteractable
+                && RiftPortalService.ShouldBlockHostPortalOccupancy(cell))
+                return true;
+
             return false;
         }
 
@@ -79,15 +89,54 @@ namespace JRogue.World.MapInteract
             if (altarOverlayMap == null || sprite == null)
                 return;
 
-            GridOverlayPainter.Paint(altarOverlayMap, cell, tile: null, sprite: sprite);
+            _overlaySprites[cell] = sprite;
+            if (IsCellCurrentlyVisible(cell))
+                GridOverlayPainter.Paint(altarOverlayMap, cell, tile: null, sprite: sprite);
+            else
+                GridOverlayPainter.Clear(altarOverlayMap, cell);
         }
 
         public void ClearOverlay(Vector3Int cell)
         {
+            _overlaySprites.Remove(cell);
             if (altarOverlayMap == null)
                 return;
 
             GridOverlayPainter.Clear(altarOverlayMap, cell);
+        }
+
+        /// <summary>
+        /// Show altar/map-interact overlays only on currently visible cells (same fog rule as doors/traps).
+        /// </summary>
+        public void RefreshOverlayVisibility()
+        {
+            if (altarOverlayMap == null || _overlaySprites.Count == 0)
+                return;
+
+            _overlayRefreshScratch.Clear();
+            foreach (Vector3Int cell in _overlaySprites.Keys)
+                _overlayRefreshScratch.Add(cell);
+
+            for (int i = 0; i < _overlayRefreshScratch.Count; i++)
+            {
+                Vector3Int cell = _overlayRefreshScratch[i];
+                if (!_overlaySprites.TryGetValue(cell, out Sprite sprite) || sprite == null)
+                    continue;
+
+                if (IsCellCurrentlyVisible(cell))
+                    GridOverlayPainter.Paint(altarOverlayMap, cell, tile: null, sprite: sprite);
+                else
+                    GridOverlayPainter.Clear(altarOverlayMap, cell);
+            }
+        }
+
+        static bool IsCellCurrentlyVisible(Vector3Int cell)
+        {
+            VisibilityManager visibility = Object.FindAnyObjectByType<VisibilityManager>();
+            if (visibility == null)
+                return true;
+
+            return visibility.IsVisible(cell);
         }
 
         public IReadOnlyList<IAdjacentMapInteractable> GetOrthogonalAdjacentInteractables(Vector3Int actorCell)

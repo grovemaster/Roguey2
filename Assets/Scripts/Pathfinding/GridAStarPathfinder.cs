@@ -7,6 +7,7 @@ using JRogue.Interactables;
 using JRogue.Manager.Grid;
 using JRogue.Manager.Map;
 using JRogue.Traps;
+using JRogue.World.Rift;
 using UnityEngine;
 
 namespace JRogue.Pathfinding
@@ -77,6 +78,9 @@ namespace JRogue.Pathfinding
                 if (seekerIsEnemy && c != goal && traps != null && traps.IsPathingAvoidCell(c))
                     return false;
 
+                if (seekerIsEnemy && c != goal && PortalPathingBan.IsEnemyPortalAvoidCell(c))
+                    return false;
+
                 IBattleTarget occupant = gridManager.GetActorAt(c);
                 return occupant == null || occupant.Owner == seeker;
             }
@@ -142,6 +146,9 @@ namespace JRogue.Pathfinding
                         return false;
 
                     if (seekerIsEnemy && cell != goal && traps != null && traps.IsPathingAvoidCell(cell))
+                        return false;
+
+                    if (seekerIsEnemy && cell != goal && PortalPathingBan.IsEnemyPortalAvoidCell(cell))
                         return false;
 
                     IBattleTarget occupant = gridManager.GetActorAt(cell);
