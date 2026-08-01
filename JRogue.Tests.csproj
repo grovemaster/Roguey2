@@ -167,6 +167,7 @@
     <Compile Include="Assets/Tests/UnitTests/Racial/SpiritImprintUpgradeLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Inventory/EvocableChargeRulesTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/TrapServiceTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Progression/PermanentStatConsumableTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/ElementalSpiritMeditationTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Doors/DoorServiceTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/HolyLandNexusLayoutTests.cs" />

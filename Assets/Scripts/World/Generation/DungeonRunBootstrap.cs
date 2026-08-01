@@ -15,6 +15,10 @@ namespace JRogue.World.Generation
         [SerializeField] GameObject[] partyMemberPrefabs;
         [SerializeField] Transform partyContainer;
         [SerializeField] DungeonFloorInstanceManager floorInstanceManager;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        [Tooltip("Dev only: when true, fresh party roster receives Pill of Strength + Pill of Poison Resistance.")]
+        [SerializeField] bool seedPermanentStatPills;
+#endif
 
         public Transform PartyContainer => partyContainer;
 
@@ -125,6 +129,8 @@ namespace JRogue.World.Generation
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // Fresh roster → seed pedestal offerings so rift altar can be tested without farming.
             JRogue.World.Rift.RiftPedestalTestGrants.EnsureOneOfEachRequiredSpecies();
+            if (seedPermanentStatPills)
+                JRogue.Progression.PermanentStatPillTestGrants.GrantOneOfEachToParty();
 #endif
         }
 

@@ -55,6 +55,7 @@
     <Compile Include="Assets/Scripts/Stats/Racial/RacialTraitFlags.cs" />
     <Compile Include="Assets/Scripts/Stats/ArmorInteraction.cs" />
     <Compile Include="Assets/Scripts/Stats/StatModifier.cs" />
+    <Compile Include="Assets/Scripts/Stats/PermanentStatBoostRuntime.cs" />
     <Compile Include="Assets/Scripts/Stats/Racial/HumanClass.cs" />
     <Compile Include="Assets/Scripts/Stats/Racial/RacialTraitQueries.cs" />
     <Compile Include="Assets/Scripts/Stats/ProficiencyKind.cs" />

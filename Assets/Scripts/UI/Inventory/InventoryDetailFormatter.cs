@@ -76,6 +76,12 @@ namespace JRogue.UI.Inventory
                 for (int i = 0; i < item.activeAbilities.Count; i++)
                 {
                     var a = item.activeAbilities[i];
+                    if (a is JRogue.Ability.Progression.PermanentStatBoostAbility permanent)
+                    {
+                        sb.AppendLine($" • <color=#e8c56c>Permanent</color> — {permanent.FormatInspectLine()}");
+                        continue;
+                    }
+
                     string label = !string.IsNullOrEmpty(a.abilityName) ? a.abilityName : $"Ability{i + 1}";
                     sb.AppendLine($" • {label}");
                 }

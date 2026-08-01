@@ -69,6 +69,7 @@ namespace JRogue.UI.Character
         public BaseActor Actor;
         public List<EquipmentSlotCellModel> EquipmentSlots = new();
         public List<EssenceSlotCellModel> EssenceSlots = new();
+        public List<string> PermanentLines = new();
         public bool CanGainEssences = true;
         public CharacterEquipmentSelection DefaultSelection = CharacterEquipmentSelection.None;
     }
@@ -128,6 +129,10 @@ namespace JRogue.UI.Character
             model.CanGainEssences = stats == null ||
                                     stats.race != Race.Human ||
                                     HumanClassRules.CanGainEssences(stats.humanClass);
+
+            PermanentStatBoostRuntime permanent = actor.GetComponent<PermanentStatBoostRuntime>();
+            if (permanent != null && permanent.HasAnyBoosts())
+                permanent.CopyDisplayLines(model.PermanentLines);
 
             if (essenceSlots != null && model.CanGainEssences)
             {

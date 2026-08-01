@@ -111,6 +111,7 @@
     <Compile Include="Assets/Editor/Inventory/FireballScrollSampleSceneSetup.cs" />
     <Compile Include="Assets/Editor/Doors/DoorPackEditor.cs" />
     <Compile Include="Assets/Editor/World/TieflingHolyLandTownPackCreator.cs" />
+    <Compile Include="Assets/Editor/Inventory/PermanentStatPillPackCreator.cs" />
     <Compile Include="Assets/Editor/Interactables/TownTimeLeverAssetPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DragonianSpellPackCreator.cs" />
     <Compile Include="Assets/Editor/World/DungeonFloor1ProductionPhase2PackCreator.cs" />

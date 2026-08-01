@@ -63,6 +63,8 @@ namespace JRogue.UI.Character
 
         GameObject _panelRoot;
         RacialAbilitiesPartyStripView _partyStrip;
+        GameObject _permanentRoot;
+        TextMeshProUGUI _permanentText;
         EquipmentSlotGridView _equipmentGrid;
         EssenceSlotPanelView _essencePanel;
         EquipmentDetailPaneView _detailPane;
@@ -151,6 +153,23 @@ namespace JRogue.UI.Character
             title.color = RacialUiTheme.TitleText;
 
             _partyStrip = RacialAbilitiesPartyStripView.Create(_panelRoot.transform, SetFocusedPartyIndex);
+
+            _permanentRoot = new GameObject("PermanentBonuses", typeof(RectTransform));
+            _permanentRoot.transform.SetParent(_panelRoot.transform, false);
+            var permanentLe = _permanentRoot.AddComponent<LayoutElement>();
+            permanentLe.minHeight = 48f;
+            permanentLe.preferredHeight = 72f;
+            permanentLe.flexibleWidth = 1f;
+            _permanentText = RacialUiTheme.CreateText(
+                _permanentRoot.transform,
+                "PermanentLabel",
+                string.Empty,
+                RacialUiTheme.CardBodyFontSize,
+                TextAlignmentOptions.TopLeft,
+                FontStyles.Normal);
+            RacialUiTheme.Stretch(_permanentText.rectTransform);
+            _permanentText.color = RacialUiTheme.BodyText;
+            _permanentRoot.SetActive(false);
 
             var middleBand = new GameObject("MiddleBand", typeof(RectTransform));
             middleBand.transform.SetParent(_panelRoot.transform, false);
@@ -296,9 +315,13 @@ namespace JRogue.UI.Character
 
             if (_sheet == null)
             {
+                if (_permanentRoot != null)
+                    _permanentRoot.SetActive(false);
                 _detailPane.Refresh(null, CharacterEquipmentSelection.None);
                 return;
             }
+
+            RefreshPermanentSection(_sheet);
 
             EquipmentSlot selectedEquip = _selection.Kind == CharacterEquipmentSelectionKind.Equipment
                 ? _selection.EquipmentSlot
@@ -311,6 +334,35 @@ namespace JRogue.UI.Character
             _equipmentGrid.Rebuild(_sheet.EquipmentSlots, selectedEquip);
             _essencePanel.Rebuild(_sheet, selectedEssence);
             _detailPane.Refresh(_sheet, _selection);
+        }
+
+        void RefreshPermanentSection(CharacterEquipmentSheetModel sheet)
+        {
+            if (_permanentRoot == null || _permanentText == null)
+                return;
+
+            if (sheet?.PermanentLines == null || sheet.PermanentLines.Count == 0)
+            {
+                _permanentRoot.SetActive(false);
+                _permanentText.text = string.Empty;
+                return;
+            }
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("<b>PERMANENT</b>");
+            for (int i = 0; i < sheet.PermanentLines.Count; i++)
+                sb.AppendLine($"  {sheet.PermanentLines[i]}");
+
+            _permanentText.text = sb.ToString().TrimEnd();
+            _permanentRoot.SetActive(true);
+
+            LayoutElement le = _permanentRoot.GetComponent<LayoutElement>();
+            if (le != null)
+            {
+                float height = 28f + sheet.PermanentLines.Count * 22f;
+                le.minHeight = height;
+                le.preferredHeight = height;
+            }
         }
     }
 }

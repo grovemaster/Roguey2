@@ -19,7 +19,7 @@ Code contracts live under `Assets/Scripts/Stats/Racial/` (`JRogue.Stats.Racial`)
 
 - **Cross-source:** Racial passives **stack** with modifiers from items, essences, buffs, and other systems, using the same `Stat` modifier pipeline with **distinct source objects** (e.g. passive asset instance, item instance id).
 - **Same source, duplicate effect:** Whether two copies of the *same* item/essence stack is **out of scope** for the racial system; racial does not add a special exception — follow global item/essence rules when those exist.
-- **Ordering:** Implemented in `RacialStackingContract.ModifierEvaluationOrder` and `ModifierSourceLayer` on `StatModifier`. Folk loadouts tag `RacialLoadout`; progression nodes tag `RacialProgression`. Values still sum additively in `Stat.GetValue()`.
+- **Ordering:** Implemented in `RacialStackingContract.ModifierEvaluationOrder` and `ModifierSourceLayer` on `StatModifier`. Folk loadouts tag `RacialLoadout`; progression nodes tag `RacialProgression`; permanent pills tag `PermanentConsumable`. Values still sum additively in `Stat.GetValue()`.
 
 ## Code contracts (implemented)
 

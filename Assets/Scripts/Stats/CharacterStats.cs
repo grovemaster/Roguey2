@@ -137,7 +137,20 @@ namespace JRogue.Stats
         // These methods allow Essences to modify specific types easily
 
         // public void AddResistanceModifier(DamageType type, int amount) => Resistances[type].AddModifier(amount);
-        public void AddResistanceModifier(DamageType type, int amount, object source) => Resistances[type].AddModifier(amount, source);
+        public void AddResistanceModifier(DamageType type, int amount, object source) =>
+            AddResistanceModifier(type, amount, source, ModifierSourceLayer.Temporary);
+
+        public void AddResistanceModifier(
+            DamageType type,
+            int amount,
+            object source,
+            ModifierSourceLayer layer)
+        {
+            if (!Resistances.ContainsKey(type))
+                Resistances[type] = new Stat(0);
+            Resistances[type].AddModifier(amount, source, layer);
+        }
+
         // public void RemoveResistanceModifier(DamageType type, int amount) => Resistances[type].RemoveModifier(amount);
         public void RemoveResistanceModifier(DamageType type, object source) => Resistances[type].RemoveModifiersFromSource(source);
 

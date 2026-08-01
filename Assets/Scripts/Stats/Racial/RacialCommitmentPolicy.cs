@@ -24,6 +24,7 @@ namespace JRogue.Stats.Racial
         Base = 0,
         RacialLoadout = 10,
         RacialProgression = 20,
+        PermanentConsumable = 25,
         Equipment = 30,
         Essence = 40,
         Temporary = 50
@@ -41,6 +42,7 @@ namespace JRogue.Stats.Racial
             ModifierSourceLayer.Base,
             ModifierSourceLayer.RacialLoadout,
             ModifierSourceLayer.RacialProgression,
+            ModifierSourceLayer.PermanentConsumable,
             ModifierSourceLayer.Equipment,
             ModifierSourceLayer.Essence,
             ModifierSourceLayer.Temporary

@@ -124,8 +124,9 @@ namespace JRogue.Tests.Racial
         [Test]
         public void ModifierEvaluationOrder_MatchesPhase0Contract()
         {
-            Assert.AreEqual(6, RacialStackingContract.ModifierEvaluationOrder.Length);
+            Assert.AreEqual(7, RacialStackingContract.ModifierEvaluationOrder.Length);
             Assert.AreEqual(ModifierSourceLayer.Base, RacialStackingContract.ModifierEvaluationOrder[0]);
+            Assert.AreEqual(ModifierSourceLayer.PermanentConsumable, RacialStackingContract.ModifierEvaluationOrder[3]);
             Assert.AreEqual(ModifierSourceLayer.Temporary,
                 RacialStackingContract.ModifierEvaluationOrder[RacialStackingContract.ModifierEvaluationOrder.Length - 1]);
         }

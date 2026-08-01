@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15a0f08dbbd994f0b944b944e42b57c, type: 3}
+  m_Name: Pill_PoisonResistance
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: Pill of Poison Resistance
+  category: 10
+  inventoryRiskHints: 0
+  slotType: 0
+  weight: 0.2
+  icon: {fileID: 0}
+  goldValue: 40
+  buyValue: 5
+  sellValue: 2
+  requiresAppraisal: 0
+  autoPickupOnStep: 0
+  requiresAutoPickupConfirmation: 0
+  floorLifetimePlayerPhases: 0
+  equipRequiresAllFlags: 0
+  equipExcludesActorFlags: 0
+  requiresMartialCalling: 0
+  minimumCharacterLevel: 0
+  statMinimums: []
+  weaponType: 0
+  handsRequired: 1
+  requiresBow: 0
+  isThrowable: 1
+  damageModules: []
+  statModifiers: []
+  passiveEffects: []
+  activeAbilities:
+  - {fileID: 11400000, guid: e1a7c35d6f8b42a3d5a2b4c9f0e1a2b3, type: 2}
+  inventoryTargetedUseLogTag: 
+  allowUseInSafeZone: 1

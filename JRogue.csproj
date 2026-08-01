@@ -53,6 +53,7 @@
     <Compile Include="Assets/Scripts/World/Generation/DungeonFloorTilemaps.cs" />
     <Compile Include="Assets/Scripts/Manager/Progression/SoulPowerRegenerationService.cs" />
     <Compile Include="Assets/Scripts/Controller/Components/HealthComponent.cs" />
+    <Compile Include="Assets/Scripts/Abilities/Progression/PermanentStatBoostAbility.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/NpcTalkPickerModalUI.cs" />
     <Compile Include="Assets/Scripts/World/Town/MarketItemShopLayout.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/CarriedLitTorchPrecondition.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Assets/Scripts/Service/Sensing/HearingUtility.cs" />
     <Compile Include="Assets/Scripts/UI/Inventory/InventorySortMode.cs" />
     <Compile Include="Assets/Scripts/Controller/Player/PlayerController.cs" />
+    <Compile Include="Assets/Scripts/Progression/PermanentStatPillTestGrants.cs" />
     <Compile Include="Assets/Scripts/UI/Proficiency/ProficiencyDisplayNames.cs" />
     <Compile Include="Assets/Scripts/Manager/Grid/GridManager.cs" />
     <Compile Include="Assets/Scripts/UI/Gameplay/EssencePickupConfirmDialogUI.cs" />
@@ -578,8 +580,8 @@
     <Compile Include="Assets/Scripts/Effects/Timed/TimedEffectRuntime.cs" />
     <Compile Include="Assets/Scripts/World/Town/BeastmanHolyLandDenLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/MonsterSpawn/MonsterSpawnAreaResolver.cs" />
-    <Compile Include="Assets/Scripts/World/Town/ElfHolyLandHouseLayout.cs" />
     <Compile Include="Assets/Scripts/World/Rift/PortalPathingBan.cs" />
+    <Compile Include="Assets/Scripts/World/Town/ElfHolyLandHouseLayout.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneInterfaceTypes.cs" />
     <Compile Include="Assets/Scripts/World/Generation/DungeonTimeRunState.cs" />
     <Compile Include="Assets/Scripts/Racial/ElementalSpiritContractService.cs" />
@@ -621,8 +623,8 @@
     <Compile Include="Assets/Scripts/Racial/DwarfClanIds.cs" />
     <Compile Include="Assets/Scripts/Item/World/WorldItem.cs" />
     <Compile Include="Assets/Scripts/Progression/Proficiency/ProficiencyEligibility.cs" />
-    <Compile Include="Assets/Scripts/UI/Racial/RacialAbilitiesUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Vaults/RiftPedestalPlacementLogic.cs" />
+    <Compile Include="Assets/Scripts/UI/Racial/RacialAbilitiesUI.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneCellMapStats.cs" />
     <Compile Include="Assets/Scripts/Interactables/Preconditions/ScriptOnlyPrecondition.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarIconResolver.cs" />
@@ -634,8 +636,8 @@
     <Compile Include="Assets/Scripts/World/Generation/Zones/ZoneHabitatConnectivityEnforcer.cs" />
     <Compile Include="Assets/Scripts/UI/Hotbar/HotbarResolver.cs" />
     <Compile Include="Assets/Scripts/World/Generation/Zones/DungeonTilePalette.cs" />
-    <Compile Include="Assets/Scripts/Interactables/Preconditions/OtherInteractableOnPrecondition.cs" />
     <Compile Include="Assets/Scripts/World/Rift/RiftService.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Preconditions/OtherInteractableOnPrecondition.cs" />
     <Compile Include="Assets/Scripts/Interactables/Effects/ElementalSpiritMeditationEffect.cs" />
     <Compile Include="Assets/Scripts/Controller/Npc/ShopNpcController.cs" />
     <Compile Include="Assets/Scripts/Dialog/NpcTalkCounterService.cs" />
