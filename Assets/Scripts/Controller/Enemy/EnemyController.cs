@@ -60,8 +60,23 @@ namespace JRogue.Controller.Enemy
         private PlayerController player;
         private EnemyAiBrain brain;
 
-        public bool HasAttackProfile(EnemyAttackProfileKind kind) =>
-            attackProfiles != null && attackProfiles.Contains(kind);
+        /// <summary>
+        /// Empty/null <see cref="attackProfiles"/> defaults to <see cref="EnemyAttackProfileKind.AdjacentSingle"/>
+        /// (most enemies). A non-empty list is authoritative — omit single there for rare exceptions.
+        /// </summary>
+        public bool HasAttackProfile(EnemyAttackProfileKind kind)
+        {
+            if (attackProfiles == null || attackProfiles.Count == 0)
+                return kind == EnemyAttackProfileKind.AdjacentSingle;
+
+            for (int i = 0; i < attackProfiles.Count; i++)
+            {
+                if (attackProfiles[i] == kind)
+                    return true;
+            }
+
+            return false;
+        }
 
         public void GetOccupiedCells(List<Vector3Int> buffer) =>
             GridFootprintUtility.GetOccupiedCells(this, buffer);

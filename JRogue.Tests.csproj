@@ -73,6 +73,7 @@
     <Compile Include="Assets/Tests/UnitTests/World/LightingQaPlacementResolverTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/DragonianSpellsRuntimeTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Racial/KnightSkillSystemTests.cs" />
+    <Compile Include="Assets/Tests/UnitTests/Combat/EnemyAttackProfileDefaultTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/MonsterSpawnScheduleLogicTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/Combat/ConeSightFootprintTests.cs" />
     <Compile Include="Assets/Tests/UnitTests/World/VaultSourceTextTests.cs" />

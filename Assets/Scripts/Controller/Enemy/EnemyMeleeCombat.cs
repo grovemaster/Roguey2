@@ -94,7 +94,7 @@ namespace JRogue.Controller.Enemy
             }
 
             string profileNote = !hasSweep && !hasSingle
-                ? "attackProfiles is empty — add AdjacentSideSweep and/or AdjacentSingle on EnemyController."
+                ? "no usable attack profiles (authored list excludes AdjacentSingle/AdjacentSideSweep)."
                 : "no sweep side bucket and no single target matched profile rules.";
 
             Debug.LogWarning(
